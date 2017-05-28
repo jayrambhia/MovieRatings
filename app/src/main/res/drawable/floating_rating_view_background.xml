@@ -7,6 +7,6 @@
         android:bottomLeftRadius="18dp"/>
 
     <solid
-        android:color="@color/colorAccent" />
+        android:color="@color/netflix_accent_color" />
 
 </shape>
