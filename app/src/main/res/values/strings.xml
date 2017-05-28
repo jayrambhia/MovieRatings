@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">MovieRatings</string>
+    <string name="app_name">Movie Ratings</string>
+    <string name="accessibility_access_info_content">Enable accessibility in the settings screen for <b>%1$s</b> to show movie ratings in <b>%2$s</b></string>
+    <string name="accessibility_settings_button_content">Open Settings</string>
+    <string name="powered_by_api">Powered by OMDB</string>
+    <string name="activate_app_cta">Activate %1$s</string>
+
+    <string name="accessibility_info_app_name"><b>Movie Ratings App</b></string>
+    <string name="accessibility_info_target_name"><b>Netflix</b></string>
 </resources>

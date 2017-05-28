@@ -78,13 +78,6 @@ class NetflixReaderService : AccessibilityService() {
         Log.d(TAG, "on interrupt")
     }
 
-    /*private fun getTextView() : TextView {
-        val textView = TextView(this)
-        textView.text = "Netflix Text"
-        textView.textSize = 16f
-        return textView
-    }*/
-
     private fun setMovieTitle(text: String) {
         if (title == null || title != text) {
             title = text

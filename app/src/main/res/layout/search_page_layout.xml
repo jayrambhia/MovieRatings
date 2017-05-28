@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/api_attr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/powered_by_api"
+        android:textSize="32sp"
+        android:textColor="#22444444"
+        android:layout_gravity="center"/>
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:visibility="gone"
+        android:layout_gravity="center"/>
+
+</FrameLayout>
