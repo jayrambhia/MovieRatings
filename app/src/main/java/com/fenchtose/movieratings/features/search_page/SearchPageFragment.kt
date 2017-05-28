@@ -11,12 +11,14 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.RetrofitMovieProvider
+import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.PicassoLoader
 import com.fenchtose.movieratings.util.Constants
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -62,7 +64,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         recyclerView = view.findViewById(R.id.recyclerview) as RecyclerView
         searchView = view.findViewById(R.id.search_view) as EditText
 
-        val adapter = SearchPageAdapter(context, PicassoLoader(context))
+        val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)))
         adapter.setHasStableIds(true)
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = GridLayoutManager(context, 2)

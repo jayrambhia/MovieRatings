@@ -14,6 +14,13 @@ class SearchItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bindMovie(movie: Movie, imageLoader: ImageLoader) {
         titleView.text = movie.title
-        imageLoader.loadImage(movie.poster, imageView)
+        if (movie.poster.contains("http")) {
+            imageLoader.loadImage(movie.poster, this)
+//            titleView.visibility = View.GONE
+        } else {
+            imageLoader.cancelRequest(imageView)
+            imageView.setImageBitmap(null)
+//            titleView.visibility = View.VISIBLE
+        }
     }
 }
