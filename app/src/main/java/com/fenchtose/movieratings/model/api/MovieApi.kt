@@ -1,0 +1,12 @@
+package com.fenchtose.movieratings.model.api
+
+import com.fenchtose.movieratings.model.Movie
+import io.reactivex.Observable
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+
+interface MovieApi {
+    @GET("/ ")
+    fun getMovieInfo(@Query("t") title: String, @Query("apikey") api: String) : Observable<Movie>
+}
