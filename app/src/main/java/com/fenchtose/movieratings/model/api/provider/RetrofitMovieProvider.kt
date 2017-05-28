@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.model.api.provider
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.SearchResult
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import io.reactivex.Observable
 import retrofit2.Retrofit
@@ -34,6 +35,10 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                 Observable.just(Movie.empty())
             }
         }
+    }
+
+    override fun search(title: String): Observable<SearchResult> {
+        return api.search(title, BuildConfig.OMDB_API_KEY)
     }
 
 }

@@ -25,10 +25,10 @@
     <TextView
         android:id="@+id/activate_button"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="40dp"
         android:layout_gravity="bottom"
         android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:gravity="center"
         android:text="@string/activate_app_cta"
         android:background="@color/colorAccent"/>

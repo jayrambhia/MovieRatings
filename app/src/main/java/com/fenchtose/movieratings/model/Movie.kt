@@ -26,6 +26,14 @@ class Movie {
     @SerializedName("Ratings")
     var ratings: ArrayList<Rating> = ArrayList()
 
+    @ColumnInfo(name = "TYPE")
+    @SerializedName("Type")
+    var type: String = ""
+
+    @ColumnInfo(name = "IMDBID")
+    @SerializedName("imdbID")
+    var imdbId: String = ""
+
     override fun toString(): String {
         return "Movie(id='$id', title='$title', poster='$poster', ratings=$ratings)"
     }

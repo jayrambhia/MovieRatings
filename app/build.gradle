@@ -30,7 +30,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
     testCompile 'junit:junit:4.12'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
@@ -45,6 +45,9 @@ dependencies {
     compile "android.arch.persistence.room:runtime:1.0.0-alpha1"
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0-alpha1"
     kapt "android.arch.persistence.room:compiler:1.0.0-alpha1"
+
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
 }
 repositories {
     mavenCentral()

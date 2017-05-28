@@ -4,6 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <EditText
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        android:padding="8dp"
+        android:hint="Search for Movies, Series, etc"/>
+
     <TextView
         android:id="@+id/api_attr"
         android:layout_width="wrap_content"
@@ -19,5 +27,12 @@
         android:layout_height="48dp"
         android:visibility="gone"
         android:layout_gravity="center"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:layout_marginTop="64dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fffafafa"/>
 
 </FrameLayout>
