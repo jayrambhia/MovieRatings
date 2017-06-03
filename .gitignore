@@ -12,3 +12,4 @@ gradlew.bat
 .idea/*
 gradle
 gradle/*
+private.xml

@@ -31,6 +31,8 @@ class SettingsFragment: BaseFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        preferences = SettingsPreference(context)
+
         netflixToggle = view?.findViewById(R.id.netflix_toggle) as SwitchCompat
         netflixToggle?.let {
             preferences?.let {
