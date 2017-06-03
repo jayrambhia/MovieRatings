@@ -3,19 +3,25 @@ package com.fenchtose.movieratings
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.ActionBar
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
+import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.access_info.AccessInfoFragment
+import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.search_page.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
+import com.fenchtose.movieratings.util.IntentUtils
+import com.fenchtose.movieratings.util.PackageUtils
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
@@ -35,6 +41,8 @@ class MainActivity : AppCompatActivity() {
     private var accessibilityPublisher: PublishSubject<Boolean>? = null
     private var accessibilityPagePublisher: PublishSubject<Boolean>? = null
     private var disposable: Disposable? = null
+
+    private var analytics: AnalyticsDispatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,8 +78,10 @@ class MainActivity : AppCompatActivity() {
             showAccessibilityInfo()
         }
 
-        showSearchPage()
+        showInfoPage()
         accessibilityPagePublisher?.onNext(false)
+
+        analytics = MovieRatingsApplication.getAnalyticsDispatcher()
     }
 
     override fun onResume() {
@@ -115,12 +125,35 @@ class MainActivity : AppCompatActivity() {
         router?.go(SearchPageFragment.SearchPath())
     }
 
+    private fun showInfoPage() {
+        router?.go(AppInfoFragment.AppInfoPath())
+    }
+
     private fun showAccessibilityInfo() {
+        analytics?.sendEvent(Event("activate_button_clicked"))
         router?.go(AccessInfoFragment.AccessibilityPath())
     }
 
     private fun showSettingsPage() {
         router?.go(SettingsFragment.SettingsPath())
+    }
+
+    private fun onAccessibilityActivated() {
+        router?.onBackRequested()
+        // Show a dialog?
+        val builder = AlertDialog.Builder(this)
+                .setTitle(R.string.accessibility_enabled_dialog_title)
+                .setMessage(R.string.accessibility_enabled_dialog_content)
+                .setNeutralButton(android.R.string.ok) { dialog, which ->
+                    dialog.dismiss()
+                }
+
+        if (PackageUtils.hasInstalled(this, PackageUtils.NETFLIX)) {
+            builder.setPositiveButton(R.string.accessibility_enabled_open_netflix) { dialog, which ->
+                dialog.dismiss()
+                IntentUtils.launch3rdParty(this, PackageUtils.NETFLIX)
+            }
+        }
     }
 
     private fun setupObservables() {
@@ -143,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                 .subscribeBy(
                         onNext = {
                             when(it) {
-                                1 -> onBackPressed()
+                                1 -> onAccessibilityActivated()
                                 2 -> activateButton?.visibility = View.VISIBLE
                                 3 -> activateButton?.visibility = View.GONE
                             }

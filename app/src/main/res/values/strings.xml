@@ -31,4 +31,17 @@ If you want to turn Flutter off for a particular app, click on \'SETTINGS\' on t
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
+    <string name="info_screen_content">Flutter is a smart app that helps you decide what to watch on streaming apps like Netflix! It shows movie ratings on your screen making sure that you don\'t even have to search for it. It\'s ad-free and promotion-free. </string>
+
+    <string name="info_page_share_cta">Let your friends know about Flutter</string>
+    <string name="info_page_rate_cta">Rate the app on Playstore</string>
+    <string name="info_page_credit_cta">Credits</string>
+
+    <string name="credit_dialog_title">Credits</string>
+    <string name="credit_dialog_content">Flutter uses Open Movie Database to get movie ratings.\n\nPlaystore icon used in app is made by Pixel Buddha at Flaticon.</string>
+
+    <string name="accessibility_enabled_dialog_title">Flutter is now active!</string>
+    <string name="accessibility_enabled_dialog_content">Open Netflix app on your phone and open your favorite movie or a TV show and get ratings instantly!</string>
+    <string name="accessibility_enabled_open_netflix">Open Netflix</string>
+
 </resources>

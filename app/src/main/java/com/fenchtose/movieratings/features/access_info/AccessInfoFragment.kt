@@ -3,10 +3,8 @@ package com.fenchtose.movieratings.features.access_info
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.support.annotation.RequiresApi
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -14,8 +12,11 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import com.fenchtose.movieratings.BuildConfig
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.NetflixReaderService
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
+import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.util.AccessibilityUtils
@@ -25,6 +26,7 @@ class AccessInfoFragment : BaseFragment() {
 
     private var accessContainer: View? = null
     private var drawContainer: View? = null
+    private var analytics: AnalyticsDispatcher? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.access_info_layout, container, false)
@@ -37,6 +39,7 @@ class AccessInfoFragment : BaseFragment() {
         drawContainer = view.findViewById(R.id.draw_container)
 
         view.findViewById(R.id.settings_button).setOnClickListener {
+            analytics?.sendEvent(Event("open_accessibility_settings"))
             openSettings()
         }
 
@@ -47,6 +50,7 @@ class AccessInfoFragment : BaseFragment() {
 
         view.findViewById(R.id.draw_settings_button).setOnClickListener {
             if (VersionUtils.isMOrAbove()) {
+                analytics?.sendEvent(Event("open_draw_permissions_settings"))
                 openDrawSettings()
             }
         }
@@ -55,6 +59,9 @@ class AccessInfoFragment : BaseFragment() {
         drawInfoView.text = getString(R.string.draw_access_info_content,
                 getString(R.string.accessibility_info_app_name),
                 getString(R.string.accessibility_info_target_name))
+
+        analytics = MovieRatingsApplication.getAnalyticsDispatcher()
+
     }
 
     override fun onResume() {

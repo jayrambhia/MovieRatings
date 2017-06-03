@@ -29,6 +29,7 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreference
+import com.fenchtose.movieratings.util.AccessibilityUtils
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -128,6 +129,11 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun getMovieInfo(title: String) {
+
+        if (!AccessibilityUtils.isDrawPermissionEnabled(this)) {
+            analytics?.sendEvent(Event("get_movie_no_draw_permission"))
+            return
+        }
 
         analytics?.sendEvent(Event("get_movie").putAttribute("title", title))
 

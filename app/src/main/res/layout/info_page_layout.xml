@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@mipmap/ic_launcher_round"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="36sp"
+            android:textColor="@color/colorAccent"
+            android:layout_marginTop="8dp"
+            android:text="@string/app_name_short"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:alpha="0.8"
+            android:textColor="@color/colorAccent"
+            android:layout_marginTop="4dp"
+            tools:text="0.1.1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/colorAccent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:textSize="14sp"
+            android:padding="16dp"
+            android:textColor="@android:color/white"
+            android:gravity="start"
+            android:text="@string/info_screen_content"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="bottom"
+            android:background="#22ffffff"/>
+
+        <LinearLayout
+            android:id="@+id/credit_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/ripple_onyx_bg">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/info_page_credit_cta"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/yellow_primary"
+                android:drawableStart="@drawable/ic_info_outline_yellow_24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22ffffff"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rate_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/ripple_onyx_bg">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/info_page_rate_cta"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/yellow_primary"
+                android:drawableStart="@drawable/google_play"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22ffffff"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/share_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/ripple_onyx_bg">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/info_page_share_cta"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/yellow_primary"
+                android:drawableStart="@drawable/ic_share_black_24dp"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22ffffff"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

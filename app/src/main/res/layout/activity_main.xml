@@ -25,12 +25,16 @@
     <TextView
         android:id="@+id/activate_button"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="48dp"
         android:layout_gravity="bottom"
-        android:textColor="@android:color/white"
+        android:textColor="@color/yellow_primary"
         android:textSize="18sp"
-        android:gravity="center"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:drawablePadding="16dp"
         android:text="@string/activate_app_cta"
-        android:background="@color/colorAccent"/>
+        android:drawableStart="@drawable/ic_accessibility_yellow_24dp"
+        android:background="@drawable/ripple_onyx_bg"/>
 
 </LinearLayout>
