@@ -1,7 +1,8 @@
 package com.fenchtose.movieratings.model.api.provider
 
-import android.util.Log
 import com.fenchtose.movieratings.BuildConfig
+import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
@@ -13,18 +14,24 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
     val api: MovieApi = retrofit.create(MovieApi::class.java)
     val TAG = "MovieProvider"
+    val analytics = MovieRatingsApplication.getAnalyticsDispatcher()
 
     override fun getMovie(title: String): Observable<Movie> {
-        Log.d(TAG, "call movie info: " + title)
         return getMovieFromDb(title)
                 .flatMap {
                     if (it.id != -1) {
                         Observable.just(it)
                     } else {
-                        api.getMovieInfo(title, BuildConfig.OMDB_API_KEY)
+                        Observable.just(true)
                                 .doOnNext {
-                                    dao.insert(it)
+                                    analytics.sendEvent(Event("get_movie_online").putAttribute("title", title))
+                                }.flatMap {
+                                    api.getMovieInfo(title, BuildConfig.OMDB_API_KEY)
+                                        .doOnNext {
+                                            dao.insert(it)
+                                        }
                                 }
+
                     }
                 }
     }

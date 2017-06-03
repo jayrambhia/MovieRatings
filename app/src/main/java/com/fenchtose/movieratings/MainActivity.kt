@@ -72,7 +72,6 @@ class MainActivity : AppCompatActivity() {
 
         showSearchPage()
         accessibilityPagePublisher?.onNext(false)
-
     }
 
     override fun onResume() {

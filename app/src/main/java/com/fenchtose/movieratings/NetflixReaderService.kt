@@ -25,6 +25,8 @@ import java.lang.ref.WeakReference
 import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
+import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
+import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreference
 
@@ -47,6 +49,8 @@ class NetflixReaderService : AccessibilityService() {
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
     private var isShowingView: Boolean = false
 
+    private var analytics: AnalyticsDispatcher? = null
+
     override fun onCreate() {
         super.onCreate()
 
@@ -63,6 +67,8 @@ class NetflixReaderService : AccessibilityService() {
         provider = RetrofitMovieProvider(retrofit, dao)
 
         handler = Handler()
+
+        analytics = MovieRatingsApplication.getAnalyticsDispatcher()
 
     }
 
@@ -93,9 +99,7 @@ class NetflixReaderService : AccessibilityService() {
                 return
             }
         }
-
-//        Log.i(TAG, "event type: " + AccessibilityEvent.eventTypeToString(event.eventType))
-
+        
         val record = AccessibilityEventCompat.asRecord(event)
         val info = record.source
         info?.let {
@@ -124,6 +128,9 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun getMovieInfo(title: String) {
+
+        analytics?.sendEvent(Event("get_movie").putAttribute("title", title))
+
         provider?.let {
             provider!!.getMovie(title)
                     .subscribeOn(Schedulers.io())
@@ -217,6 +224,7 @@ class NetflixReaderService : AccessibilityService() {
         if (event.action == MotionEvent.ACTION_UP) {
             if (event.x < v.context.resources.displayMetrics.density * 30) {
                 removeView()
+                analytics?.sendEvent(Event("fw_close_clicked"))
                 return@OnTouchListener true
             }
         }
