@@ -13,3 +13,4 @@ gradlew.bat
 gradle
 gradle/*
 private.xml
+fabric.properties

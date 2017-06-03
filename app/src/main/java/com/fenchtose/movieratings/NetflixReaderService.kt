@@ -99,7 +99,7 @@ class NetflixReaderService : AccessibilityService() {
                 return
             }
         }
-        
+
         val record = AccessibilityEventCompat.asRecord(event)
         val info = record.source
         info?.let {

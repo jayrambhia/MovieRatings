@@ -35,10 +35,6 @@
                 android:name="android.accessibilityservice" android:resource="@xml/serviceconfig" />
         </service>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="@string/fabric_api_key"/>
-
     </application>
 
 </manifest>
