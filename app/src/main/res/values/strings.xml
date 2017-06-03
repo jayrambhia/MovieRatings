@@ -6,7 +6,7 @@
     <string name="draw_access_info_content"><b>%1$s</b> needs permission to draw over other apps to show movie ratings when you\'re browsing <b>%2$s</b></string>
     <string name="draw_settings_button_content">Open Permissions Settings</string>
     <string name="powered_by_api">Powered by OMDB</string>
-    <string name="activate_app_cta">Activate %1$s</string>
+    <string name="activate_app_cta">Activate Flutter</string>
 
     <string name="search_page_title">Flutter - Movie Ratings</string>
 
@@ -31,7 +31,8 @@ If you want to turn Flutter off for a particular app, click on \'SETTINGS\' on t
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
-    <string name="info_screen_content">Flutter is a smart app that helps you decide what to watch on streaming apps like Netflix! It shows movie ratings on your screen making sure that you don\'t even have to search for it. It\'s ad-free and promotion-free. </string>
+    <string name="info_screen_content_no_accessibility">Flutter can help you decide what you want to watch today! When you\'re browsing Netflix, it will show you movie ratings on your screen (just like Fb Messenger chat).\n\nClick on \'Activate Flutter\' at the bottom to get started with Flutter!</string>
+    <string name="info_screen_content_with_accessibility">Flutter is active now. Whene you\'re browsing Netflix, it will show you the movie ratings on the screen.\n\nFlutter doesn\'t have much at the moment but we\'re adding support for more apps and some awesome new features!</string>
 
     <string name="info_page_share_cta">Let your friends know about Flutter</string>
     <string name="info_page_rate_cta">Rate the app on Playstore</string>

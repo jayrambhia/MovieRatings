@@ -6,17 +6,29 @@ import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
+import com.fenchtose.movieratings.BuildConfig
+import com.fenchtose.movieratings.NetflixReaderService
 
 class AccessibilityUtils {
     companion object {
 
         val TAG = "AccessibilityUtils"
 
-        fun isAccessibilityEnabled(context: Context, id: String) : Boolean {
+        fun hasAllPermissions(context: Context): Boolean {
+           return isAccessibilityEnabled(context)
+                    && isDrawPermissionEnabled(context)
+        }
+
+        fun isAccessibilityEnabled(context: Context) : Boolean {
+
+            val id: String = BuildConfig.APPLICATION_ID + "/." + NetflixReaderService::class.java.simpleName
+            val fallback: String = BuildConfig.APPLICATION_ID + "/" + NetflixReaderService::class.java.canonicalName
+
             val manager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
             val runningServices = manager.getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)
             for (service in runningServices) {
-                if (id.equals(service.id)) {
+                Log.d(TAG, "service:" + service.id)
+                if (id == service.id || fallback == service.id) {
                     return true
                 }
             }

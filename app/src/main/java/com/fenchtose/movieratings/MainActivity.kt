@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
@@ -32,7 +33,7 @@ import io.reactivex.subjects.PublishSubject
 class MainActivity : AppCompatActivity() {
 
     private var container: FrameLayout? = null
-    private var activateButton: TextView? = null
+    private var activateButton: ViewGroup? = null
     private var toolbar: Toolbar? = null
     private var titlebar: ActionBar? = null
 
@@ -49,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         container = findViewById(R.id.fragment_container) as FrameLayout
-        activateButton = findViewById(R.id.activate_button) as TextView
+        activateButton = findViewById(R.id.activate_button) as ViewGroup
 
         toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -73,7 +74,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        activateButton?.text = getString(R.string.activate_app_cta, getString(R.string.app_name_short))
         activateButton?.setOnClickListener {
             showAccessibilityInfo()
         }
@@ -86,8 +86,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        accessibilityPublisher?.onNext(AccessibilityUtils.isAccessibilityEnabled(this,
-                BuildConfig.APPLICATION_ID + "/." + NetflixReaderService::class.java.simpleName) && AccessibilityUtils.isDrawPermissionEnabled(this))
+        accessibilityPublisher?.onNext(AccessibilityUtils.hasAllPermissions(this))
     }
 
     override fun onBackPressed() {

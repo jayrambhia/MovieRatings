@@ -22,19 +22,33 @@
         android:layout_weight="1"
         android:layout_height="0dp"/>
 
-    <TextView
+    <LinearLayout
         android:id="@+id/activate_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_gravity="bottom"
-        android:textColor="@color/yellow_primary"
-        android:textSize="18sp"
-        android:gravity="center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:drawablePadding="16dp"
-        android:text="@string/activate_app_cta"
-        android:drawableStart="@drawable/ic_accessibility_yellow_24dp"
-        android:background="@drawable/ripple_onyx_bg"/>
+        android:background="@drawable/ripple_onyx_bg"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#22ffffff"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/ripple_onyx_bg"
+            android:drawablePadding="16dp"
+            android:drawableStart="@drawable/ic_accessibility_yellow_24dp"
+            android:gravity="center_vertical"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/activate_app_cta"
+            android:textColor="@color/yellow_primary"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
 
 </LinearLayout>

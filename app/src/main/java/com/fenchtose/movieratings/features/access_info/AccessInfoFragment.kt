@@ -67,8 +67,7 @@ class AccessInfoFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         drawContainer?.visibility =  if (!AccessibilityUtils.isDrawPermissionEnabled(context)) VISIBLE else GONE
-        accessContainer?.visibility = if (!AccessibilityUtils.isAccessibilityEnabled(context,
-                BuildConfig.APPLICATION_ID + "/." + NetflixReaderService::class.java.simpleName)) VISIBLE else GONE
+        accessContainer?.visibility = if (!AccessibilityUtils.isAccessibilityEnabled(context)) VISIBLE else GONE
     }
 
     private fun openSettings() {
