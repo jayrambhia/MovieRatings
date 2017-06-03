@@ -21,8 +21,13 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".NetflixReaderService"
-                 android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+        <activity android:name=".features.settings.SettingsActivity"
+            android:label="@string/settings_header"/>
+
+        <service
+            android:name=".NetflixReaderService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:label="@string/accessibility_label">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>

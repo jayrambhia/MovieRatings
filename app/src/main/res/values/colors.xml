@@ -7,11 +7,16 @@
     <color name="green_secondary">#008F66</color>
     <color name="pink_primary">#FE5F55</color>
     <color name="pink_secondary">#FE5448</color>
+    <color name="yellow_primary">#FFBC42</color>
+    <color name="yellow_secondary">#CC9634</color>
+    <color name="onyx_accent">#313638</color>
     <!--<color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>-->
-    <color name="colorPrimary">@color/green_primary</color>
-    <color name="colorPrimaryDark">@color/green_secondary</color>
-    <color name="colorAccent">@color/accent_orange</color>
+    <color name="colorPrimary">@color/yellow_primary</color>
+    <color name="colorPrimaryDark">@color/yellow_secondary</color>
+    <color name="colorAccent">@color/onyx_accent</color>
+    <color name="floating_rating_color">@color/yellow_primary</color>
+
     <color name="netflix_accent_color">#E50914</color>
 </resources>

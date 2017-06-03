@@ -5,30 +5,80 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/info_view"
+    <FrameLayout
+        android:id="@+id/access_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:layout_margin="16dp"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:text="@string/accessibility_access_info_content"/>
+        android:layout_height="0dp"
+        android:layout_weight="0.9"
+        android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_margin="16dp"
+        <TextView
+            android:id="@+id/info_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/accessibility_access_info_content"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/accessibility_screenshot_framed"/>
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="@string/accessibility_settings_button_content"/>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/draw_container"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_gravity="center_horizontal"
-        android:src="@mipmap/ic_launcher_round"/>
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/settings_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/accessibility_settings_button_content"/>
+        <TextView
+            android:id="@+id/draw_info_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="@string/draw_access_info_content"/>
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/draw_screenshot_framed"/>
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:id="@+id/draw_settings_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_gravity="bottom|center_horizontal"
+            android:text="@string/draw_settings_button_content"/>
+
+    </FrameLayout>
 
 </LinearLayout>

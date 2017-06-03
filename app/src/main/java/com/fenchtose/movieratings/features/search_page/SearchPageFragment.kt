@@ -120,8 +120,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         return true
     }
 
-    override fun getScreenTitle(): String {
-        return "Movies & Ratings"
+    override fun getScreenTitle(): Int {
+        return R.string.search_page_title
     }
 
     override fun showLoading(status: Boolean) {

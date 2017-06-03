@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.widget.Toolbar
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
@@ -12,12 +14,14 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.access_info.AccessInfoFragment
 import com.fenchtose.movieratings.features.search_page.SearchPageFragment
+import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -61,7 +65,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        activateButton?.text = getString(R.string.activate_app_cta, getString(R.string.app_name))
+        activateButton?.text = getString(R.string.activate_app_cta, getString(R.string.app_name_short))
         activateButton?.setOnClickListener {
             showAccessibilityInfo()
         }
@@ -73,7 +77,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         accessibilityPublisher?.onNext(AccessibilityUtils.isAccessibilityEnabled(this,
-                BuildConfig.APPLICATION_ID + "/." + NetflixReaderService::class.java.simpleName))
+                BuildConfig.APPLICATION_ID + "/." + NetflixReaderService::class.java.simpleName) && AccessibilityUtils.isDrawPermissionEnabled(this))
     }
 
     override fun onBackPressed() {
@@ -91,12 +95,32 @@ class MainActivity : AppCompatActivity() {
         disposable?.dispose()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            R.id.action_settings -> {
+                showSettingsPage()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun showSearchPage() {
         router?.go(SearchPageFragment.SearchPath())
     }
 
     private fun showAccessibilityInfo() {
         router?.go(AccessInfoFragment.AccessibilityPath())
+    }
+
+    private fun showSettingsPage() {
+        router?.go(SettingsFragment.SettingsPath())
     }
 
     private fun setupObservables() {
@@ -126,4 +150,5 @@ class MainActivity : AppCompatActivity() {
                         }
                 )
     }
+
 }

@@ -1,10 +1,32 @@
 <resources>
-    <string name="app_name">Movie Ratings</string>
+    <string name="app_name">Flutter - Movie Ratings</string>
+    <string name="app_name_short">Flutter</string>
     <string name="accessibility_access_info_content">Enable accessibility in the settings screen for <b>%1$s</b> to show movie ratings in <b>%2$s</b></string>
-    <string name="accessibility_settings_button_content">Open Settings</string>
+    <string name="accessibility_settings_button_content">Open Accessibility Settings</string>
+    <string name="draw_access_info_content"><b>%1$s</b> needs permission to draw over other apps to show movie ratings when you\'re browsing <b>%2$s</b></string>
+    <string name="draw_settings_button_content">Open Permissions Settings</string>
     <string name="powered_by_api">Powered by OMDB</string>
     <string name="activate_app_cta">Activate %1$s</string>
 
-    <string name="accessibility_info_app_name"><b>Movie Ratings App</b></string>
+    <string name="search_page_title">Flutter - Movie Ratings</string>
+
+    <string name="accessibility_info_app_name"><b>Flutter</b></string>
     <string name="accessibility_info_target_name"><b>Netflix</b></string>
+    <string name="accessibility_info_page_header">Accessibility Information</string>
+
+    <string name="accessibility_description">Turn ON the accessibility for Flutter to get movie ratings while you\'re browsing. It helps Flutter to get the name of the movie from the app.\n\n
+Once you turn on the button, Android will show you a dialog which will give you info about what Flutter will get access to.
+But don\'t worry. Flutter is cool and believes in personal privacy and hence collects no personal data.\n\n\n
+If you want to turn Flutter off for a particular app, click on \'SETTINGS\' on top and you can enable/disable Flutter for particular apps.
+    </string>
+    <string name="accessibility_summary">Flutter requires accessibility to get movie names from the app.</string>
+    <string name="accessibility_label">Flutter Movie Ratings</string>
+
+    <string name="settings_header">Settings</string>
+    <string name="settings_info">Select the apps you want to see movie ratings for</string>
+    <string name="settings_netflix">Netflix</string>
+    <string name="settings_preference_update_content">Your preferences have been updated</string>
+
+    <string name="menu_action_settings">Settings</string>
+
 </resources>

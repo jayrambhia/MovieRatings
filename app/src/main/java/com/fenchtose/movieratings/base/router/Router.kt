@@ -75,7 +75,7 @@ class Router(activity: AppCompatActivity) {
     private fun _move(path: RouterPath<out BaseFragment>) {
         val fragment = path.createOrGetFragment()
         manager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
-        titlebar?.title = fragment.getScreenTitle()
+        titlebar?.setTitle(fragment.getScreenTitle())
         callback?.movedTo(path)
     }
 
