@@ -23,7 +23,10 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.ref.WeakReference
 import android.util.DisplayMetrics
+import android.view.MotionEvent
+import android.view.View
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.preferences.SettingsPreference
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -36,8 +39,18 @@ class NetflixReaderService : AccessibilityService() {
     private var handler: Handler? = null
     private var ratingView: WeakReference<FloatingRatingView?> = WeakReference(null)
 
+    private var preferences: SettingsPreference? = null
+
+    private val supportedPackages: Array<String> = arrayOf("com.netflix.mediaclient")
+
+    private var lastWindowStateChangeEventTime: Long = 0
+    private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
+    private var isShowingView: Boolean = false
+
     override fun onCreate() {
         super.onCreate()
+
+        preferences = SettingsPreference(this)
 
         val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.OMDB_ENDPOINT)
@@ -50,13 +63,35 @@ class NetflixReaderService : AccessibilityService() {
         provider = RetrofitMovieProvider(retrofit, dao)
 
         handler = Handler()
+
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
+        Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName)
+
+        if (!supportedPackages.contains(event.packageName)) {
+            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && isShowingView) {
+                if (System.currentTimeMillis() - lastWindowStateChangeEventTime > WINDOW_STATE_CHANGE_THRESHOLD) {
+                    // User has moved to some other app
+                    removeView()
+                    title = null
+                }
+            }
+
+            return
+        }
+
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             removeView()
+            lastWindowStateChangeEventTime = System.currentTimeMillis()
             title = null
+        }
+
+        preferences?.let {
+            if (!preferences!!.isAppEnabled(SettingsPreference.NETFLIX)) {
+                return
+            }
         }
 
 //        Log.i(TAG, "event type: " + AccessibilityEvent.eventTypeToString(event.eventType))
@@ -74,9 +109,11 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 
+
     override fun onInterrupt() {
         Log.d(TAG, "on interrupt")
     }
+
 
     private fun setMovieTitle(text: String) {
         if (title == null || title != text) {
@@ -93,6 +130,7 @@ class NetflixReaderService : AccessibilityService() {
                     .filter { it.ratings.size > 0 }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(onNext = {
+                        Log.d(TAG, "got movie info: " + it.title)
                         showRating(it)
                     }, onError = {
                         it.printStackTrace()
@@ -138,6 +176,7 @@ class NetflixReaderService : AccessibilityService() {
             }
 
             addViewToWindow(view)
+            isShowingView = true
         }
 
     }
@@ -147,7 +186,7 @@ class NetflixReaderService : AccessibilityService() {
         val dm = DisplayMetrics()
         manager.defaultDisplay.getMetrics(dm)
 
-        val width = (80*dm.density).toInt()
+        val width = (136*dm.density).toInt()
 
         val params = WindowManager.LayoutParams(width, WindowManager.LayoutParams.WRAP_CONTENT ,
                 dm.widthPixels-width, (180*dm.density).toInt(),
@@ -155,9 +194,11 @@ class NetflixReaderService : AccessibilityService() {
                 PixelFormat.TRANSLUCENT)
 
         manager.addView(view, params)
+        view.setOnTouchListener(floatingWindowTouchListener)
     }
 
     private fun removeView() {
+        isShowingView = false
         handler?.postDelayed({
             val view = ratingView.get()
             view?.let {
@@ -170,5 +211,16 @@ class NetflixReaderService : AccessibilityService() {
 
     private fun getWindowManager() : WindowManager {
         return getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    }
+
+    private val floatingWindowTouchListener = View.OnTouchListener { v, event ->
+        if (event.action == MotionEvent.ACTION_UP) {
+            if (event.x < v.context.resources.displayMetrics.density * 30) {
+                removeView()
+                return@OnTouchListener true
+            }
+        }
+
+        false
     }
 }

@@ -29,4 +29,6 @@ If you want to turn Flutter off for a particular app, click on \'SETTINGS\' on t
 
     <string name="menu_action_settings">Settings</string>
 
+    <string name="floating_rating_content">Flutter - %1$s</string>
+
 </resources>

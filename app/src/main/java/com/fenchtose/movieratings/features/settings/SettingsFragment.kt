@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.features.settings
 
 import android.os.Bundle
-import android.support.annotation.IdRes
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.SwitchCompat
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.model.preferences.SettingsPreference
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
@@ -19,6 +19,10 @@ class SettingsFragment: BaseFragment() {
     private var root: ViewGroup? = null
     private var updatePublisher: PublishSubject<Boolean>? = null
 
+    private var preferences: SettingsPreference? = null
+
+    private var netflixToggle: SwitchCompat? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         root = inflater.inflate(R.layout.settings_page_layout, container, false) as ViewGroup
         return root!!
@@ -26,8 +30,16 @@ class SettingsFragment: BaseFragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        (view?.findViewById(R.id.netflix_toggle) as SwitchCompat).setOnCheckedChangeListener {
-            view, isChecked ->  updatePreference(R.id.netflix_toggle, isChecked)
+
+        netflixToggle = view?.findViewById(R.id.netflix_toggle) as SwitchCompat
+        netflixToggle?.let {
+            preferences?.let {
+                val netflix = preferences!!.isAppEnabled(SettingsPreference.NETFLIX)
+                netflixToggle!!.isChecked = netflix
+                netflixToggle!!.setOnCheckedChangeListener {
+                    view, isChecked ->  updatePreference(SettingsPreference.NETFLIX, isChecked)
+                }
+            }
         }
 
         val publisher = PublishSubject.create<Boolean>()
@@ -44,7 +56,8 @@ class SettingsFragment: BaseFragment() {
         updatePublisher?.onComplete()
     }
 
-    private fun updatePreference(@IdRes res: Int, checked: Boolean) {
+    private fun updatePreference(app: String, checked: Boolean) {
+        preferences?.setAppEnabled(app, checked)
         updatePublisher?.onNext(true)
     }
 

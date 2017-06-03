@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.api.provider
 
+import android.util.Log
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.Movie
@@ -11,8 +12,10 @@ import retrofit2.Retrofit
 class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvider {
 
     val api: MovieApi = retrofit.create(MovieApi::class.java)
+    val TAG = "MovieProvider"
 
     override fun getMovie(title: String): Observable<Movie> {
+        Log.d(TAG, "call movie info: " + title)
         return getMovieFromDb(title)
                 .flatMap {
                     if (it.id != -1) {

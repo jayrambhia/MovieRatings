@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged"
     android:description="@string/accessibility_description"
     android:summary="@string/accessibility_summary"
-    android:packageNames="com.netflix.mediaclient"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:notificationTimeout="0"
     android:settingsActivity="com.fenchtose.movieratings.features.settings.SettingsActivity"
     android:canRetrieveWindowContent="true"
-    android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews|flagReportViewIds|flagRequestEnhancedWebAccessibility|flagRetrieveInteractiveWindows" />
+    android:accessibilityFlags="flagDefault|flagIncludeNotImportantViews|flagReportViewIds|flagRetrieveInteractiveWindows" />
