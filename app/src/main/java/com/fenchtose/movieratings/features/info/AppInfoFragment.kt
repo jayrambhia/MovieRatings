@@ -16,8 +16,10 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
+import com.fenchtose.movieratings.util.ToastUtils
 
 class AppInfoFragment: BaseFragment() {
 
@@ -25,6 +27,8 @@ class AppInfoFragment: BaseFragment() {
     private var isTV: Boolean = false
     private var testView: View? = null
     private var testContainer: View? = null
+    private var settingsView: View? = null
+    private var activationWarning: View? = null
     private var handler: Handler? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +48,7 @@ class AppInfoFragment: BaseFragment() {
         view.findViewById(R.id.rate_view).setOnClickListener {
             analytics?.sendEvent(Event("rate_app_clicked"))
             IntentUtils.openPlaystore(context)
+            ToastUtils.showFlutterToast(context, "Flutter: Family Guy - 8.2/10")
         }
 
         val share = view.findViewById(R.id.share_view)
@@ -69,9 +74,12 @@ class AppInfoFragment: BaseFragment() {
             }
         }
 
-//        if (isTV) {
-//            share.visibility = GONE
-//        }
+        settingsView = view.findViewById(R.id.settings_view)
+        settingsView?.setOnClickListener {
+            MovieRatingsApplication.router?.go(SettingsFragment.SettingsPath())
+        }
+
+        activationWarning = view.findViewById(R.id.activation_warning_view)
 
         view.findViewById(R.id.credit_view).setOnClickListener {
             showCreditsDialog()
@@ -92,6 +100,8 @@ class AppInfoFragment: BaseFragment() {
         if (isTV) {
             val hasAccessibility = AccessibilityUtils.isAccessibilityEnabled(context)
             testView?.visibility = if (hasAccessibility) VISIBLE else GONE
+            settingsView?.visibility = if (hasAccessibility) VISIBLE else GONE
+            activationWarning?.visibility = if (hasAccessibility) GONE else VISIBLE
         }
     }
 

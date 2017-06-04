@@ -14,14 +14,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/settings_info"
-            android:padding="16dp"
-            android:textSize="14sp"/>
+            android:padding="@dimen/gutter"
+            android:textSize="@dimen/settings_text_size"/>
 
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/netflix_toggle"
-            android:padding="16dp"
-            android:textSize="16sp"
+            android:padding="@dimen/gutter"
+            android:textSize="@dimen/settings_text_size"
             android:text="@string/settings_netflix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

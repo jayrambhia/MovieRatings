@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="136dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/floating_rating_view_background"
-    tools:parentTag="FrameLayout">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:background="@drawable/floating_rating_toast_background">
 
     <ImageView
         android:layout_width="18dp"
@@ -13,7 +14,7 @@
         android:layout_margin="4dp"
         android:padding="2dp"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_cancel_white_18dp"/>
+        android:src="@drawable/flutter_film_icon_18dp"/>
 
     <TextView
         android:id="@+id/rating_view"
@@ -21,9 +22,9 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:layout_marginStart="22dp"
-        android:textSize="14sp"
+        android:textSize="@dimen/toast_text_size"
         android:textColor="#fff"
         android:gravity="center"
         tools:text="Flutter - 8.1/10"/>
 
-</merge>
+</FrameLayout>

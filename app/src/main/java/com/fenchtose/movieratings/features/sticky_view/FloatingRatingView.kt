@@ -1,10 +1,7 @@
 package com.fenchtose.movieratings.features.sticky_view
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.fenchtose.movieratings.R
@@ -16,7 +13,7 @@ class FloatingRatingView(context: Context) : FrameLayout(context) {
 
     fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.floating_rating_view, this, true)
-        ratingView = findViewById(R.id.rating_View) as TextView
+        ratingView = findViewById(R.id.rating_view) as TextView
         setBackgroundResource(R.drawable.floating_rating_view_background)
     }
 

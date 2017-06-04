@@ -33,6 +33,7 @@ import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreference
 import com.fenchtose.movieratings.util.AccessibilityUtils
+import com.fenchtose.movieratings.util.ToastUtils
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -192,7 +193,7 @@ class NetflixReaderService : AccessibilityService() {
 
         if (!AccessibilityUtils.canDrawOverWindow(this)) {
             Log.e(TAG, "no drawing permission or TV or stupid devices")
-            Toast.makeText(this, "Flutter: $movie - $rating", Toast.LENGTH_SHORT).show()
+            ToastUtils.showFlutterToast(this, "Flutter: $movie - $rating")
             return
         }
 

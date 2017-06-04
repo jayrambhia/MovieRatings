@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         setupObservables()
 
         router = Router(this)
+        MovieRatingsApplication.router = router
 
         router?.callback = object: Router.RouterCallback {
             override fun movedTo(path: RouterPath<out BaseFragment>) {

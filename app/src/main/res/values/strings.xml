@@ -38,6 +38,7 @@ If you want to turn Flutter off for a particular app, click on \'SETTINGS\' on t
     <string name="info_page_rate_cta">Rate the app on Playstore</string>
     <string name="info_page_credit_cta">Credits</string>
     <string name="info_page_test_cta">See how it works</string>
+    <string name="info_page_settings_cta">Configure settings</string>
 
     <string name="credit_dialog_title">Credits</string>
     <string name="credit_dialog_content">Flutter uses Open Movie Database to get movie ratings.\n\nPlaystore icon used in app is made by Pixel Buddha at Flaticon.</string>
@@ -46,6 +47,7 @@ If you want to turn Flutter off for a particular app, click on \'SETTINGS\' on t
     <string name="accessibility_enabled_dialog_content">Open Netflix app on your phone and open your favorite movie or a TV show and get ratings instantly!</string>
     <string name="accessibility_enabled_open_netflix">Open Netflix</string>
 
-    <string name="accessibility_test_title">Family Guy</string>
+    <string name="accessibility_test_title">Fight Club</string>
+    <string name="accessibility_warning_content">Accessibility Permission Required</string>
 
 </resources>

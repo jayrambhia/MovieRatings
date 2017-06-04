@@ -1,49 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_above="@+id/bottom_container">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:src="@mipmap/ic_launcher"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="36sp"
+                android:textColor="@color/colorAccent"
+                android:layout_marginTop="8dp"
+                android:text="@string/app_name_short"/>
+
+            <TextView
+                android:id="@+id/version_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:alpha="0.8"
+                android:textColor="@color/colorAccent"
+                android:layout_marginTop="4dp"
+                tools:text="0.1.1"/>
+
+            <TextView
+                android:textStyle="bold"
+                android:id="@+id/activation_warning_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="21sp"
+                android:textAllCaps="true"
+                android:text="@string/accessibility_warning_content"
+                android:textColor="@color/accent_orange"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
     <LinearLayout
+        android:id="@+id/bottom_container"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:gravity="center_horizontal">
-
-        <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@mipmap/ic_launcher"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="36sp"
-            android:textColor="@color/colorAccent"
-            android:layout_marginTop="8dp"
-            android:text="@string/app_name_short"/>
-
-        <TextView
-            android:id="@+id/version_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:alpha="0.8"
-            android:textColor="@color/colorAccent"
-            android:layout_marginTop="4dp"
-            tools:text="0.1.1"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
+        android:layout_alignParentBottom="true"
         android:background="@color/colorAccent">
 
         <TextView
@@ -113,6 +133,34 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/settings_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/ripple_onyx_bg">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22ffffff"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/info_page_settings_cta"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/yellow_primary"
+                android:drawableStart="@drawable/ic_settings_yellow_24dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/test_view"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -143,6 +191,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -170,4 +219,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>
