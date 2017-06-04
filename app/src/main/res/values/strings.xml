@@ -45,4 +45,6 @@ If you want to turn Flutter off for a particular app, click on \'SETTINGS\' on t
     <string name="accessibility_enabled_dialog_content">Open Netflix app on your phone and open your favorite movie or a TV show and get ratings instantly!</string>
     <string name="accessibility_enabled_open_netflix">Open Netflix</string>
 
+    <string name="accessibility_test_title">Family Guy</string>
+
 </resources>
