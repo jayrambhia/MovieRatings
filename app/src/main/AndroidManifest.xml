@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:banner="@drawable/cover"
+        android:banner="@drawable/flutter_tv_banner"
         android:theme="@style/AppTheme"
         tools:targetApi="lollipop">
 

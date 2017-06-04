@@ -4,6 +4,7 @@ import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.AnswersEventDispatcher
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.model.db.MovieDb
 import io.fabric.sdk.android.Fabric
 
@@ -11,6 +12,7 @@ class MovieRatingsApplication : Application() {
     companion object {
         var instance: MovieRatingsApplication? = null
         var dispatcher: AnalyticsDispatcher? = null
+        var router: Router? = null
 
         fun getDatabase() : MovieDb {
             return MovieDb.getInstance(instance!!.applicationContext)
@@ -25,6 +27,7 @@ class MovieRatingsApplication : Application() {
 
             return dispatcher!!
         }
+
     }
 
     override fun onCreate() {
