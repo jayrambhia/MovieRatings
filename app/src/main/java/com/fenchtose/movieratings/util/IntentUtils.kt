@@ -20,7 +20,10 @@ class IntentUtils {
         }
 
         fun openPlaystore(context: Context) {
-            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(PLAYSTORE_URL)))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(PLAYSTORE_URL))
+            if (canStartIntent(context, intent)) {
+                context.startActivity(intent)
+            }
         }
 
         fun openShareIntent(context: Context, message: String) {
@@ -28,6 +31,10 @@ class IntentUtils {
             intent.putExtra(Intent.EXTRA_TEXT, message)
             intent.type = "text/plain"
             context.startActivity(Intent.createChooser(intent, "Share via"))
+        }
+
+        fun canStartIntent(context: Context, intent: Intent): Boolean {
+            return intent.resolveActivity(context.packageManager) != null
         }
     }
 }

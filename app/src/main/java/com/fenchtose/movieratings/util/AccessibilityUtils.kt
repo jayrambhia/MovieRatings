@@ -17,7 +17,11 @@ class AccessibilityUtils {
         val TAG = "AccessibilityUtils"
 
         fun hasAllPermissions(context: Context): Boolean {
-           return isAccessibilityEnabled(context)
+            if (isTV(context)) {
+                return isAccessibilityEnabled(context)
+            }
+
+            return isAccessibilityEnabled(context)
                     && isDrawPermissionEnabled(context)
         }
 

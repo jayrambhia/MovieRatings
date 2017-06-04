@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.access_info.AccessInfoFragment
+import com.fenchtose.movieratings.features.info.AppInfoFragment
 
 class TVActivity : AppCompatActivity() {
 
@@ -15,6 +16,6 @@ class TVActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tv)
         router = Router(this)
-        router?.go(AccessInfoFragment.AccessibilityPath())
+        router?.go(AppInfoFragment.AppInfoPath())
     }
 }
