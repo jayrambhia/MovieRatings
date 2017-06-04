@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import android.support.v4.view.accessibility.AccessibilityEventCompat
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat
 import android.util.Log
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -26,6 +27,7 @@ import java.lang.ref.WeakReference
 import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.Movie
@@ -45,7 +47,7 @@ class NetflixReaderService : AccessibilityService() {
 
     private var preferences: SettingsPreference? = null
 
-    private val supportedPackages: Array<String> = arrayOf("com.netflix.mediaclient")
+    private val supportedPackages: Array<String> = arrayOf("com.netflix.mediaclient", BuildConfig.APPLICATION_ID)
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -78,14 +80,6 @@ class NetflixReaderService : AccessibilityService() {
 
         Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName)
 
-//        if (true) {
-//            showRatingWindow("Narcos", "9.2")
-//        }
-
-        if (true) {
-            showRatingWindow("Narcos", "9.2")
-        }
-
         if (!supportedPackages.contains(event.packageName)) {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && isShowingView) {
                 if (System.currentTimeMillis() - lastWindowStateChangeEventTime > WINDOW_STATE_CHANGE_THRESHOLD) {
@@ -113,8 +107,18 @@ class NetflixReaderService : AccessibilityService() {
         val record = AccessibilityEventCompat.asRecord(event)
         val info = record.source
         info?.let {
-            val titles = info.findAccessibilityNodeInfosByViewId("com.netflix.mediaclient:id/video_details_title")
-            if (titles != null && titles.size > 0) {
+
+            val titles: List<AccessibilityNodeInfoCompat>
+
+            if (info.packageName == BuildConfig.APPLICATION_ID) {
+                titles = info.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
+            } else if (info.packageName == "com.netflix.mediaclient") {
+                titles = info.findAccessibilityNodeInfosByViewId("com.netflix.mediaclient:id/video_details_title")
+            } else {
+                titles = ArrayList<AccessibilityNodeInfoCompat>()
+            }
+
+            if (titles != null && titles.isNotEmpty()) {
                 titles.filter { it.text != null }
                         .forEach {
                             setMovieTitle(it.text.toString())
@@ -135,14 +139,17 @@ class NetflixReaderService : AccessibilityService() {
             Log.i(TAG, "Movie Title: " + title!!)
             getMovieInfo(text)
         }
+
     }
 
     private fun getMovieInfo(title: String) {
 
-        if (!AccessibilityUtils.isDrawPermissionEnabled(this)) {
+        // Remove check. We'll show a toast if we don't have a permission
+
+        /*if (!AccessibilityUtils.isDrawPermissionEnabled(this)) {
             analytics?.sendEvent(Event("get_movie_no_draw_permission"))
             return
-        }
+        }*/
 
         analytics?.sendEvent(Event("get_movie").putAttribute("title", title))
 
@@ -182,6 +189,13 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun showRatingWindow(@Suppress("UNUSED_PARAMETER") movie: String, rating: String) {
+
+        if (!AccessibilityUtils.canDrawOverWindow(this)) {
+            Log.e(TAG, "no drawing permission or TV or stupid devices")
+            Toast.makeText(this, "Flutter: $movie - $rating", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         if (ratingView.get() == null) {
             val view = FloatingRatingView(this)
             ratingView = WeakReference(view)

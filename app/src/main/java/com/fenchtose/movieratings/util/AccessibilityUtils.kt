@@ -1,7 +1,9 @@
 package com.fenchtose.movieratings.util
 
 import android.annotation.SuppressLint
+import android.app.UiModeManager
 import android.content.Context
+import android.content.res.Configuration
 import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -46,6 +48,25 @@ class AccessibilityUtils {
             }
 
             return true
+        }
+
+        fun isTV(context: Context): Boolean {
+            val manager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+            if (manager != null && manager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
+                return true
+            }
+
+            return false
+        }
+
+        fun canDrawOverWindow(context: Context): Boolean {
+            if (isTV(context)) {
+                return false
+            }
+
+            // Check for xiaomi devices and other crash device?
+
+            return isDrawPermissionEnabled(context)
         }
     }
 }
