@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
           package="com.fenchtose.movieratings">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
+    <uses-feature android:name="android.software.leanback"
+                  android:required="false" />
+
+    <uses-feature android:name="android.hardware.touchscreen"
+                  android:required="false" />
+
     <application
+        android:name=".MovieRatingsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:name=".MovieRatingsApplication"
-        android:theme="@style/AppTheme">
+        android:banner="@drawable/cover"
+        android:theme="@style/AppTheme"
+        tools:targetApi="lollipop">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -20,21 +30,32 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
-        <activity android:name=".features.settings.SettingsActivity"
+        <activity
+            android:name=".features.settings.SettingsActivity"
             android:label="@string/settings_header"/>
 
         <service
             android:name=".NetflixReaderService"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:label="@string/accessibility_label">
+            android:label="@string/accessibility_label"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
             </intent-filter>
+
             <meta-data
-                android:name="android.accessibilityservice" android:resource="@xml/serviceconfig" />
+                android:name="android.accessibilityservice"
+                android:resource="@xml/serviceconfig"/>
         </service>
 
+        <activity android:name=".features.android_tv.TVActivity"
+                  android:label="@string/app_name">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+
+        </activity>
     </application>
 
 </manifest>
