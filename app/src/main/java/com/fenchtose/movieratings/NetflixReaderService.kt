@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Handler
+import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import android.support.v4.view.accessibility.AccessibilityEventCompat
 import android.util.Log
@@ -67,7 +68,7 @@ class NetflixReaderService : AccessibilityService() {
 
         provider = RetrofitMovieProvider(retrofit, dao)
 
-        handler = Handler()
+        handler = Handler(Looper.getMainLooper())
 
         analytics = MovieRatingsApplication.getAnalyticsDispatcher()
 
@@ -188,13 +189,17 @@ class NetflixReaderService : AccessibilityService() {
                 return
             }
 
-            addViewToWindow(view)
-            isShowingView = true
+            if (addViewToWindow(view)) {
+                isShowingView = true
+            } else {
+                ratingView = WeakReference(null)
+                isShowingView = false
+            }
         }
 
     }
 
-    private fun addViewToWindow(view: FloatingRatingView) {
+    private fun addViewToWindow(view: FloatingRatingView): Boolean {
         val manager = getWindowManager()
         val dm = DisplayMetrics()
         manager.defaultDisplay.getMetrics(dm)
@@ -206,8 +211,16 @@ class NetflixReaderService : AccessibilityService() {
                 WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT)
 
-        manager.addView(view, params)
-        view.setOnTouchListener(floatingWindowTouchListener)
+        try {
+            manager.addView(view, params)
+            view.setOnTouchListener(floatingWindowTouchListener)
+            return true
+        } catch (e: RuntimeException) {
+            analytics?.sendEvent(Event("runtime_error")
+                    .putAttribute("error", if (e.message != null) e.message!! else "unknown")
+                    .putAttribute("where", "service_remove_view"))
+            return false
+        }
     }
 
     private fun removeView() {
@@ -216,7 +229,13 @@ class NetflixReaderService : AccessibilityService() {
             val view = ratingView.get()
             view?.let {
                 view.parent?.let {
-                    getWindowManager().removeViewImmediate(view)
+                    try {
+                        getWindowManager().removeViewImmediate(view)
+                    } catch(e: RuntimeException) {
+                        analytics?.sendEvent(Event("runtime_error")
+                                .putAttribute("error", if (e.message != null) e.message!! else "unknown")
+                                .putAttribute("where", "service_remove_view"))
+                    }
                 }
             }
         }, 10)
