@@ -77,6 +77,14 @@ class NetflixReaderService : AccessibilityService() {
 
         Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName)
 
+//        if (true) {
+//            showRatingWindow("Narcos", "9.2")
+//        }
+
+        if (true) {
+            showRatingWindow("Narcos", "9.2")
+        }
+
         if (!supportedPackages.contains(event.packageName)) {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && isShowingView) {
                 if (System.currentTimeMillis() - lastWindowStateChangeEventTime > WINDOW_STATE_CHANGE_THRESHOLD) {

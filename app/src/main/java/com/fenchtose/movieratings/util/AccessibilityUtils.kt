@@ -26,6 +26,9 @@ class AccessibilityUtils {
 
             val manager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
             val runningServices = manager.getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK)
+
+            Log.d(TAG, "found service: " + runningServices)
+
             for (service in runningServices) {
                 Log.d(TAG, "service:" + service.id)
                 if (id == service.id || fallback == service.id) {
