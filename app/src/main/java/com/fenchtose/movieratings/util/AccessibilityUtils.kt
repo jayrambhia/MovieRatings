@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.UiModeManager
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -17,7 +18,8 @@ class AccessibilityUtils {
         val TAG = "AccessibilityUtils"
 
         fun hasAllPermissions(context: Context): Boolean {
-            if (isTV(context)) {
+            // Drawing over apps is not supported for this device. So just check for accessibility
+            if (!isDrawOverWindowSupported(context)) {
                 return isAccessibilityEnabled(context)
             }
 
@@ -64,13 +66,25 @@ class AccessibilityUtils {
         }
 
         fun canDrawOverWindow(context: Context): Boolean {
-            if (isTV(context)) {
+            if (!isDrawOverWindowSupported(context)) {
                 return false
             }
 
             // Check for xiaomi devices and other crash device?
 
             return isDrawPermissionEnabled(context)
+        }
+
+        fun isManufacturer(name: String): Boolean {
+            return Build.MANUFACTURER.toLowerCase() == name
+        }
+
+        /**
+         * Certain devices don't support drawing over apps (eg. TV) and certain devices crash (eg. xiaomi).
+         * returns true if drawing over apps is enabled for this device
+         */
+        fun isDrawOverWindowSupported(context: Context): Boolean {
+            return !(isTV(context) || isManufacturer("xiaomi"))
         }
     }
 }

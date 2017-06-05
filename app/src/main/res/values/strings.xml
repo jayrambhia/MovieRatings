@@ -26,6 +26,7 @@ If you want to turn Flutter off for a particular app, click on \'SETTINGS\' on t
     <string name="settings_info">Select the apps you want to see movie ratings for</string>
     <string name="settings_netflix">Netflix</string>
     <string name="settings_preference_update_content">Your preferences have been updated</string>
+    <string name="settings_toast_duration_info">Set the duration for movie ratings to be displayed on your screen (in seconds)</string>
 
     <string name="menu_action_settings">Settings</string>
 

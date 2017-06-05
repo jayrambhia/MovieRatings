@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 class SettingsPreference(context: Context) {
 
     private val PREF_NAME = "settings_pref"
+    private val DURATION_KEY = "toast_duration"
 
     private val preferences: SharedPreferences = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE)
 
@@ -20,6 +21,14 @@ class SettingsPreference(context: Context) {
 
     fun setAppEnabled(app: String, status: Boolean) {
         preferences.edit().putBoolean(app, status).apply()
+    }
+
+    fun getToastDuration(): Int {
+        return preferences.getInt(DURATION_KEY, 2000)
+    }
+
+    fun setToastDuration(durationInMS: Int) {
+        preferences.edit().putInt(DURATION_KEY, durationInMS).apply()
     }
 
 }

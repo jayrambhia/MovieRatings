@@ -192,7 +192,8 @@ class NetflixReaderService : AccessibilityService() {
 
         if (!AccessibilityUtils.canDrawOverWindow(this)) {
             Log.e(TAG, "no drawing permission or TV or stupid devices")
-            ToastUtils.showFlutterToast(this, "Flutter: $movie - $rating")
+            val duration = if (preferences != null) preferences!!.getToastDuration() else 3000
+            ToastUtils.showFlutterToast(this, "Flutter: $movie - $rating", duration)
             return
         }
 
