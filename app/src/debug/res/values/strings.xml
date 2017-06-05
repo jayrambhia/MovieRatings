@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Flutter - Movie Ratings Dev</string>
+    <string name="app_name_short">Flutter Dev</string>
+    <string name="accessibility_label">Flutter Movie Ratings Dev</string>
+</resources>
