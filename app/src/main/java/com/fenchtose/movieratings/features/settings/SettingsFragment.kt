@@ -57,7 +57,7 @@ class SettingsFragment: BaseFragment() {
         val seekbarContainer = view.findViewById(R.id.seekbar_container)
         toastDuration = view.findViewById(R.id.toast_duration_view) as TextView?
 
-        val showToastDurationInfo = !AccessibilityUtils.isDrawOverWindowSupported(context)
+        val showToastDurationInfo = !AccessibilityUtils.canDrawOverWindow(context)
         if (!showToastDurationInfo) {
             toastInfo?.visibility = GONE
             toastSeekbar?.visibility = GONE
