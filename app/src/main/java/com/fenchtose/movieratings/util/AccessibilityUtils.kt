@@ -57,7 +57,7 @@ class AccessibilityUtils {
         }
 
         fun isTV(context: Context): Boolean {
-            val manager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+            val manager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager?
             if (manager != null && manager.currentModeType == Configuration.UI_MODE_TYPE_TELEVISION) {
                 return true
             }

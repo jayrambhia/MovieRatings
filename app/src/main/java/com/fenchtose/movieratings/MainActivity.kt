@@ -143,12 +143,12 @@ class MainActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
                 .setTitle(R.string.accessibility_enabled_dialog_title)
                 .setMessage(R.string.accessibility_enabled_dialog_content)
-                .setNeutralButton(android.R.string.ok) { dialog, which ->
+                .setNeutralButton(android.R.string.ok) { dialog, _ ->
                     dialog.dismiss()
                 }
 
         if (PackageUtils.hasInstalled(this, PackageUtils.NETFLIX)) {
-            builder.setPositiveButton(R.string.accessibility_enabled_open_netflix) { dialog, which ->
+            builder.setPositiveButton(R.string.accessibility_enabled_open_netflix) { dialog, _ ->
                 dialog.dismiss()
                 IntentUtils.launch3rdParty(this, PackageUtils.NETFLIX)
             }

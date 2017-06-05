@@ -16,7 +16,7 @@ class ToastUtils {
             val toast = Toast(context)
 
             toast.view = root
-            (root.findViewById(R.id.rating_view) as TextView)?.text = message
+            (root.findViewById(R.id.rating_view) as TextView?)?.text = message
             toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, context.resources.getDimensionPixelOffset(R.dimen.toast_bottom_margin))
 
             toast.duration = if (durationInMs <= 10000) durationInMs else 8000

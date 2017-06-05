@@ -16,7 +16,7 @@ abstract class Presenter<VIEW> {
     }
 
     @CallSuper
-    fun detachView(view: VIEW) {
+    fun detachView(@Suppress("UNUSED_PARAMETER") view: VIEW) {
         disposables?.dispose()
         this.view = null
     }

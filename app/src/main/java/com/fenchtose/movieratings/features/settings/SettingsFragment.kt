@@ -47,7 +47,7 @@ class SettingsFragment: BaseFragment() {
                 val netflix = preferences!!.isAppEnabled(SettingsPreference.NETFLIX)
                 netflixToggle!!.isChecked = netflix
                 netflixToggle!!.setOnCheckedChangeListener {
-                    view, isChecked ->  updatePreference(SettingsPreference.NETFLIX, isChecked)
+                    _, isChecked ->  updatePreference(SettingsPreference.NETFLIX, isChecked)
                 }
             }
         }
