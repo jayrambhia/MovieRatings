@@ -27,12 +27,12 @@ import java.lang.ref.WeakReference
 import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
-import android.view.accessibility.AccessibilityNodeInfo
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreference
 import com.fenchtose.movieratings.util.AccessibilityUtils
+import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.ToastUtils
 
 
@@ -130,6 +130,7 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 
+    @Suppress("unused")
     fun checkNodeRecursively(info: AccessibilityNodeInfoCompat) {
         Log.d(TAG, "info: " + info.text + ", " + info.viewIdResourceName + ", " + info.className + ", " + info.parent)
         Log.d(TAG, "--- children ---")
@@ -178,7 +179,7 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun showRating(movie: Movie) {
-        showRatingWindow(movie.title, movie.ratings[0].value)
+        showRatingWindow(movie)
     }
 
     @Suppress("unused")
@@ -198,12 +199,15 @@ class NetflixReaderService : AccessibilityService() {
         manager.notify(1, notification)
     }
 
-    private fun showRatingWindow(@Suppress("UNUSED_PARAMETER") movie: String, rating: String) {
+    private fun showRatingWindow(movie: Movie) {
+        if (movie.ratings.isEmpty()) {
+            return
+        }
 
         if (!AccessibilityUtils.canDrawOverWindow(this)) {
             Log.e(TAG, "no drawing permission or TV or stupid devices")
             val duration = if (preferences != null) preferences!!.getToastDuration() else 3000
-            ToastUtils.showFlutterToast(this, "Flutter: $movie - $rating", duration)
+            ToastUtils.showMovieRating(this, movie, duration)
             return
         }
 
@@ -215,7 +219,7 @@ class NetflixReaderService : AccessibilityService() {
         val view = ratingView.get()
 
         view?.let {
-            view.setRating(rating)
+            view.updateMovie(movie)
 
             val parent = view.parent
             parent?.let {
@@ -280,10 +284,13 @@ class NetflixReaderService : AccessibilityService() {
 
     private val floatingWindowTouchListener = View.OnTouchListener { v, event ->
         if (event.action == MotionEvent.ACTION_UP) {
-            if (event.x < v.context.resources.displayMetrics.density * 30) {
+            if (event.x < v.context.resources.displayMetrics.density * 40) {
                 removeView()
                 analytics?.sendEvent(Event("fw_close_clicked"))
                 return@OnTouchListener true
+            } else {
+                analytics?.sendEvent(Event("fw_open_clicked"))
+                IntentUtils.openImdb(this, (v as FloatingRatingView)._movie?.imdbId)
             }
         }
 

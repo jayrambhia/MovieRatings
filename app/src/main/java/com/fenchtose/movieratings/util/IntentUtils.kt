@@ -36,5 +36,13 @@ class IntentUtils {
         fun canStartIntent(context: Context, intent: Intent): Boolean {
             return intent.resolveActivity(context.packageManager) != null
         }
+
+        fun openImdb(context: Context, imdb: String?) {
+            imdb?.let {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.imdb.com/title/$imdb"))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(Intent.createChooser(intent, "Open IMDb page with").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            }
+        }
     }
 }

@@ -6,4 +6,10 @@ class Rating(@SerializedName("Source") val source: String, @SerializedName("Valu
     override fun toString(): String {
         return "Rating(source='$source', value='$value')"
     }
+
+    companion object {
+        fun empty(): Rating {
+            return Rating("", "")
+        }
+    }
 }

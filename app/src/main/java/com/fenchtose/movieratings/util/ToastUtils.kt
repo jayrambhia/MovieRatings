@@ -7,10 +7,11 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.model.Movie
 
 class ToastUtils {
     companion object {
-        fun showFlutterToast(context: Context, message: String, durationInMs: Int = 2000) {
+        fun showFlutterToast(context: Context, message: String, durationInMs: Int): Toast {
             val inflater = LayoutInflater.from(context)
             val root = inflater.inflate(R.layout.floating_toast_layout, null)
             val toast = Toast(context)
@@ -34,6 +35,12 @@ class ToastUtils {
 
             toast.show()
             countDown.start()
+            return toast
+        }
+
+        fun showMovieRating(context: Context, movie: Movie, durationInMs: Int = 2000): Toast {
+            return showFlutterToast(context, context.resources.getString(R.string.floating_rating_content,
+                    "${movie.title}: ${movie.ratings[0].value}"), durationInMs)
         }
     }
 }
