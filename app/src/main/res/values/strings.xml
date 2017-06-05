@@ -12,7 +12,7 @@
 
     <string name="accessibility_info_app_name"><b>Flutter</b></string>
     <string name="accessibility_info_target_name"><b>Netflix</b></string>
-    <string name="accessibility_info_page_header">Accessibility Information</string>
+    <string name="accessibility_info_page_header">Activate Flutter</string>
 
     <string name="accessibility_description">Turn ON the accessibility for Flutter to get movie ratings while you\'re browsing. It helps Flutter to get the name of the movie from the app.\n\n
 Once you turn on the button, Android will show you a dialog which will give you info about what Flutter will get access to.

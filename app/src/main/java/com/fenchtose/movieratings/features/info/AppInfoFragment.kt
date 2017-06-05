@@ -17,10 +17,8 @@ import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.settings.SettingsFragment
-import com.fenchtose.movieratings.model.preferences.SettingsPreference
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
-import com.fenchtose.movieratings.util.ToastUtils
 
 class AppInfoFragment: BaseFragment() {
 
@@ -38,7 +36,7 @@ class AppInfoFragment: BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.info_page_layout, container, false)
+        return inflater.inflate(if (isTV) R.layout.info_page_layout_tv else R.layout.info_page_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,9 +47,6 @@ class AppInfoFragment: BaseFragment() {
         view.findViewById(R.id.rate_view).setOnClickListener {
             analytics?.sendEvent(Event("rate_app_clicked"))
             IntentUtils.openPlaystore(context)
-            val preferences = SettingsPreference(context)
-            val duration = preferences.getToastDuration()
-            ToastUtils.showFlutterToast(context, "Flutter: Family Guy - 8.2/10", duration)
         }
 
         val share = view.findViewById(R.id.share_view)

@@ -27,8 +27,6 @@ class SettingsFragment: BaseFragment() {
 
     private var netflixToggle: SwitchCompat? = null
 
-    private var toastInfo: View? = null
-    private var toastSeekbar: SeekBar? = null
     private var toastDuration: TextView? = null
 
 //    private val TAG = "SettingsFragment"
@@ -54,15 +52,17 @@ class SettingsFragment: BaseFragment() {
             }
         }
 
-        toastInfo = view.findViewById(R.id.toast_duration_info)
-        toastSeekbar = view.findViewById(R.id.toast_duration_seekbar) as SeekBar
-        toastDuration = view.findViewById(R.id.toast_duration_view) as TextView
+        val toastInfo = view.findViewById(R.id.toast_duration_info)
+        val toastSeekbar = view.findViewById(R.id.toast_duration_seekbar) as SeekBar?
+        val seekbarContainer = view.findViewById(R.id.seekbar_container)
+        toastDuration = view.findViewById(R.id.toast_duration_view) as TextView?
 
         val showToastDurationInfo = !AccessibilityUtils.isDrawOverWindowSupported(context)
         if (!showToastDurationInfo) {
             toastInfo?.visibility = GONE
             toastSeekbar?.visibility = GONE
             toastDuration?.visibility = GONE
+            seekbarContainer?.visibility = GONE
         } else {
             toastSeekbar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {

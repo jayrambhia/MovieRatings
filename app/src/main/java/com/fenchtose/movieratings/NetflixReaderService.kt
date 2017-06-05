@@ -27,7 +27,7 @@ import java.lang.ref.WeakReference
 import android.util.DisplayMetrics
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
+import android.view.accessibility.AccessibilityNodeInfo
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.Movie
@@ -79,7 +79,9 @@ class NetflixReaderService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
-        Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName)
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName)
+        }
 
         if (!supportedPackages.contains(event.packageName)) {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && isShowingView) {
@@ -128,6 +130,12 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 
+    fun checkNodeRecursively(info: AccessibilityNodeInfoCompat) {
+        Log.d(TAG, "info: " + info.text + ", " + info.viewIdResourceName + ", " + info.className + ", " + info.parent)
+        Log.d(TAG, "--- children ---")
+        (0..info.childCount)
+                .forEach { Log.d(TAG, info.getChild(it).toString()) }
+    }
 
     override fun onInterrupt() {
         Log.d(TAG, "on interrupt")
@@ -137,7 +145,9 @@ class NetflixReaderService : AccessibilityService() {
     private fun setMovieTitle(text: String) {
         if (title == null || title != text) {
             title = text
-            Log.i(TAG, "Movie Title: " + title!!)
+            if (BuildConfig.DEBUG) {
+                Log.i(TAG, "Movie Title: " + title!!)
+            }
             getMovieInfo(text)
         }
 
@@ -160,7 +170,6 @@ class NetflixReaderService : AccessibilityService() {
                     .filter { it.ratings.size > 0 }
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(onNext = {
-                        Log.d(TAG, "got movie info: " + it.title)
                         showRating(it)
                     }, onError = {
                         it.printStackTrace()
