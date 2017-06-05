@@ -5,4 +5,5 @@
     <dimen name="settings_text_size">16sp</dimen>
     <dimen name="toast_text_size">16sp</dimen>
     <dimen name="toast_corner_radius">18dp</dimen>
+    <dimen name="toast_bottom_margin">80dp</dimen>
 </resources>
