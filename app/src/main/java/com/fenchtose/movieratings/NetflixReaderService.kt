@@ -48,7 +48,8 @@ class NetflixReaderService : AccessibilityService() {
 
     private var preferences: SettingsPreference? = null
 
-    private val supportedPackages: Array<String> = arrayOf("com.netflix.mediaclient", BuildConfig.APPLICATION_ID)
+    // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
+    private val supportedPackages: Array<String> = arrayOf("com.netflix.mediaclient"/*, BuildConfig.APPLICATION_ID*/)
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -84,7 +85,7 @@ class NetflixReaderService : AccessibilityService() {
         }
 
         if (!supportedPackages.contains(event.packageName)) {
-            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && isShowingView) {
+            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && isShowingView && event.packageName != BuildConfig.APPLICATION_ID) {
                 if (System.currentTimeMillis() - lastWindowStateChangeEventTime > WINDOW_STATE_CHANGE_THRESHOLD) {
                     // User has moved to some other app
                     removeView()
@@ -253,6 +254,7 @@ class NetflixReaderService : AccessibilityService() {
             view.setOnTouchListener(floatingWindowTouchListener)
             return true
         } catch (e: RuntimeException) {
+            e.printStackTrace()
             analytics?.sendEvent(Event("runtime_error")
                     .putAttribute("error", if (e.message != null) e.message!! else "unknown")
                     .putAttribute("where", "service_remove_view"))
@@ -269,6 +271,7 @@ class NetflixReaderService : AccessibilityService() {
                     try {
                         getWindowManager().removeViewImmediate(view)
                     } catch(e: RuntimeException) {
+                        e.printStackTrace()
                         analytics?.sendEvent(Event("runtime_error")
                                 .putAttribute("error", if (e.message != null) e.message!! else "unknown")
                                 .putAttribute("where", "service_remove_view"))
