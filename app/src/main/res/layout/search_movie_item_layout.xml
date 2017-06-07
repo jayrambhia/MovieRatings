@@ -4,27 +4,61 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="2dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardElevation="2dp"
+    android:layout_margin="4dp"
+    tools:layout_width="180dp"
+    tools:layout_margin="8dp"
     app:cardCornerRadius="4dp">
 
-    <com.fenchtose.movieratings.widgets.RatioImageView
-        android:id="@+id/imageview"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="56dp"
-        android:scaleType="centerCrop"
-        app:ratioimageview__ratio="0.8"/>
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/titleview"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:padding="8dp"
-        android:maxLines="2"
-        android:background="@color/colorPrimary"
-        android:layout_gravity="bottom"
-        android:textSize="14sp"
-        android:textColor="#fff"
-        android:gravity="center_vertical"/>
+        <com.fenchtose.movieratings.widgets.RatioImageView
+            android:id="@+id/imageview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:minHeight="120dp"
+            app:ratioimageview__ratio="0.85"
+            android:background="@color/onyx_accent"
+            tools:src="@drawable/madmax"
+            />
+
+        <TextView
+            android:id="@+id/titleview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:layout_below="@id/imageview"
+            android:background="@color/onyx_accent"
+            android:layout_gravity="bottom"
+            android:textSize="14sp"
+            android:textColor="#fff"
+            tools:text="The Maximum Force of the Future"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_above="@id/titleview"
+            android:background="@drawable/search_item_gradient_bg"/>
+
+        <ImageView
+            android:id="@+id/fav_button"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_above="@id/titleview"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="-18dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/ripple_transparent_circle_bg"
+            android:src="@drawable/ic_favorite_border_yellow_24dp"
+            android:padding="6dp"/>
+
+    </RelativeLayout>
+
 
 </android.support.v7.widget.CardView>

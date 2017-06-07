@@ -3,6 +3,8 @@ package com.fenchtose.movieratings.features.search_page
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
+import android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -67,7 +69,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)))
         adapter.setHasStableIds(true)
         recyclerView?.adapter = adapter
-        recyclerView?.layoutManager = GridLayoutManager(context, 2)
+//        recyclerView?.layoutManager = GridLayoutManager(context, 2)
+        recyclerView?.layoutManager = StaggeredGridLayoutManager(2, VERTICAL)
         recyclerView?.visibility = View.GONE
         this.adapter = adapter
 

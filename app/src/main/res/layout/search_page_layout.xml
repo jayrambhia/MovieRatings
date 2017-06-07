@@ -31,8 +31,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_marginTop="64dp"
-        android:layout_marginStart="2dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fffafafa"/>

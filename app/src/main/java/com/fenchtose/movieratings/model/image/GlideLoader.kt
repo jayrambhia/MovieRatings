@@ -1,7 +1,9 @@
 package com.fenchtose.movieratings.model.image
 
+import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestListener
 import com.fenchtose.movieratings.features.search_page.SearchItemViewHolder
 import com.github.florent37.glidepalette.BitmapPalette
 import com.github.florent37.glidepalette.GlidePalette
@@ -9,11 +11,11 @@ import com.github.florent37.glidepalette.GlidePalette
 class GlideLoader(private val manager: RequestManager): ImageLoader {
     override fun loadImage(image: String, holder: SearchItemViewHolder) {
         manager.load(image)
-                .listener(
+                /*.listener(
                         GlidePalette.with(image)
                                 .use(BitmapPalette.Profile.VIBRANT).intoBackground(holder.titleView)
 //                                .use(BitmapPalette.Profile.VIBRANT).intoTextColor(holder.titleView)
-                        )
+                        )*/
                 .into(holder.imageView)
     }
 

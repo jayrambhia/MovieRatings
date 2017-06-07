@@ -78,7 +78,8 @@ class MainActivity : AppCompatActivity() {
             showAccessibilityInfo()
         }
 
-        showInfoPage()
+//        showInfoPage()
+        showSearchPage()
         accessibilityPagePublisher?.onNext(false)
 
         analytics = MovieRatingsApplication.getAnalyticsDispatcher()
