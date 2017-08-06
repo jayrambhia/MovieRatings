@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MovieTypeConverter2 {
 
@@ -36,5 +37,15 @@ public class MovieTypeConverter2 {
 		}
 
 		return json.toString();
+	}
+
+	@TypeConverter
+	public static Date fromLong(long data) {
+		return new Date(data);
+	}
+
+	@TypeConverter
+	public static long fromDate(Date date) {
+		return date.getTime();
 	}
 }

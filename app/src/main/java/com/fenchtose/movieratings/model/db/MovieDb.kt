@@ -7,7 +7,7 @@ import android.content.Context
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 
-@Database(entities = arrayOf(Movie::class), version = 1)
+@Database(entities = arrayOf(Movie::class), version = 2)
 abstract class MovieDb : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao

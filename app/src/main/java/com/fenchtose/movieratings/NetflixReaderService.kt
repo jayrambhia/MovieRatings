@@ -34,6 +34,7 @@ import com.fenchtose.movieratings.model.preferences.SettingsPreference
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.ToastUtils
+import com.google.gson.GsonBuilder
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -62,9 +63,11 @@ class NetflixReaderService : AccessibilityService() {
 
         preferences = SettingsPreference(this)
 
+        val gson = GsonBuilder().setDateFormat("dd MM yyyy").create()
+
         val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.OMDB_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 

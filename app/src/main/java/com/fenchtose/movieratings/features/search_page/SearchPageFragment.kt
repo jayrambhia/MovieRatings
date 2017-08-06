@@ -23,6 +23,7 @@ import com.fenchtose.movieratings.model.api.provider.RetrofitMovieProvider
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.PicassoLoader
 import com.fenchtose.movieratings.util.Constants
+import com.google.gson.GsonBuilder
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
@@ -47,9 +48,11 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val root = inflater.inflate(R.layout.search_page_layout, container, false)
 
+        val gson = GsonBuilder().setDateFormat("dd MM yyyy").create()
+
         val retrofit = Retrofit.Builder()
                 .baseUrl(Constants.OMDB_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 
