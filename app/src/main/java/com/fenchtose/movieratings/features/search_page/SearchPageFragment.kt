@@ -37,6 +37,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var progressbar: ProgressBar? = null
     private var attributeView: TextView? = null
     private var searchView: EditText? = null
+    private var clearButton: View? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: SearchPageAdapter? = null
 
@@ -72,6 +73,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         attributeView = view.findViewById(R.id.api_attr) as TextView
         recyclerView = view.findViewById(R.id.recyclerview) as RecyclerView
         searchView = view.findViewById(R.id.search_view) as EditText
+        clearButton = view.findViewById(R.id.clear_button)
 
         val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),
                 object : SearchPageAdapter.AdapterCallback {
@@ -92,6 +94,11 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
         presenter?.attachView(this)
 
+        clearButton?.setOnClickListener {
+            clearQuery()
+            searchView?.setText("")
+        }
+
         watcher = object: TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 querySubject?.onNext(s.toString())
@@ -107,15 +114,17 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
 
         val subject: PublishSubject<String> = PublishSubject.create()
-        val d = subject.debounce(800, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
+        val d = subject
                 .doOnNext {
                     if (it.isEmpty()) {
-                        clearData()
-                        showLoading(false)
-                        presenter?.onQueryCleared()
+                        clearQuery()
+                    } else {
+                        clearButton?.visibility = View.VISIBLE
                     }
-                }.filter { it.length > 2 }
+                }
+                .debounce(800, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter { it.length > 2 }
                 .subscribeBy(
                         onNext = {
                             presenter?.onSearchRequested(it)
@@ -157,13 +166,27 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun setData(movies: ArrayList<Movie>) {
         showLoading(false)
-        recyclerView?.visibility = View.VISIBLE
         adapter?.data = movies
         adapter?.notifyDataSetChanged()
+        recyclerView?.post {
+            recyclerView?.scrollToPosition(0)
+        }
+        recyclerView?.visibility = View.VISIBLE
+    }
+
+    private fun clearQuery() {
+        clearData()
+        showLoading(false)
+        presenter?.onQueryCleared()
+        clearButton?.visibility = View.GONE
     }
 
     override fun clearData() {
-        recyclerView?.visibility = View.GONE
+        adapter?.data = ArrayList()
+        adapter?.notifyDataSetChanged()
+        recyclerView?.post {
+            recyclerView?.visibility = View.GONE
+        }
     }
 
     class SearchPath : RouterPath<SearchPageFragment>() {

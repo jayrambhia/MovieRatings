@@ -9,6 +9,7 @@
     <string name="activate_app_cta">Activate Flutter</string>
 
     <string name="search_page_title">Flutter - Movie Ratings</string>
+	<string name="search_page_query_hint">Search for Movies, Series, etc</string>
 
     <string name="accessibility_info_app_name"><b>Flutter</b></string>
     <string name="accessibility_info_target_name"><b>Netflix</b></string>
