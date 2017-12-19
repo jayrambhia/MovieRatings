@@ -92,5 +92,9 @@ class AccessInfoFragment : BaseFragment() {
         override fun createFragmentInstance(): AccessInfoFragment {
             return AccessInfoFragment()
         }
+
+        override fun showMenuIcons(): IntArray {
+            return intArrayOf(R.id.action_settings)
+        }
     }
 }

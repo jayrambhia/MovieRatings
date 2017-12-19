@@ -45,6 +45,9 @@ class MainActivity : AppCompatActivity() {
 
     private var analytics: AnalyticsDispatcher? = null
 
+    private var menu: Menu? = null
+    private var menuIcons: ArrayList<Int> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -63,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         router?.callback = object: Router.RouterCallback {
             override fun movedTo(path: RouterPath<out BaseFragment>) {
+                updateMenuItems(path)
                 if (path is AccessInfoFragment.AccessibilityPath) {
                     accessibilityPagePublisher?.onNext(true)
                 }
@@ -108,6 +112,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        this.menu = menu
+        menuIcons.add(R.id.action_settings)
+        menuIcons.add(R.id.action_fav)
         return true
     }
 
@@ -118,6 +125,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun updateMenuItems(path: RouterPath<out BaseFragment>) {
+        if (menu != null) {
+            val pathIcons = path.showMenuIcons()
+            menuIcons.map {
+                menu?.findItem(it)?.setVisible(it in pathIcons)
+            }
+        }
     }
 
     private fun showSearchPage() {
