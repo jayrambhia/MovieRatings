@@ -45,9 +45,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val root = inflater.inflate(R.layout.search_page_layout, container, false)
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         val gson = GsonBuilder().setDateFormat("dd MM yyyy").create()
 
         val retrofit = Retrofit.Builder()
@@ -59,7 +58,10 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         val dao = MovieRatingsApplication.getDatabase().movieDao()
         presenter = SearchPresenter(RetrofitMovieProvider(retrofit, dao))
 
-        return root
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        return inflater.inflate(R.layout.search_page_layout, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,8 +102,9 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                     if (it.isEmpty()) {
                         clearData()
                         showLoading(false)
+                        presenter?.onQueryCleared()
                     }
-                }.filter { it.length > 4 }
+                }.filter { it.length > 2 }
                 .subscribeBy(
                         onNext = {
                             presenter?.onSearchRequested(it)
@@ -109,8 +112,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                 )
 
         subscribe(d)
-        this.querySubject = subject
         searchView?.addTextChangedListener(watcher)
+        this.querySubject = subject
     }
 
     override fun onDestroyView() {

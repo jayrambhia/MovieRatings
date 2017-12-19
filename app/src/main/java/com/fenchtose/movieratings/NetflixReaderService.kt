@@ -1,21 +1,12 @@
 package com.fenchtose.movieratings
 
 import android.accessibilityservice.AccessibilityService
-import android.app.Notification
-import android.app.NotificationManager
-import android.content.Context
-import android.graphics.PixelFormat
-import android.os.Handler
-import android.os.Looper
-import android.support.v4.app.NotificationCompat
 import android.support.v4.view.accessibility.AccessibilityEventCompat
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat
 import android.util.Log
-import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.api.provider.RetrofitMovieProvider
-import com.fenchtose.movieratings.features.sticky_view.FloatingRatingView
 import com.fenchtose.movieratings.util.Constants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
@@ -23,17 +14,11 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.ref.WeakReference
-import android.util.DisplayMetrics
-import android.view.MotionEvent
-import android.view.View
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
+import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreference
-import com.fenchtose.movieratings.util.AccessibilityUtils
-import com.fenchtose.movieratings.util.IntentUtils
-import com.fenchtose.movieratings.util.ToastUtils
 import com.google.gson.GsonBuilder
 
 
@@ -44,9 +29,6 @@ class NetflixReaderService : AccessibilityService() {
 
     private var provider: MovieProvider? = null
 
-    private var handler: Handler? = null
-    private var ratingView: WeakReference<FloatingRatingView?> = WeakReference(null)
-
     private var preferences: SettingsPreference? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
@@ -54,9 +36,10 @@ class NetflixReaderService : AccessibilityService() {
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
-    private var isShowingView: Boolean = false
 
     private var analytics: AnalyticsDispatcher? = null
+
+    private var displayer: RatingDisplayer? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -75,9 +58,9 @@ class NetflixReaderService : AccessibilityService() {
 
         provider = RetrofitMovieProvider(retrofit, dao)
 
-        handler = Handler(Looper.getMainLooper())
-
         analytics = MovieRatingsApplication.getAnalyticsDispatcher()
+
+        displayer = RatingDisplayer(this, analytics!!, preferences!!)
 
     }
 
@@ -88,10 +71,11 @@ class NetflixReaderService : AccessibilityService() {
         }
 
         if (!supportedPackages.contains(event.packageName)) {
-            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && isShowingView && event.packageName != BuildConfig.APPLICATION_ID) {
+            if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && displayer != null && displayer!!.isShowingView
+                    && event.packageName != BuildConfig.APPLICATION_ID) {
                 if (System.currentTimeMillis() - lastWindowStateChangeEventTime > WINDOW_STATE_CHANGE_THRESHOLD) {
                     // User has moved to some other app
-                    removeView()
+                    displayer?.removeView()
                     title = null
                 }
             }
@@ -100,13 +84,13 @@ class NetflixReaderService : AccessibilityService() {
         }
 
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            removeView()
+            displayer?.removeView()
             lastWindowStateChangeEventTime = System.currentTimeMillis()
             title = null
         }
 
         preferences?.let {
-            if (!preferences!!.isAppEnabled(SettingsPreference.NETFLIX)) {
+            if (!it.isAppEnabled(SettingsPreference.NETFLIX)) {
                 return
             }
         }
@@ -115,17 +99,13 @@ class NetflixReaderService : AccessibilityService() {
         val info = record.source
         info?.let {
 
-            val titles: List<AccessibilityNodeInfoCompat>
-
-            if (info.packageName == BuildConfig.APPLICATION_ID) {
-                titles = info.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
-            } else if (info.packageName == "com.netflix.mediaclient") {
-                titles = info.findAccessibilityNodeInfosByViewId("com.netflix.mediaclient:id/video_details_title")
-            } else {
-                titles = ArrayList<AccessibilityNodeInfoCompat>()
+            val titles: List<AccessibilityNodeInfoCompat> = when {
+                info.packageName == BuildConfig.APPLICATION_ID -> info.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
+                info.packageName == "com.netflix.mediaclient" -> info.findAccessibilityNodeInfosByViewId("com.netflix.mediaclient:id/video_details_title")
+                else -> ArrayList()
             }
 
-            if (titles != null && titles.isNotEmpty()) {
+            if (titles.isNotEmpty()) {
                 titles.filter { it.text != null }
                         .forEach {
                             setMovieTitle(it.text.toString())
@@ -159,18 +139,10 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun getMovieInfo(title: String) {
-
-        // Remove check. We'll show a toast if we don't have a permission
-
-        /*if (!AccessibilityUtils.isDrawPermissionEnabled(this)) {
-            analytics?.sendEvent(Event("get_movie_no_draw_permission"))
-            return
-        }*/
-
         analytics?.sendEvent(Event("get_movie").putAttribute("title", title))
 
         provider?.let {
-            provider!!.getMovie(title)
+            it.getMovie(title)
                     .subscribeOn(Schedulers.io())
                     .filter { it.ratings.size > 0 }
                     .observeOn(AndroidSchedulers.mainThread())
@@ -183,123 +155,6 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun showRating(movie: Movie) {
-        showRatingWindow(movie)
-    }
-
-    @Suppress("unused")
-    private fun showNotification(movie: String, rating: String) {
-        val builder = NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Movie: " + movie)
-                .setContentText("Rating: " + rating)
-                .setAutoCancel(true)
-                .setOngoing(false)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-
-        val notification = builder.build()
-        notification.flags = notification.flags or Notification.DEFAULT_VIBRATE
-
-        val manager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        manager.notify(1, notification)
-    }
-
-    private fun showRatingWindow(movie: Movie) {
-        if (movie.ratings.isEmpty()) {
-            return
-        }
-
-        if (!AccessibilityUtils.canDrawOverWindow(this)) {
-            Log.e(TAG, "no drawing permission or TV or stupid devices")
-            val duration = if (preferences != null) preferences!!.getToastDuration() else 3000
-            ToastUtils.showMovieRating(this, movie, duration)
-            return
-        }
-
-        if (ratingView.get() == null) {
-            val view = FloatingRatingView(this)
-            ratingView = WeakReference(view)
-        }
-
-        val view = ratingView.get()
-
-        view?.let {
-            view.updateMovie(movie)
-
-            val parent = view.parent
-            parent?.let {
-                return
-            }
-
-            if (addViewToWindow(view)) {
-                isShowingView = true
-            } else {
-                ratingView = WeakReference(null)
-                isShowingView = false
-            }
-        }
-
-    }
-
-    private fun addViewToWindow(view: FloatingRatingView): Boolean {
-        val manager = getWindowManager()
-        val dm = DisplayMetrics()
-        manager.defaultDisplay.getMetrics(dm)
-
-        val width = (136*dm.density).toInt()
-
-        val params = WindowManager.LayoutParams(width, WindowManager.LayoutParams.WRAP_CONTENT ,
-                dm.widthPixels-width, (180*dm.density).toInt(),
-                WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT)
-
-        try {
-            manager.addView(view, params)
-            view.setOnTouchListener(floatingWindowTouchListener)
-            return true
-        } catch (e: RuntimeException) {
-            e.printStackTrace()
-            analytics?.sendEvent(Event("runtime_error")
-                    .putAttribute("error", if (e.message != null) e.message!! else "unknown")
-                    .putAttribute("where", "service_remove_view"))
-            return false
-        }
-    }
-
-    private fun removeView() {
-        isShowingView = false
-        handler?.postDelayed({
-            val view = ratingView.get()
-            view?.let {
-                view.parent?.let {
-                    try {
-                        getWindowManager().removeViewImmediate(view)
-                    } catch(e: RuntimeException) {
-                        e.printStackTrace()
-                        analytics?.sendEvent(Event("runtime_error")
-                                .putAttribute("error", if (e.message != null) e.message!! else "unknown")
-                                .putAttribute("where", "service_remove_view"))
-                    }
-                }
-            }
-        }, 10)
-    }
-
-    private fun getWindowManager() : WindowManager {
-        return getSystemService(Context.WINDOW_SERVICE) as WindowManager
-    }
-
-    private val floatingWindowTouchListener = View.OnTouchListener { v, event ->
-        if (event.action == MotionEvent.ACTION_UP) {
-            if (event.x < v.context.resources.displayMetrics.density * 40) {
-                removeView()
-                analytics?.sendEvent(Event("fw_close_clicked"))
-                return@OnTouchListener true
-            } else {
-                analytics?.sendEvent(Event("fw_open_clicked"))
-                IntentUtils.openImdb(this, (v as FloatingRatingView)._movie?.imdbId)
-            }
-        }
-
-        false
+        displayer?.showRatingWindow(movie)
     }
 }

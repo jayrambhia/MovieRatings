@@ -13,7 +13,7 @@ class AnalyticsDispatcher: EventDispatcher {
         dispatchers.add(dispatcher)
     }
 
-    fun removeDispatcher(key: String) {
+    private fun removeDispatcher(key: String) {
         val existingDispatcher = map[key]
         existingDispatcher?.let {
             remove(existingDispatcher)

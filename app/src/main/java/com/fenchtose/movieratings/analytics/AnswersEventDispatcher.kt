@@ -11,16 +11,16 @@ class AnswersEventDispatcher: EventDispatcher {
     }
 
     private fun convert(event: Event): CustomEvent {
-        val aEvent = CustomEvent(event.name)
+        val customEvent = CustomEvent(event.name)
         val it = event.data.entrySet().iterator()
         it.forEach {
             if (it.value.asJsonPrimitive.isNumber) {
-                aEvent.putCustomAttribute(it.key, it.value.asNumber)
+                customEvent.putCustomAttribute(it.key, it.value.asNumber)
             } else if (it.value.asJsonPrimitive.isString) {
-                aEvent.putCustomAttribute(it.key, it.value.asString)
+                customEvent.putCustomAttribute(it.key, it.value.asString)
             }
         }
 
-        return aEvent
+        return customEvent
     }
 }

@@ -10,13 +10,13 @@ abstract class Presenter<VIEW> {
     private var view: VIEW? = null
 
     @CallSuper
-    fun attachView(view: VIEW) {
+    open fun attachView(view: VIEW) {
         disposables = CompositeDisposable()
         this.view = view
     }
 
     @CallSuper
-    fun detachView(@Suppress("UNUSED_PARAMETER") view: VIEW) {
+    open fun detachView(@Suppress("UNUSED_PARAMETER") view: VIEW) {
         disposables?.dispose()
         this.view = null
     }
