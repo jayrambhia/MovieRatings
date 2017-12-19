@@ -1,9 +1,6 @@
 package com.fenchtose.movieratings.model
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
-import android.arch.persistence.room.TypeConverters
+import android.arch.persistence.room.*
 import com.fenchtose.movieratings.model.db.MovieTypeConverter2
 import com.google.gson.annotations.SerializedName
 import java.util.*
@@ -94,6 +91,9 @@ class Movie {
     @ColumnInfo(name = "WEBSITE")
     @SerializedName("Website")
     var website: String = ""
+
+    @Ignore
+    var liked: Boolean = false
 
     override fun toString(): String {
         return "Movie(id='$id', title='$title', poster='$poster', ratings=$ratings)"

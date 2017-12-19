@@ -9,14 +9,19 @@ import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.widgets.RatioImageView
 
-class SearchItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCallback?) : RecyclerView.ViewHolder(itemView) {
     val imageView: RatioImageView = itemView.findViewById(R.id.imageview) as RatioImageView
     val titleView: TextView = itemView.findViewById(R.id.titleview) as TextView
     val favButton: ImageView = itemView.findViewById(R.id.fav_button) as ImageView
 
+    var movie: Movie? = null
+
     init {
         favButton.setOnClickListener {
-
+            movie?.let {
+                callback?.onLiked(it)
+                setLiked(!it.liked, false)
+            }
         }
     }
 
@@ -27,6 +32,15 @@ class SearchItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         } else {
             imageLoader.cancelRequest(imageView)
             imageView.setImageBitmap(null)
+        }
+        setLiked(movie.liked, false)
+        this.movie = movie
+    }
+
+    private fun setLiked(liked: Boolean, animate: Boolean) {
+        if (!animate || !liked) {
+            favButton.setImageResource(if (liked) R.drawable.ic_favorite_yellow_24dp else R.drawable.ic_favorite_border_yellow_24dp)
+            return
         }
     }
 }

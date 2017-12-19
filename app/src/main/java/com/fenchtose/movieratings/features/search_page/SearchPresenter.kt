@@ -3,14 +3,19 @@ package com.fenchtose.movieratings.features.search_page
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
+import com.fenchtose.movieratings.model.db.like.LikeStore
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class SearchPresenter(private val provider: MovieProvider) : Presenter<SearchPage>() {
+class SearchPresenter(private val provider: MovieProvider, private val likeStore: LikeStore) : Presenter<SearchPage>() {
 
     private var currentQuery = ""
     private var data: ArrayList<Movie>? = null
+
+    init {
+        provider.addPreferenceApplier(likeStore)
+    }
 
     override fun attachView(view: SearchPage) {
         super.attachView(view)
@@ -54,5 +59,9 @@ class SearchPresenter(private val provider: MovieProvider) : Presenter<SearchPag
     fun onQueryCleared() {
         currentQuery = ""
         data = null
+    }
+
+    fun setLiked(movie: Movie) {
+        likeStore.setLiked(movie.imdbId, !movie.liked)
     }
 }

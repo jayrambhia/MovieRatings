@@ -9,13 +9,14 @@ import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 
 class SearchPageAdapter(context: Context,
-                        private val imageLoader: ImageLoader): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                        private val imageLoader: ImageLoader,
+                        private val callback: AdapterCallback?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private val data: ArrayList<Movie> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return SearchItemViewHolder(inflater.inflate(R.layout.search_movie_item_layout, parent, false))
+        return SearchItemViewHolder(inflater.inflate(R.layout.search_movie_item_layout, parent, false), callback)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -40,5 +41,9 @@ class SearchPageAdapter(context: Context,
 
     fun clearData() {
         data.clear()
+    }
+
+    interface AdapterCallback {
+        fun onLiked(movie: Movie)
     }
 }

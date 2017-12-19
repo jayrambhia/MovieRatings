@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.features.search_page
 
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL
@@ -20,8 +19,8 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.RetrofitMovieProvider
+import com.fenchtose.movieratings.model.db.like.PreferencesLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
-import com.fenchtose.movieratings.model.image.PicassoLoader
 import com.fenchtose.movieratings.util.Constants
 import com.google.gson.GsonBuilder
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -56,7 +55,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                 .build()
 
         val dao = MovieRatingsApplication.getDatabase().movieDao()
-        presenter = SearchPresenter(RetrofitMovieProvider(retrofit, dao))
+        val likeStore = PreferencesLikeStore(activity)
+        presenter = SearchPresenter(RetrofitMovieProvider(retrofit, dao), likeStore)
 
     }
 
@@ -71,12 +71,21 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         recyclerView = view.findViewById(R.id.recyclerview) as RecyclerView
         searchView = view.findViewById(R.id.search_view) as EditText
 
-        val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)))
+        val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),
+                object : SearchPageAdapter.AdapterCallback {
+                    override fun onLiked(movie: Movie) {
+                        presenter?.setLiked(movie)
+                    }
+        })
+
         adapter.setHasStableIds(true)
-        recyclerView?.adapter = adapter
-//        recyclerView?.layoutManager = GridLayoutManager(context, 2)
-        recyclerView?.layoutManager = StaggeredGridLayoutManager(2, VERTICAL)
-        recyclerView?.visibility = View.GONE
+
+        recyclerView?.let {
+            it.adapter = adapter
+            it.layoutManager = StaggeredGridLayoutManager(2, VERTICAL)
+            it.visibility = View.GONE
+        }
+
         this.adapter = adapter
 
         presenter?.attachView(this)
