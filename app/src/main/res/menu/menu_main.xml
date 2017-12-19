@@ -8,4 +8,10 @@
         android:icon="@drawable/ic_settings_white_24dp"
         app:showAsAction="always"/>
 
+    <item
+        android:id="@+id/action_fav"
+        android:title="@string/menu_action_fav"
+        android:icon="@drawable/ic_favorite_white_24dp"
+        app:showAsAction="always"/>
+
 </menu>

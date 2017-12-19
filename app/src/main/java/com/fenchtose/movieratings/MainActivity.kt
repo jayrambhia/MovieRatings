@@ -17,6 +17,7 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.access_info.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
+import com.fenchtose.movieratings.features.likes_page.LikesPageFragment
 import com.fenchtose.movieratings.features.search_page.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
@@ -112,10 +113,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId) {
-            R.id.action_settings -> {
-                showSettingsPage()
-                return true
-            }
+            R.id.action_settings -> showSettingsPage()
+            R.id.action_fav -> showFavoritesPage()
         }
 
         return super.onOptionsItemSelected(item)
@@ -136,6 +135,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showSettingsPage() {
         router?.go(SettingsFragment.SettingsPath())
+    }
+
+    private fun showFavoritesPage() {
+        router?.go(LikesPageFragment.LikesPath())
     }
 
     private fun onAccessibilityActivated() {

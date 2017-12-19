@@ -8,7 +8,6 @@ import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferneceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
-import com.fenchtose.movieratings.model.db.like.LikeStore
 import io.reactivex.Observable
 import retrofit2.Retrofit
 
@@ -57,6 +56,11 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                         for (preferenceApplier in preferenceAppliers) {
                             preferenceApplier.apply(it)
                         }
+                    }
+                }
+                .doOnNext {
+                    it.results.map {
+                        dao.insertSearch(it)
                     }
                 }
     }

@@ -5,7 +5,7 @@ import com.fenchtose.movieratings.model.db.MovieTypeConverter2
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
-@Entity(tableName = "MOVIES")
+@Entity(tableName = "MOVIES", indices = arrayOf(Index("IMDBID", unique = true)))
 @TypeConverters(value = MovieTypeConverter2::class)
 class Movie {
 

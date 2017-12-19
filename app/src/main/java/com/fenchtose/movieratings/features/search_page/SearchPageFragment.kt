@@ -19,6 +19,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.RetrofitMovieProvider
+import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.PreferencesLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.util.Constants
@@ -55,7 +56,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                 .build()
 
         val dao = MovieRatingsApplication.getDatabase().movieDao()
-        val likeStore = PreferencesLikeStore(activity)
+//        val likeStore = PreferencesLikeStore(activity)
+        val likeStore = DbLikeStore(MovieRatingsApplication.getDatabase().favDao())
         presenter = SearchPresenter(RetrofitMovieProvider(retrofit, dao), likeStore)
 
     }
