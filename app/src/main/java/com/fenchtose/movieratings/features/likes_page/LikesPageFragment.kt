@@ -1,6 +1,10 @@
 package com.fenchtose.movieratings.features.likes_page
 
 import android.os.Bundle
+import android.support.annotation.ColorInt
+import android.support.annotation.StringRes
+import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
@@ -14,12 +18,15 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.search_page.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.DbFavoriteMovieProvider
+import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
+import com.fenchtose.movieratings.widgets.ThemedSnackbar
 
 class LikesPageFragment: BaseFragment(), LikesPage {
 
     override fun getScreenTitle() = R.string.likes_page_title
 
+    private var root: ViewGroup? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: SearchPageAdapter? = null
 
@@ -29,11 +36,13 @@ class LikesPageFragment: BaseFragment(), LikesPage {
         super.onCreate(savedInstanceState)
         val dao = MovieRatingsApplication.getDatabase().movieDao()
         val favoriteProvider = DbFavoriteMovieProvider(dao)
-        presenter = LikesPresenter(favoriteProvider)
+        val likeStore = DbLikeStore(MovieRatingsApplication.getDatabase().favDao())
+        presenter = LikesPresenter(favoriteProvider, likeStore)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.likes_page_layout, container, false)
+        root = inflater.inflate(R.layout.likes_page_layout, container, false) as ViewGroup
+        return root!!
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -43,6 +52,7 @@ class LikesPageFragment: BaseFragment(), LikesPage {
         val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),
                 object : SearchPageAdapter.AdapterCallback {
                     override fun onLiked(movie: Movie) {
+                        presenter?.unlike(movie)
 //                        presenter?.setLiked(movie)
                     }
                 })
@@ -68,10 +78,31 @@ class LikesPageFragment: BaseFragment(), LikesPage {
 
     override fun setData(movies: ArrayList<Movie>) {
         recyclerView?.visibility = View.VISIBLE
-        adapter?.setData(movies)
+        adapter?.data = movies
         adapter?.notifyDataSetChanged()
     }
 
+    override fun showRemoved(movie: Movie, index: Int) {
+        adapter?.notifyItemRemoved(index)
+        showMovieRemoved(movie, index)
+    }
+
+    override fun showAdded(movie: Movie, index: Int) {
+        adapter?.notifyItemInserted(index)
+    }
+
+    private fun showMovieRemoved(movie: Movie, index: Int) {
+        root?.let {
+            ThemedSnackbar.makeWithAction(it,
+                    getString(R.string.movie_unliked_snackbar_content, movie.title),
+                    Snackbar.LENGTH_LONG,
+                    R.string.undo_action,
+                    View.OnClickListener {
+                        presenter?.undoUnlike(movie, index)
+                    })
+                    .show()
+        }
+    }
 
     override fun canGoBack() = true
 

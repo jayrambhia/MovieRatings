@@ -158,12 +158,11 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     override fun setData(movies: ArrayList<Movie>) {
         showLoading(false)
         recyclerView?.visibility = View.VISIBLE
-        adapter?.setData(movies)
+        adapter?.data = movies
         adapter?.notifyDataSetChanged()
     }
 
     override fun clearData() {
-        adapter?.clearData()
         recyclerView?.visibility = View.GONE
     }
 

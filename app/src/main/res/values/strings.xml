@@ -53,5 +53,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
     <string name="accessibility_warning_content">Accessibility Permission Required</string>
 
     <string name="likes_page_title">Movies you like</string>
+	<string name="movie_unliked_snackbar_content">Unliked: %1s</string>
+	<string name="undo_action">Undo</string>
 
 </resources>

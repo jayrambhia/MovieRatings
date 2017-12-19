@@ -13,7 +13,7 @@ class SearchPageAdapter(context: Context,
                         private val callback: AdapterCallback?): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    private val data: ArrayList<Movie> = ArrayList()
+    var data: ArrayList<Movie> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return SearchItemViewHolder(inflater.inflate(R.layout.search_movie_item_layout, parent, false), callback)
@@ -33,14 +33,6 @@ class SearchPageAdapter(context: Context,
 
     override fun getItemViewType(position: Int): Int {
         return super.getItemViewType(position)
-    }
-
-    fun setData(movies: ArrayList<Movie>) {
-        data.addAll(movies)
-    }
-
-    fun clearData() {
-        data.clear()
     }
 
     interface AdapterCallback {

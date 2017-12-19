@@ -39,18 +39,16 @@ class SettingsFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        preferences = SettingsPreference(context)
+        val preferences = SettingsPreference(context)
 
-        netflixToggle = view.findViewById(R.id.netflix_toggle) as SwitchCompat
-        netflixToggle?.let {
-            preferences?.let {
-                val netflix = preferences!!.isAppEnabled(SettingsPreference.NETFLIX)
-                netflixToggle!!.isChecked = netflix
-                netflixToggle!!.setOnCheckedChangeListener {
-                    _, isChecked ->  updatePreference(SettingsPreference.NETFLIX, isChecked)
-                }
-            }
+        val netflixToggle = view.findViewById(R.id.netflix_toggle) as SwitchCompat
+        netflixToggle.isChecked = preferences.isAppEnabled(SettingsPreference.NETFLIX)
+        netflixToggle.setOnCheckedChangeListener {
+            _, isChecked ->  updatePreference(SettingsPreference.NETFLIX, isChecked)
         }
+
+        this.preferences = preferences
+        this.netflixToggle = netflixToggle
 
         val toastInfo = view.findViewById(R.id.toast_duration_info)
         val toastSeekbar = view.findViewById(R.id.toast_duration_seekbar) as SeekBar?
@@ -64,6 +62,10 @@ class SettingsFragment: BaseFragment() {
             toastDuration?.visibility = GONE
             seekbarContainer?.visibility = GONE
         } else {
+            val progress = preferences.getToastDuration()/1000
+            toastDuration?.text = (progress).toString()
+            toastSeekbar?.progress = progress
+
             toastSeekbar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 }
@@ -75,12 +77,6 @@ class SettingsFragment: BaseFragment() {
                     updateToastDuration((progress + 1) * 1000)
                 }
             })
-
-            if (preferences != null) {
-                val progress = preferences!!.getToastDuration()/1000
-                toastDuration?.text = (progress).toString()
-                toastSeekbar?.progress = progress
-            }
         }
 
         val publisher = PublishSubject.create<Boolean>()
@@ -110,7 +106,7 @@ class SettingsFragment: BaseFragment() {
 
     private fun showUpdatePreferenceSnackbar() {
         root?.let {
-            Snackbar.make(root!!, R.string.settings_preference_update_content, Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(it, R.string.settings_preference_update_content, Snackbar.LENGTH_SHORT).show()
         }
     }
 
