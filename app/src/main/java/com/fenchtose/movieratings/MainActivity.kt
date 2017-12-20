@@ -52,10 +52,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        container = findViewById(R.id.fragment_container) as FrameLayout
-        activateButton = findViewById(R.id.activate_button) as ViewGroup
+        container = findViewById(R.id.fragment_container)
+        activateButton = findViewById(R.id.activate_button)
 
-        toolbar = findViewById(R.id.toolbar) as Toolbar
+        toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         titlebar = supportActionBar
 

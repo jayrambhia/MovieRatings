@@ -36,24 +36,24 @@ class AccessInfoFragment : BaseFragment() {
         accessContainer = view.findViewById(R.id.access_container)
         drawContainer = view.findViewById(R.id.draw_container)
 
-        view.findViewById(R.id.settings_button).setOnClickListener {
+        view.findViewById<View>(R.id.settings_button).setOnClickListener {
             analytics?.sendEvent(Event("open_accessibility_settings"))
             openSettings()
         }
 
-        val infoView = view.findViewById(R.id.info_view) as TextView
+        val infoView = view.findViewById<TextView>(R.id.info_view)
         infoView.text = getString(R.string.accessibility_access_info_content,
                 getString(R.string.accessibility_info_app_name),
                 getString(R.string.accessibility_info_target_name))
 
-        view.findViewById(R.id.draw_settings_button).setOnClickListener {
+        view.findViewById<View>(R.id.draw_settings_button).setOnClickListener {
             if (VersionUtils.isMOrAbove()) {
                 analytics?.sendEvent(Event("open_draw_permissions_settings"))
                 openDrawSettings()
             }
         }
 
-        val drawInfoView = view.findViewById(R.id.draw_info_view) as TextView
+        val drawInfoView: TextView = view.findViewById(R.id.draw_info_view)
         drawInfoView.text = getString(R.string.draw_access_info_content,
                 getString(R.string.accessibility_info_app_name),
                 getString(R.string.accessibility_info_target_name))

@@ -20,7 +20,6 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.RetrofitMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
-import com.fenchtose.movieratings.model.db.like.PreferencesLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.util.Constants
 import com.google.gson.GsonBuilder
@@ -69,10 +68,10 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progressbar = view.findViewById(R.id.progressbar) as ProgressBar
-        attributeView = view.findViewById(R.id.api_attr) as TextView
-        recyclerView = view.findViewById(R.id.recyclerview) as RecyclerView
-        searchView = view.findViewById(R.id.search_view) as EditText
+        progressbar = view.findViewById(R.id.progressbar)
+        attributeView = view.findViewById(R.id.api_attr)
+        recyclerView = view.findViewById(R.id.recyclerview)
+        searchView = view.findViewById(R.id.search_view)
         clearButton = view.findViewById(R.id.clear_button)
 
         val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),

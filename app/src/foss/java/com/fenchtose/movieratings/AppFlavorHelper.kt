@@ -7,7 +7,7 @@ class AppFlavorHelper {
 
     fun getAnswersDispatcher(): EventDispatcher = FakeDispatcher()
 
-    fun onAppCreated(app: MovieRatingsApplication) {
+    fun onAppCreated(@Suppress("UNUSED_PARAMETER") app: MovieRatingsApplication) {
 
     }
 }

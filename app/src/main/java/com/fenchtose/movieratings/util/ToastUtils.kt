@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.CountDownTimer
 import android.view.Gravity
@@ -11,13 +12,14 @@ import com.fenchtose.movieratings.model.Movie
 
 class ToastUtils {
     companion object {
+        @SuppressLint("WrongConstant", "InflateParams")
         fun showFlutterToast(context: Context, message: String, durationInMs: Int): Toast {
             val inflater = LayoutInflater.from(context)
             val root = inflater.inflate(R.layout.floating_toast_layout, null)
             val toast = Toast(context)
 
             toast.view = root
-            (root.findViewById(R.id.rating_view) as TextView?)?.text = message
+            root.findViewById<TextView>(R.id.rating_view).text = message
             toast.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, context.resources.getDimensionPixelOffset(R.dimen.toast_bottom_margin))
 
             toast.duration = if (durationInMs <= 10000) durationInMs else 8000

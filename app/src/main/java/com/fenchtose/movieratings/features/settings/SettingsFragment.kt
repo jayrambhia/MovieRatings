@@ -41,7 +41,7 @@ class SettingsFragment: BaseFragment() {
 
         val preferences = SettingsPreference(context)
 
-        val netflixToggle = view.findViewById(R.id.netflix_toggle) as SwitchCompat
+        val netflixToggle = view.findViewById<SwitchCompat>(R.id.netflix_toggle)
         netflixToggle.isChecked = preferences.isAppEnabled(SettingsPreference.NETFLIX)
         netflixToggle.setOnCheckedChangeListener {
             _, isChecked ->  updatePreference(SettingsPreference.NETFLIX, isChecked)
@@ -50,10 +50,10 @@ class SettingsFragment: BaseFragment() {
         this.preferences = preferences
         this.netflixToggle = netflixToggle
 
-        val toastInfo = view.findViewById(R.id.toast_duration_info)
-        val toastSeekbar = view.findViewById(R.id.toast_duration_seekbar) as SeekBar?
-        val seekbarContainer = view.findViewById(R.id.seekbar_container)
-        toastDuration = view.findViewById(R.id.toast_duration_view) as TextView?
+        val toastInfo = view.findViewById<TextView>(R.id.toast_duration_info)
+        val toastSeekbar = view.findViewById<SeekBar>(R.id.toast_duration_seekbar)
+        val seekbarContainer = view.findViewById<View>(R.id.seekbar_container)
+        toastDuration = view.findViewById(R.id.toast_duration_view)
 
         val showToastDurationInfo = !AccessibilityUtils.canDrawOverWindow(context)
         if (!showToastDurationInfo) {

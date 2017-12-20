@@ -44,12 +44,12 @@ class AppInfoFragment: BaseFragment() {
 
         analytics = MovieRatingsApplication.getAnalyticsDispatcher()
 
-        view.findViewById(R.id.rate_view).setOnClickListener {
+        view.findViewById<View>(R.id.rate_view).setOnClickListener {
             analytics?.sendEvent(Event("rate_app_clicked"))
             IntentUtils.openPlaystore(context)
         }
 
-        val share = view.findViewById(R.id.share_view)
+        val share = view.findViewById<View>(R.id.share_view)
         share?.let {
             share.setOnClickListener {
                 analytics?.sendEvent(Event("share_app_clicked"))
@@ -79,13 +79,13 @@ class AppInfoFragment: BaseFragment() {
 
         activationWarning = view.findViewById(R.id.activation_warning_view)
 
-        view.findViewById(R.id.credit_view).setOnClickListener {
+        view.findViewById<View>(R.id.credit_view).setOnClickListener {
             showCreditsDialog()
         }
 
-        (view.findViewById(R.id.version_view) as TextView).text = BuildConfig.VERSION_NAME
+        view.findViewById<TextView>(R.id.version_view).text = BuildConfig.VERSION_NAME
 
-        (view.findViewById(R.id.info_content_view) as TextView)
+        view.findViewById<TextView>(R.id.info_content_view)
                 .setText(
                 if (AccessibilityUtils.hasAllPermissions(context))
                     R.string.info_screen_content_with_accessibility

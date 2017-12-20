@@ -1,10 +1,7 @@
 package com.fenchtose.movieratings.features.likes_page
 
 import android.os.Bundle
-import android.support.annotation.ColorInt
-import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
@@ -47,7 +44,7 @@ class LikesPageFragment: BaseFragment(), LikesPage {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.recyclerview) as RecyclerView
+        recyclerView = view.findViewById(R.id.recyclerview)
 
         val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),
                 object : SearchPageAdapter.AdapterCallback {

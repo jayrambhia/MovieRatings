@@ -15,7 +15,7 @@ class FloatingRatingView(context: Context) : FrameLayout(context) {
 
     fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.floating_rating_view, this, true)
-        ratingView = findViewById(R.id.rating_view) as TextView
+        ratingView = findViewById(R.id.rating_view)
         setBackgroundResource(R.drawable.floating_rating_view_background)
     }
 

@@ -10,9 +10,9 @@ import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.widgets.RatioImageView
 
 class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCallback?) : RecyclerView.ViewHolder(itemView) {
-    val imageView: RatioImageView = itemView.findViewById(R.id.imageview) as RatioImageView
-    val titleView: TextView = itemView.findViewById(R.id.titleview) as TextView
-    val favButton: ImageView = itemView.findViewById(R.id.fav_button) as ImageView
+    val imageView: RatioImageView = itemView.findViewById(R.id.imageview)
+    val titleView: TextView = itemView.findViewById(R.id.titleview)
+    val favButton: ImageView = itemView.findViewById(R.id.fav_button)
 
     var movie: Movie? = null
 
