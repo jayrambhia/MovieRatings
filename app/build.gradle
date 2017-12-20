@@ -21,6 +21,17 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'OMDB_API_KEY', properties['omdb_api_key']
     }
+
+    productFlavors {
+        playstore {
+            applicationId "com.fenchtose.flutter"
+        }
+
+        foss {
+            applicationIdSuffix ".foss"
+        }
+    }
+
     buildTypes {
         debug {
             applicationIdSuffix ".dev"
@@ -43,7 +54,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
-    compile ('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+    playstoreCompile ('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true
     }
 

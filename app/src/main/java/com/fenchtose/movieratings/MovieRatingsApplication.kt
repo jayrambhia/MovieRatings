@@ -1,18 +1,17 @@
 package com.fenchtose.movieratings
 
 import android.app.Application
-import com.crashlytics.android.Crashlytics
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
-import com.fenchtose.movieratings.analytics.AnswersEventDispatcher
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.model.db.MovieDb
-import io.fabric.sdk.android.Fabric
 
 class MovieRatingsApplication : Application() {
+
     companion object {
         var instance: MovieRatingsApplication? = null
         var dispatcher: AnalyticsDispatcher? = null
         var router: Router? = null
+        var flavorHelper: AppFlavorHelper = AppFlavorHelper()
 
         fun getDatabase() : MovieDb {
             return MovieDb.getInstance(instance!!.applicationContext)
@@ -21,7 +20,7 @@ class MovieRatingsApplication : Application() {
         fun getAnalyticsDispatcher(): AnalyticsDispatcher {
             if (dispatcher == null) {
                 val dispatcher = AnalyticsDispatcher()
-                dispatcher.attachDispatcher("answers", AnswersEventDispatcher())
+                dispatcher.attachDispatcher("answers", flavorHelper.getAnswersDispatcher())
                 this.dispatcher = dispatcher
             }
 
@@ -33,6 +32,6 @@ class MovieRatingsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        Fabric.with(this, Crashlytics())
+        flavorHelper.onAppCreated(this)
     }
 }
