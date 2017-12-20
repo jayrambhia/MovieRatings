@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.access_info
+package com.fenchtose.movieratings.features.accessinfo
 
 import android.annotation.SuppressLint
 import android.content.Intent

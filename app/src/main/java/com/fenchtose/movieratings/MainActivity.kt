@@ -15,7 +15,7 @@ import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
-import com.fenchtose.movieratings.features.access_info.AccessInfoFragment
+import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment

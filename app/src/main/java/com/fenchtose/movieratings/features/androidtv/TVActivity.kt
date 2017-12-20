@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.android_tv
+package com.fenchtose.movieratings.features.androidtv
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
