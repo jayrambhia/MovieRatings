@@ -50,7 +50,10 @@ class LikesPageFragment: BaseFragment(), LikesPage {
                 object : SearchPageAdapter.AdapterCallback {
                     override fun onLiked(movie: Movie) {
                         presenter?.unlike(movie)
-//                        presenter?.setLiked(movie)
+                    }
+
+                    override fun onClicked(movie: Movie) {
+                        presenter?.openMovie(movie)
                     }
                 })
 

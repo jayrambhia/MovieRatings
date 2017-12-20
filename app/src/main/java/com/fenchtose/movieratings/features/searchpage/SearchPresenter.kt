@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.features.searchpage
 
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
+import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
@@ -63,5 +65,9 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
 
     fun setLiked(movie: Movie) {
         likeStore.setLiked(movie.imdbId, !movie.liked)
+    }
+
+    fun openMovie(movie: Movie) {
+        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie))
     }
 }

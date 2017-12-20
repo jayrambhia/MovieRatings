@@ -37,5 +37,6 @@ class SearchPageAdapter(context: Context,
 
     interface AdapterCallback {
         fun onLiked(movie: Movie)
+        fun onClicked(movie: Movie)
     }
 }

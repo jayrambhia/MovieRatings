@@ -186,12 +186,10 @@ class MainActivity : AppCompatActivity() {
                 Observable.combineLatest(accessibilityPublisher, accessibilityPagePublisher,
                 BiFunction<Boolean, Boolean, Int> {
                     hasAccessibility, isShowingAccessibilityInfo ->
-                    if (hasAccessibility && isShowingAccessibilityInfo) {
-                        1
-                    } else if (!hasAccessibility && !isShowingAccessibilityInfo) {
-                        2
-                    } else {
-                        3
+                    when {
+                        hasAccessibility && isShowingAccessibilityInfo -> 1
+                        !hasAccessibility && !isShowingAccessibilityInfo -> 2
+                        else -> 3
                     }
 
                 })

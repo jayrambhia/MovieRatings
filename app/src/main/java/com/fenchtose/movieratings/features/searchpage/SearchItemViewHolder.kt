@@ -23,6 +23,12 @@ class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCa
                 setLiked(!it.liked, false)
             }
         }
+
+        itemView.setOnClickListener {
+            movie?.let {
+                callback?.onClicked(it)
+            }
+        }
     }
 
     fun bindMovie(movie: Movie, imageLoader: ImageLoader) {

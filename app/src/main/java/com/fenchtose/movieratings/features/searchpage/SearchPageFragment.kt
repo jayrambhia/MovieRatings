@@ -79,6 +79,10 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                     override fun onLiked(movie: Movie) {
                         presenter?.setLiked(movie)
                     }
+
+                    override fun onClicked(movie: Movie) {
+                        presenter?.openMovie(movie)
+                    }
         })
 
         adapter.setHasStableIds(true)

@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.features.likespage
 
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
+import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.FavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
@@ -61,5 +63,9 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
             }
             getView()?.showAdded(movie, addedIndex)
         }
+    }
+
+    fun openMovie(movie: Movie) {
+        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie))
     }
 }
