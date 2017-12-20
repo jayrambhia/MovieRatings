@@ -196,5 +196,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         override fun showMenuIcons(): IntArray {
             return intArrayOf(R.id.action_settings, R.id.action_fav)
         }
+
+        override fun showBackButton() = false
     }
 }

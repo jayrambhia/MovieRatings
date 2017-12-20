@@ -76,6 +76,8 @@ class Router(activity: AppCompatActivity) {
         val fragment = path.createOrGetFragment()
         manager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
         titlebar?.setTitle(fragment.getScreenTitle())
+        titlebar?.setDisplayShowHomeEnabled(path.showBackButton())
+        titlebar?.setDisplayHomeAsUpEnabled(path.showBackButton())
         callback?.movedTo(path)
     }
 

@@ -86,6 +86,9 @@ class LikesPageFragment: BaseFragment(), LikesPage {
 
     override fun showAdded(movie: Movie, index: Int) {
         adapter?.notifyItemInserted(index)
+        recyclerView?.post {
+            recyclerView?.scrollToPosition(index)
+        }
     }
 
     private fun showMovieRemoved(movie: Movie, index: Int) {

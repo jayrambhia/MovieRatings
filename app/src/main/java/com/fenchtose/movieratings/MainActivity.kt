@@ -119,12 +119,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        var consumed = true
         when(item?.itemId) {
+            android.R.id.home -> onBackPressed()
             R.id.action_settings -> showSettingsPage()
             R.id.action_fav -> showFavoritesPage()
+            else -> consumed = false
         }
 
-        return super.onOptionsItemSelected(item)
+        return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
     private fun updateMenuItems(path: RouterPath<out BaseFragment>) {

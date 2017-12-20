@@ -19,7 +19,7 @@ abstract class RouterPath<T : BaseFragment> {
 
     abstract fun createFragmentInstance(): T
 
-    open fun showMenuIcons(): IntArray {
-        return intArrayOf()
-    }
+    open fun showMenuIcons(): IntArray = intArrayOf()
+
+    open fun showBackButton(): Boolean = true
 }
