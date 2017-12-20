@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.search_page
+package com.fenchtose.movieratings.features.searchpage
 
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView

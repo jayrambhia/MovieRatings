@@ -4,7 +4,7 @@ abstract class RouterPath<T : BaseFragment> {
 
     var fragment: T? = null
 
-    fun createFragment() : T {
+    private fun createFragment() : T {
         fragment = createFragmentInstance()
         return fragment as T
     }

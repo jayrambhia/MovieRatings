@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.likes_page
+package com.fenchtose.movieratings.features.likespage
 
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.model.Movie

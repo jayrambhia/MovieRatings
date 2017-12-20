@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.search_page
+package com.fenchtose.movieratings.features.searchpage
 
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.model.Movie

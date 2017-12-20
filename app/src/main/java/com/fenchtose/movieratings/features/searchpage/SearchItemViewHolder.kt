@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.search_page
+package com.fenchtose.movieratings.features.searchpage
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -10,9 +10,9 @@ import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.widgets.RatioImageView
 
 class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCallback?) : RecyclerView.ViewHolder(itemView) {
-    val imageView: RatioImageView = itemView.findViewById(R.id.imageview)
-    val titleView: TextView = itemView.findViewById(R.id.titleview)
-    val favButton: ImageView = itemView.findViewById(R.id.fav_button)
+    private val imageView: RatioImageView = itemView.findViewById(R.id.imageview)
+    private val titleView: TextView = itemView.findViewById(R.id.titleview)
+    private val favButton: ImageView = itemView.findViewById(R.id.fav_button)
 
     var movie: Movie? = null
 
@@ -28,7 +28,7 @@ class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCa
     fun bindMovie(movie: Movie, imageLoader: ImageLoader) {
         titleView.text = "${movie.title}\n(${movie.year})"
         if (movie.poster.contains("http")) {
-            imageLoader.loadImage(movie.poster, this)
+            imageLoader.loadImage(movie.poster, imageView)
         } else {
             imageLoader.cancelRequest(imageView)
             imageView.setImageBitmap(null)

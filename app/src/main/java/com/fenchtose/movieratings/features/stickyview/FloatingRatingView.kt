@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.sticky_view
+package com.fenchtose.movieratings.features.stickyview
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,9 +9,15 @@ import com.fenchtose.movieratings.model.Movie
 
 class FloatingRatingView(context: Context) : FrameLayout(context) {
 
-    var _movie: Movie? = null
-    var ratingView: TextView? = null
-    val TAG = "FloatingRatingView"
+    var movie: Movie? = null
+    set(value) {
+        field = value
+        value?.let {
+            setRating(it.ratings[0].value)
+        }
+    }
+
+    private var ratingView: TextView? = null
 
     fun init(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.floating_rating_view, this, true)
@@ -19,12 +25,7 @@ class FloatingRatingView(context: Context) : FrameLayout(context) {
         setBackgroundResource(R.drawable.floating_rating_view_background)
     }
 
-    fun updateMovie(movie: Movie) {
-        this._movie = movie
-        setRating(movie.ratings[0].value)
-    }
-
-    fun setRating(rating: String) {
+    private fun setRating(rating: String) {
         ratingView?.let {
             ratingView!!.text = resources.getString(R.string.floating_rating_content, rating)
         }

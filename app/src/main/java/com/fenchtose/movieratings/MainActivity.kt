@@ -17,8 +17,8 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.access_info.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
-import com.fenchtose.movieratings.features.likes_page.LikesPageFragment
-import com.fenchtose.movieratings.features.search_page.SearchPageFragment
+import com.fenchtose.movieratings.features.likespage.LikesPageFragment
+import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils

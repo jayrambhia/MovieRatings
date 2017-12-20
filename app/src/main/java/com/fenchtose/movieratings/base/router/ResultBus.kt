@@ -5,7 +5,7 @@ import io.reactivex.subjects.BehaviorSubject
 
 class ResultBus {
     companion object {
-        val map: HashMap<String, BehaviorSubject<Result<Any>>> = HashMap()
+        private val map: HashMap<String, BehaviorSubject<Result<Any>>> = HashMap()
 
         fun subscribe(result: String) : Observable<Result<Any>> {
             val subject = map[result]

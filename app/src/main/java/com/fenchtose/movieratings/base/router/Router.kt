@@ -10,12 +10,12 @@ import java.util.Stack
 
 class Router(activity: AppCompatActivity) {
 
-    val history: Stack<RouterPath<out BaseFragment>> = Stack()
-    val manager = activity.supportFragmentManager
-    val titlebar: ActionBar? = activity.supportActionBar
+    private val history: Stack<RouterPath<out BaseFragment>> = Stack()
+    private val manager = activity.supportFragmentManager
+    private val titlebar: ActionBar? = activity.supportActionBar
     var callback: RouterCallback? = null
 
-    val TAG = "Router"
+    private val TAG = "Router"
 
     fun go(path: RouterPath<out BaseFragment>) {
         if (history.size >= 1) {
@@ -25,7 +25,7 @@ class Router(activity: AppCompatActivity) {
             }
         }
 
-        _move(path)
+        move(path)
         history.push(path)
     }
 
@@ -35,7 +35,7 @@ class Router(activity: AppCompatActivity) {
             return true
         }
 
-        val canTopGoBack = _canTopGoBack()
+        val canTopGoBack = canTopGoBack()
         if (canTopGoBack) {
             if (history.size == 1) {
                 return  true
@@ -47,18 +47,18 @@ class Router(activity: AppCompatActivity) {
         return false
     }
 
-    fun goBack(): Boolean {
+    private fun goBack(): Boolean {
 
         if (history.size > 1) {
-            _moveBack()
+            moveBack()
             return true
         }
 
         return false
     }
 
-    private fun _canTopGoBack(): Boolean {
-        val fragment: BaseFragment? = _getTopView()
+    private fun canTopGoBack(): Boolean {
+        val fragment: BaseFragment? = getTopView()
 
         fragment?.let {
             return fragment.canGoBack()
@@ -68,24 +68,24 @@ class Router(activity: AppCompatActivity) {
 
     }
 
-    private fun _getTopView() : BaseFragment? {
+    private fun getTopView() : BaseFragment? {
         return history.peek().fragment
     }
 
-    private fun _move(path: RouterPath<out BaseFragment>) {
+    private fun move(path: RouterPath<out BaseFragment>) {
         val fragment = path.createOrGetFragment()
         manager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
         titlebar?.setTitle(fragment.getScreenTitle())
         callback?.movedTo(path)
     }
 
-    private fun _moveBack() {
+    private fun moveBack() {
         val path = history.pop()
         callback?.removed(path)
         if (!history.empty()) {
             val top = history.peek()
             top?.let {
-                _move(top)
+                move(top)
             }
         }
     }

@@ -11,7 +11,7 @@ import android.view.View
 import android.view.WindowManager
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
-import com.fenchtose.movieratings.features.sticky_view.FloatingRatingView
+import com.fenchtose.movieratings.features.stickyview.FloatingRatingView
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreference
 import com.fenchtose.movieratings.util.AccessibilityUtils
@@ -19,7 +19,7 @@ import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.ToastUtils
 import java.lang.ref.WeakReference
 
-class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, val preferences: SettingsPreference) {
+class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private val preferences: SettingsPreference) {
     private val context: Context = ctx.applicationContext
 
     private val TAG = "RatingDisplayer"
@@ -29,7 +29,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, val pref
 
     private val handler = Handler(Looper.getMainLooper())
 
-    public fun showRatingWindow(movie: Movie) {
+    fun showRatingWindow(movie: Movie) {
         if (movie.ratings.isEmpty()) {
             return
         }
@@ -42,25 +42,21 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, val pref
         }
 
         if (ratingView.get() == null) {
-            val view = FloatingRatingView(context)
-            ratingView = WeakReference(view)
+            ratingView = WeakReference(FloatingRatingView(context))
         }
 
-        val view = ratingView.get()
+        ratingView.get()?.let {
+            it.movie = movie
 
-        view?.let {
-            view.updateMovie(movie)
-
-            val parent = view.parent
-            parent?.let {
+            if (it.parent == null) {
                 return
             }
 
-            if (addViewToWindow(view)) {
-                isShowingView = true
+            isShowingView = if (addViewToWindow(it)) {
+                true
             } else {
                 ratingView = WeakReference(null)
-                isShowingView = false
+                false
             }
         }
 
@@ -78,20 +74,20 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, val pref
                 WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT)
 
-        try {
+        return try {
             manager.addView(view, params)
             view.setOnTouchListener(floatingWindowTouchListener)
-            return true
+            true
         } catch (e: RuntimeException) {
             e.printStackTrace()
             analytics.sendEvent(Event("runtime_error")
                     .putAttribute("error", if (e.message != null) e.message!! else "unknown")
                     .putAttribute("where", "service_remove_view"))
-            return false
+            false
         }
     }
 
-    public fun removeView() {
+    fun removeView() {
         isShowingView = false
         handler.postDelayed({
             val view = ratingView.get()
@@ -122,7 +118,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, val pref
                 return@OnTouchListener true
             } else {
                 analytics.sendEvent(Event("fw_open_clicked"))
-                IntentUtils.openImdb(context, (v as FloatingRatingView)._movie?.imdbId)
+                IntentUtils.openImdb(context, (v as FloatingRatingView).movie?.imdbId)
             }
         }
 

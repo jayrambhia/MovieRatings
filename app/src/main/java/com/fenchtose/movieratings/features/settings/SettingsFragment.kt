@@ -29,8 +29,6 @@ class SettingsFragment: BaseFragment() {
 
     private var toastDuration: TextView? = null
 
-//    private val TAG = "SettingsFragment"
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         root = inflater.inflate(R.layout.settings_page_layout, container, false) as ViewGroup
         return root!!

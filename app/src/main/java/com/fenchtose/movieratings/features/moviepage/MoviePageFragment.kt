@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.movie_page
+package com.fenchtose.movieratings.features.moviepage
 
 import com.fenchtose.movieratings.base.BaseFragment
 

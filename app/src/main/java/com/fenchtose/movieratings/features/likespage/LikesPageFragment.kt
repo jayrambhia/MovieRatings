@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.features.likes_page
+package com.fenchtose.movieratings.features.likespage
 
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -12,7 +12,7 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.features.search_page.SearchPageAdapter
+import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.api.provider.DbFavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
