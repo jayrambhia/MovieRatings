@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.searchpage
 
+import android.view.View
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
@@ -67,7 +68,7 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
         likeStore.setLiked(movie.imdbId, !movie.liked)
     }
 
-    fun openMovie(movie: Movie) {
-        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie))
+    fun openMovie(movie: Movie, sharedElement: View?) {
+        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement, "poster"))
     }
 }

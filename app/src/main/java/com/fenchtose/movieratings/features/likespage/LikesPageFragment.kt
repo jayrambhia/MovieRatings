@@ -52,8 +52,9 @@ class LikesPageFragment: BaseFragment(), LikesPage {
                         presenter?.unlike(movie)
                     }
 
-                    override fun onClicked(movie: Movie) {
-                        presenter?.openMovie(movie)
+                    override fun onClicked(movie: Movie, sharedElement: View) {
+                        // TODO check for api compatibility
+                        presenter?.openMovie(movie, sharedElement)
                     }
                 })
 

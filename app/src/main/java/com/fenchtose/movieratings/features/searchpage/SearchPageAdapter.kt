@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.features.searchpage
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.Movie
@@ -37,6 +38,6 @@ class SearchPageAdapter(context: Context,
 
     interface AdapterCallback {
         fun onLiked(movie: Movie)
-        fun onClicked(movie: Movie)
+        fun onClicked(movie: Movie, sharedElement: View)
     }
 }

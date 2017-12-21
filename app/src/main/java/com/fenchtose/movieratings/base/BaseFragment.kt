@@ -8,6 +8,7 @@ import io.reactivex.disposables.Disposable
 abstract class BaseFragment : Fragment(), FragmentNavigation {
 
     private var disposables: CompositeDisposable? = null
+    var path: RouterPath<out BaseFragment>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,4 +23,5 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
     fun subscribe(d: Disposable) {
         disposables?.add(d)
     }
+
 }

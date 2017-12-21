@@ -1,11 +1,14 @@
 package com.fenchtose.movieratings.base.router
 
+import android.os.Build
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
+import android.transition.Fade
 import android.util.Log
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.features.moviepage.DetailTransition
 import java.util.Stack
 
 class Router(activity: AppCompatActivity) {
@@ -74,7 +77,16 @@ class Router(activity: AppCompatActivity) {
 
     private fun move(path: RouterPath<out BaseFragment>) {
         val fragment = path.createOrGetFragment()
-        manager.beginTransaction().replace(R.id.fragment_container, fragment).commit()
+        val transaction = manager.beginTransaction().replace(R.id.fragment_container, fragment)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            path.getSharedTransitionElement()?.let {
+            transaction.addSharedElement(it.first, it.second)
+                fragment.sharedElementEnterTransition = DetailTransition()
+                fragment.sharedElementReturnTransition = DetailTransition()
+            }
+        }
+
+        transaction.commit()
         titlebar?.setTitle(fragment.getScreenTitle())
         titlebar?.setDisplayShowHomeEnabled(path.showBackButton())
         titlebar?.setDisplayHomeAsUpEnabled(path.showBackButton())

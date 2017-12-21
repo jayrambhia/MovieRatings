@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.searchpage
 
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
@@ -26,7 +27,8 @@ class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCa
 
         itemView.setOnClickListener {
             movie?.let {
-                callback?.onClicked(it)
+                ViewCompat.setTransitionName(imageView, "poster$adapterPosition")
+                callback?.onClicked(it, imageView)
             }
         }
     }
