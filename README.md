@@ -7,6 +7,8 @@
 ## Note
 Flutter has been **unpublished** from Google Playstore. It uses accessibility service and recent Playstore policy suggests that `Apps requesting accessibility services should only be used to help users with disabilities use Android devices and apps`. So I have decided to remove it from the playstore. I am planning to add Flutter to other app stores such as F-Droid.
 
+You can get the latest Playstore version here - [0.1.4](https://github.com/jayrambhia/MovieRatings/releases/download/v0.1.4/flutter_v0.1.4.apk)
+
 ## Playstore description
 
 Flutter is a smart app that helps you decide what to watch on streaming apps like Netflix 🎥! It shows movie ratings ⭐ on your screen making sure that you don't even have to search 🔎 for it. It's ad-free and promotion-free.
@@ -31,11 +33,9 @@ Flutter is brilliant but you're the boss! You need to enable Flutter's accessibi
  
 <b>What’s the future of Flutter?</b>
 
-Support for <b>Android TV</b>!
- 
-Support for more streaming apps - so that whatever you use, Flutter will be there to help you out with movie ratings!
- 
-We want Flutter to be your go-to pal for anything related to movies, documentaries and TV shows from ratings to recommendations.
+ - Support for <b>Android TV</b>!
+ - Support for more streaming apps - so that whatever you use, Flutter will be there to help you out with movie ratings!
+ - We want Flutter to be your go-to pal for anything related to movies, documentaries and TV shows from ratings to recommendations.
  
 <b>Concerns?</b>
 
