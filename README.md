@@ -44,3 +44,17 @@ Open Movie Database has ratings gathered from various popular websites like Imdb
 Flutter is not endorsed by or affiliated with Imdb.com, Netflix.com or omdbapi.com
 
 -----
+
+## Contribute
+
+Contributions are welcome!
+
+To build the project, create `local.properties` in the base directory if it does not exist and add following line to it.
+
+```
+omdb_api_key=<API_KEY>
+```
+
+You can get your API key here - [OMDB API Key](http://www.omdbapi.com/apikey.aspx)
+
+If you don't have an API key, you can use `omdb_api_key=""` and the project will use `PreloadedMovieProvider` in debug build. It will return search results for `thor` and `batman` only.

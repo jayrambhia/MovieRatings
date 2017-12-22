@@ -20,7 +20,6 @@ android {
         versionName generateVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'OMDB_API_KEY', properties['omdb_api_key']
-        buildConfigField 'boolean', 'USE_DUMMY_API', properties['use_dummy_api']
     }
     productFlavors {
         playstore {
