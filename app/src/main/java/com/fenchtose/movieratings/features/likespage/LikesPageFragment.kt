@@ -31,9 +31,9 @@ class LikesPageFragment: BaseFragment(), LikesPage {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val dao = MovieRatingsApplication.getDatabase().movieDao()
+        val dao = MovieRatingsApplication.database.movieDao()
         val favoriteProvider = DbFavoriteMovieProvider(dao)
-        val likeStore = DbLikeStore(MovieRatingsApplication.getDatabase().favDao())
+        val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
         presenter = LikesPresenter(favoriteProvider, likeStore)
     }
 

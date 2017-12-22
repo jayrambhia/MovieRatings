@@ -43,8 +43,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val likeStore = DbLikeStore(MovieRatingsApplication.getDatabase().favDao())
-        presenter = SearchPresenter(MovieRatingsApplication.movieProviderModule.getMovieProvider(), likeStore)
+        val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
+        presenter = SearchPresenter(MovieRatingsApplication.movieProviderModule.movieProvider, likeStore)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {

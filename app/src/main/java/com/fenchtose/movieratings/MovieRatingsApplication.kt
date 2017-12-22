@@ -8,40 +8,32 @@ import com.fenchtose.movieratings.model.db.MovieDb
 
 class MovieRatingsApplication : Application() {
 
+    init {
+        instance = this
+    }
+
     companion object {
         var instance: MovieRatingsApplication? = null
-        var dispatcher: AnalyticsDispatcher? = null
+
+        val flavorHelper: AppFlavorHelper = AppFlavorHelper()
+
+        val database by lazy {
+            MovieDb.instance
+        }
+
+        val analyticsDispatcher: AnalyticsDispatcher by lazy {
+            AnalyticsDispatcher().attachDispatcher("answers", flavorHelper.getAnswersDispatcher())
+        }
+
         var router: Router? = null
-        var flavorHelper: AppFlavorHelper = AppFlavorHelper()
 
         val movieProviderModule by lazy {
             MovieProviderModule(instance!!)
         }
-
-        fun getDatabase() : MovieDb {
-            return MovieDb.getInstance(instance!!.applicationContext)
-        }
-
-        fun getAnalyticsDispatcher(): AnalyticsDispatcher {
-            if (dispatcher == null) {
-                val dispatcher = AnalyticsDispatcher()
-                dispatcher.attachDispatcher("answers", flavorHelper.getAnswersDispatcher())
-                this.dispatcher = dispatcher
-            }
-
-            return dispatcher!!
-        }
-
     }
 
     override fun onCreate() {
         super.onCreate()
-        instance = this
         flavorHelper.onAppCreated(this)
     }
-
-    fun getDatabase() : MovieDb {
-        return MovieDb.getInstance(this)
-    }
-
 }

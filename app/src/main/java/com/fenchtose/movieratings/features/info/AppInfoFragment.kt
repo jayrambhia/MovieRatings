@@ -42,7 +42,7 @@ class AppInfoFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        analytics = MovieRatingsApplication.getAnalyticsDispatcher()
+        analytics = MovieRatingsApplication.analyticsDispatcher
 
         view.findViewById<View>(R.id.rate_view).setOnClickListener {
             analytics?.sendEvent(Event("rate_app_clicked"))

@@ -9,15 +9,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieProviderModule(val app: MovieRatingsApplication) {
 
-    val gson = GsonBuilder().setDateFormat("dd MM yyyy").create()
-    val dao = app.getDatabase().movieDao()
+    private val gson = GsonBuilder().setDateFormat("dd MM yyyy").create()
+    private val dao = MovieRatingsApplication.database.movieDao()
 
-    companion object {
-        var instance: MovieProviderModule? = null
-    }
-
-    init {
-        instance = this
+    val movieProvider by lazy {
+        if (Constants.USE_DUMMY_API) preloadedMovieProvider else retrofitProvider
     }
 
     private val retrofitProvider: RetrofitMovieProvider by lazy {
@@ -31,9 +27,5 @@ class MovieProviderModule(val app: MovieRatingsApplication) {
 
     private val preloadedMovieProvider: PreloadedMovieProvider by lazy {
         PreloadedMovieProvider(app, dao)
-    }
-
-    fun getMovieProvider(): MovieProvider {
-        return if (Constants.USE_DUMMY_API) preloadedMovieProvider else retrofitProvider
     }
 }

@@ -58,7 +58,7 @@ class AccessInfoFragment : BaseFragment() {
                 getString(R.string.accessibility_info_app_name),
                 getString(R.string.accessibility_info_target_name))
 
-        analytics = MovieRatingsApplication.getAnalyticsDispatcher()
+        analytics = MovieRatingsApplication.analyticsDispatcher
 
     }
 

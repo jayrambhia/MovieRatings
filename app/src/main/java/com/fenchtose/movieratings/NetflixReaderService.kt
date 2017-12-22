@@ -39,8 +39,8 @@ class NetflixReaderService : AccessibilityService() {
         super.onCreate()
 
         preferences = SettingsPreference(this)
-        provider = MovieRatingsApplication.movieProviderModule.getMovieProvider()
-        analytics = MovieRatingsApplication.getAnalyticsDispatcher()
+        provider = MovieRatingsApplication.movieProviderModule.movieProvider
+        analytics = MovieRatingsApplication.analyticsDispatcher
         displayer = RatingDisplayer(this, analytics!!, preferences!!)
 
     }

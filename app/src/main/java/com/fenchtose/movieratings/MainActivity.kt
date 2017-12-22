@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
         showSearchPage()
         accessibilityPagePublisher?.onNext(false)
 
-        analytics = MovieRatingsApplication.getAnalyticsDispatcher()
+        analytics = MovieRatingsApplication.analyticsDispatcher
     }
 
     override fun onResume() {

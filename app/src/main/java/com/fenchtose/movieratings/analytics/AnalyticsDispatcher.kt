@@ -7,17 +7,20 @@ class AnalyticsDispatcher: EventDispatcher {
     private val map = HashMap<String, EventDispatcher>()
     private val dispatchers = ArrayList<EventDispatcher>()
 
-    fun attachDispatcher(key: String, dispatcher: EventDispatcher) {
+    fun attachDispatcher(key: String, dispatcher: EventDispatcher): AnalyticsDispatcher {
         removeDispatcher(key)
         map[key] = dispatcher
         dispatchers.add(dispatcher)
+        return this
     }
 
-    private fun removeDispatcher(key: String) {
+    private fun removeDispatcher(key: String): AnalyticsDispatcher {
         val existingDispatcher = map[key]
         existingDispatcher?.let {
             remove(existingDispatcher)
         }
+
+        return this
     }
 
     private fun remove(dispatcher: EventDispatcher) {

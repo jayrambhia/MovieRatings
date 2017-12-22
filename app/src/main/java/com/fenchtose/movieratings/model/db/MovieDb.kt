@@ -5,7 +5,7 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.migration.Migration
-import android.content.Context
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.Fav
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.dao.FavDao
@@ -18,17 +18,10 @@ abstract class MovieDb : RoomDatabase() {
     abstract fun favDao(): FavDao
 
     companion object {
-        var instance: MovieDb? = null
-
-        fun getInstance(context: Context) : MovieDb {
-            instance?.let {
-                return instance as MovieDb
-            }
-
-            instance = Room.databaseBuilder(context, MovieDb::class.java, "ex")
+        val instance: MovieDb by lazy {
+            Room.databaseBuilder(MovieRatingsApplication.instance!!, MovieDb::class.java, "ex")
                     .addMigrations(MIGRATION_1to_2)
                     .build()
-            return instance!!
         }
 
         private val MIGRATION_1to_2 = object: Migration(1, 2) {
