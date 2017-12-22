@@ -53,6 +53,7 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
                         onError = {
                             it.printStackTrace()
                             data = null
+                            getView()?.showApiError()
                         }
                 )
 

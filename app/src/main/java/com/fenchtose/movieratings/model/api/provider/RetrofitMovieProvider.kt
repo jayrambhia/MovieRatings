@@ -14,9 +14,8 @@ import retrofit2.Retrofit
 class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvider {
 
     val api: MovieApi = retrofit.create(MovieApi::class.java)
-    val TAG = "MovieProvider"
     val analytics = MovieRatingsApplication.getAnalyticsDispatcher()
-    val preferenceAppliers = ArrayList<UserPreferneceApplier>()
+    private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
 
     override fun getMovie(title: String): Observable<Movie> {
         return getMovieFromDb(title)
@@ -38,7 +37,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                 }
     }
 
-    fun getMovieFromDb(title: String): Observable<Movie> {
+    private fun getMovieFromDb(title: String): Observable<Movie> {
         return Observable.defer {
             val movie = dao.getMovie(title)
             if (movie != null) {

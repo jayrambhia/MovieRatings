@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.searchpage
 
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL
@@ -18,17 +19,12 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.api.provider.RetrofitMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
-import com.fenchtose.movieratings.util.Constants
-import com.google.gson.GsonBuilder
+import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 class SearchPageFragment : BaseFragment(), SearchPage {
@@ -47,19 +43,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val gson = GsonBuilder().setDateFormat("dd MM yyyy").create()
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(Constants.OMDB_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
-
-        val dao = MovieRatingsApplication.getDatabase().movieDao()
-//        val likeStore = PreferencesLikeStore(activity)
         val likeStore = DbLikeStore(MovieRatingsApplication.getDatabase().favDao())
-        presenter = SearchPresenter(RetrofitMovieProvider(retrofit, dao), likeStore)
-
+        presenter = SearchPresenter(MovieRatingsApplication.movieProviderModule.getMovieProvider(), likeStore)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -166,6 +151,11 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             attributeView?.visibility = View.VISIBLE
             progressbar?.visibility = View.GONE
         }
+    }
+
+    override fun showApiError() {
+        showLoading(false)
+        ThemedSnackbar.make(view!!, R.string.search_page_api_error_content, Snackbar.LENGTH_SHORT).show()
     }
 
     override fun setData(movies: ArrayList<Movie>) {

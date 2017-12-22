@@ -6,20 +6,14 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
-import com.fenchtose.movieratings.model.api.provider.RetrofitMovieProvider
-import com.fenchtose.movieratings.util.Constants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreference
-import com.google.gson.GsonBuilder
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -45,21 +39,8 @@ class NetflixReaderService : AccessibilityService() {
         super.onCreate()
 
         preferences = SettingsPreference(this)
-
-        val gson = GsonBuilder().setDateFormat("dd MM yyyy").create()
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl(Constants.OMDB_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build()
-
-        val dao = MovieRatingsApplication.getDatabase().movieDao()
-
-        provider = RetrofitMovieProvider(retrofit, dao)
-
+        provider = MovieRatingsApplication.movieProviderModule.getMovieProvider()
         analytics = MovieRatingsApplication.getAnalyticsDispatcher()
-
         displayer = RatingDisplayer(this, analytics!!, preferences!!)
 
     }
