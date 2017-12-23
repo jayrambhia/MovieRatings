@@ -1,13 +1,13 @@
 package com.fenchtose.movieratings
 
 import android.app.Application
-import com.facebook.stetho.Stetho
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.model.api.provider.MovieProviderModule
 import com.fenchtose.movieratings.model.db.MovieDb
+import okhttp3.OkHttpClient
 
-class MovieRatingsApplication : Application() {
+open class MovieRatingsApplication : Application() {
 
     init {
         instance = this
@@ -33,9 +33,13 @@ class MovieRatingsApplication : Application() {
         }
     }
 
+    open fun getOkHttpClient(): OkHttpClient {
+        return OkHttpClient.Builder()
+                .build()
+    }
+
     override fun onCreate() {
         super.onCreate()
         flavorHelper.onAppCreated(this)
-        Stetho.initializeWithDefaults(this)
     }
 }
