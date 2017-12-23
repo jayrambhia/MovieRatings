@@ -11,7 +11,7 @@ import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.dao.FavDao
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 
-@Database(entities = arrayOf(Movie::class, Fav::class), version = 2)
+@Database(entities = [(Movie::class), (Fav::class)], version = 2)
 abstract class MovieDb : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao

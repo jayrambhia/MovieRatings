@@ -12,7 +12,7 @@ interface FavDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(fav: Fav)
 
-    @Query("SELECT * FROM FAVS WHERE IMDBID LIKE :arg0 LIMIT 1")
+    @Query("SELECT * FROM FAVS WHERE IMDBID LIKE :imdbId LIMIT 1")
     fun getFav(imdbId: String): Fav?
 
 }

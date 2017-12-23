@@ -1,16 +1,24 @@
+sudo: false
 language: android
+jdk: oraclejdk8
 android:
   components:
-    - tools # to get the new `repository-11.xml`
-    - tools # see https://github.com/travis-ci/travis-ci/issues/6040#issuecomment-219367943)
+    - tools
+    - tools
     - platform-tools
     - build-tools-26.0.2
     - android-26
 
-    jdk:
-      - oraclejdk8
+addons:
+  apt:
+    packages:
+      - lynx
 
-after_failure: "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
+before_script:
+    - sh travis_local_properties.sh
 
 script:
-   - ./gradlew build connectedCheck
+  - ./gradlew build
+
+after_failure:
+ - if [ -f /home/travis/build/jayrambhia/MovieRatings/app/build/reports/lint-results.html ]; then lynx -dump /home/travis/build/jayrambhia/MovieRatings/app/build/reports/lint-results.html; fi

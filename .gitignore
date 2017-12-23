@@ -7,11 +7,7 @@
 /build
 /captures
 .externalNativeBuild
-gradlew
-gradlew.bat
 .idea/*
-gradle
-gradle/*
 private.xml
 fabric.properties
 *.apk

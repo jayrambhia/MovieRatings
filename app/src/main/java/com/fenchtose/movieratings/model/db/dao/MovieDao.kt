@@ -14,7 +14,7 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertSearch(movie: Movie)
 
-    @Query("SELECT * FROM MOVIES WHERE TITLE LIKE :arg0 LIMIT 1")
+    @Query("SELECT * FROM MOVIES WHERE TITLE LIKE :title LIMIT 1")
     fun getMovie(title: String): Movie?
 
     @Query("SELECT * FROM MOVIES as m INNER JOIN FAVS as f ON m.IMDBID == f.IMDBID WHERE f.IS_FAV == 1")

@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.base.router
 
+import android.annotation.SuppressLint
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
@@ -32,6 +33,8 @@ class ResultBus {
             }
         }
 
+        // Kotlin HashMap is being considered as Java HashMap by lint.
+        @SuppressLint("NewApi")
         fun release() {
             map.forEach { _, subject -> subject.onComplete() }
             map.clear()

@@ -1,6 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'io.fabric'
+apply plugin: 'kotlin-kapt'
+
+if (getGradle().getStartParameter().getTaskRequests()
+        .toString().contains("Playstore")) {
+    apply plugin: 'io.fabric'
+}
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -66,7 +71,7 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     // Room
     compile 'android.arch.persistence.room:runtime:1.0.0'
-    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
+//    annotationProcessor 'android.arch.persistence.room:compiler:1.0.0'
     kapt 'android.arch.persistence.room:compiler:1.0.0'
     compile 'com.github.bumptech.glide:glide:4.0.0-RC0'
     testCompile 'junit:junit:4.12'

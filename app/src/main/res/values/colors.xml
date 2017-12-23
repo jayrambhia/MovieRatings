@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="navy_blue">#1B4079</color>
+    <!--<color name="navy_blue">#1B4079</color>
     <color name="grey_blue">#3A7CA5</color>
-    <color name="accent_orange">#F46036</color>
     <color name="green_primary">#00A878</color>
     <color name="green_secondary">#008F66</color>
     <color name="pink_primary">#FE5F55</color>
-    <color name="pink_secondary">#FE5448</color>
+    <color name="pink_secondary">#FE5448</color>-->
     <color name="yellow_primary">#FFBC42</color>
     <color name="yellow_secondary">#CC9634</color>
     <color name="onyx_accent">#313638</color>
+    <color name="accent_orange">#F46036</color>
     <!--<color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>-->
