@@ -59,5 +59,12 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="undo_action">Undo</string>
 
 	<string name="movie_page_title">Movie</string>
+	<string name="movie_page_direct_by">Directed by <b>%1s</b></string>
+	<string name="movie_page_released_on">Released on <b>%1s</b></string>
+    <string name="movie_page_actors_title">Actors</string>
+    <string name="movie_page_writers_title">Writers</string>
+	<string name="movie_page_plot_title">Plot</string>
+
+	<string name="movie_page_load_error">Unable to load movie info</string>
 
 </resources>

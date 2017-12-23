@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings
 
 import android.app.Application
+import com.facebook.stetho.Stetho
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.model.api.provider.MovieProviderModule
@@ -35,5 +36,6 @@ class MovieRatingsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         flavorHelper.onAppCreated(this)
+        Stetho.initializeWithDefaults(this)
     }
 }

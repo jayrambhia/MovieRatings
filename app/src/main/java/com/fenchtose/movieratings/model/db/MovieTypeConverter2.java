@@ -38,14 +38,4 @@ public class MovieTypeConverter2 {
 
 		return json.toString();
 	}
-
-	@TypeConverter
-	public static Date fromLong(long data) {
-		return new Date(data);
-	}
-
-	@TypeConverter
-	public static long fromDate(Date date) {
-		return date.getTime();
-	}
 }

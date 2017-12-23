@@ -18,6 +18,10 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
     private val context = context.applicationContext
     private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
 
+    override fun getMovieWithImdb(imdbId: String): Observable<Movie> {
+        return getMovie(imdbId)
+    }
+
     override fun getMovie(title: String): Observable<Movie> {
         return getMovieFromDb(title)
                 .flatMap {

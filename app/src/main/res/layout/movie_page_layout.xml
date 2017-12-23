@@ -44,15 +44,16 @@
         android:layout_marginStart="16dp"
         android:scaleType="centerCrop"
         android:background="@color/colorAccent"
-        android:src="@drawable/madmax"
+        tools:src="@drawable/madmax"
         tools:targetApi="lollipop"/>
 
 	<TextView
 		android:id="@+id/rating_view"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:textSize="48sp"
+		android:textSize="24sp"
 		android:elevation="4dp"
+		android:textStyle="bold"
 		android:layout_marginEnd="16dp"
 		android:textColor="@android:color/white"
 		app:layout_anchor="@id/main.appbar"
@@ -61,12 +62,13 @@
 		tools:targetApi="lollipop"/>
 
     <android.support.design.widget.FloatingActionButton
+	    android:id="@+id/fab"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_margin="16dp"
         app:elevation="4dp"
         app:fabSize="normal"
-        android:src="@drawable/ic_favorite_onyx_24dp"
+        android:src="@drawable/ic_favorite_border_onyx_24dp"
         app:layout_anchor="@id/main.appbar"
         app:backgroundTint="#ffffff"
         app:layout_anchorGravity="bottom|right|end"/>
@@ -76,38 +78,128 @@
         android:layout_height="match_parent"
         android:background="@color/onyx_accent"
         android:paddingTop="48dp"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:orientation="vertical">
+	    <LinearLayout
+		    android:id="@+id/content_layout"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:padding="16dp"
+		    android:orientation="vertical">
 
-            <TextView
-	            android:id="@+id/title_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                tools:text="Guardians of the galaxy vol. 2"/>
+		    <TextView
+			    android:id="@+id/title_view"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:textColor="@android:color/white"
+			    android:textSize="24sp"
+			    android:textStyle="bold"
+			    tools:text="Guardians of the galaxy vol. 2"/>
 
-            <TextView
-	            android:id="@+id/genre_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                tools:text="Action, Adventure, Sci-Fi"/>
+		    <TextView
+			    android:id="@+id/genre_view"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="4dp"
+			    android:textColor="@android:color/white"
+			    android:textSize="16sp"
+			    tools:text="Action, Adventure, Sci-Fi"/>
 
-	        <TextView
-		        android:layout_width="match_parent"
-		        android:layout_height="wrap_content"
-		        android:textColor="@android:color/white"
-		        android:textSize="32sp"
-		        android:text="A\nB\nC\nD\nE\nF\nG\nH\nI\nJ\nK\nL\nM\nN\nO"/>
-        </LinearLayout>
+		    <TextView
+			    android:id="@+id/director_view"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="4dp"
+			    android:textColor="@android:color/white"
+			    android:textSize="16sp"
+			    tools:text="Directed by James Gunn"/>
+
+		    <TextView
+			    android:id="@+id/released_view"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="4dp"
+			    android:textColor="@android:color/white"
+			    android:textSize="16sp"
+			    tools:text="Released on 05 May 2017"/>
+
+		    <TextView
+			    android:id="@+id/actors_header"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="16dp"
+			    android:textColor="@android:color/white"
+			    android:textSize="24sp"
+			    android:textStyle="bold"
+			    android:text="@string/movie_page_actors_title"/>
+
+		    <TextView
+			    android:id="@+id/actors_view"
+			    android:layout_marginTop="4dp"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:textColor="@android:color/white"
+			    android:textSize="16sp"
+			    tools:text="Chris Pratt, Zoe Saldana, Dave Bautista, Vin Diesel"/>
+
+		    <TextView
+			    android:id="@+id/writers_header"
+			    android:layout_marginTop="16dp"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:textColor="@android:color/white"
+			    android:textSize="24sp"
+			    android:textStyle="bold"
+			    android:text="@string/movie_page_writers_title"/>
+
+		    <TextView
+			    android:id="@+id/writers_view"
+			    android:layout_marginTop="4dp"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:textColor="@android:color/white"
+			    android:textSize="16sp"
+			    tools:text="James Gunn, Dan Abnett (based on the Marvel comics by)"/>
+
+		    <LinearLayout
+			    android:id="@+id/plot_header"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="16dp"
+			    android:gravity="center_vertical"
+			    android:orientation="horizontal">
+
+			    <TextView
+				    android:layout_width="0dp"
+				    android:layout_weight="1"
+				    android:layout_height="wrap_content"
+				    android:textColor="@android:color/white"
+				    android:textSize="24sp"
+				    android:textStyle="bold"
+				    android:text="@string/movie_page_plot_title"/>
+
+			    <ImageView
+				    android:id="@+id/plot_toggle"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:padding="8dp"
+				    android:src="@drawable/ic_expand_more_white_24dp"/>
+
+		    </LinearLayout>
+
+		    <TextView
+			    android:visibility="gone"
+			    tools:visibility="visible"
+			    android:id="@+id/plot_view"
+			    android:layout_marginTop="4dp"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:textColor="@android:color/white"
+			    android:textSize="16sp"
+			    tools:text="After saving Xandar from Ronan's wrath, the Guardians are now recognized as heroes."/>
+
+	    </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 

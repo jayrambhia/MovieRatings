@@ -65,7 +65,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                         presenter?.setLiked(movie)
                     }
 
-                    override fun onClicked(movie: Movie, sharedElement: View) {
+                    override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
                         // TODO check for api compatibility
                         presenter?.openMovie(movie, sharedElement)
                     }
@@ -155,7 +155,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun showApiError() {
         showLoading(false)
-        ThemedSnackbar.make(view!!, R.string.search_page_api_error_content, Snackbar.LENGTH_SHORT).show()
+        showSnackbar(R.string.search_page_api_error_content)
     }
 
     override fun setData(movies: ArrayList<Movie>) {

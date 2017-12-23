@@ -17,6 +17,9 @@ interface MovieDao {
     @Query("SELECT * FROM MOVIES WHERE TITLE LIKE :title LIMIT 1")
     fun getMovie(title: String): Movie?
 
+    @Query("SELECT * FROM MOVIES WHERE IMDBID = :imdbId")
+    fun getMovieWithImdbId(imdbId: String): Movie?
+
     @Query("SELECT * FROM MOVIES as m INNER JOIN FAVS as f ON m.IMDBID == f.IMDBID WHERE f.IS_FAV == 1")
     fun getFavMovies(): List<Movie>
 }

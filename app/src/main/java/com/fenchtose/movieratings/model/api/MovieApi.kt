@@ -9,8 +9,11 @@ import retrofit2.http.Query
 
 interface MovieApi {
     @GET("/ ")
-    fun getMovieInfo(@Query("t") title: String, @Query("apikey") api: String) : Observable<Movie>
+    fun getMovieInfo(@Query("apikey") apiKey: String, @Query("t") title: String, @Query("plot") plot: String = "full") : Observable<Movie>
 
     @GET("/ ")
-    fun search(@Query("s") title: String, @Query("apikey") api: String) : Observable<SearchResult>
+    fun getMovieInfoWithImdb(@Query("apikey") apiKey: String, @Query("i") imdbId: String, @Query("plot") plot: String = "full") : Observable<Movie>
+
+    @GET("/ ")
+    fun search(@Query("apikey") apiKey: String, @Query("s") title: String) : Observable<SearchResult>
 }

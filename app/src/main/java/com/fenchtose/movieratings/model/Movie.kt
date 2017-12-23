@@ -42,7 +42,7 @@ class Movie {
 
     @ColumnInfo(name = "RELEASED")
     @SerializedName("Released")
-    var released: Date = Date()
+    var released: String = ""
 
     @ColumnInfo(name = "RUNTIME")
     @SerializedName("Runtime")
@@ -57,7 +57,7 @@ class Movie {
     var director: String = ""
 
     @ColumnInfo(name = "WRITERS")
-    @SerializedName("Writers")
+    @SerializedName("Writer", alternate = ["Writers"])
     var writers: String = ""
 
     @ColumnInfo(name = "ACTORS")
@@ -97,6 +97,22 @@ class Movie {
 
     override fun toString(): String {
         return "Movie(id='$id', title='$title', poster='$poster', ratings=$ratings)"
+    }
+
+    fun isComplete(): Boolean {
+        // Title, Year, ImdbId, Type and Poster are available in search. Let's check if at least 3 are available.
+        if (checkValid(title, year, imdbId, type, poster)) {
+            // check for others
+            return checkValid(rated, released, runtime, genre, language, actors, plot, website, writers)
+        }
+
+        return false
+    }
+
+    private fun checkValid(vararg fields: String?): Boolean {
+        return fields.filter {
+            !it.isNullOrEmpty()
+        }.size > fields.size/2
     }
 
     companion object {

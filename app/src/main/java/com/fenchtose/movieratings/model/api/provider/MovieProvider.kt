@@ -6,6 +6,7 @@ import com.fenchtose.movieratings.model.db.UserPreferneceApplier
 import io.reactivex.Observable
 
 interface MovieProvider {
+    fun getMovieWithImdb(imdbId: String): Observable<Movie>
     fun getMovie(title: String): Observable<Movie>
     fun search(title: String): Observable<SearchResult>
     fun addPreferenceApplier(applier: UserPreferneceApplier)

@@ -52,7 +52,7 @@ class LikesPageFragment: BaseFragment(), LikesPage {
                         presenter?.unlike(movie)
                     }
 
-                    override fun onClicked(movie: Movie, sharedElement: View) {
+                    override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
                         // TODO check for api compatibility
                         presenter?.openMovie(movie, sharedElement)
                     }
@@ -96,16 +96,13 @@ class LikesPageFragment: BaseFragment(), LikesPage {
     }
 
     private fun showMovieRemoved(movie: Movie, index: Int) {
-        root?.let {
-            ThemedSnackbar.makeWithAction(it,
-                    getString(R.string.movie_unliked_snackbar_content, movie.title),
-                    Snackbar.LENGTH_LONG,
-                    R.string.undo_action,
-                    View.OnClickListener {
-                        presenter?.undoUnlike(movie, index)
-                    })
-                    .show()
-        }
+        showSnackbarWithAction(
+                getString(R.string.movie_unliked_snackbar_content, movie.title),
+                R.string.undo_action,
+                View.OnClickListener {
+                    presenter?.undoUnlike(movie, index)
+                }
+        )
     }
 
     override fun canGoBack() = true

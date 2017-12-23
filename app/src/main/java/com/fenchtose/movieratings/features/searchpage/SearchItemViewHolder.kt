@@ -27,8 +27,9 @@ class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCa
 
         itemView.setOnClickListener {
             movie?.let {
-                ViewCompat.setTransitionName(imageView, "poster$adapterPosition")
-                callback?.onClicked(it, imageView)
+                val name = "poster$adapterPosition"
+                ViewCompat.setTransitionName(imageView, name)
+                callback?.onClicked(it, Pair(imageView, name))
             }
         }
     }

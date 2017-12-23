@@ -38,6 +38,6 @@ class SearchPageAdapter(context: Context,
 
     interface AdapterCallback {
         fun onLiked(movie: Movie)
-        fun onClicked(movie: Movie, sharedElement: View)
+        fun onClicked(movie: Movie, sharedElement: Pair<View, String>?)
     }
 }

@@ -17,24 +17,49 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     val analytics = MovieRatingsApplication.analyticsDispatcher
     private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
 
+    override fun getMovieWithImdb(imdbId: String): Observable<Movie> {
+        return getMovie(
+                { this.getMovieFromDbWithImdb(imdbId) },
+                { api.getMovieInfoWithImdb(BuildConfig.OMDB_API_KEY, imdbId) },
+                { analytics.sendEvent(Event("get_movie_online").putAttribute("imdb", imdbId)) }
+        )
+    }
+
     override fun getMovie(title: String): Observable<Movie> {
-        return getMovieFromDb(title)
+        return getMovie(
+                { this.getMovieFromDb(title) },
+                { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title) },
+                { analytics.sendEvent(Event("get_movie_online").putAttribute("title", title)) }
+        )
+    }
+
+    private fun getMovie(dbCall: () -> Observable<Movie>,
+                         apiCall: () -> Observable<Movie>,
+                         analyticsCall: () -> Unit): Observable<Movie> {
+
+        return dbCall()
                 .flatMap {
                     if (it.id != -1) {
                         Observable.just(it)
                     } else {
                         Observable.just(true)
                                 .doOnNext {
-                                    analytics.sendEvent(Event("get_movie_online").putAttribute("title", title))
+                                    analyticsCall()
                                 }.flatMap {
-                                    api.getMovieInfo(title, BuildConfig.OMDB_API_KEY)
-                                        .doOnNext {
-                                            dao.insert(it)
-                                        }
+                                    apiCall()
+                                    .doOnNext {
+                                        dao.insert(it)
+                                    }
                                 }
 
+                        }
+                }
+                .doOnNext {
+                    for (preferenceApplier in preferenceAppliers) {
+                        preferenceApplier.apply(it)
                     }
                 }
+
     }
 
     private fun getMovieFromDb(title: String): Observable<Movie> {
@@ -48,8 +73,19 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         }
     }
 
+    private fun getMovieFromDbWithImdb(imdbId: String): Observable<Movie> {
+        return Observable.defer {
+            val movie = dao.getMovieWithImdbId(imdbId)
+            if (movie != null && movie.isComplete()) {
+                Observable.just(movie)
+            } else {
+                Observable.just(Movie.empty())
+            }
+        }
+    }
+
     override fun search(title: String): Observable<SearchResult> {
-        return api.search(title, BuildConfig.OMDB_API_KEY)
+        return api.search(BuildConfig.OMDB_API_KEY, title)
                 .doOnNext {
                     it.results.map {
                         for (preferenceApplier in preferenceAppliers) {

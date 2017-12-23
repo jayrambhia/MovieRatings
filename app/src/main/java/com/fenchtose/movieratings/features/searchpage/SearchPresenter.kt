@@ -69,7 +69,7 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
         likeStore.setLiked(movie.imdbId, !movie.liked)
     }
 
-    fun openMovie(movie: Movie, sharedElement: View?) {
-        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement, "poster"))
+    fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
+        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
     }
 }

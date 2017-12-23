@@ -66,7 +66,7 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
         }
     }
 
-    fun openMovie(movie: Movie, sharedElement: View?) {
-        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement, "poster"))
+    fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
+        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
     }
 }
