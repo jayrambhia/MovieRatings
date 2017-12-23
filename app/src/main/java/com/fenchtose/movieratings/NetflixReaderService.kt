@@ -13,7 +13,8 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.preferences.SettingsPreference
+import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -23,7 +24,7 @@ class NetflixReaderService : AccessibilityService() {
 
     private var provider: MovieProvider? = null
 
-    private var preferences: SettingsPreference? = null
+    private var preferences: UserPreferences? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
     private val supportedPackages: Array<String> = arrayOf("com.netflix.mediaclient"/*, BuildConfig.APPLICATION_ID*/)
@@ -38,7 +39,7 @@ class NetflixReaderService : AccessibilityService() {
     override fun onCreate() {
         super.onCreate()
 
-        preferences = SettingsPreference(this)
+        preferences = SettingsPreferences(this)
         provider = MovieRatingsApplication.movieProviderModule.movieProvider
         analytics = MovieRatingsApplication.analyticsDispatcher
         displayer = RatingDisplayer(this, analytics!!, preferences!!)
@@ -71,7 +72,7 @@ class NetflixReaderService : AccessibilityService() {
         }
 
         preferences?.let {
-            if (!it.isAppEnabled(SettingsPreference.NETFLIX)) {
+            if (!it.isAppEnabled(UserPreferences.NETFLIX)) {
                 return
             }
         }

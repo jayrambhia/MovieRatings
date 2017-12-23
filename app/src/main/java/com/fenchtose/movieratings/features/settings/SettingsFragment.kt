@@ -12,7 +12,8 @@ import android.widget.TextView
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.model.preferences.SettingsPreference
+import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
@@ -23,7 +24,7 @@ class SettingsFragment: BaseFragment() {
     private var root: ViewGroup? = null
     private var updatePublisher: PublishSubject<Boolean>? = null
 
-    private var preferences: SettingsPreference? = null
+    private var preferences: UserPreferences? = null
 
     private var netflixToggle: SwitchCompat? = null
 
@@ -37,12 +38,12 @@ class SettingsFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val preferences = SettingsPreference(context)
+        val preferences = SettingsPreferences(context)
 
         val netflixToggle = view.findViewById<SwitchCompat>(R.id.netflix_toggle)
-        netflixToggle.isChecked = preferences.isAppEnabled(SettingsPreference.NETFLIX)
+        netflixToggle.isChecked = preferences.isAppEnabled(UserPreferences.NETFLIX)
         netflixToggle.setOnCheckedChangeListener {
-            _, isChecked ->  updatePreference(SettingsPreference.NETFLIX, isChecked)
+            _, isChecked ->  updatePreference(UserPreferences.NETFLIX, isChecked)
         }
 
         this.preferences = preferences

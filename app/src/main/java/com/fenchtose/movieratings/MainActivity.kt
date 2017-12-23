@@ -45,8 +45,7 @@ class MainActivity : AppCompatActivity() {
 
     private var analytics: AnalyticsDispatcher? = null
 
-    private var menu: Menu? = null
-    private var menuIcons: ArrayList<Int> = ArrayList()
+    private var visibleMenuItems: IntArray? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,10 +111,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
-        this.menu = menu
-        menuIcons.add(R.id.action_settings)
-        menuIcons.add(R.id.action_fav)
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        visibleMenuItems?.let {
+            val pathIcons = it
+            menu?.let {
+                (0 until it.size())
+                        .map { i -> it.getItem(i) }
+                        .forEach { it.isVisible = it.itemId in pathIcons }
+            }
+        }
+
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -131,12 +140,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateMenuItems(path: RouterPath<out BaseFragment>) {
-        if (menu != null) {
-            val pathIcons = path.showMenuIcons()
-            menuIcons.map {
-                menu?.findItem(it)?.setVisible(it in pathIcons)
-            }
-        }
+        this.visibleMenuItems = path.showMenuIcons()
+        invalidateOptionsMenu()
     }
 
     private fun showSearchPage() {

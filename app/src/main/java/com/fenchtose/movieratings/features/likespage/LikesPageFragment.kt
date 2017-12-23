@@ -5,6 +5,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
@@ -14,9 +15,11 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.DbFavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
+import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.widgets.ThemedSnackbar
 
 class LikesPageFragment: BaseFragment(), LikesPage {
@@ -31,10 +34,12 @@ class LikesPageFragment: BaseFragment(), LikesPage {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
         val dao = MovieRatingsApplication.database.movieDao()
         val favoriteProvider = DbFavoriteMovieProvider(dao)
         val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
-        presenter = LikesPresenter(favoriteProvider, likeStore)
+        val userPreferences = SettingsPreferences(context)
+        presenter = LikesPresenter(favoriteProvider, likeStore, userPreferences)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -77,6 +82,18 @@ class LikesPageFragment: BaseFragment(), LikesPage {
         presenter?.detachView(this)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        var consumed = true
+        when(item?.itemId) {
+            R.id.action_sort_alphabetically -> presenter?.sort(Sort.ALPHABETICAL)
+//            R.id.action_sort_genre -> presenter?.sort(Sort.GENRE)
+            R.id.action_sort_year -> presenter?.sort(Sort.YEAR)
+            else -> consumed = false
+        }
+
+        return if (consumed) true else super.onOptionsItemSelected(item)
+    }
+
     override fun setData(movies: ArrayList<Movie>) {
         recyclerView?.visibility = View.VISIBLE
         adapter?.data = movies
@@ -110,6 +127,10 @@ class LikesPageFragment: BaseFragment(), LikesPage {
     class LikesPath : RouterPath<LikesPageFragment>() {
         override fun createFragmentInstance(): LikesPageFragment {
             return LikesPageFragment()
+        }
+
+        override fun showMenuIcons(): IntArray {
+            return intArrayOf(R.id.action_sort)
         }
     }
 }

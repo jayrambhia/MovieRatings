@@ -5,15 +5,24 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.FavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class LikesPresenter(private val provider: FavoriteMovieProvider, private val likeStore: LikeStore) : Presenter<LikesPage>() {
+class LikesPresenter(private val provider: FavoriteMovieProvider, private val likeStore: LikeStore,
+                     private val userPreferences: UserPreferences) : Presenter<LikesPage>() {
 
-    var data: ArrayList<Movie>? = null
+    private var data: ArrayList<Movie>? = null
+    private var currentSort: Sort = userPreferences.getLatestLikeSort()
+
+        set(value) {
+        field = value
+        userPreferences.setLatestLikeSort(value)
+    }
 
     override fun attachView(view: LikesPage) {
         super.attachView(view)
@@ -24,10 +33,12 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
         val d = provider.getMovies()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .map {
+                    getSorted(currentSort, it)
+                }
                 .subscribeBy(
                         onNext = {
-                            data = it
-                            getView()?.setData(it)
+                            updateData(it)
                         },
                         onError = {
                             data = null
@@ -36,6 +47,11 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
                 )
 
         subscribe(d)
+    }
+
+    private fun updateData(data: ArrayList<Movie>) {
+        this.data = data
+        getView()?.setData(data)
     }
 
     fun unlike(movie: Movie) {
@@ -68,5 +84,23 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
         MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
+    }
+
+    fun sort(type: Sort) {
+
+        if (type == currentSort) {
+            return
+        }
+
+        data?.let {
+            updateData(getSorted(type, it))
+            currentSort = type
+        }
+    }
+
+    private fun getSorted(type: Sort, data: ArrayList<Movie>): ArrayList<Movie> = when(type) {
+        Sort.YEAR -> data.sortedWith(compareByDescending { it.year }).toList() as ArrayList<Movie>
+        Sort.ALPHABETICAL -> data.sortedBy { it.title }.toList() as ArrayList<Movie>
+        else -> data
     }
 }

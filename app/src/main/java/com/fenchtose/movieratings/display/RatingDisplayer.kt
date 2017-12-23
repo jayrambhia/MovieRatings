@@ -13,13 +13,13 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.features.stickyview.FloatingRatingView
 import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.preferences.SettingsPreference
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.ToastUtils
 import java.lang.ref.WeakReference
 
-class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private val preferences: SettingsPreference) {
+class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private val preferences: UserPreferences) {
     private val context: Context = ctx.applicationContext
 
     private val TAG = "RatingDisplayer"
