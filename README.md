@@ -2,7 +2,7 @@
 ![status](https://travis-ci.org/jayrambhia/MovieRatings.svg?branch=master)
 
 <p align="center">
-<img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png"/>
+<img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png" width="480px"/>
 </p>
 
 ## Note
@@ -10,14 +10,32 @@ Flutter has been **unpublished** from Google Playstore. It uses accessibility se
 
 You can get the latest Playstore version here - [0.1.4](https://github.com/jayrambhia/MovieRatings/releases/download/v0.1.4/flutter_v0.1.4.apk)
 
-## Master
+## Screenshots of master
 
 Search Page | Favorites Page | Movie Page
-:----------:|:--------------:|:----------
+:----------:|:--------------:|:----------: 
 ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/search_screen.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/likes_screen.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/movie_screen.png)
 
 
+## Contribute
+
+Contributions are welcome!
+
+To build the project, create `local.properties` in the base directory if it does not exist and add following line to it.
+
+```
+omdb_api_key=<API_KEY>
+```
+
+You can get your API key here - [OMDB API Key](http://www.omdbapi.com/apikey.aspx)
+
+If you don't have an API key, you can use `omdb_api_key=""` and the project will use `PreloadedMovieProvider` in debug build. It will return search results for `thor` and `batman` only.
+
 ## Playstore description
+
+<p align="center">
+<img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/playstore_logo.png" width="160px"/>
+</p>
 
 Flutter is a smart app that helps you decide what to watch on streaming apps like Netflix 🎥! It shows movie ratings ⭐ on your screen making sure that you don't even have to search 🔎 for it. It's ad-free and promotion-free.
 
@@ -52,17 +70,3 @@ Open Movie Database has ratings gathered from various popular websites like Imdb
 Flutter is not endorsed by or affiliated with Imdb.com, Netflix.com or omdbapi.com
 
 -----
-
-## Contribute
-
-Contributions are welcome!
-
-To build the project, create `local.properties` in the base directory if it does not exist and add following line to it.
-
-```
-omdb_api_key=<API_KEY>
-```
-
-You can get your API key here - [OMDB API Key](http://www.omdbapi.com/apikey.aspx)
-
-If you don't have an API key, you can use `omdb_api_key=""` and the project will use `PreloadedMovieProvider` in debug build. It will return search results for `thor` and `batman` only.
