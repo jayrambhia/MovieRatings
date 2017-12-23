@@ -10,6 +10,10 @@ import io.reactivex.Observable
 
 class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieProvider {
 
+    override fun getMovieWithImdb(imdb: String): Observable<Movie> {
+        throw RuntimeException("PreloadedMovieProvider should not be used in release")
+    }
+
     override fun getMovie(title: String): Observable<Movie> {
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }

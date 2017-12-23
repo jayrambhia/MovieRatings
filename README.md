@@ -1,5 +1,5 @@
 # Flutter - Movie Ratings
-<img src="https://travis-ci.org/jayrambhia/MovieRatings.svg?branch=master"/>
+![status](https://travis-ci.org/jayrambhia/MovieRatings.svg?branch=master)
 
 <p align="center">
 <img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png"/>
