@@ -34,6 +34,12 @@
 
     </item>
 
+	<item
+		android:id="@+id/action_info"
+		android:title="@string/menu_action_info"
+		android:icon="@drawable/ic_info_outline_white_24dp"
+		app:showAsAction="always"/>
+
     <item
         android:id="@+id/action_settings"
         android:title="@string/menu_action_settings"

@@ -133,6 +133,7 @@ class MainActivity : AppCompatActivity() {
             android.R.id.home -> onBackPressed()
             R.id.action_settings -> showSettingsPage()
             R.id.action_fav -> showFavoritesPage()
+            R.id.action_info -> showInfoPage()
             else -> consumed = false
         }
 

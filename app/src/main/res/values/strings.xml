@@ -36,6 +36,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="menu_action_sort_alphabetically">A-Z</string>
 	<string name="menu_action_sort_genre">Genre</string>
 	<string name="menu_action_sort_year">Year</string>
+	<string name="menu_action_info">Info</string>
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
