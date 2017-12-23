@@ -10,6 +10,13 @@ Flutter has been **unpublished** from Google Playstore. It uses accessibility se
 
 You can get the latest Playstore version here - [0.1.4](https://github.com/jayrambhia/MovieRatings/releases/download/v0.1.4/flutter_v0.1.4.apk)
 
+## Master
+
+Search Page | Favorites Page | Movie Page
+:----------:|:--------------:|:----------
+![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/search_screen.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/likes_screen.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/movie_screen.png)
+
+
 ## Playstore description
 
 Flutter is a smart app that helps you decide what to watch on streaming apps like Netflix 🎥! It shows movie ratings ⭐ on your screen making sure that you don't even have to search 🔎 for it. It's ad-free and promotion-free.
