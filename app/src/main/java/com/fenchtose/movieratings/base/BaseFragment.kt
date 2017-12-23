@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.base
 
 import android.os.Bundle
-import android.support.annotation.IdRes
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -43,12 +42,6 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
                     actionResId,
                     listener
             ).show()
-        }
-    }
-
-    fun <T: View> Fragment.bind(@IdRes idRes: Int): Lazy<T> {
-        return lazy {
-            view!!.findViewById<T>(idRes)
         }
     }
 }

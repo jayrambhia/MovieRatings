@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.features.searchpage
 
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL
@@ -21,7 +20,6 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
-import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject

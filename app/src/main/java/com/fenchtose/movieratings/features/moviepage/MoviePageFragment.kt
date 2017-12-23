@@ -28,37 +28,29 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     var movie: Movie? = null
 
-    private val posterView by bind<ImageView>(R.id.poster_view)
-    private val ratingView by bind<TextView>(R.id.rating_view)
-    private val titleView by bind<TextView>(R.id.title_view)
-    private val genreView by bind<TextView>(R.id.genre_view)
-    private val directorView by bind<TextView>(R.id.director_view)
-    private val releasedView by bind<TextView>(R.id.released_view)
-    private val actorsHeader by bind<TextView>(R.id.actors_header)
-    private val actorsView by bind<TextView>(R.id.actors_view)
-    private val writersHeader by bind<TextView>(R.id.writers_header)
-    private val writersView by bind<TextView>(R.id.writers_view)
+    private var posterView: ImageView? = null
+    private var ratingView: TextView? = null
+    private var titleView: TextView? = null
+    private var genreView: TextView? = null
+    private var directorView: TextView? = null
+    private var releasedView:TextView? = null
+    private var actorsHeader:TextView? = null
+    private var actorsView:TextView? = null
+    private var writersHeader:TextView? = null
+    private var writersView:TextView? = null
 
-    private val plotHeader by bind<LinearLayout>(R.id.plot_header)
-    private val plotToggle by bind<ImageView>(R.id.plot_toggle)
-    private val plotView by bind<TextView>(R.id.plot_view)
+    private var plotHeader:LinearLayout? = null
+    private var plotToggle:ImageView? = null
+    private var plotView:TextView? = null
 
-    private val fab by bind<FloatingActionButton>(R.id.fab)
+    private var fab: FloatingActionButton? = null
 
     private var isTransitionPostponeStarted = false
     private var isPosterLoaded = false
 
-    private val actorSection by lazy {
-        TextSection(actorsHeader, actorsView)
-    }
-
-    private val writerSection by lazy {
-        TextSection(writersHeader, writersView)
-    }
-
-    private val plotSection by lazy {
-        ExpandableSection(plotHeader, plotToggle, plotView)
-    }
+    private var actorSection: TextSection? = null
+    private var writerSection: TextSection? = null
+    private var plotSection: ExpandableSection? = null
 
     private var presenter: MoviePresenter? = null
 
@@ -80,6 +72,28 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        posterView = view.findViewById(R.id.poster_view)
+        ratingView = view.findViewById(R.id.rating_view)
+        titleView = view.findViewById(R.id.title_view)
+        genreView = view.findViewById(R.id.genre_view)
+        directorView = view.findViewById(R.id.director_view)
+        releasedView = view.findViewById(R.id.released_view)
+        actorsHeader = view.findViewById(R.id.actors_header)
+        actorsView = view.findViewById(R.id.actors_view)
+        writersHeader = view.findViewById(R.id.writers_header)
+        writersView = view.findViewById(R.id.writers_view)
+
+        plotHeader = view.findViewById(R.id.plot_header)
+        plotToggle = view.findViewById(R.id.plot_toggle)
+        plotView = view.findViewById(R.id.plot_view)
+
+        fab = view.findViewById(R.id.fab)
+
+        actorSection = TextSection(actorsHeader, actorsView!!)
+        writerSection = TextSection(writersHeader, writersView!!)
+        plotSection = ExpandableSection(plotHeader, plotToggle!!, plotView!!)
+
+
         presenter?.attachView(this)
     }
 
@@ -89,19 +103,19 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     }
 
     override fun showMovie(movie: Movie) {
-        titleView.text = movie.title
-        genreView.text = movie.genre
+        titleView?.text = movie.title
+        genreView?.text = movie.genre
         if (movie.ratings.size > 0) {
             setRating(movie.ratings[0].value)
         } else {
-            ratingView.visibility = View.GONE
+            ratingView?.visibility = View.GONE
         }
 
-        directorView.text = getString(R.string.movie_page_direct_by, movie.director)
-        releasedView.text = getString(R.string.movie_page_released_on, movie.released)
-        actorSection.setContent(movie.actors)
-        writerSection.setContent(movie.writers)
-        plotSection.setContent(movie.plot)
+        directorView?.text = getString(R.string.movie_page_direct_by, movie.director)
+        releasedView?.text = getString(R.string.movie_page_released_on, movie.released)
+        actorSection?.setContent(movie.actors)
+        writerSection?.setContent(movie.writers)
+        plotSection?.setContent(movie.plot)
 
         if (!isPosterLoaded) {
             loadImage(movie.poster)
@@ -109,20 +123,24 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
         setLiked(movie.liked)
 
-        fab.setOnClickListener {
+        fab?.setOnClickListener {
             val isLiked = presenter?.likeToggle()
             setLiked(isLiked)
         }
     }
 
     override fun loadImage(poster: String) {
+        if (posterView == null) {
+            return
+        }
+
         val handler = Handler()
 
         path?.getSharedTransitionElement()?.let {
             ViewCompat.setTransitionName(posterView, it.second)
         }
 
-        imageLoader.loadImage(poster, posterView, object : ImageLoader.Callback {
+        imageLoader.loadImage(poster, posterView!!, object : ImageLoader.Callback {
             override fun imageLoaded(image: String, view: ImageView) {
                 isPosterLoaded = true
                 handler.postDelayed({
@@ -132,9 +150,9 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                         isTransitionPostponeStarted = true
                     }
 
-                    val params = posterView.layoutParams as CoordinatorLayout.LayoutParams
+                    val params = posterView?.layoutParams as CoordinatorLayout.LayoutParams
                     params.behavior = PosterBehavior()
-                    posterView.layoutParams = params
+                    posterView?.layoutParams = params
 
                 } , 60)
 
@@ -151,19 +169,19 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     private fun setLiked(isLiked: Boolean?) {
         isLiked?.let {
-            fab.setImageResource(if (it) R.drawable.ic_favorite_onyx_24dp else R.drawable.ic_favorite_border_onyx_24dp)
+            fab?.setImageResource(if (it) R.drawable.ic_favorite_onyx_24dp else R.drawable.ic_favorite_border_onyx_24dp)
         }
     }
 
     private fun setRating(score: String) {
         val text = SpannableString(score)
         text.setSpan(RelativeSizeSpan(2f), 0, score.indexOfFirst { it == '/' }, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-        ratingView.text = text
+        ratingView?.text = text
 
-        val params = ratingView.layoutParams as CoordinatorLayout.LayoutParams
+        val params = ratingView?.layoutParams as CoordinatorLayout.LayoutParams
         params.behavior = RatingBehavior(context)
-        ratingView.layoutParams = params
-        ratingView.visibility = View.VISIBLE
+        ratingView?.layoutParams = params
+        ratingView?.visibility = View.VISIBLE
     }
 
     override fun canGoBack(): Boolean {
