@@ -1,85 +1,31 @@
 package com.fenchtose.movieratings.features.likespage
 
-import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.DbFavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
-import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
-import com.fenchtose.movieratings.widgets.ThemedSnackbar
 
-class LikesPageFragment: BaseFragment(), LikesPage {
+class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(), LikesPage {
 
     override fun getScreenTitle() = R.string.likes_page_title
 
-    private var root: ViewGroup? = null
-    private var recyclerView: RecyclerView? = null
-    private var adapter: SearchPageAdapter? = null
-
-    private var presenter: LikesPresenter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreated() {
         setHasOptionsMenu(true)
+    }
+
+    override fun createPresenter(): LikesPresenter {
         val dao = MovieRatingsApplication.database.movieDao()
         val favoriteProvider = DbFavoriteMovieProvider(dao)
         val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
         val userPreferences = SettingsPreferences(context)
-        presenter = LikesPresenter(favoriteProvider, likeStore, userPreferences)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        root = inflater.inflate(R.layout.likes_page_layout, container, false) as ViewGroup
-        return root!!
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.recyclerview)
-
-        val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),
-                object : SearchPageAdapter.AdapterCallback {
-                    override fun onLiked(movie: Movie) {
-                        presenter?.unlike(movie)
-                    }
-
-                    override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                        // TODO check for api compatibility
-                        presenter?.openMovie(movie, sharedElement)
-                    }
-                })
-
-        adapter.setHasStableIds(true)
-
-        recyclerView?.let {
-            it.adapter = adapter
-            it.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            it.visibility = View.GONE
-        }
-
-        this.adapter = adapter
-
-        presenter?.attachView(this)
-
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.detachView(this)
+        return LikesPresenter(favoriteProvider, likeStore, userPreferences)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -92,12 +38,6 @@ class LikesPageFragment: BaseFragment(), LikesPage {
         }
 
         return if (consumed) true else super.onOptionsItemSelected(item)
-    }
-
-    override fun setData(movies: ArrayList<Movie>) {
-        recyclerView?.visibility = View.VISIBLE
-        adapter?.data = movies
-        adapter?.notifyDataSetChanged()
     }
 
     override fun showRemoved(movie: Movie, index: Int) {

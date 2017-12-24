@@ -8,23 +8,26 @@ import android.arch.persistence.room.migration.Migration
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.Fav
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.RecentlyBrowsed
 import com.fenchtose.movieratings.model.db.dao.FavDao
 import com.fenchtose.movieratings.model.db.dao.MovieDao
+import com.fenchtose.movieratings.model.db.dao.RecentlyBrowsedDao
 
-@Database(entities = [(Movie::class), (Fav::class)], version = 2)
+@Database(entities = [(Movie::class), (Fav::class), (RecentlyBrowsed::class)], version = 3)
 abstract class MovieDb : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
     abstract fun favDao(): FavDao
+    abstract fun recentlyBrowsedDao(): RecentlyBrowsedDao
 
     companion object {
         val instance: MovieDb by lazy {
             Room.databaseBuilder(MovieRatingsApplication.instance!!, MovieDb::class.java, "ex")
-                    .addMigrations(MIGRATION_1to_2)
+                    .addMigrations(MIGRATION_1_to_2, MIGRATION_2_to_3)
                     .build()
         }
 
-        private val MIGRATION_1to_2 = object: Migration(1, 2) {
+        private val MIGRATION_1_to_2 = object: Migration(1, 2) {
             override fun migrate(_db: SupportSQLiteDatabase) {
                 // Drop old tables
 
@@ -37,6 +40,12 @@ abstract class MovieDb : RoomDatabase() {
                 _db.execSQL("CREATE TABLE IF NOT EXISTS `FAVS` (`IMDBID` TEXT NOT NULL, `IS_FAV` INTEGER NOT NULL, PRIMARY KEY(`IMDBID`))")
                 _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)")
                 _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"06cf262ae10bd31d52a98bdd65653276\")")
+            }
+        }
+
+        private val MIGRATION_2_to_3 = object: Migration(2, 3) {
+            override fun migrate(_db: SupportSQLiteDatabase) {
+                _db.execSQL("CREATE TABLE IF NOT EXISTS `RECENTLY_BROWSED` (`IMDBID` TEXT NOT NULL, `TIMESTAMP` INTEGER NOT NULL, PRIMARY KEY(`IMDBID`))")
             }
         }
     }

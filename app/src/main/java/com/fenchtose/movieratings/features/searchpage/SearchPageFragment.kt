@@ -187,7 +187,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
 
         override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_info, R.id.action_fav)
+            return intArrayOf(R.id.action_info, R.id.action_fav, R.id.action_history)
         }
 
         override fun showBackButton() = false

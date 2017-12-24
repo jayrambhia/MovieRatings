@@ -21,6 +21,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
+import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 
@@ -64,6 +65,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         postponeEnterTransition()
         presenter = MoviePresenter(MovieRatingsApplication.movieProviderModule.movieProvider,
                 DbLikeStore(MovieRatingsApplication.database.favDao()),
+                DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()),
                 movie?.imdbId, movie)
     }
 

@@ -2,13 +2,18 @@ package com.fenchtose.movieratings.features.moviepage
 
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.RecentlyBrowsed
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
+import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class MoviePresenter(private val provider: MovieProvider, private val likeStore: LikeStore,
-                     private val imdbId: String?, private val movie: Movie?): Presenter<MoviePage>() {
+class MoviePresenter(private val provider: MovieProvider,
+                     private val likeStore: LikeStore,
+                     private val recentStore: RecentlyBrowsedStore,
+                     private val imdbId: String?,
+                     private val movie: Movie?): Presenter<MoviePage>() {
 
     private var loadedMovie: Movie? = null
 
@@ -52,6 +57,14 @@ class MoviePresenter(private val provider: MovieProvider, private val likeStore:
     private fun showMovie(movie: Movie) {
         loadedMovie = movie
         getView()?.showMovie(movie)
+        updateRecent(movie.imdbId)
+    }
+
+    private fun updateRecent(imdbId: String) {
+        val recent = RecentlyBrowsed()
+        recent.id = imdbId
+        recent.timestamp = System.currentTimeMillis()
+        recentStore.update(recent)
     }
 
     fun likeToggle(): Boolean {

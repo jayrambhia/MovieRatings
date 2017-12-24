@@ -5,6 +5,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.RecentlyBrowsedMovie
 
 @Dao
 interface MovieDao {
@@ -22,4 +23,7 @@ interface MovieDao {
 
     @Query("SELECT * FROM MOVIES as m INNER JOIN FAVS as f ON m.IMDBID == f.IMDBID WHERE f.IS_FAV == 1")
     fun getFavMovies(): List<Movie>
+
+    @Query("SELECT * FROM RECENTLY_BROWSED ORDER BY TIMESTAMP DESC")
+    fun getRecentlyBrowsedMovies(): List<RecentlyBrowsedMovie>
 }

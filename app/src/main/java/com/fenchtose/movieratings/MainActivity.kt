@@ -18,6 +18,7 @@ import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
+import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
@@ -134,6 +135,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> showSettingsPage()
             R.id.action_fav -> showFavoritesPage()
             R.id.action_info -> showInfoPage()
+            R.id.action_history -> showRecentlyBrowsedPage()
             else -> consumed = false
         }
 
@@ -164,6 +166,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showFavoritesPage() {
         router?.go(LikesPageFragment.LikesPath())
+    }
+
+    private fun showRecentlyBrowsedPage() {
+        router?.go(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
     }
 
     private fun onAccessibilityActivated() {
