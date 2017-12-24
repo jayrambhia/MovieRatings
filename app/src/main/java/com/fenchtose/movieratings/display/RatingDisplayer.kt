@@ -2,6 +2,7 @@ package com.fenchtose.movieratings.display
 
 import android.content.Context
 import android.graphics.PixelFormat
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.DisplayMetrics
@@ -48,7 +49,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
         ratingView.get()?.let {
             it.movie = movie
 
-            if (it.parent == null) {
+            if (it.parent != null) {
                 return
             }
 
@@ -69,9 +70,11 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
 
         val width = (136*dm.density).toInt()
 
+        val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_PHONE
+
         val params = WindowManager.LayoutParams(width, WindowManager.LayoutParams.WRAP_CONTENT ,
                 dm.widthPixels-width, (180*dm.density).toInt(),
-                WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                layoutFlag, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT)
 
         return try {
