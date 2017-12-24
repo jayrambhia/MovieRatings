@@ -38,7 +38,7 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
                 }
                 .subscribeBy(
                         onNext = {
-                            updateData(it)
+                            updateData(ArrayList(it))
                         },
                         onError = {
                             data = null
@@ -93,14 +93,14 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
         }
 
         data?.let {
-            updateData(getSorted(type, it))
+            updateData(ArrayList(getSorted(type, it)))
             currentSort = type
         }
     }
 
-    private fun getSorted(type: Sort, data: ArrayList<Movie>): ArrayList<Movie> = when(type) {
-        Sort.YEAR -> data.sortedWith(compareByDescending { it.year }).toList() as ArrayList<Movie>
-        Sort.ALPHABETICAL -> data.sortedBy { it.title }.toList() as ArrayList<Movie>
+    private fun getSorted(type: Sort, data: ArrayList<Movie>): List<Movie> = when(type) {
+        Sort.YEAR -> data.sortedWith(compareByDescending { it.year })
+        Sort.ALPHABETICAL -> data.sortedBy { it.title }
         else -> data
     }
 }
