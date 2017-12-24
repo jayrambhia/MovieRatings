@@ -12,7 +12,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 
 ext.versionMajor = 0
 ext.versionMinor = 1
-ext.versionPatch = 5
+ext.versionPatch = 6
 
 android {
     compileSdkVersion 26
