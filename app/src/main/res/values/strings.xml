@@ -38,6 +38,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="menu_action_sort_genre">Genre</string>
 	<string name="menu_action_sort_year">Year</string>
 	<string name="menu_action_info">Info</string>
+	<string name="menu_action_collection">Collections</string>
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
@@ -74,5 +75,14 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_page_load_error">Unable to load movie info</string>
 
 	<string name="recently_browsed_page_title">Recently browsed</string>
+
+	<string name="movie_collection_list_page_title">Your collections</string>
+	<string name="movie_collection_list_page_selection_title">Select a collection</string>
+	<string name="movie_collection_list_empty_content">You don\'t have any collections. Create new collections and add movies to soothe your OCD</string>
+	<string name="movie_collection_list_empty_content_cta">Create new collection</string>
+
+	<string name="movie_collection_create_dialog_title">Create a new movie collection</string>
+	<string name="movie_collection_create_dialog_hint">Collection name</string>
+	<string name="movie_collection_create_dialog_positive_cta">Create</string>
 
 </resources>

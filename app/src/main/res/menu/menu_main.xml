@@ -14,6 +14,12 @@
         android:icon="@drawable/ic_favorite_white_24dp"
         app:showAsAction="always"/>
 
+	<item
+		android:id="@+id/action_collection"
+		android:title="@string/menu_action_collection"
+		android:icon="@drawable/ic_collections_white_24dp"
+		app:showAsAction="always"/>
+
     <item
         android:id="@+id/action_sort"
         android:title="@string/menu_action_sort"

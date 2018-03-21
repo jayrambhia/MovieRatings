@@ -6,24 +6,25 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.migration.Migration
 import com.fenchtose.movieratings.MovieRatingsApplication
-import com.fenchtose.movieratings.model.Fav
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.RecentlyBrowsed
+import com.fenchtose.movieratings.model.*
+import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.db.dao.FavDao
+import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import com.fenchtose.movieratings.model.db.dao.RecentlyBrowsedDao
 
-@Database(entities = [(Movie::class), (Fav::class), (RecentlyBrowsed::class)], version = 3)
+@Database(entities = [(Movie::class), (Fav::class), (RecentlyBrowsed::class), (MovieCollection::class), (MovieCollectionEntry::class)], version = 4)
 abstract class MovieDb : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
     abstract fun favDao(): FavDao
     abstract fun recentlyBrowsedDao(): RecentlyBrowsedDao
+    abstract fun movieCollectionDao(): MovieCollectionDao
 
     companion object {
         val instance: MovieDb by lazy {
             Room.databaseBuilder(MovieRatingsApplication.instance!!, MovieDb::class.java, "ex")
-                    .addMigrations(MIGRATION_1_to_2, MIGRATION_2_to_3)
+                    .addMigrations(MIGRATION_1_to_2, MIGRATION_2_to_3, MIGRATION_3_to_4)
                     .build()
         }
 
@@ -46,6 +47,13 @@ abstract class MovieDb : RoomDatabase() {
         private val MIGRATION_2_to_3 = object: Migration(2, 3) {
             override fun migrate(_db: SupportSQLiteDatabase) {
                 _db.execSQL("CREATE TABLE IF NOT EXISTS `RECENTLY_BROWSED` (`IMDBID` TEXT NOT NULL, `TIMESTAMP` INTEGER NOT NULL, PRIMARY KEY(`IMDBID`))")
+            }
+        }
+
+        private val MIGRATION_3_to_4 = object: Migration(3, 4) {
+            override fun migrate(_db: SupportSQLiteDatabase) {
+                _db.execSQL("CREATE TABLE IF NOT EXISTS `COLLECTIONS` (`COLLECTION_ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `COLLECTION_NAME` TEXT NOT NULL, `CREATED_AT` INTEGER NOT NULL, `UPDATED_AT` INTEGER NOT NULL, `IS_DELETED` INTEGER NOT NULL)")
+                _db.execSQL("CREATE TABLE IF NOT EXISTS `COLLECTION_ENTRIES` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `COLLECTION_ID` INTEGER NOT NULL, `IMDBID` TEXT NOT NULL, `CREATED_AT` INTEGER NOT NULL, `UPDATED_AT` INTEGER NOT NULL, `IS_DELETED` INTEGER NOT NULL)")
             }
         }
     }

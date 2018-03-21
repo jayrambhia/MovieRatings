@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto">
+
+	<LinearLayout
+		android:id="@+id/empty_state_view"
+		android:visibility="gone"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:gravity="center_horizontal"
+		android:orientation="vertical">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="32dp"
+			android:gravity="center"
+			android:text="@string/movie_collection_list_empty_content"/>
+
+		<Button
+			android:id="@+id/empty_cta"
+			style="@style/Widget.AppCompat.Button.Borderless.Colored"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/movie_collection_list_empty_content_cta"/>
+
+	</LinearLayout>
+
+	<android.support.v7.widget.RecyclerView
+		android:visibility="gone"
+		android:id="@+id/recyclerview"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"/>
+
+	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/fab"
+		android:visibility="gone"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom|end"
+		android:layout_margin="16dp"
+		app:elevation="4dp"
+		app:fabSize="normal"
+		android:src="@drawable/ic_playlist_add_white_24dp"/>
+
+</FrameLayout>
