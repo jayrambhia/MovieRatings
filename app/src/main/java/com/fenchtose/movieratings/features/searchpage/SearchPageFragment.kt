@@ -39,6 +39,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
 
+    private var state: SearchPage.State = SearchPage.State(SearchPage.Ui.DEFAULT)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
@@ -140,7 +142,20 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         return R.string.search_page_title
     }
 
-    override fun showLoading(status: Boolean) {
+    override fun updateState(state: SearchPage.State) {
+        if (this.state == state) {
+            return
+        }
+
+        when (state.ui) {
+            SearchPage.Ui.DEFAULT -> clearQuery()
+            SearchPage.Ui.LOADING -> showLoading(true)
+            SearchPage.Ui.DATA_LOADED -> setData(state.movies)
+            SearchPage.Ui.ERROR -> showApiError()
+        }
+    }
+
+    private fun showLoading(status: Boolean) {
         if (status) {
             progressbar?.visibility = View.VISIBLE
             attributeView?.visibility = View.GONE
@@ -151,12 +166,12 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
     }
 
-    override fun showApiError() {
+    private fun showApiError() {
         showLoading(false)
         showSnackbar(R.string.search_page_api_error_content)
     }
 
-    override fun setData(movies: ArrayList<Movie>) {
+    private fun setData(movies: ArrayList<Movie>) {
         showLoading(false)
         adapter?.data = movies
         adapter?.notifyDataSetChanged()
@@ -173,7 +188,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         clearButton?.visibility = View.GONE
     }
 
-    override fun clearData() {
+    private fun clearData() {
         adapter?.data = ArrayList()
         adapter?.notifyDataSetChanged()
         recyclerView?.post {

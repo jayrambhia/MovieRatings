@@ -23,18 +23,18 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
     override fun attachView(view: SearchPage) {
         super.attachView(view)
         data?.let {
-            getView()?.setData(it)
+            updateData(it)
         }
     }
 
     fun onSearchRequested(query: String) {
 
         if (currentQuery == query && data != null) {
-            getView()?.setData(data!!)
+            updateData(data!!)
             return
         }
 
-        getView()?.showLoading(true)
+        updateState(SearchPage.Ui.LOADING)
 
         currentQuery = query
 
@@ -43,21 +43,33 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onNext = {
-                            if (it.success) {
-                                getView()?.setData(it.results)
-                                data = it.results
+                            data = if (it.success) {
+                                updateData(it.results)
+                                it.results
                             } else {
-                                data = null
+                                null
                             }
                         },
                         onError = {
                             it.printStackTrace()
                             data = null
-                            getView()?.showApiError()
+                            updateState(SearchPage.Ui.ERROR)
                         }
                 )
 
         subscribe(d)
+    }
+
+    private fun updateData(movies: ArrayList<Movie>) {
+        updateState(SearchPage.State(SearchPage.Ui.DATA_LOADED, movies))
+    }
+
+    private fun updateState(state: SearchPage.Ui) {
+        updateState(SearchPage.State(state))
+    }
+
+    private fun updateState(state: SearchPage.State) {
+        getView()?.updateState(state)
     }
 
     fun onQueryCleared() {

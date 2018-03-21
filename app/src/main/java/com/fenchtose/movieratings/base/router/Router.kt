@@ -3,7 +3,6 @@ package com.fenchtose.movieratings.base.router
 import android.os.Build
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
-import android.transition.Fade
 import android.util.Log
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
@@ -87,9 +86,12 @@ class Router(activity: AppCompatActivity) {
         }
 
         transaction.commit()
-        titlebar?.setTitle(fragment.getScreenTitle())
-        titlebar?.setDisplayShowHomeEnabled(path.showBackButton())
-        titlebar?.setDisplayHomeAsUpEnabled(path.showBackButton())
+        titlebar?.let {
+            it.setTitle(fragment.getScreenTitle())
+            it.setDisplayShowHomeEnabled(path.showBackButton())
+            it.setDisplayHomeAsUpEnabled(path.showBackButton())
+        }
+
         callback?.movedTo(path)
     }
 
