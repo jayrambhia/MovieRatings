@@ -12,6 +12,10 @@ class ThemedSnackbar {
             return Snackbar.make(view, resId, duration)
         }
 
+        fun make(view: View, content: CharSequence, duration: Int): Snackbar {
+            return Snackbar.make(view, content, duration)
+        }
+
         fun makeWithAction(view: View, @StringRes resId: Int, duration: Int, @StringRes actionResId: Int, listener: View.OnClickListener): Snackbar {
             return Snackbar.make(view, resId, duration)
                     .setAction(actionResId, listener)

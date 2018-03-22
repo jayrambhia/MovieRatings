@@ -107,7 +107,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         presenter?.detachView(this)
     }
 
-    override fun showMovie(movie: Movie) {
+    private fun showMovie(movie: Movie) {
         titleView?.text = movie.title
         genreView?.text = movie.genre
         if (movie.ratings.size > 0) {
@@ -134,7 +134,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         }
     }
 
-    override fun loadImage(poster: String) {
+    private fun loadImage(poster: String) {
         posterView?.let {
             val handler = Handler()
 
@@ -164,10 +164,26 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     }
 
-    override fun showLoading() {
+    override fun updateState(state: MoviePage.State) {
+        when(state.ui) {
+            MoviePage.Ui.LOADING -> return
+            MoviePage.Ui.LOADED -> showMovie(state.movie!!)
+            MoviePage.Ui.LOAD_IMAGE -> loadImage(state.movie!!.poster)
+            MoviePage.Ui.ERROR -> showError()
+        }
     }
 
-    override fun showError() {
+    override fun updateState(state: MoviePage.CollectionState) {
+        val resId = when(state.ui) {
+            MoviePage.CollectionUi.EXISTS -> R.string.movie_collection_movie_exists
+            MoviePage.CollectionUi.ADDED -> R.string.movie_collection_movie_added
+            MoviePage.CollectionUi.ERROR -> R.string.movie_collection_movie_error
+        }
+
+        showSnackbar(context.getString(resId, state.collection.name))
+    }
+
+    private fun showError() {
         showSnackbar(R.string.movie_page_load_error)
     }
 

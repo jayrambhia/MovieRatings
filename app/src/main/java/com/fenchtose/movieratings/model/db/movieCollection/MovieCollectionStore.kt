@@ -5,7 +5,7 @@ import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.MovieCollectionEntry
 import io.reactivex.Observable
 
-interface MovieCollectionStore {
+interface MovieCollectionStore  {
     fun createCollection(name: String): Observable<MovieCollection>
     fun addMovieToCollection(collection: MovieCollection, movie: Movie): Observable<MovieCollectionEntry>
     fun isMovieAddedToCollection(collection: MovieCollection, movie: Movie): Observable<Boolean>

@@ -34,6 +34,12 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
         }
     }
 
+    fun showSnackbar(content: CharSequence) {
+        if (isAdded) {
+            ThemedSnackbar.make(view!!, content, Snackbar.LENGTH_SHORT).show()
+        }
+    }
+
     fun showSnackbarWithAction(content: String, @StringRes actionResId: Int, listener: View.OnClickListener) {
         view?.let {
             ThemedSnackbar.makeWithAction(it,

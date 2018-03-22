@@ -86,4 +86,8 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_collection_create_dialog_hint">Collection name</string>
 	<string name="movie_collection_create_dialog_positive_cta">Create</string>
 
+	<string name="movie_collection_movie_exists">Title already exists in %1s collection</string>
+	<string name="movie_collection_movie_added">Title added to %1s collection</string>
+	<string name="movie_collection_movie_error">Unable to add title to %1s collection</string>
+
 </resources>

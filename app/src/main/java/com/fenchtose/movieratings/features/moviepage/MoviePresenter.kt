@@ -1,6 +1,5 @@
 package com.fenchtose.movieratings.features.moviepage
 
-import android.widget.Toast
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.router.ResultBus
@@ -56,7 +55,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 showMovie(movie)
                 return
             } else if (!it.poster.isNullOrEmpty()) {
-                getView()?.loadImage(it.poster)
+                updateState(MoviePage.State(MoviePage.Ui.LOAD_IMAGE, it))
             }
         }
 
@@ -69,7 +68,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 }, {
                     loadedMovie = null
                     it.printStackTrace()
-                    getView()?.showError()
+                    updateState(MoviePage.State(MoviePage.Ui.ERROR))
                 })
 
         subscribe(d)
@@ -77,7 +76,7 @@ class MoviePresenter(private val provider: MovieProvider,
 
     private fun showMovie(movie: Movie) {
         loadedMovie = movie
-        getView()?.showMovie(movie)
+        updateState(MoviePage.State(MoviePage.Ui.LOADED, movie))
         updateRecent(movie.imdbId)
         selectedCollection?.let {
             addedToCollection(it, movie)
@@ -97,7 +96,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
                     if (it) {
-                        showAlreadyAddedToCollection(collection)
+                        updateState(MoviePage.CollectionState(MoviePage.CollectionUi.EXISTS, collection))
                     }
                 }.filter {
                     !it
@@ -108,26 +107,20 @@ class MoviePresenter(private val provider: MovieProvider,
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    showAddedToCollection(collection)
+                    updateState(MoviePage.CollectionState(MoviePage.CollectionUi.ADDED, collection))
                 }, {
                     it.printStackTrace()
-                    showUnableToAddToCollection(collection)
+                    updateState(MoviePage.CollectionState(MoviePage.CollectionUi.ERROR, collection))
                 })
         subscribe(d)
     }
 
-    private fun showAlreadyAddedToCollection(collection: MovieCollection) {
-        Toast.makeText(MovieRatingsApplication.instance, "already exists in collection: ${collection.name}", Toast.LENGTH_SHORT).show()
-        selectedCollection = null
+    private fun updateState(state: MoviePage.State) {
+        getView()?.updateState(state)
     }
 
-    private fun showAddedToCollection(collection: MovieCollection) {
-        Toast.makeText(MovieRatingsApplication.instance, "added to collection: ${collection.name}", Toast.LENGTH_SHORT).show()
-        selectedCollection = null
-    }
-
-    private fun showUnableToAddToCollection(collection: MovieCollection) {
-        Toast.makeText(MovieRatingsApplication.instance, "unable to add to collection ${collection.name}", Toast.LENGTH_SHORT).show()
+    private fun updateState(state: MoviePage.CollectionState) {
+        getView()?.updateState(state)
         selectedCollection = null
     }
 
