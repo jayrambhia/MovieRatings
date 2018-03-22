@@ -3,4 +3,8 @@
     <declare-styleable name="RatioImageView">
         <attr name="ratioimageview__ratio" format="float"/>
     </declare-styleable>
+    <declare-styleable name="FlexView">
+        <attr name="flex__vertical_spacing" format="dimension"/>
+        <attr name="flex__horizontal_spacing" format="dimension"/>
+    </declare-styleable>
 </resources>

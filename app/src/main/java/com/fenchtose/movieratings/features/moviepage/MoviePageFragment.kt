@@ -42,6 +42,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     private var writersView:TextView? = null
 
     private var collectionsView: TextView? = null
+    private var collectionsFlexView: MoviePageFlexView? = null
 
     private var plotHeader:LinearLayout? = null
     private var plotToggle:ImageView? = null
@@ -90,6 +91,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         writersView = view.findViewById(R.id.writers_view)
 
         collectionsView = view.findViewById(R.id.collections_view)
+        collectionsFlexView = MoviePageFlexView(context, view.findViewById(R.id.collections_flexview))
 
         plotHeader = view.findViewById(R.id.plot_header)
         plotToggle = view.findViewById(R.id.plot_toggle)
@@ -134,6 +136,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                 it.text = collections.joinToString { it.name }
             }
         }
+
+        collectionsFlexView?.setCollections(movie.collections)
 
         if (!isPosterLoaded) {
             loadImage(movie.poster)
