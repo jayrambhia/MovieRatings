@@ -41,7 +41,6 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     private var writersHeader:TextView? = null
     private var writersView:TextView? = null
 
-    private var collectionsView: TextView? = null
     private var collectionsFlexView: MoviePageFlexView? = null
 
     private var plotHeader:LinearLayout? = null
@@ -90,7 +89,6 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         writersHeader = view.findViewById(R.id.writers_header)
         writersView = view.findViewById(R.id.writers_view)
 
-        collectionsView = view.findViewById(R.id.collections_view)
         collectionsFlexView = MoviePageFlexView(context, view.findViewById(R.id.collections_flexview))
 
         plotHeader = view.findViewById(R.id.plot_header)
@@ -127,15 +125,6 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         actorSection?.setContent(movie.actors)
         writerSection?.setContent(movie.writers)
         plotSection?.setContent(movie.plot)
-
-        collectionsView?.let {
-            val collections = movie.collections
-            if (collections == null || collections.isEmpty()) {
-                it.setText(R.string.movie_page_empty_collections)
-            } else {
-                it.text = collections.joinToString { it.name }
-            }
-        }
 
         collectionsFlexView?.setCollections(movie.collections)
 

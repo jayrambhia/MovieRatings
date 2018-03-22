@@ -134,20 +134,12 @@
 			    android:textStyle="bold"
 			    android:text="@string/movie_page_collections_title"/>
 
-		    <TextView
-			    android:id="@+id/collections_view"
+		    <com.fenchtose.movieratings.widgets.FlexView
+			    android:id="@+id/collections_flexview"
 			    android:layout_marginTop="4dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="16sp"
-			    tools:text="My awesome movies 1, Chris Pratt Rocks hard"/>
-
-		    <com.fenchtose.movieratings.widgets.FlexView
-			    android:id="@+id/collections_flexview"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    app:flex__horizontal_spacing="16dp"
+			    app:flex__horizontal_spacing="8dp"
 			    app:flex__vertical_spacing="8dp"/>
 
 		    <TextView

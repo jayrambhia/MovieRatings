@@ -66,6 +66,8 @@ class FlexView : ViewGroup {
                 // Add previous row's height to total height
                 totalHeight += rowHeight
                 rowHeight = childHeight
+                Log.d(TAG, "added new row $nrows")
+                Log.d(TAG, "total height: $totalHeight")
             } else {
                 // Add self to the left one
                 rowWidth += horizontalSpacing + childWidth
@@ -76,10 +78,12 @@ class FlexView : ViewGroup {
         // Add final row's height to total height
         totalHeight += rowHeight
 
+        Log.d(TAG, "total height: $totalHeight")
+
         // Add padding and vertical spacings
         totalHeight += paddingTop + paddingBottom + verticalSpacing * Math.max(0, nrows-1)
 
-        Log.d(TAG, "total height: $totalHeight")
+        Log.d(TAG, "total height after spacing: $totalHeight, $width")
 
         if (heightMode == MeasureSpec.UNSPECIFIED) {
             setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(totalHeight, MeasureSpec.UNSPECIFIED))
@@ -102,7 +106,7 @@ class FlexView : ViewGroup {
         val left = paddingLeft
         val right = r - paddingRight
         var rowWidth = left
-        val width = right - left
+        val width = right - left - l
         var rowHeight = 0
         var totalHeight = paddingTop
 
@@ -110,7 +114,7 @@ class FlexView : ViewGroup {
             val child = getChildAt(i)
             val childWidth = child.measuredWidth
             val childHeight = child.measuredHeight
-
+            
             if (exceedsRow(rowWidth, childWidth, width)) {
                 // to next row
                 totalHeight += rowHeight + verticalSpacing
