@@ -3,19 +3,17 @@ package com.fenchtose.movieratings.features.moviecollection.collectionlist
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 
-class CollectionListPageAdapter(context: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CollectionListPageAdapter(context: Context, private val callback: AdapterCallback): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     var data: ArrayList<MovieCollection> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return CollectionItemViewHolder(inflater.inflate(R.layout.movie_collection_item_layout, parent, false))
+        return CollectionItemViewHolder(inflater.inflate(R.layout.movie_collection_item_layout, parent, false), callback)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -36,6 +34,6 @@ class CollectionListPageAdapter(context: Context): RecyclerView.Adapter<Recycler
     }
 
     interface AdapterCallback {
-        fun onClicked(movie: Movie, sharedElement: Pair<View, String>?)
+        fun onClicked(collection: MovieCollection): Unit
     }
 }

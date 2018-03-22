@@ -11,7 +11,7 @@ import com.bumptech.glide.request.target.Target
 class GlideLoader(private val manager: RequestManager): ImageLoader {
     override fun loadImage(image: String, view: ImageView, callback: ImageLoader.Callback?) {
 
-        manager.load(image).listener(object: RequestListener<Drawable> {
+        val target = manager.load(image).listener(object: RequestListener<Drawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                 return false
             }
@@ -22,6 +22,7 @@ class GlideLoader(private val manager: RequestManager): ImageLoader {
             }
 
         }).into(view)
+
 
     }
 

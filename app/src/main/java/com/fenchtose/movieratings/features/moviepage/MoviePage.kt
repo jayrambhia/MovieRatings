@@ -7,4 +7,5 @@ interface MoviePage {
     fun showMovie(movie: Movie)
     fun showLoading()
     fun showError()
+    fun addToCollection()
 }

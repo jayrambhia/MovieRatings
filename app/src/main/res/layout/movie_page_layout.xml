@@ -125,6 +125,16 @@
 			    tools:text="Released on 05 May 2017"/>
 
 		    <TextView
+			    android:id="@+id/collections_header"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="16dp"
+			    android:textColor="@android:color/white"
+			    android:textSize="24sp"
+			    android:textStyle="bold"
+			    android:text="@string/movie_page_collections_title"/>
+
+		    <TextView
 			    android:id="@+id/actors_header"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"

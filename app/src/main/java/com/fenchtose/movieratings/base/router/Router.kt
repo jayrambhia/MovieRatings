@@ -70,6 +70,10 @@ class Router(activity: AppCompatActivity) {
 
     }
 
+    fun getCurrentPath(): RouterPath<out BaseFragment>? {
+        return history.takeIf { it.size > 0 }?.peek()
+    }
+
     private fun getTopView() : BaseFragment? {
         return history.peek().fragment
     }

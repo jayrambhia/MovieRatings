@@ -8,4 +8,5 @@ import io.reactivex.Observable
 interface MovieCollectionStore {
     fun createCollection(name: String): Observable<MovieCollection>
     fun addMovieToCollection(collection: MovieCollection, movie: Movie): Observable<MovieCollectionEntry>
+    fun isMovieAddedToCollection(collection: MovieCollection, movie: Movie): Observable<Boolean>
 }

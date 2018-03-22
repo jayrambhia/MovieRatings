@@ -14,6 +14,8 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.router.ResultBus
+import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 
@@ -52,7 +54,12 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = CollectionListPageAdapter(context)
+        adapter = CollectionListPageAdapter(context,
+                object: CollectionListPageAdapter.AdapterCallback {
+                    override fun onClicked(collection: MovieCollection) {
+                        onCollectionSelected(collection)
+                    }
+                })
         adapter?.let {
             it.setHasStableIds(true)
             recyclerView?.adapter = adapter
@@ -127,18 +134,34 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
     }
 
+    private fun onCollectionSelected(collection: MovieCollection) {
+        if (shouldReturnSelection()) {
+            MovieRatingsApplication.router?.onBackRequested()
+            ResultBus.setResult(CollectionListPagePath.SELECTED_COLLECTION, ResultBus.Result.create(collection))
+        }
+    }
+
     override fun canGoBack(): Boolean {
         return true
     }
 
+    private fun shouldReturnSelection(): Boolean {
+        return (path as CollectionListPagePath).returnSelection
+    }
+
     override fun getScreenTitle(): Int {
-        return if ((path as CollectionListPagePath).returnSelection)
+        return if (shouldReturnSelection())
             R.string.movie_collection_list_page_selection_title
         else
             R.string.movie_collection_list_page_title
     }
 
     class CollectionListPagePath(val returnSelection: Boolean) : RouterPath<CollectionListPageFragment>() {
+
+        companion object {
+            val SELECTED_COLLECTION = "selected_collection"
+        }
+
         override fun createFragmentInstance(): CollectionListPageFragment {
             return CollectionListPageFragment()
         }

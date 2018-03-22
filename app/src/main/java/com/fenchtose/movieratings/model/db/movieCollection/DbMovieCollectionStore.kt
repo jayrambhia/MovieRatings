@@ -28,4 +28,9 @@ class DbMovieCollectionStore(private val dao: MovieCollectionDao) : MovieCollect
         }
     }
 
+    override fun isMovieAddedToCollection(collection: MovieCollection, movie: Movie): Observable<Boolean> {
+        return Observable.defer {
+            Observable.just(dao.isMovieAddedToCollection(collection.id, movie.imdbId))
+        }
+    }
 }

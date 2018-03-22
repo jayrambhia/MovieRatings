@@ -21,6 +21,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
+import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
@@ -55,9 +56,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     private var presenter: MoviePresenter? = null
 
-    private val imageLoader: ImageLoader by lazy {
-        GlideLoader(Glide.with(this))
-    }
+    private var imageLoader: ImageLoader? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,7 +65,10 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         presenter = MoviePresenter(MovieRatingsApplication.movieProviderModule.movieProvider,
                 DbLikeStore(MovieRatingsApplication.database.favDao()),
                 DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()),
+                DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
                 movie?.imdbId, movie)
+
+        imageLoader = GlideLoader(Glide.with(this))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -95,6 +97,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         writerSection = TextSection(writersHeader, writersView!!)
         plotSection = ExpandableSection(plotHeader, plotToggle!!, plotView!!)
 
+        isPosterLoaded = false
 
         presenter?.attachView(this)
     }
@@ -132,34 +135,33 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     }
 
     override fun loadImage(poster: String) {
-        if (posterView == null) {
-            return
-        }
+        posterView?.let {
+            val handler = Handler()
 
-        val handler = Handler()
-
-        path?.getSharedTransitionElement()?.let {
-            ViewCompat.setTransitionName(posterView, it.second)
-        }
-
-        imageLoader.loadImage(poster, posterView!!, object : ImageLoader.Callback {
-            override fun imageLoaded(image: String, view: ImageView) {
-                isPosterLoaded = true
-                handler.postDelayed({
-
-                    if (!isTransitionPostponeStarted) {
-                        startPostponedEnterTransition()
-                        isTransitionPostponeStarted = true
-                    }
-
-                    val params = posterView?.layoutParams as CoordinatorLayout.LayoutParams
-                    params.behavior = PosterBehavior()
-                    posterView?.layoutParams = params
-
-                } , 60)
-
+            path?.getSharedTransitionElement()?.let {
+                ViewCompat.setTransitionName(posterView, it.second)
             }
-        })
+
+            imageLoader?.loadImage(poster, it, object : ImageLoader.Callback {
+                override fun imageLoaded(image: String, view: ImageView) {
+                    isPosterLoaded = true
+                    handler.postDelayed({
+
+                        if (!isTransitionPostponeStarted) {
+                            startPostponedEnterTransition()
+                            isTransitionPostponeStarted = true
+                        }
+
+                        val params = posterView?.layoutParams as CoordinatorLayout.LayoutParams
+                        params.behavior = PosterBehavior()
+                        posterView?.layoutParams = params
+
+                    } , 60)
+
+                }
+            })
+        }
+
     }
 
     override fun showLoading() {
@@ -167,6 +169,10 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     override fun showError() {
         showSnackbar(R.string.movie_page_load_error)
+    }
+
+    override fun addToCollection() {
+        presenter?.addToCollection()
     }
 
     private fun setLiked(isLiked: Boolean?) {
@@ -204,6 +210,10 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
         override fun getSharedTransitionElement(): Pair<View, String>? {
             return sharedElement
+        }
+
+        override fun showMenuIcons(): IntArray {
+            return intArrayOf(R.id.action_collection_add)
         }
     }
 

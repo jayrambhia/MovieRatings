@@ -19,6 +19,8 @@ import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
+import com.fenchtose.movieratings.features.moviepage.MoviePage
+import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
@@ -138,6 +140,7 @@ class MainActivity : AppCompatActivity() {
             R.id.action_info -> showInfoPage()
             R.id.action_history -> showRecentlyBrowsedPage()
             R.id.action_collection -> showMovieCollectionsPage()
+            R.id.action_collection_add -> addMovieToCollection()
             else -> consumed = false
         }
 
@@ -176,6 +179,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun showMovieCollectionsPage() {
         router?.go(CollectionListPageFragment.CollectionListPagePath(false))
+    }
+
+    private fun addMovieToCollection() {
+        val path = router?.getCurrentPath()
+        path?.let { it.fragment?.let { it.takeIf { it is MoviePage }?.apply { (it as MoviePage).addToCollection() } } }
     }
 
     private fun onAccessibilityActivated() {

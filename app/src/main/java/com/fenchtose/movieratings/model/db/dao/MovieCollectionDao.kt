@@ -17,4 +17,11 @@ interface MovieCollectionDao {
 
     @Query("SELECT * FROM COLLECTIONS")
     fun getMovieCollections(): List<MovieCollection>
+
+    @Query("SELECT CASE WHEN EXISTS (" +
+            " SELECT * FROM COLLECTION_ENTRIES WHERE COLLECTION_ID = :collectionId AND IMDBID = :imdbId LIMIT 1" +
+            ")" +
+            "THEN CAST(1 AS BIT)" +
+            "ELSE CAST(0 AS BIT) END")
+    fun isMovieAddedToCollection(collectionId: Long, imdbId: String): Boolean
 }
