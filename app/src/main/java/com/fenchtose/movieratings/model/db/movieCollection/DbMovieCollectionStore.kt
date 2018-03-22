@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.db.movieCollection
 
+import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.MovieCollectionEntry
@@ -32,5 +33,11 @@ class DbMovieCollectionStore(private val dao: MovieCollectionDao) : MovieCollect
         return Observable.defer {
             Observable.just(dao.isMovieAddedToCollection(collection.id, movie.imdbId))
         }
+    }
+
+    @WorkerThread
+    override fun apply(movie: Movie) {
+        movie.collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name }
+        movie.appliedPreferences.collections = true
     }
 }

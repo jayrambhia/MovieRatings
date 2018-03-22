@@ -3,7 +3,7 @@ package com.fenchtose.movieratings.model
 import android.arch.persistence.room.*
 import com.fenchtose.movieratings.model.db.MovieTypeConverter2
 import com.google.gson.annotations.SerializedName
-import java.util.*
+import kotlin.collections.ArrayList
 
 @Entity(tableName = "MOVIES", indices = arrayOf(Index("IMDBID", unique = true)))
 @TypeConverters(value = MovieTypeConverter2::class)
@@ -95,18 +95,31 @@ class Movie {
     @Ignore
     var liked: Boolean = false
 
+    @Ignore
+    var collections: List<MovieCollection>? = null
+
+    @Ignore
+    val appliedPreferences: AppliedPreferences = AppliedPreferences()
+
     override fun toString(): String {
         return "Movie(id='$id', title='$title', poster='$poster', ratings=$ratings)"
     }
 
-    fun isComplete(): Boolean {
-        // Title, Year, ImdbId, Type and Poster are available in search. Let's check if at least 3 are available.
-        if (checkValid(title, year, imdbId, type, poster)) {
-            // check for others
-            return checkValid(rated, released, runtime, genre, language, actors, plot, website, writers)
-        }
+    private fun checkValidBase(): Boolean {
+        return checkValid(title, year, imdbId, type, poster)
+    }
 
-        return false
+    private fun checkValidExtras(): Boolean {
+        return checkValid(rated, released, runtime, genre, language, actors, plot, website, writers)
+    }
+
+    fun isComplete(check: Check): Boolean {
+        return when(check) {
+            Check.BASE -> checkValidBase()
+            Check.EXTRA -> checkValidBase() && checkValidExtras()
+            Check.LIKED -> checkValidBase() && checkValidExtras() && appliedPreferences.liked
+            Check.USER_PREFERENCES -> checkValidBase() && checkValidExtras() && appliedPreferences.checkValid()
+        }
     }
 
     private fun checkValid(vararg fields: String?): Boolean {
@@ -121,5 +134,18 @@ class Movie {
             movie.id = -1
             return movie
         }
+    }
+
+    data class AppliedPreferences(var liked: Boolean = false, var collections: Boolean = false) {
+        fun checkValid(): Boolean {
+            return liked && collections
+        }
+    }
+
+    enum class Check {
+        BASE,
+        EXTRA,
+        LIKED,
+        USER_PREFERENCES
     }
 }

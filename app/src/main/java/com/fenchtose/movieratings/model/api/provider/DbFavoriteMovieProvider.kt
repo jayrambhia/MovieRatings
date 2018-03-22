@@ -12,6 +12,7 @@ class DbFavoriteMovieProvider(private val movieDao: MovieDao) : FavoriteMoviePro
         }.doOnNext {
             it.map {
                 it.liked = true
+                it.appliedPreferences.liked = true
             }
         }
     }

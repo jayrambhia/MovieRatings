@@ -26,6 +26,7 @@ class MoviePresenter(private val provider: MovieProvider,
 
     init {
         provider.addPreferenceApplier(likeStore)
+        provider.addPreferenceApplier(collectionStore)
     }
 
     override fun attachView(view: MoviePage) {
@@ -51,7 +52,7 @@ class MoviePresenter(private val provider: MovieProvider,
     private fun loadMovie(imdbId: String) {
         movie?.let {
             @Suppress("UselessCallOnNotNull")
-            if (it.isComplete()) {
+            if (it.isComplete(Movie.Check.USER_PREFERENCES)) {
                 showMovie(movie)
                 return
             } else if (!it.poster.isNullOrEmpty()) {

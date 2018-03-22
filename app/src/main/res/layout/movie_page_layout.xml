@@ -135,6 +135,15 @@
 			    android:text="@string/movie_page_collections_title"/>
 
 		    <TextView
+			    android:id="@+id/collections_view"
+			    android:layout_marginTop="4dp"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:textColor="@android:color/white"
+			    android:textSize="16sp"
+			    tools:text="My awesome movies 1, Chris Pratt Rocks hard"/>
+
+		    <TextView
 			    android:id="@+id/actors_header"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"

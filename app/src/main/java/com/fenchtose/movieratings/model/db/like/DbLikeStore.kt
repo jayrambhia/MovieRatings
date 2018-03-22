@@ -12,6 +12,7 @@ class DbLikeStore(val likeDao: FavDao) : LikeStore {
     @WorkerThread
     override fun apply(movie: Movie) {
         movie.liked = isLiked(movie.imdbId)
+        movie.appliedPreferences.liked = true
     }
 
     @WorkerThread

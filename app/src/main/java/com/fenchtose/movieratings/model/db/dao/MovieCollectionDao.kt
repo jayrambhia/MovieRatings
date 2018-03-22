@@ -24,4 +24,8 @@ interface MovieCollectionDao {
             "THEN CAST(1 AS BIT)" +
             "ELSE CAST(0 AS BIT) END")
     fun isMovieAddedToCollection(collectionId: Long, imdbId: String): Boolean
+
+    @Query("SELECT * FROM COLLECTIONS as c INNER JOIN COLLECTION_ENTRIES as ce ON c.COLLECTION_ID == ce.COLLECTION_ID WHERE ce.IMDBID == :imdbId")
+    fun getCollectionsForMovie(imdbId: String): List<MovieCollection>
+
 }
