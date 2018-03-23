@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import android.app.AlertDialog
+import android.view.MenuItem
 import android.view.View
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
@@ -9,9 +10,11 @@ import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragmen
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
+import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 
 class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, CollectionPagePresenter>(), CollectionPage {
 
@@ -23,10 +26,13 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         return CollectionPagePresenter(DbLikeStore(MovieRatingsApplication.database.favDao()),
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
                 DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
+                SettingsPreferences(context),
                 path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection })
     }
 
     override fun onCreated() {
+        setHasOptionsMenu(true)
+
         path?.takeIf { it is CollectionPagePath }
                 ?.let { (it as CollectionPagePath).collection }
                 ?.let { MovieRatingsApplication.router?.updateTitle(it.name) }
@@ -78,11 +84,26 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        var consumed = true
+        when(item?.itemId) {
+            R.id.action_sort_alphabetically -> presenter?.sort(Sort.ALPHABETICAL)
+//            R.id.action_sort_genre -> presenter?.sort(Sort.GENRE)
+            R.id.action_sort_year -> presenter?.sort(Sort.YEAR)
+            else -> consumed = false
+        }
+
+        return if (consumed) true else super.onOptionsItemSelected(item)
+    }
+
     class CollectionPagePath(val collection: MovieCollection) : RouterPath<CollectionPageFragment>() {
 
         override fun createFragmentInstance(): CollectionPageFragment {
             return CollectionPageFragment()
         }
 
+        override fun showMenuIcons(): IntArray {
+            return intArrayOf(R.id.action_sort)
+        }
     }
 }

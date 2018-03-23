@@ -3,9 +3,11 @@ package com.fenchtose.movieratings.features.moviecollection.collectionpage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -13,7 +15,14 @@ import io.reactivex.schedulers.Schedulers
 class CollectionPagePresenter(likeStore: LikeStore,
                               private val provider: MovieCollectionProvider,
                               private val collectionStore: MovieCollectionStore,
+                              private val userPreferences: UserPreferences,
                               private val collection: MovieCollection?) : BaseMovieListPresenter<CollectionPage>(likeStore) {
+
+    private var currentSort: Sort = userPreferences.getLatestCollectionSort(collection?.id)
+        set(value) {
+            field = value
+            userPreferences.setLatestCollectionSort(collection?.id, value)
+        }
 
     init {
         provider.addPreferenceApplier(likeStore)
@@ -22,6 +31,9 @@ class CollectionPagePresenter(likeStore: LikeStore,
     override fun load(): Observable<List<Movie>> {
         collection?.let {
             return provider.getMoviesForCollection(it)
+                    .map {
+                        getSorted(currentSort, it)
+                    }
         }
 
         return Observable.just(ArrayList())
@@ -75,5 +87,20 @@ class CollectionPagePresenter(likeStore: LikeStore,
                         getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_ADD_ERROR, movie))
                     })
         }
+    }
+
+    fun sort(type: Sort) {
+        if (type == currentSort) {
+            return
+        }
+
+        updateData(ArrayList(getSorted(type, data)))
+        currentSort = type
+    }
+
+    private fun getSorted(type: Sort, data: List<Movie>): List<Movie> = when(type) {
+        Sort.YEAR -> data.sortedWith(compareByDescending { it.year })
+        Sort.ALPHABETICAL -> data.sortedBy { it.title }
+        else -> data
     }
 }

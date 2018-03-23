@@ -10,6 +10,7 @@ class SettingsPreferences(context: Context): UserPreferences {
     private val PREF_NAME = "settings_pref"
     private val DURATION_KEY = "toast_duration"
     private val LIKES_SORT_KEY = "likes_sort"
+    private val COLLECTION_SORT_KEY = "collection_sort_"
 
     private val preferences: SharedPreferences = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE)
 
@@ -35,5 +36,19 @@ class SettingsPreferences(context: Context): UserPreferences {
 
     override fun getLatestLikeSort(): Sort {
         return Sort.valueOf(preferences.getString(LIKES_SORT_KEY, Sort.ALPHABETICAL.name))
+    }
+
+    override fun setLatestCollectionSort(collectionId: Long?, type: Sort) {
+        collectionId?.let {
+            preferences.edit().putString(COLLECTION_SORT_KEY + it.toString(), type.name).apply()
+        }
+    }
+
+    override fun getLatestCollectionSort(collectionId: Long?): Sort {
+        collectionId?.let {
+            return Sort.valueOf(preferences.getString(COLLECTION_SORT_KEY + it.toString(), Sort.ALPHABETICAL.name))
+        }
+
+        return Sort.ALPHABETICAL
     }
 }

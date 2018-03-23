@@ -16,4 +16,7 @@ interface UserPreferences {
 
     fun setLatestLikeSort(type: Sort)
     fun getLatestLikeSort(): Sort
+
+    fun setLatestCollectionSort(collectionId: Long?, type: Sort)
+    fun getLatestCollectionSort(collectionId: Long?): Sort
 }
