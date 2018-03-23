@@ -73,6 +73,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_page_plot_title">Plot</string>
 	<string name="movie_page_collections_title">In your collections</string>
 	<string name="movie_page_empty_collections">You haven\'t added this title in any collection</string>
+	<string name="movie_page_add_to_collection">Add to collection</string>
 
 	<string name="movie_page_load_error">Unable to load movie info</string>
 
@@ -90,5 +91,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_collection_movie_exists">Title already exists in %1s collection</string>
 	<string name="movie_collection_movie_added">Title added to %1s collection</string>
 	<string name="movie_collection_movie_error">Unable to add title to %1s collection</string>
+
+	<string name="movie_collection_page_title">Movie collection</string>
 
 </resources>

@@ -7,7 +7,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.widgets.FlexView
 
-class MoviePageFlexView(private val context: Context, private val flexView: FlexView) {
+class MoviePageFlexView(context: Context, private val flexView: FlexView, private val callback: CollectionCallback) {
 
     private val inflater = LayoutInflater.from(context)
 
@@ -18,8 +18,18 @@ class MoviePageFlexView(private val context: Context, private val flexView: Flex
             val view = inflater.inflate(R.layout.movie_page_collection_item_layout, flexView, false) as TextView
             view.text = it.name
             flexView.addElement(view)
+            view.setOnClickListener { _ -> callback.onItemClicked(it) }
         }
 
+        val cta = inflater.inflate(R.layout.movie_page_add_to_collection_layout, flexView, false)
+        flexView.addElement(cta)
+        cta.setOnClickListener { _ -> callback.onAddToCollectionClicked() }
+
         flexView.requestLayout()
+    }
+
+    interface CollectionCallback {
+        fun onItemClicked(collection: MovieCollection)
+        fun onAddToCollectionClicked()
     }
 }

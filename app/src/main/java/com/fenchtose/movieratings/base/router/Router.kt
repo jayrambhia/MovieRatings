@@ -70,10 +70,6 @@ class Router(activity: AppCompatActivity) {
 
     }
 
-    fun getCurrentPath(): RouterPath<out BaseFragment>? {
-        return history.takeIf { it.size > 0 }?.peek()
-    }
-
     private fun getTopView() : BaseFragment? {
         return history.peek().fragment
     }
@@ -97,6 +93,10 @@ class Router(activity: AppCompatActivity) {
         }
 
         callback?.movedTo(path)
+    }
+
+    fun updateTitle(title: CharSequence) {
+        titlebar?.title = title
     }
 
     private fun moveBack() {

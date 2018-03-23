@@ -15,6 +15,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.ResultBus
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
@@ -138,6 +139,8 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         if (shouldReturnSelection()) {
             MovieRatingsApplication.router?.onBackRequested()
             ResultBus.setResult(CollectionListPagePath.SELECTED_COLLECTION, ResultBus.Result.create(collection))
+        } else {
+            MovieRatingsApplication.router?.go(CollectionPageFragment.CollectionPagePath(collection))
         }
     }
 

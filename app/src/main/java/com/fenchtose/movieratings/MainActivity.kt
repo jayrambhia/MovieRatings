@@ -140,7 +140,6 @@ class MainActivity : AppCompatActivity() {
             R.id.action_info -> showInfoPage()
             R.id.action_history -> showRecentlyBrowsedPage()
             R.id.action_collection -> showMovieCollectionsPage()
-            R.id.action_collection_add -> addMovieToCollection()
             else -> consumed = false
         }
 
@@ -179,11 +178,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showMovieCollectionsPage() {
         router?.go(CollectionListPageFragment.CollectionListPagePath(false))
-    }
-
-    private fun addMovieToCollection() {
-        val path = router?.getCurrentPath()
-        path?.let { it.fragment?.let { it.takeIf { it is MoviePage }?.apply { (it as MoviePage).addToCollection() } } }
     }
 
     private fun onAccessibilityActivated() {

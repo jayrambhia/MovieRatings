@@ -65,7 +65,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     private fun getMovieFromDb(title: String): Observable<Movie> {
         return Observable.defer {
             val movie = dao.getMovie(title)
-            if (movie != null) {
+            if (movie != null && movie.isComplete(Movie.Check.BASE)) {
                 Observable.just(movie)
             } else {
                 Observable.just(Movie.empty())
@@ -76,7 +76,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     private fun getMovieFromDbWithImdb(imdbId: String): Observable<Movie> {
         return Observable.defer {
             val movie = dao.getMovieWithImdbId(imdbId)
-            if (movie != null && movie.isComplete(Movie.Check.BASE)) {
+            if (movie != null && movie.isComplete(Movie.Check.EXTRA)) {
                 Observable.just(movie)
             } else {
                 Observable.just(Movie.empty())

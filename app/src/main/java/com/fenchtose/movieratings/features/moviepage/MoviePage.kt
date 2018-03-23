@@ -6,7 +6,6 @@ import com.fenchtose.movieratings.model.MovieCollection
 interface MoviePage {
     fun updateState(state: State)
     fun updateState(state: CollectionState)
-    fun addToCollection()
 
     data class State(val ui: Ui, val movie: Movie? = null)
     data class CollectionState(val ui: CollectionUi, val collection: MovieCollection)

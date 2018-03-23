@@ -19,7 +19,9 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
@@ -89,7 +91,16 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         writersHeader = view.findViewById(R.id.writers_header)
         writersView = view.findViewById(R.id.writers_view)
 
-        collectionsFlexView = MoviePageFlexView(context, view.findViewById(R.id.collections_flexview))
+        collectionsFlexView = MoviePageFlexView(context, view.findViewById(R.id.collections_flexview),
+                object : MoviePageFlexView.CollectionCallback {
+                    override fun onItemClicked(collection: MovieCollection) {
+                        MovieRatingsApplication.router?.go(CollectionPageFragment.CollectionPagePath(collection))
+                    }
+
+                    override fun onAddToCollectionClicked() {
+                        presenter?.addToCollection()
+                    }
+        })
 
         plotHeader = view.findViewById(R.id.plot_header)
         plotToggle = view.findViewById(R.id.plot_toggle)
@@ -193,10 +204,6 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         showSnackbar(R.string.movie_page_load_error)
     }
 
-    override fun addToCollection() {
-        presenter?.addToCollection()
-    }
-
     private fun setLiked(isLiked: Boolean?) {
         isLiked?.let {
             fab?.setImageResource(if (it) R.drawable.ic_favorite_onyx_24dp else R.drawable.ic_favorite_border_onyx_24dp)
@@ -234,9 +241,6 @@ class MoviePageFragment: BaseFragment(), MoviePage {
             return sharedElement
         }
 
-        override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_collection_add)
-        }
     }
 
     class TextSection(header: View?, contentView: TextView) : PageSection<TextView>(header, contentView) {

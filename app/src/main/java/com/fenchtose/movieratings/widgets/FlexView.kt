@@ -1,15 +1,16 @@
 package com.fenchtose.movieratings.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.fenchtose.movieratings.R
 
 class FlexView : ViewGroup {
 
-    private val views : ArrayList<View> = ArrayList()
     private val TAG = "FlexView"
 
     private var verticalSpacing = 0
@@ -30,6 +31,16 @@ class FlexView : ViewGroup {
                 a.recycle()
             }
         }
+
+        if (isInEditMode) {
+            val inflater = LayoutInflater.from(context)
+            for (i in 0 .. 5) {
+                val textview = inflater.inflate(R.layout.movie_page_collection_item_layout, this, false) as TextView
+                @SuppressLint("SetTextI18n")
+                textview.text = "Flex item view $i"
+                addElement(textview)
+            }
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -41,8 +52,6 @@ class FlexView : ViewGroup {
 
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val width = MeasureSpec.getSize(widthMeasureSpec) - paddingLeft - paddingRight
-
-        Log.d(TAG, "====== onMeasure =======")
 
         var totalHeight = 0
 
@@ -66,8 +75,6 @@ class FlexView : ViewGroup {
                 // Add previous row's height to total height
                 totalHeight += rowHeight
                 rowHeight = childHeight
-                Log.d(TAG, "added new row $nrows")
-                Log.d(TAG, "total height: $totalHeight")
             } else {
                 // Add self to the left one
                 rowWidth += horizontalSpacing + childWidth
@@ -78,19 +85,12 @@ class FlexView : ViewGroup {
         // Add final row's height to total height
         totalHeight += rowHeight
 
-        Log.d(TAG, "total height: $totalHeight")
-
         // Add padding and vertical spacings
         totalHeight += paddingTop + paddingBottom + verticalSpacing * Math.max(0, nrows-1)
-
-        Log.d(TAG, "total height after spacing: $totalHeight, $width")
 
         if (heightMode == MeasureSpec.UNSPECIFIED) {
             setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(totalHeight, MeasureSpec.UNSPECIFIED))
         }
-
-        Log.d(TAG, "====== /onMeasure =======")
-
     }
 
     private fun exceedsRow(currentRowWidth: Int, childWidth: Int, availableWidth: Int): Boolean {
@@ -105,38 +105,48 @@ class FlexView : ViewGroup {
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val left = paddingLeft
         val right = r - paddingRight
-        var rowWidth = left
         val width = right - left - l
-        var rowHeight = 0
+        val top = paddingTop
+
         var totalHeight = paddingTop
 
-        for (i in 0 until childCount) {
+        if (childCount == 0) {
+            return
+        }
+
+        // Draw first child
+        val child0 = getChildAt(0)
+        var rowHeight = top + child0.measuredHeight
+        var rowWidth = left + child0.measuredWidth
+        child0.layout(left, top, rowWidth, rowHeight)
+
+        for (i in 1 until childCount) {
             val child = getChildAt(i)
             val childWidth = child.measuredWidth
             val childHeight = child.measuredHeight
-            
+
             if (exceedsRow(rowWidth, childWidth, width)) {
                 // to next row
                 totalHeight += rowHeight + verticalSpacing
                 rowWidth = left
                 rowHeight = 0
+
+            } else {
+                rowWidth += horizontalSpacing
             }
 
             child.layout(rowWidth, totalHeight, rowWidth + childWidth, totalHeight + childHeight)
-
-            rowWidth += childWidth + horizontalSpacing
-            rowHeight = Math.max(childHeight, rowHeight)
+            rowWidth += childWidth
+            rowHeight = Math.max(rowHeight, childHeight)
 
         }
     }
 
     fun addElement(view: View) {
-        views.add(view)
         addView(view, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
     }
 
     fun clearAll() {
-        views.clear()
         removeAllViews()
     }
 }

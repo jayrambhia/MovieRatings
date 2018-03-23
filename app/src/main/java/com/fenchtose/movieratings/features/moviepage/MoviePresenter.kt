@@ -60,6 +60,11 @@ class MoviePresenter(private val provider: MovieProvider,
             }
         }
 
+        getMovie(imdbId)
+
+    }
+
+    private fun getMovie(imdbId: String) {
         val d = provider
                 .getMovieWithImdb(imdbId)
                 .subscribeOn(Schedulers.io())
@@ -109,6 +114,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     updateState(MoviePage.CollectionState(MoviePage.CollectionUi.ADDED, collection))
+                    getMovie(movie.imdbId)
                 }, {
                     it.printStackTrace()
                     updateState(MoviePage.CollectionState(MoviePage.CollectionUi.ERROR, collection))
