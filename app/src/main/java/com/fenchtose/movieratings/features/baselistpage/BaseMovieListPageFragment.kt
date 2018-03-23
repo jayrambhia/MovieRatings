@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
+import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
@@ -44,7 +45,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
                         // TODO check for api compatibility
                         presenter?.openMovie(movie, sharedElement)
                     }
-                })
+                }, createExtraLayoutHelper())
 
         adapter.setHasStableIds(true)
 
@@ -75,4 +76,6 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     }
 
     abstract fun createPresenter(): P
+
+    open fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
 }

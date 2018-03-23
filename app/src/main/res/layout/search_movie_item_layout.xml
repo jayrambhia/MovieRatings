@@ -40,6 +40,12 @@
             tools:text="The Maximum Force of the Future"
             android:gravity="center"/>
 
+	    <FrameLayout
+		    android:id="@+id/extra_layout_container"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_below="@id/titleview"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="32dp"

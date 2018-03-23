@@ -46,6 +46,13 @@ class DbMovieCollectionStore(private val dao: MovieCollectionDao) : MovieCollect
         }
     }
 
+    override fun removeMovieFromCollection(collection: MovieCollection, movie: Movie): Observable<Boolean> {
+        return Observable.defer {
+            Observable.just(dao.deleteCollectionEntry(collection.id, movie.imdbId))
+                    .map { it == 1 }
+        }
+    }
+
     @WorkerThread
     override fun apply(movie: Movie) {
         movie.collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name }

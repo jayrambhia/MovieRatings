@@ -74,6 +74,9 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_page_collections_title">In your collections</string>
 	<string name="movie_page_empty_collections">You haven\'t added this title in any collection</string>
 	<string name="movie_page_add_to_collection">Add to collection</string>
+	<string name="movie_collection_movie_exists">Title already exists in %1s collection</string>
+	<string name="movie_collection_movie_added">Title added to %1s collection</string>
+	<string name="movie_collection_movie_error">Unable to add title to %1s collection</string>
 
 	<string name="movie_page_load_error">Unable to load movie info</string>
 
@@ -83,24 +86,26 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_collection_list_page_selection_title">Select a collection</string>
 	<string name="movie_collection_list_empty_content">You don\'t have any collections. Create new collections and add movies to soothe your OCD</string>
 	<string name="movie_collection_list_empty_content_cta">Create new collection</string>
-
+	<string name="movie_collection_list_page_create_success">New collection created: %1s</string>
+	<string name="movie_collection_list_page_create_error">Unable to create new collection: %1s</string>
+	<string name="movie_collection_list_page_delete_success">Deleted collection: %1s</string>
+	<string name="movie_collection_list_page_delete_error">Unable to delete collection: %1s</string>
 	<string name="movie_collection_create_dialog_title">Create a new movie collection</string>
 	<string name="movie_collection_create_dialog_hint">Collection name</string>
 	<string name="movie_collection_create_dialog_positive_cta">Create</string>
-
-	<string name="movie_collection_movie_exists">Title already exists in %1s collection</string>
-	<string name="movie_collection_movie_added">Title added to %1s collection</string>
-	<string name="movie_collection_movie_error">Unable to add title to %1s collection</string>
-
-	<string name="movie_collection_page_title">Movie collection</string>
 	<string name="movie_collection_delete_dialog_title">Delete collection</string>
 	<string name="movie_collection_delete_dialog_content">Do you want to delete the collection: %1s?</string>
 	<string name="movie_collection_delete_dialog_negative">Yes, delete</string>
 	<string name="movie_collection_delete_dialog_neutral">No, keep</string>
 
-	<string name="movie_collection_list_page_create_success">New collection created: %1s</string>
-	<string name="movie_collection_list_page_create_error">Unable to create new collection: %1s</string>
-	<string name="movie_collection_list_page_delete_success">Deleted collection: %1s</string>
-	<string name="movie_collection_list_page_delete_error">Unable to delete collection: %1s</string>
+	<string name="movie_collection_page_title">Movie collection</string>
+	<string name="movie_collection_page_remove_cta">Remove</string>
+	<string name="movie_collection_remove_movie_dialog_title">Remove title</string>
+	<string name="movie_collection_remove_movie_dialog_content">Do you want to remove %1s from this collection?</string>
+	<string name="movie_collection_remove_movie_negative">Yes, remove</string>
+	<string name="movie_collection_remove_movie_neutral">No, keep</string>
+	<string name="movie_collection_remove_movie_success">Removed %1s</string>
+	<string name="movie_collection_remove_movie_error">Unable to remove %1s</string>
+
 
 </resources>

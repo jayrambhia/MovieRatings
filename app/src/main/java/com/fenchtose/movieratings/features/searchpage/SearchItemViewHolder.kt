@@ -10,10 +10,16 @@ import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.widgets.RatioImageView
 
-class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCallback?) : RecyclerView.ViewHolder(itemView) {
+class SearchItemViewHolder(
+        itemView: View,
+        callback: SearchPageAdapter.AdapterCallback?,
+        extraLayoutCreator: (() -> ExtraLayoutHelper)? = null) : RecyclerView.ViewHolder(itemView) {
+
     private val imageView: RatioImageView = itemView.findViewById(R.id.imageview)
     private val titleView: TextView = itemView.findViewById(R.id.titleview)
     private val favButton: ImageView = itemView.findViewById(R.id.fav_button)
+
+    private val extraLayoutHelper: ExtraLayoutHelper?
 
     var movie: Movie? = null
 
@@ -32,6 +38,9 @@ class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCa
                 callback?.onClicked(it, Pair(imageView, name))
             }
         }
+
+        extraLayoutHelper = extraLayoutCreator?.invoke()
+        extraLayoutHelper?.setup(itemView)
     }
 
     fun bindMovie(movie: Movie, imageLoader: ImageLoader) {
@@ -44,6 +53,7 @@ class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCa
         }
         setLiked(movie.liked, false)
         this.movie = movie
+        extraLayoutHelper?.bind(movie, imageLoader)
     }
 
     private fun setLiked(liked: Boolean, animate: Boolean) {
@@ -51,5 +61,10 @@ class SearchItemViewHolder(itemView: View, callback: SearchPageAdapter.AdapterCa
             favButton.setImageResource(if (liked) R.drawable.ic_favorite_yellow_24dp else R.drawable.ic_favorite_border_yellow_24dp)
             return
         }
+    }
+
+    interface ExtraLayoutHelper {
+        fun setup(itemView: View)
+        fun bind(movie: Movie, imageLoader: ImageLoader)
     }
 }

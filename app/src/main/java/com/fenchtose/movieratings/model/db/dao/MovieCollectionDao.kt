@@ -32,6 +32,9 @@ interface MovieCollectionDao {
     @Query("DELETE FROM COLLECTION_ENTRIES WHERE COLLECTION_ID == :collectionId")
     fun deleteCollectionEntries(collectionId: Long): Int
 
+    @Query("DELETE FROM COLLECTION_ENTRIES WHERE COLLECTION_ID == :collectionId AND IMDBID = :imdbId")
+    fun deleteCollectionEntry(collectionId: Long, imdbId: String): Int
+
     @Delete
     fun delete(collection: MovieCollection): Int
 
