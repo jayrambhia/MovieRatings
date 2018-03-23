@@ -6,6 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
@@ -21,6 +22,8 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     protected var recyclerView: RecyclerView? = null
     protected var adapter: SearchPageAdapter? = null
 
+    private var stateContent: TextView? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         onCreated()
@@ -34,6 +37,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recyclerview)
+        stateContent = view.findViewById(R.id.screen_state_content)
 
         val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),
                 object : SearchPageAdapter.AdapterCallback {
@@ -65,7 +69,23 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         presenter?.detachView(this as V)
     }
 
-    override fun setData(movies: ArrayList<Movie>) {
+    override fun updateState(state: BaseMovieListPage.State) {
+        when(state.ui) {
+            BaseMovieListPage.Ui.LOADING -> return
+            BaseMovieListPage.Ui.DATA_LOADED -> setData(state.data!!)
+            BaseMovieListPage.Ui.EMPTY -> showContentState(getEmptyContent())
+            BaseMovieListPage.Ui.ERROR -> showContentState(getErrorContent())
+        }
+    }
+
+    private fun showContentState(resId: Int) {
+        recyclerView?.visibility = View.GONE
+        stateContent?.visibility = View.VISIBLE
+        stateContent?.setText(resId)
+    }
+
+    private fun setData(movies: ArrayList<Movie>) {
+        stateContent?.visibility = View.GONE
         recyclerView?.visibility = View.VISIBLE
         adapter?.data = movies
         adapter?.notifyDataSetChanged()
@@ -76,6 +96,10 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     }
 
     abstract fun createPresenter(): P
+
+    abstract fun getErrorContent(): Int
+
+    abstract fun getEmptyContent(): Int
 
     open fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
 }

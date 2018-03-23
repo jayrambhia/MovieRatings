@@ -22,6 +22,10 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
     override fun getScreenTitle() = R.string.movie_collection_page_title
 
+    override fun getEmptyContent() = R.string.movie_collection_page_empty_content
+
+    override fun getErrorContent() = R.string.movie_collection_page_error_content
+
     override fun createPresenter(): CollectionPagePresenter {
         return CollectionPagePresenter(DbLikeStore(MovieRatingsApplication.database.favDao()),
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
@@ -62,6 +66,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
     override fun onRemoved(movie: Movie, position: Int) {
         adapter?.notifyItemRemoved(position)
+
     }
 
     override fun showAdded(movie: Movie, position: Int) {

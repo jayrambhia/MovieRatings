@@ -9,13 +9,13 @@ import com.fenchtose.movieratings.model.api.provider.DbRecentlyBrowsedMovieProvi
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 
 class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, RecentlyBrowsedPagePresenter>() {
-    override fun canGoBack(): Boolean {
-        return true
-    }
+    override fun canGoBack() = true
 
-    override fun getScreenTitle(): Int {
-        return R.string.recently_browsed_page_title
-    }
+    override fun getScreenTitle() = R.string.recently_browsed_page_title
+
+    override fun getEmptyContent() = R.string.recently_browsed_page_empty_content
+
+    override fun getErrorContent() = R.string.recently_browsed_page_error_content
 
     override fun createPresenter(): RecentlyBrowsedPagePresenter {
         return RecentlyBrowsedPagePresenter(DbRecentlyBrowsedMovieProvider(MovieRatingsApplication.database.movieDao()),

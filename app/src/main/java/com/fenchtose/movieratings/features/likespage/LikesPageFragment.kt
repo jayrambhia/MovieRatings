@@ -16,6 +16,10 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
 
     override fun getScreenTitle() = R.string.likes_page_title
 
+    override fun getEmptyContent() = R.string.likes_page_empty_content
+
+    override fun getErrorContent() = R.string.likes_page_error_content
+
     override fun onCreated() {
         setHasOptionsMenu(true)
     }

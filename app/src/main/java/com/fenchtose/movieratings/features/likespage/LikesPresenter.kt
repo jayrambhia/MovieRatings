@@ -25,27 +25,31 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
     }
 
     override fun toggleLike(movie: Movie) {
-        val index = data.indexOf(movie)
-        if (index >= 0) {
-            data.removeAt(index)
-            likeStore.setLiked(movie.imdbId, false)
-            getView()?.showRemoved(movie, index)
+        data?.let {
+            val index = it.indexOf(movie)
+            if (index >= 0) {
+                it.removeAt(index)
+                likeStore.setLiked(movie.imdbId, false)
+                getView()?.showRemoved(movie, index)
+            }
         }
     }
 
     fun undoUnlike(movie: Movie, index: Int) {
         likeStore.setLiked(movie.imdbId, true)
-        val addedIndex = when {
-            (index >= 0 && index < data.size) -> {
-                data.add(index, movie)
-                index
+        data?.let {
+            val addedIndex = when {
+                (index >= 0 && index < it.size) -> {
+                    it.add(index, movie)
+                    index
+                }
+                else -> {
+                    it.add(movie)
+                    it.size - 1
+                }
             }
-            else -> {
-                data.add(movie)
-                data.size - 1
-            }
+            getView()?.showAdded(movie, addedIndex)
         }
-        getView()?.showAdded(movie, addedIndex)
     }
 
     fun sort(type: Sort) {
@@ -54,8 +58,10 @@ class LikesPresenter(private val provider: FavoriteMovieProvider, private val li
             return
         }
 
-        updateData(ArrayList(getSorted(type, data)))
-        currentSort = type
+        data?.let {
+            updateData(ArrayList(getSorted(type, it)))
+            currentSort = type
+        }
     }
 
     private fun getSorted(type: Sort, data: ArrayList<Movie>): List<Movie> = when(type) {

@@ -46,12 +46,14 @@ class CollectionPagePresenter(likeStore: LikeStore,
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         if (it) {
-                            val index = data.indexOf(movie)
-                            if (index >= 0) {
-                                val removed = data.removeAt(index)
-                                getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_REMOVED, removed, index))
-                                getView()?.onRemoved(removed, index)
-                                return@subscribe
+                            data?.let {
+                                val index = it.indexOf(movie)
+                                if (index >= 0) {
+                                    val removed = it.removeAt(index)
+                                    getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_REMOVED, removed, index))
+                                    getView()?.onRemoved(removed, index)
+                                    return@subscribe
+                                }
                             }
                         }
                         getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_REMOVE_ERROR, movie))
@@ -70,18 +72,21 @@ class CollectionPagePresenter(likeStore: LikeStore,
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
-                        val addedIndex = when {
-                            (index >= 0 && index < data.size) -> {
-                                data.add(index, movie)
-                                index
+                        data?.let {
+                            val addedIndex = when {
+                                (index >= 0 && index < it.size) -> {
+                                    it.add(index, movie)
+                                    index
+                                }
+                                else -> {
+                                    it.add(movie)
+                                    it.size - 1
+                                }
                             }
-                            else -> {
-                                data.add(movie)
-                                data.size - 1
-                            }
+                            getView()?.showAdded(movie, addedIndex)
+                            getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_ADDED, movie, addedIndex))
                         }
-                        getView()?.showAdded(movie, addedIndex)
-                        getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_ADDED, movie, addedIndex))
+
                     }, {
                         it.printStackTrace()
                         getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_ADD_ERROR, movie))
@@ -94,8 +99,10 @@ class CollectionPagePresenter(likeStore: LikeStore,
             return
         }
 
-        updateData(ArrayList(getSorted(type, data)))
-        currentSort = type
+        if (data != null) {
+            updateData(ArrayList(getSorted(type, data!!)))
+            currentSort = type
+        }
     }
 
     private fun getSorted(type: Sort, data: List<Movie>): List<Movie> = when(type) {

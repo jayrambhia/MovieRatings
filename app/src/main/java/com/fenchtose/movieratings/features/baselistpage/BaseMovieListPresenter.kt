@@ -15,7 +15,7 @@ import io.reactivex.schedulers.Schedulers
 abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         private var likeStore: LikeStore): Presenter<V>() {
 
-    protected val data: ArrayList<Movie> = ArrayList()
+    protected var data: ArrayList<Movie>? = null
 
     @CallSuper
     override fun attachView(view: V) {
@@ -32,8 +32,9 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
                             updateData(ArrayList(it))
                         },
                         onError = {
-                            data.clear()
+                            data = null
                             it.printStackTrace()
+                            getView()?.updateState(BaseMovieListPage.State(BaseMovieListPage.Ui.ERROR, data))
                         }
                 )
 
@@ -41,9 +42,15 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
     }
 
     open protected fun updateData(movies: ArrayList<Movie>) {
-        this.data.clear()
-        this.data.addAll(movies)
-        getView()?.setData(this.data)
+        this.data = movies
+
+        val state = if (movies.isEmpty()) {
+            BaseMovieListPage.Ui.EMPTY
+        } else {
+            BaseMovieListPage.Ui.DATA_LOADED
+        }
+
+        getView()?.updateState(BaseMovieListPage.State(state, movies))
     }
 
     open fun toggleLike(movie: Movie) {

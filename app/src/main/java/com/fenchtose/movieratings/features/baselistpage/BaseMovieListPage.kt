@@ -3,5 +3,15 @@ package com.fenchtose.movieratings.features.baselistpage
 import com.fenchtose.movieratings.model.Movie
 
 interface BaseMovieListPage {
-    fun setData(movies: ArrayList<Movie>)
+
+    fun updateState(state: State)
+
+    data class State(val ui: Ui, val data: ArrayList<Movie>?)
+
+    enum class Ui {
+        LOADING,
+        DATA_LOADED,
+        EMPTY,
+        ERROR
+    }
 }
