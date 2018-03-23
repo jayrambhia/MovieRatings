@@ -93,5 +93,14 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_collection_movie_error">Unable to add title to %1s collection</string>
 
 	<string name="movie_collection_page_title">Movie collection</string>
+	<string name="movie_collection_delete_dialog_title">Delete collection</string>
+	<string name="movie_collection_delete_dialog_content">Do you want to delete the collection: %1s?</string>
+	<string name="movie_collection_delete_dialog_negative">Yes, delete</string>
+	<string name="movie_collection_delete_dialog_neutral">No, keep</string>
+
+	<string name="movie_collection_list_page_create_success">New collection created: %1s</string>
+	<string name="movie_collection_list_page_create_error">Unable to create new collection: %1s</string>
+	<string name="movie_collection_list_page_delete_success">Deleted collection: %1s</string>
+	<string name="movie_collection_list_page_delete_error">Unable to delete collection: %1s</string>
 
 </resources>

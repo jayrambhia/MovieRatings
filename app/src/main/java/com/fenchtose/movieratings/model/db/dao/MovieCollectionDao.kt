@@ -1,9 +1,6 @@
 package com.fenchtose.movieratings.model.db.dao
 
-import android.arch.persistence.room.Dao
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Query
+import android.arch.persistence.room.*
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.MovieCollectionEntry
@@ -31,5 +28,11 @@ interface MovieCollectionDao {
 
     @Query("SELECT * FROM MOVIES as m INNER JOIN COLLECTION_ENTRIES as ce ON m.IMDBID == ce.IMDBID WHERE ce.COLLECTION_ID == :collectionId")
     fun getMoviesForCollection(collectionId: Long): List<Movie>
+
+    @Query("DELETE FROM COLLECTION_ENTRIES WHERE COLLECTION_ID == :collectionId")
+    fun deleteCollectionEntries(collectionId: Long): Int
+
+    @Delete
+    fun delete(collection: MovieCollection): Int
 
 }

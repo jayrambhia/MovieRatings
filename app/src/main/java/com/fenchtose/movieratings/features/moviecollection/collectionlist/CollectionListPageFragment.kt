@@ -57,10 +57,16 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         super.onViewCreated(view, savedInstanceState)
         adapter = CollectionListPageAdapter(context,
                 object: CollectionListPageAdapter.AdapterCallback {
+                    override fun onDeleteRequested(collection: MovieCollection) {
+                        onCollectionDeleteRequested(collection)
+                    }
+
                     override fun onClicked(collection: MovieCollection) {
                         onCollectionSelected(collection)
                     }
-                })
+                },
+                !shouldReturnSelection())
+
         adapter?.let {
             it.setHasStableIds(true)
             recyclerView?.adapter = adapter
@@ -91,10 +97,20 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
                 emptyContent?.visibility = View.VISIBLE
                 recyclerView?.visibility = View.GONE
             }
-            CollectionListPage.Ui.COLLECTION_CREATED -> return
-            CollectionListPage.Ui.COLLECTION_CREATE_ERROR -> return
+
         }
 
+    }
+
+    override fun updateState(state: CollectionListPage.OpState) {
+        val resId = when(state.op) {
+            CollectionListPage.Op.COLLECTION_CREATED -> R.string.movie_collection_list_page_create_success
+            CollectionListPage.Op.COLLECTION_DELETED -> R.string.movie_collection_list_page_delete_success
+            CollectionListPage.Op.COLLECTION_CREATE_ERROR -> R.string.movie_collection_list_page_create_error
+            CollectionListPage.Op.COLLECTION_DELETE_ERROR -> R.string.movie_collection_list_page_delete_error
+        }
+
+        showSnackbar(context.getString(resId, state.data))
     }
 
     private fun onCreateCollectionRequested() {
@@ -133,6 +149,15 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
         })
 
+    }
+
+    private fun onCollectionDeleteRequested(collection: MovieCollection) {
+        AlertDialog.Builder(context)
+                .setTitle(R.string.movie_collection_delete_dialog_title)
+                .setMessage(context.getString(R.string.movie_collection_delete_dialog_content, collection.name))
+                .setNegativeButton(R.string.movie_collection_delete_dialog_negative) { _, _ -> presenter?.deleteCollection(collection) }
+                .setNeutralButton(R.string.movie_collection_delete_dialog_neutral) { dialog, _ -> dialog.dismiss() }
+                .show()
     }
 
     private fun onCollectionSelected(collection: MovieCollection) {

@@ -7,13 +7,15 @@ import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.MovieCollection
 
-class CollectionListPageAdapter(context: Context, private val callback: AdapterCallback): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CollectionListPageAdapter(context: Context,
+                                private val callback: AdapterCallback,
+                                private val showDeleteOption: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     var data: ArrayList<MovieCollection> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return CollectionItemViewHolder(inflater.inflate(R.layout.movie_collection_item_layout, parent, false), callback)
+        return CollectionItemViewHolder(inflater.inflate(R.layout.movie_collection_item_layout, parent, false), callback, showDeleteOption)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -34,6 +36,7 @@ class CollectionListPageAdapter(context: Context, private val callback: AdapterC
     }
 
     interface AdapterCallback {
-        fun onClicked(collection: MovieCollection): Unit
+        fun onClicked(collection: MovieCollection)
+        fun onDeleteRequested(collection: MovieCollection)
     }
 }

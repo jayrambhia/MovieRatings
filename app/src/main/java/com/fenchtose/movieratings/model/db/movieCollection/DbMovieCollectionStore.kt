@@ -6,6 +6,7 @@ import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.MovieCollectionEntry
 import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
 import io.reactivex.Observable
+import io.reactivex.functions.BiFunction
 
 class DbMovieCollectionStore(private val dao: MovieCollectionDao) : MovieCollectionStore {
     override fun createCollection(name: String): Observable<MovieCollection> {
@@ -17,6 +18,16 @@ class DbMovieCollectionStore(private val dao: MovieCollectionDao) : MovieCollect
                     .doOnNext {
                         dao.insert(it)
                     }
+        }
+    }
+
+    override fun deleteCollection(collection: MovieCollection): Observable<Boolean> {
+        return Observable.defer {
+            Observable.zip(
+                    Observable.just(dao.deleteCollectionEntries(collection.id)),
+                    Observable.just(dao.delete(collection)),
+                    BiFunction<Int, Int, Boolean> { _, t2 ->  t2 > 0}
+                    )
         }
     }
 
