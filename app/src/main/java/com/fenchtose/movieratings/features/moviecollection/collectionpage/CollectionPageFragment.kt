@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import android.app.AlertDialog
+import android.view.View
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.RouterPath
@@ -57,13 +58,24 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         adapter?.notifyItemRemoved(position)
     }
 
+    override fun showAdded(movie: Movie, position: Int) {
+        adapter?.notifyItemInserted(position)
+    }
+
     override fun updateState(state: CollectionPage.OpState) {
         val resId = when(state.op) {
             CollectionPage.Op.MOVIE_REMOVED -> R.string.movie_collection_remove_movie_success
             CollectionPage.Op.MOVIE_REMOVE_ERROR -> R.string.movie_collection_remove_movie_error
+            CollectionPage.Op.MOVIE_ADDED -> R.string.movie_collection_add_movie_success
+            CollectionPage.Op.MOVIE_ADD_ERROR -> R.string.movie_collection_add_movie_error
         }
 
-        showSnackbar(context.getString(resId, state.movie.title))
+        if (state.op != CollectionPage.Op.MOVIE_REMOVED) {
+            showSnackbar(context.getString(resId, state.movie.title))
+        } else {
+            showSnackbarWithAction(context.getString(resId, state.movie.title), R.string.undo_action,
+                    View.OnClickListener { presenter?.undoRemove(state.movie, state.position) })
+        }
     }
 
     class CollectionPagePath(val collection: MovieCollection) : RouterPath<CollectionPageFragment>() {

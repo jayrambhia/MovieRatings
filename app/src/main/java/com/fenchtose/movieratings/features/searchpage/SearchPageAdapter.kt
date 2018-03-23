@@ -33,10 +33,6 @@ class SearchPageAdapter(context: Context,
         return data[position].imdbId.hashCode().toLong()
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return super.getItemViewType(position)
-    }
-
     interface AdapterCallback {
         fun onLiked(movie: Movie)
         fun onClicked(movie: Movie, sharedElement: Pair<View, String>?)

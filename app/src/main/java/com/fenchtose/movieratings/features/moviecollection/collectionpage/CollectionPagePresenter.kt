@@ -37,7 +37,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
                             val index = data.indexOf(movie)
                             if (index >= 0) {
                                 val removed = data.removeAt(index)
-                                getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_REMOVED, removed))
+                                getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_REMOVED, removed, index))
                                 getView()?.onRemoved(removed, index)
                                 return@subscribe
                             }
@@ -49,6 +49,31 @@ class CollectionPagePresenter(likeStore: LikeStore,
                     })
 
             subscribe(d)
+        }
+    }
+
+    fun undoRemove(movie: Movie, index: Int) {
+        collection?.let {
+            collectionStore.addMovieToCollection(it, movie)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        val addedIndex = when {
+                            (index >= 0 && index < data.size) -> {
+                                data.add(index, movie)
+                                index
+                            }
+                            else -> {
+                                data.add(movie)
+                                data.size - 1
+                            }
+                        }
+                        getView()?.showAdded(movie, addedIndex)
+                        getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_ADDED, movie, addedIndex))
+                    }, {
+                        it.printStackTrace()
+                        getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_ADD_ERROR, movie))
+                    })
         }
     }
 }
