@@ -15,6 +15,8 @@ import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.util.Constants
+import com.fenchtose.movieratings.util.FixTitleUtils
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -27,7 +29,7 @@ class NetflixReaderService : AccessibilityService() {
     private var preferences: UserPreferences? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
-    private val supportedPackages: Array<String> = arrayOf("com.netflix.mediaclient"/*, BuildConfig.APPLICATION_ID*/)
+    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO/*, BuildConfig.APPLICATION_ID*/)
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -71,37 +73,47 @@ class NetflixReaderService : AccessibilityService() {
             title = null
         }
 
-        preferences?.let {
-            if (!it.isAppEnabled(UserPreferences.NETFLIX)) {
-                return
-            }
-        }
-
         val record = AccessibilityEventCompat.asRecord(event)
         val info = record.source
         info?.let {
 
+            val isAppEnabled = when (it.packageName) {
+                BuildConfig.APPLICATION_ID -> true
+                Constants.PACKAGE_NETFLIX -> preferences?.isAppEnabled(UserPreferences.NETFLIX)
+                Constants.PACKAGE_PRIMEVIDEO -> preferences?.isAppEnabled(UserPreferences.PRIMEVIDEO)
+                else -> false
+            }
+
+            if (isAppEnabled == null || !isAppEnabled) {
+                return
+            }
+
             val titles: List<AccessibilityNodeInfoCompat> = when {
-                info.packageName == BuildConfig.APPLICATION_ID -> info.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
-                info.packageName == "com.netflix.mediaclient" -> info.findAccessibilityNodeInfosByViewId("com.netflix.mediaclient:id/video_details_title")
+                it.packageName == BuildConfig.APPLICATION_ID -> it.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
+                it.packageName == Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_title")
+                it.packageName == Constants.PACKAGE_PRIMEVIDEO -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/TitleText")
                 else -> ArrayList()
             }
 
             if (titles.isNotEmpty()) {
                 titles.filter { it.text != null }
                         .forEach {
-                            setMovieTitle(it.text.toString())
+                            setMovieTitle(fixTitle(it.packageName, it.text.toString()))
                         }
             }
         }
     }
 
     @Suppress("unused")
-    fun checkNodeRecursively(info: AccessibilityNodeInfoCompat) {
-        Log.d(TAG, "info: " + info.text + ", " + info.viewIdResourceName + ", " + info.className + ", " + info.parent)
-        Log.d(TAG, "--- children ---")
-        (0..info.childCount)
-                .forEach { Log.d(TAG, info.getChild(it).toString()) }
+    fun checkNodeRecursively(info: AccessibilityNodeInfoCompat?) {
+        info?.let {
+            Log.d(TAG, "info: " + it.text + ", " + it.viewIdResourceName + ", " + it.className + ", " + it.parent)
+            Log.d(TAG, "--- children ---")
+            (0 until info.childCount)
+                    .forEach {
+                        index -> checkNodeRecursively(it.getChild(index))
+                    }
+        }
     }
 
     override fun onInterrupt() {
@@ -117,7 +129,13 @@ class NetflixReaderService : AccessibilityService() {
             }
             getMovieInfo(text)
         }
+    }
 
+    private fun fixTitle(packageName: CharSequence, text: String): String {
+        return when(packageName) {
+            Constants.PACKAGE_PRIMEVIDEO -> FixTitleUtils.fixPrimeVideoTitle(text)
+            else -> text
+        }
     }
 
     private fun getMovieInfo(title: String) {

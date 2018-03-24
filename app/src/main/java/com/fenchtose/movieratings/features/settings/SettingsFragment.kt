@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.settings
 
 import android.os.Bundle
+import android.support.annotation.IdRes
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.SwitchCompat
 import android.view.LayoutInflater
@@ -26,8 +27,6 @@ class SettingsFragment: BaseFragment() {
 
     private var preferences: UserPreferences? = null
 
-    private var netflixToggle: SwitchCompat? = null
-
     private var toastDuration: TextView? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -40,14 +39,10 @@ class SettingsFragment: BaseFragment() {
 
         val preferences = SettingsPreferences(context)
 
-        val netflixToggle = view.findViewById<SwitchCompat>(R.id.netflix_toggle)
-        netflixToggle.isChecked = preferences.isAppEnabled(UserPreferences.NETFLIX)
-        netflixToggle.setOnCheckedChangeListener {
-            _, isChecked ->  updatePreference(UserPreferences.NETFLIX, isChecked)
-        }
-
         this.preferences = preferences
-        this.netflixToggle = netflixToggle
+
+        addAppToggle(preferences, view, R.id.netflix_toggle, UserPreferences.NETFLIX)
+        addAppToggle(preferences, view, R.id.prime_video_toggle, UserPreferences.PRIMEVIDEO)
 
         val toastInfo = view.findViewById<TextView>(R.id.toast_duration_info)
         val toastSeekbar = view.findViewById<SeekBar>(R.id.toast_duration_seekbar)
@@ -92,8 +87,19 @@ class SettingsFragment: BaseFragment() {
         updatePublisher?.onComplete()
     }
 
-    private fun updatePreference(app: String, checked: Boolean) {
-        preferences?.setAppEnabled(app, checked)
+    private fun addAppToggle(preferences: UserPreferences, root: View, @IdRes buttonId: Int, key: String) {
+        val toggle = root.findViewById<SwitchCompat?>(buttonId)
+        toggle?.let {
+            it.visibility = View.VISIBLE
+            it.isChecked = preferences.isAppEnabled(key)
+            it.setOnCheckedChangeListener {
+                _, isChecked -> updatePreference(preferences, key, isChecked)
+            }
+        }
+    }
+
+    private fun updatePreference(preferences: UserPreferences, app: String, checked: Boolean) {
+        preferences.setAppEnabled(app, checked)
         updatePublisher?.onNext(true)
     }
 

@@ -6,6 +6,7 @@ interface UserPreferences {
 
     companion object {
         val NETFLIX = "netflix"
+        val PRIMEVIDEO = "primevideo"
     }
 
     fun isAppEnabled(app: String): Boolean
