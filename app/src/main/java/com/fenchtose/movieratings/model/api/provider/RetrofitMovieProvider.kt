@@ -84,8 +84,8 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         }
     }
 
-    override fun search(title: String): Observable<SearchResult> {
-        return api.search(BuildConfig.OMDB_API_KEY, title)
+    override fun search(title: String, page: Int): Observable<SearchResult> {
+        return api.search(BuildConfig.OMDB_API_KEY, title, page)
                 .doOnNext {
                     it.results.map {
                         for (preferenceApplier in preferenceAppliers) {

@@ -9,7 +9,10 @@ interface SearchPage {
         DEFAULT,
         LOADING,
         ERROR,
-        DATA_LOADED
+        DATA_LOADED,
+        LOADING_MORE,
+        MORE_DATA_LOADED,
+        LOAD_MORE_ERROR
     }
 
     data class State(val ui: Ui, val movies: ArrayList<Movie> = ArrayList())

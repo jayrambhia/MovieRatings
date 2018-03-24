@@ -60,17 +60,24 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         searchView = view.findViewById(R.id.search_view)
         clearButton = view.findViewById(R.id.clear_button)
 
-        val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),
-                object : SearchPageAdapter.AdapterCallback {
+        val adapter = SearchPageAdapter.Builder(context, GlideLoader(Glide.with(this)))
+                .withLoadMore()
+                .withCallback(object : SearchPageAdapter.AdapterCallback {
                     override fun onLiked(movie: Movie) {
                         presenter?.setLiked(movie)
                     }
 
                     override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                        // TODO check for api compatibility
                         presenter?.openMovie(movie, sharedElement)
                     }
-        })
+
+                    override fun onLoadMore() {
+                        presenter?.loadMore()
+                    }
+
+                }).build()
+
+
 
         adapter.setHasStableIds(true)
 
@@ -151,8 +158,11 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         when (state.ui) {
             SearchPage.Ui.DEFAULT -> clearQuery()
             SearchPage.Ui.LOADING -> showLoading(true)
-            SearchPage.Ui.DATA_LOADED -> setData(state.movies)
+            SearchPage.Ui.DATA_LOADED -> setData(state)
             SearchPage.Ui.ERROR -> showApiError()
+            SearchPage.Ui.LOADING_MORE -> adapter?.showLoadingMore(true)
+            SearchPage.Ui.MORE_DATA_LOADED -> setData(state)
+            SearchPage.Ui.LOAD_MORE_ERROR -> showApiError()
         }
     }
 
@@ -169,15 +179,20 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     private fun showApiError() {
         showLoading(false)
+        adapter?.showLoadingMore(false)
         showSnackbar(R.string.search_page_api_error_content)
     }
 
-    private fun setData(movies: ArrayList<Movie>) {
+    private fun setData(state: SearchPage.State) {
         showLoading(false)
-        adapter?.data = movies
+        adapter?.data = state.movies
         adapter?.notifyDataSetChanged()
         recyclerView?.post {
-            recyclerView?.scrollToPosition(0)
+            if (state.ui == SearchPage.Ui.DATA_LOADED) {
+                recyclerView?.scrollToPosition(0)
+            } else if (state.ui == SearchPage.Ui.MORE_DATA_LOADED) {
+                adapter?.showLoadingMore(false)
+            }
         }
         recyclerView?.visibility = View.VISIBLE
     }

@@ -15,5 +15,5 @@ interface MovieApi {
     fun getMovieInfoWithImdb(@Query("apikey") apiKey: String, @Query("i") imdbId: String, @Query("plot") plot: String = "full") : Observable<Movie>
 
     @GET("/ ")
-    fun search(@Query("apikey") apiKey: String, @Query("s") title: String) : Observable<SearchResult>
+    fun search(@Query("apikey") apiKey: String, @Query("s") title: String, @Query("page") page: Int = 1) : Observable<SearchResult>
 }

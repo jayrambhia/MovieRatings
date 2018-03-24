@@ -40,7 +40,7 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
                     }
     }
 
-    override fun search(title: String): Observable<SearchResult> {
+    override fun search(title: String, page:Int): Observable<SearchResult> {
         val observable =  when(title) {
             "thor" -> Observable.just(convertToSearchResult(R.raw.thor))
             "batman" -> Observable.just(convertToSearchResult(R.raw.batman))
