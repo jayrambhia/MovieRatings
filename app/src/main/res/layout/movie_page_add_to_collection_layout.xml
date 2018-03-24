@@ -8,11 +8,11 @@
 	android:textSize="16sp"
 	android:paddingStart="16dp"
 	android:paddingEnd="16dp"
-	android:paddingTop="4dp"
+	android:paddingTop="8dp"
 	android:paddingBottom="8dp"
 	android:gravity="center_vertical"
-	android:drawableStart="@drawable/ic_playlist_add_onyx_18dp"
-	android:drawablePadding="8dp"
-	android:text="@string/movie_page_add_to_collection">
+	android:fontFamily="sans-serif-medium"
+	android:text="@string/movie_page_add_to_collection"
+	android:elevation="4dp">
 
 </TextView>
