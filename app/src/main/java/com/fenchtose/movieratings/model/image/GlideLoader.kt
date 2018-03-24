@@ -11,23 +11,25 @@ import com.bumptech.glide.request.target.Target
 class GlideLoader(private val manager: RequestManager): ImageLoader {
     override fun loadImage(image: String, view: ImageView, callback: ImageLoader.Callback?) {
 
-        manager.load(image).listener(object: RequestListener<Drawable> {
-            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                return false
-            }
+        image.takeIf { it.isNotEmpty() && it != "N/A" }?.let {
+            manager.load(it).listener(object: RequestListener<Drawable> {
+                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                    return false
+                }
 
-            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                callback?.imageLoaded(image, view)
-                return false
-            }
+                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                    callback?.imageLoaded(it, view)
+                    return false
+                }
 
-        }).into(view)
-
-
+            }).into(view)
+        }
     }
 
     override fun loadImage(image: String, view: ImageView) {
-        manager.load(image).into(view)
+        image.takeIf { it.isNotEmpty() && it != "N/A" }?.let {
+            manager.load(it).into(view)
+        }
     }
 
     override fun cancelRequest(view: ImageView) {
