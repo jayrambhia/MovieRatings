@@ -11,6 +11,7 @@ import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -18,6 +19,7 @@ class MoviePresenter(private val provider: MovieProvider,
                      private val likeStore: LikeStore,
                      private val recentStore: RecentlyBrowsedStore,
                      private val collectionStore: MovieCollectionStore,
+                     private val preferences: UserPreferences,
                      private val imdbId: String?,
                      private val movie: Movie?): Presenter<MoviePage>() {
 
@@ -90,6 +92,10 @@ class MoviePresenter(private val provider: MovieProvider,
     }
 
     private fun updateRecent(imdbId: String) {
+        if (!preferences.isAppEnabled(UserPreferences.SAVE_HISTORY)) {
+            return
+        }
+
         val recent = RecentlyBrowsed()
         recent.id = imdbId
         recent.timestamp = System.currentTimeMillis()

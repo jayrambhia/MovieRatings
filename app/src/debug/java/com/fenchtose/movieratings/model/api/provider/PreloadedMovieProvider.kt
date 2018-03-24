@@ -76,7 +76,7 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         }
     }
 
-    private fun getMovieInfo(title: String): Observable<Movie> {
+    private fun getMovieInfo(@Suppress("UNUSED_PARAMETER") title: String): Observable<Movie> {
         val data = readRawFile(R.raw.thor_ragnarok)
         val gson = Gson()
         return Observable.just(gson.fromJson(data, Movie::class.java))

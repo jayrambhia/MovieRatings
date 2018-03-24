@@ -2,7 +2,8 @@
 <resources>
     <dimen name="info_page_gutter">0dp</dimen>
     <dimen name="gutter">16dp</dimen>
-    <dimen name="settings_text_size">16sp</dimen>
+	<dimen name="settings_header_text_size">16sp</dimen>
+    <dimen name="settings_text_size">14sp</dimen>
     <dimen name="toast_text_size">16sp</dimen>
     <dimen name="toast_corner_radius">18dp</dimen>
     <dimen name="toast_bottom_margin">80dp</dimen>

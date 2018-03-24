@@ -20,6 +20,7 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
@@ -196,13 +197,18 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
     }
 
-    class SearchPath : RouterPath<SearchPageFragment>() {
+    class SearchPath(private val preferences: UserPreferences) : RouterPath<SearchPageFragment>() {
         override fun createFragmentInstance(): SearchPageFragment {
             return SearchPageFragment()
         }
 
         override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_info, R.id.action_fav, R.id.action_history, R.id.action_collection)
+            val icons = arrayListOf(R.id.action_info, R.id.action_fav, R.id.action_collection)
+            if (preferences.isAppEnabled(UserPreferences.SAVE_HISTORY)) {
+                icons.add(R.id.action_history)
+            }
+
+            return icons.toIntArray()
         }
 
         override fun showBackButton() = false

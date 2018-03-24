@@ -27,6 +27,7 @@ import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStor
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
+import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 
 class MoviePageFragment: BaseFragment(), MoviePage {
 
@@ -70,6 +71,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                 DbLikeStore(MovieRatingsApplication.database.favDao()),
                 DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()),
                 DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
+                SettingsPreferences(context),
                 movie?.imdbId, movie)
 
         imageLoader = GlideLoader(Glide.with(this))

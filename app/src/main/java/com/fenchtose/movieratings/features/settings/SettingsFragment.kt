@@ -43,6 +43,7 @@ class SettingsFragment: BaseFragment() {
 
         addAppToggle(preferences, view, R.id.netflix_toggle, UserPreferences.NETFLIX)
         addAppToggle(preferences, view, R.id.prime_video_toggle, UserPreferences.PRIMEVIDEO)
+        addAppToggle(preferences, view, R.id.save_browsing_toggle, UserPreferences.SAVE_HISTORY)
 
         val toastInfo = view.findViewById<TextView>(R.id.toast_duration_info)
         val toastSeekbar = view.findViewById<SeekBar>(R.id.toast_duration_seekbar)
