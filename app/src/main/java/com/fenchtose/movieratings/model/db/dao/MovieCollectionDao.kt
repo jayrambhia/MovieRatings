@@ -38,4 +38,10 @@ interface MovieCollectionDao {
     @Delete
     fun delete(collection: MovieCollection): Int
 
+    @Query("DELETE FROM COLLECTIONS")
+    fun deleteAllCollections(): Int
+
+    @Query("DELETE FROM COLLECTION_ENTRIES")
+    fun deleteAllCollectionEntries(): Int
+
 }

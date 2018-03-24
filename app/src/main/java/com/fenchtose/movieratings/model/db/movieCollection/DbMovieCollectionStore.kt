@@ -53,6 +53,14 @@ class DbMovieCollectionStore(private val dao: MovieCollectionDao) : MovieCollect
         }
     }
 
+    override fun deleteAllCollectionEntries(): Observable<Int> = Observable.defer {
+        Observable.just(dao.deleteAllCollectionEntries())
+    }
+
+    override fun deleteAllCollections(): Observable<Int> = Observable.defer {
+        Observable.just(dao.deleteAllCollections())
+    }
+
     @WorkerThread
     override fun apply(movie: Movie) {
         movie.collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.model.Movie
+import io.reactivex.Observable
 
 class PreferencesLikeStore(val context: Context) : LikeStore {
 
@@ -14,6 +15,11 @@ class PreferencesLikeStore(val context: Context) : LikeStore {
 
     override fun setLiked(imdbId: String, liked: Boolean) {
         preferences.edit().putBoolean(imdbId, liked).apply()
+    }
+
+    override fun deleteAll(): Observable<Int> {
+        preferences.edit().clear().apply()
+        return Observable.just(1)
     }
 
     @WorkerThread

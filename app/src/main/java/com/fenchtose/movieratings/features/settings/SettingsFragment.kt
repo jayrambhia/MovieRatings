@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.settings
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.design.widget.Snackbar
@@ -10,13 +11,19 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.model.db.like.DbLikeStore
+import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
+import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -74,6 +81,10 @@ class SettingsFragment: BaseFragment() {
             })
         }
 
+        view.findViewById<View>(R.id.clear_history_button).setOnClickListener { showClearHistoryDialog() }
+        view.findViewById<View>(R.id.delete_data_button).setOnClickListener { showDeleteDataDialog() }
+
+
         val publisher = PublishSubject.create<Boolean>()
         subscribe(publisher
                 .debounce(500, TimeUnit.MILLISECONDS)
@@ -114,6 +125,56 @@ class SettingsFragment: BaseFragment() {
         root?.let {
             Snackbar.make(it, R.string.settings_preference_update_content, Snackbar.LENGTH_SHORT).show()
         }
+    }
+
+    private fun showClearHistoryDialog() {
+        AlertDialog.Builder(context)
+                .setTitle(R.string.settings_clear_history_dialog_title)
+                .setMessage(R.string.settings_clear_history_dialog_content)
+                .setNegativeButton(R.string.settings_clear_history_dialog_cta) { _, _ -> clearHistory() }
+                .setNeutralButton(android.R.string.no) {d, _ -> d.dismiss()}
+                .show()
+    }
+
+    private fun showDeleteDataDialog() {
+        AlertDialog.Builder(context)
+                .setTitle(R.string.settings_delete_data_dialog_title)
+                .setMessage(R.string.settings_delete_data_dialog_content)
+                .setNegativeButton(R.string.settings_delete_data_dialog_cta) { _, _ -> deleteData() }
+                .setNeutralButton(android.R.string.no) {d, _ -> d.dismiss()}
+                .show()
+    }
+
+    private fun clearHistory() {
+        DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao())
+                .deleteAll()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    showSnackbar(R.string.settings_history_cleared)
+                }, {
+                    it.printStackTrace()
+                    showSnackbar(R.string.settings_clear_history_error)
+                })
+    }
+
+    private fun deleteData() {
+        val collectionStore = DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao())
+        Observable.concat(
+                DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()).deleteAll(),
+                DbLikeStore(MovieRatingsApplication.database.favDao()).deleteAll(),
+                collectionStore.deleteAllCollectionEntries(),
+                collectionStore.deleteAllCollections())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+
+                }, {
+                    it.printStackTrace()
+                    showSnackbar(R.string.settings_data_delete_error)
+                }, {
+                    showSnackbar(R.string.settings_data_deleted)
+                })
     }
 
     override fun canGoBack(): Boolean {

@@ -12,4 +12,6 @@ interface MovieCollectionStore : UserPreferneceApplier {
     fun addMovieToCollection(collection: MovieCollection, movie: Movie): Observable<MovieCollectionEntry>
     fun isMovieAddedToCollection(collection: MovieCollection, movie: Movie): Observable<Boolean>
     fun removeMovieFromCollection(collection: MovieCollection, movie: Movie): Observable<Boolean>
+    fun deleteAllCollectionEntries(): Observable<Int>
+    fun deleteAllCollections(): Observable<Int>
 }

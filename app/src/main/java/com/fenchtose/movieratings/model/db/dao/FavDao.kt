@@ -15,4 +15,7 @@ interface FavDao {
     @Query("SELECT * FROM FAVS WHERE IMDBID LIKE :imdbId LIMIT 1")
     fun getFav(imdbId: String): Fav?
 
+    @Query("DELETE FROM FAVS")
+    fun deleteAll(): Int
+
 }

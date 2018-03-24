@@ -14,4 +14,8 @@ class DbRecentlyBrowsedStore(private val dao: RecentlyBrowsedDao): RecentlyBrows
                     dao.insert(it)
                 }
     }
+
+    override fun deleteAll(): Observable<Int> = Observable.defer {
+        Observable.just(dao.deleteAll())
+    }
 }

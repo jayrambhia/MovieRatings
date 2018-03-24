@@ -36,4 +36,9 @@ class DbLikeStore(val likeDao: FavDao) : LikeStore {
                 }
     }
 
+    override fun deleteAll(): Observable<Int> {
+        return Observable.defer {
+            Observable.just(likeDao.deleteAll())
+        }
+    }
 }

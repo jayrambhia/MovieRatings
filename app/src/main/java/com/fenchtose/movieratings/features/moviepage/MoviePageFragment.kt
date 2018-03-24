@@ -125,6 +125,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     }
 
     private fun showMovie(movie: Movie) {
+        MovieRatingsApplication.router?.updateTitle(movie.title)
         titleView?.text = movie.title
         genreView?.text = movie.genre
         if (movie.ratings.size > 0) {
