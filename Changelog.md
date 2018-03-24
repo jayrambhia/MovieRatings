@@ -1,5 +1,10 @@
 # Flutter Changelog
 
+### 0.1.8
+
+ - Support added for Amazon Prime Video.
+ - Options added to delete user data.
+
 ### 0.1.7
 
  - Movie collections added.

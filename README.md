@@ -8,7 +8,7 @@
 ## Note
 Flutter has been **unpublished** from Google Playstore. It uses accessibility service and recent Playstore policy suggests that `Apps requesting accessibility services should only be used to help users with disabilities use Android devices and apps`. So I have decided to remove it from the playstore. I am planning to add Flutter to other app stores such as F-Droid.
 
-You can get the latest Playstore version here - [0.1.7](https://github.com/jayrambhia/MovieRatings/releases/download/v0.1.7/flutter_v0.1.7.apk)
+You can get the latest Playstore version here - [0.1.8](https://github.com/jayrambhia/MovieRatings/releases/download/v0.1.8/flutter_v0.1.8.apk)
 
 ## Screenshots of master
 
@@ -16,9 +16,9 @@ Search Page | Favorites Page | Movie Page
 :----------:|:--------------:|:----------: 
 ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/search_screen.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/likes_screen.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/movie_screen.png)
 
-Collections Page | Collection Page
-:----------:|:--------------:
-![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/collections_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/collection_page.png)
+Collections Page | Collection Page | Settings Page
+:----------:|:--------------:|:---------------:
+![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/collections_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/collection_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/settings_screen.png)
 
 ## Contribute
 
@@ -58,6 +58,7 @@ Flutter is brilliant but you're the boss! You need to enable Flutter's accessibi
  
 <b>Apps that Flutter supports?</b>
  - Netflix
+ - Amazon Prime Video
  - Support for other popular streaming apps coming soon!
  
 <b>What’s the future of Flutter?</b>
