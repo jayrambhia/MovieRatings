@@ -50,4 +50,6 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
             ).show()
         }
     }
+
+    open fun saveState(): PresenterState? = null
 }

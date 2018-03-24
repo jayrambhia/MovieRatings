@@ -25,6 +25,8 @@ class Router(activity: AppCompatActivity) {
             if (top.javaClass == path.javaClass) {
                 return
             }
+
+            top.saveState()
         }
 
         move(path)

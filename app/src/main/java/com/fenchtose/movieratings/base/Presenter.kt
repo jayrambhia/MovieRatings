@@ -28,4 +28,10 @@ abstract class Presenter<VIEW> {
     fun getView(): VIEW? {
         return view
     }
+
+    open fun saveState(): PresenterState? = null
+
+    open fun restoreState(state: PresenterState?) {
+
+    }
 }

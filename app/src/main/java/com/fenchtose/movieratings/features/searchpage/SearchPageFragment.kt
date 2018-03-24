@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
@@ -46,6 +47,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         super.onCreate(savedInstanceState)
         val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
         presenter = SearchPresenter(MovieRatingsApplication.movieProviderModule.movieProvider, likeStore)
+        presenter?.restoreState(path?.restoreState())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -133,6 +135,10 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         this.querySubject = subject
     }
 
+    override fun saveState(): PresenterState? {
+        return presenter?.saveState()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.detachView(this)
@@ -159,6 +165,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             SearchPage.Ui.DEFAULT -> clearQuery()
             SearchPage.Ui.LOADING -> showLoading(true)
             SearchPage.Ui.DATA_LOADED -> setData(state)
+            SearchPage.Ui.DATA_RESTORED -> setData(state)
             SearchPage.Ui.ERROR -> showApiError()
             SearchPage.Ui.LOADING_MORE -> adapter?.showLoadingMore(true)
             SearchPage.Ui.MORE_DATA_LOADED -> setData(state)

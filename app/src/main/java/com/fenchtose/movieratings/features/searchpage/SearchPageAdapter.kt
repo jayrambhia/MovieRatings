@@ -38,7 +38,7 @@ class SearchPageAdapter(context: Context,
     }
 
     override fun getItemCount(): Int {
-        return if (data.size > 0 && supportsLoadMore) data.size + 1 else 0
+        return if (data.size > 0 && supportsLoadMore) data.size + 1 else data.size
     }
 
     override fun getItemId(position: Int): Long {
@@ -46,7 +46,7 @@ class SearchPageAdapter(context: Context,
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (position != 0 && position == itemCount - 1) TYPE_LOADER else TYPE_MOVIE
+        return if (position != 0 && position == itemCount - 1 && supportsLoadMore) TYPE_LOADER else TYPE_MOVIE
     }
 
     fun showLoadingMore(status: Boolean) {

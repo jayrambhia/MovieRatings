@@ -26,7 +26,6 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        onCreated()
         presenter = createPresenter()
     }
 
@@ -91,10 +90,6 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         adapter?.notifyDataSetChanged()
     }
 
-    open fun onCreated() {
-
-    }
-
     abstract fun createPresenter(): P
 
     abstract fun getErrorContent(): Int
@@ -102,4 +97,8 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     abstract fun getEmptyContent(): Int
 
     open fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
+
+    open protected fun onCreated() {
+
+    }
 }

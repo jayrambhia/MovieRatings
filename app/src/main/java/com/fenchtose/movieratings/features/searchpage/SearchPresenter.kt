@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.features.searchpage
 import android.view.View
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
@@ -113,7 +114,7 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
     }
 
     private fun showAlreadyLoadedData(data: ArrayList<Movie>) {
-        updateState(SearchPage.State(SearchPage.Ui.DATA_LOADED, data))
+        updateState(SearchPage.State(SearchPage.Ui.DATA_RESTORED, data))
     }
 
     private fun updateState(state: SearchPage.Ui) {
@@ -131,9 +132,23 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
 
     fun setLiked(movie: Movie) {
         likeStore.setLiked(movie.imdbId, !movie.liked)
+        movie.liked = !movie.liked
     }
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
         MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
+    }
+
+    override fun saveState() = SearchState(currentQuery, data.map { it -> it } as ArrayList<Movie>, pageNum)
+
+    override fun restoreState(state: PresenterState?) {
+        state?.takeIf { it is SearchState }?.let {
+            it as SearchState
+        }?.apply {
+            currentQuery = query
+            data.clear()
+            data.addAll(movies)
+            pageNum = page
+        }
     }
 }

@@ -10,6 +10,7 @@ interface SearchPage {
         LOADING,
         ERROR,
         DATA_LOADED,
+        DATA_RESTORED,
         LOADING_MORE,
         MORE_DATA_LOADED,
         LOAD_MORE_ERROR
