@@ -66,6 +66,13 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.detachView(this as V)
+        recyclerView?.adapter = null
+        adapter = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter = null
     }
 
     override fun updateState(state: BaseMovieListPage.State) {

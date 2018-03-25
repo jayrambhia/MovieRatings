@@ -26,8 +26,8 @@ class SearchItemViewHolder(
     init {
         favButton.setOnClickListener {
             movie?.let {
-                callback?.onLiked(it)
                 setLiked(!it.liked, false)
+                callback?.onLiked(it)
             }
         }
 

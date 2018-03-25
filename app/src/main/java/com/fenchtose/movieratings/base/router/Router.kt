@@ -103,6 +103,7 @@ class Router(activity: AppCompatActivity) {
 
     private fun moveBack() {
         val path = history.pop()
+        path.clearState()
         callback?.removed(path)
         if (!history.empty()) {
             val top = history.peek()

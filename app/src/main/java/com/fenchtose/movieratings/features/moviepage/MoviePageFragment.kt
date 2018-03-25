@@ -124,6 +124,11 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         presenter?.detachView(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        MovieRatingsApplication.refWatcher?.watch(this)
+    }
+
     private fun showMovie(movie: Movie) {
         MovieRatingsApplication.router?.updateTitle(movie.title)
         titleView?.text = movie.title

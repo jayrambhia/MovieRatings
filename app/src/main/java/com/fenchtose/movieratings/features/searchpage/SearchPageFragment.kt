@@ -70,7 +70,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                     }
 
                     override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                        presenter?.openMovie(movie, sharedElement)
+                        presenter?.openMovie(movie, null)
                     }
 
                     override fun onLoadMore() {
@@ -142,10 +142,19 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.detachView(this)
+        clearButton?.setOnClickListener(null)
         watcher?.let {
-            searchView?.removeTextChangedListener(watcher)
+            searchView?.removeTextChangedListener(it)
+            watcher = null
         }
         querySubject?.onComplete()
+        recyclerView?.adapter = null
+        adapter = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MovieRatingsApplication.refWatcher?.watch(this)
     }
 
     override fun canGoBack(): Boolean {

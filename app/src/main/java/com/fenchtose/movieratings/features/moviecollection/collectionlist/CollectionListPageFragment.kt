@@ -25,6 +25,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     private var emptyContent: View? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: CollectionListPageAdapter? = null
+    // TODO fab should move based on Snackbar
     private var fab: View? = null
     private var presenter: CollectionListPresenter? = null
 

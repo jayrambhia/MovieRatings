@@ -27,8 +27,12 @@ abstract class RouterPath<T : BaseFragment> {
 
     fun restoreState(): PresenterState? {
         val temp = savedState
-        savedState = null
+        clearState()
         return temp
+    }
+
+    fun clearState() {
+        savedState = null
     }
 
     abstract fun createFragmentInstance(): T

@@ -110,6 +110,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        MovieRatingsApplication.router = null
+        router?.callback = null
+        router = null
         accessibilityPublisher?.onComplete()
         accessibilityPagePublisher?.onComplete()
         disposable?.dispose()
