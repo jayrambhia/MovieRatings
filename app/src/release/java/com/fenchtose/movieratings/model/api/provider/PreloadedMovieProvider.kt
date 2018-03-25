@@ -14,11 +14,11 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }
 
-    override fun getMovie(title: String): Observable<Movie> {
+    override fun getMovie(title: String, year: String): Observable<Movie> {
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }
 
-    override fun search(title: String): Observable<SearchResult> {
+    override fun search(title: String, page:Int): Observable<SearchResult> {
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }
 
