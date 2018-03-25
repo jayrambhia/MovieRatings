@@ -25,10 +25,10 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         )
     }
 
-    override fun getMovie(title: String): Observable<Movie> {
+    override fun getMovie(title: String, year: String): Observable<Movie> {
         return getMovie(
-                { this.getMovieFromDb(title) },
-                { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title) },
+                { this.getMovieFromDb(title, year) },
+                { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title, year) },
                 { analytics.sendEvent(Event("get_movie_online").putAttribute("title", title)) }
         )
     }
@@ -62,9 +62,9 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
     }
 
-    private fun getMovieFromDb(title: String): Observable<Movie> {
+    private fun getMovieFromDb(title: String, year: String): Observable<Movie> {
         return Observable.defer {
-            val movie = dao.getMovie(title)
+            val movie = if (year.isNotEmpty()) dao.getMovie(title, year) else dao.getMovie(title)
             if (movie != null && movie.isComplete(Movie.Check.BASE)) {
                 Observable.just(movie)
             } else {

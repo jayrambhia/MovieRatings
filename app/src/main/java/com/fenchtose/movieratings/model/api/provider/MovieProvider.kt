@@ -7,7 +7,7 @@ import io.reactivex.Observable
 
 interface MovieProvider {
     fun getMovieWithImdb(imdbId: String): Observable<Movie>
-    fun getMovie(title: String): Observable<Movie>
+    fun getMovie(title: String, year: String): Observable<Movie>
     fun search(title: String, page:Int = 1): Observable<SearchResult>
     fun addPreferenceApplier(applier: UserPreferneceApplier)
 }

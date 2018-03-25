@@ -20,6 +20,9 @@ interface MovieDao {
     @Query("SELECT * FROM MOVIES WHERE TITLE LIKE :title LIMIT 1")
     fun getMovie(title: String): Movie?
 
+    @Query("SELECT * FROM MOVIES WHERE TITLE LIKE :title AND YEAR = :year LIMIT 1")
+    fun getMovie(title: String, year: String): Movie?
+
     @Query("SELECT * FROM MOVIES WHERE IMDBID = :imdbId")
     fun getMovieWithImdbId(imdbId: String): Movie?
 

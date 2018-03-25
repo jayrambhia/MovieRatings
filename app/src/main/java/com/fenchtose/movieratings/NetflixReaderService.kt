@@ -88,46 +88,77 @@ class NetflixReaderService : AccessibilityService() {
                 return
             }
 
-            val titles: List<AccessibilityNodeInfoCompat> = when {
-                it.packageName == BuildConfig.APPLICATION_ID -> it.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
-                it.packageName == Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_title")
-                it.packageName == Constants.PACKAGE_PRIMEVIDEO -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/TitleText")
+            val titles: List<AccessibilityNodeInfoCompat> = when(it.packageName) {
+                BuildConfig.APPLICATION_ID -> it.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
+                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_title")
+                Constants.PACKAGE_PRIMEVIDEO -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/TitleText")
                 else -> ArrayList()
-            }
+            }.distinctBy { it.text }
+
+            val years: List<AccessibilityNodeInfoCompat> = when(it.packageName) {
+                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_basic_info")
+                Constants.PACKAGE_PRIMEVIDEO -> {
+                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/ItemMetadataView")
+                            // get children of that node
+                            .flatMap {
+                                val children = ArrayList<AccessibilityNodeInfoCompat>()
+                                (0 until it.childCount).map {
+                                    i -> it.getChild(i)
+                                }.toCollection(children)
+                                children
+                            }
+                            // filter node which has text containing 4 digits
+                            .filter {
+                                it.text?.let {
+                                    return@filter !FixTitleUtils.fixPrimeVideoYear(it.toString()).isNullOrEmpty()
+                                }
+                                false
+                            }
+                }
+                else -> ArrayList()
+            }.distinctBy { it.text }
 
             if (titles.isNotEmpty()) {
-                titles.filter { it.text != null }
-                        .forEach {
-                            setMovieTitle(fixTitle(it.packageName, it.text.toString()))
+                titles.first { it.text != null }
+                        .let {
+                            setMovieTitle(
+                                    fixTitle(it.packageName, it.text.toString()),
+                                    years.takeIf { it.isNotEmpty() }?.first()?.let {
+                                        fixYear(it.packageName, it.text?.toString())
+                                    }
+                            )
                         }
+
             }
         }
     }
 
     @Suppress("unused")
-    fun checkNodeRecursively(info: AccessibilityNodeInfoCompat?) {
+    private fun checkNodeRecursively(info: AccessibilityNodeInfoCompat?) {
         info?.let {
-            Log.d(TAG, "info: " + it.text + ", " + it.viewIdResourceName + ", " + it.className + ", " + it.parent)
-            Log.d(TAG, "--- children ---")
-            (0 until info.childCount)
-                    .forEach {
-                        index -> checkNodeRecursively(it.getChild(index))
-                    }
+            Log.d(TAG, "info: text:" + it.text + ", id:" + it.viewIdResourceName + ", class:" + it.className + ", parent:" + it.parent?.viewIdResourceName)
+            if (info.childCount > 0) {
+                Log.d(TAG, "--- <children> ---")
+                (0 until info.childCount)
+                        .forEach { index ->
+                            checkNodeRecursively(it.getChild(index))
+                        }
+
+                Log.d(TAG, "--- </children> ---")
+            }
         }
     }
 
     override fun onInterrupt() {
-        Log.d(TAG, "on interrupt")
     }
 
-
-    private fun setMovieTitle(text: String) {
+    private fun setMovieTitle(text: String, year: String?) {
         if (title == null || title != text) {
             title = text
             if (BuildConfig.DEBUG) {
-                Log.i(TAG, "Movie Title: " + title!!)
+                Log.i(TAG, "Movie :- title: $text, year: $year")
             }
-            getMovieInfo(text)
+            getMovieInfo(text, year ?: "")
         }
     }
 
@@ -138,11 +169,27 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 
-    private fun getMovieInfo(title: String) {
+    private fun fixYear(packageName: CharSequence, text: String?): String {
+        text?.let {
+            val fixed = when(packageName) {
+                Constants.PACKAGE_NETFLIX -> FixTitleUtils.fixNetflixYear(it)
+                Constants.PACKAGE_PRIMEVIDEO -> FixTitleUtils.fixPrimeVideoYear(it)
+                else -> ""
+            }
+
+            fixed?.let {
+                return it
+            }
+        }
+
+        return ""
+    }
+
+    private fun getMovieInfo(title: String, year: String) {
         analytics?.sendEvent(Event("get_movie").putAttribute("title", title))
 
         provider?.let {
-            it.getMovie(title)
+            it.getMovie(title, year)
                     .subscribeOn(Schedulers.io())
                     .filter { it.ratings.size > 0 }
                     .observeOn(AndroidSchedulers.mainThread())
