@@ -15,10 +15,6 @@ import java.io.IOException
 
 
 class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieProvider {
-    override fun getEpisodes(seriesImdbId: String, season: Int): Observable<EpisodesList> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     private val context = context.applicationContext
     private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
 
@@ -64,6 +60,11 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
                     }
                 }
     }
+
+    override fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
 
     override fun addPreferenceApplier(applier: UserPreferneceApplier) {
         preferenceAppliers.add(applier)

@@ -10,6 +10,6 @@ interface MovieProvider {
     fun getMovieWithImdb(imdbId: String): Observable<Movie>
     fun getMovie(title: String, year: String): Observable<Movie>
     fun search(title: String, page:Int = 1): Observable<SearchResult>
-    fun getEpisodes(seriesImdbId: String, season: Int): Observable<EpisodesList>
+    fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList>
     fun addPreferenceApplier(applier: UserPreferneceApplier)
 }

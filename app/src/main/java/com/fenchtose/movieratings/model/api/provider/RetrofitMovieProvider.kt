@@ -9,6 +9,7 @@ import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferneceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
+import com.fenchtose.movieratings.util.Constants
 import io.reactivex.Observable
 import retrofit2.Retrofit
 
@@ -101,14 +102,56 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                 }
     }
 
-    override fun getEpisodes(seriesImdbId: String, season: Int): Observable<EpisodesList> {
-        return api.getEpisodesList(BuildConfig.OMDB_API_KEY, seriesImdbId, season)
-                .doOnNext {
-                    it.episodes.map {
-                        it.seriesId = seriesImdbId
-                        dao.insert(it)
+    override fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList> {
+        if (series.type != Constants.TitleType.SERIES.type) {
+            return Observable.error(Throwable("invalid title type ${series.type}"))
+        }
+
+        return getEpisodes(
+                {
+                    Observable.defer {
+                        val episodes = EpisodesList()
+                        episodes.success = false
+
+                        if (series.totalSeasons > 0) {
+                            episodes.episodes.addAll(dao.getEpisodesForSeason(series.imdbId, season))
+                            episodes.success = episodes.episodes.size > 0
+                            episodes.title = series.title
+                            episodes.season = season
+                            episodes.totalSeasons = series.totalSeasons
+                        }
+
+                        Observable.just(episodes)
+                    }
+
+                },
+                {
+                    api.getEpisodesList(BuildConfig.OMDB_API_KEY, series.imdbId, season)
+                            .doOnNext {
+                                it.episodes.map {
+                                    ep -> run {
+                                    ep.seriesId = series.imdbId
+                                    ep.season = it.season
+                                    dao.insert(ep)
+                                }
+                                }
+                            }
+                }
+        )
+    }
+
+    private fun getEpisodes(dbCall: () -> Observable<EpisodesList>,
+                            apiCall: () -> Observable<EpisodesList>): Observable<EpisodesList> {
+
+        return dbCall()
+                .flatMap {
+                    if (it.success) {
+                        Observable.just(it)
+                    } else {
+                        apiCall()
                     }
                 }
+
     }
 
     override fun addPreferenceApplier(applier: UserPreferneceApplier) {

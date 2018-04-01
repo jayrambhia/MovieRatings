@@ -34,4 +34,7 @@ interface MovieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(episode: Episode): Long
+
+    @Query("SELECT * FROM EPISODES WHERE SERIESIMDBID = :seriesImdbId AND SEASON = :season")
+    fun getEpisodesForSeason(seriesImdbId: String, season: Int): List<Episode>
 }

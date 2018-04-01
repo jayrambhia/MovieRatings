@@ -22,7 +22,7 @@ class MoviePresenter(private val provider: MovieProvider,
                      private val collectionStore: MovieCollectionStore,
                      private val preferences: UserPreferences,
                      private val imdbId: String?,
-                     private val movie: Movie?): Presenter<MoviePage>(), SeasonSelector {
+                     private val passedMovie: Movie?): Presenter<MoviePage>(), SeasonSelector {
 
     private var loadedMovie: Movie? = null
     private var selectedCollection: MovieCollection? = null
@@ -54,10 +54,10 @@ class MoviePresenter(private val provider: MovieProvider,
     }
 
     private fun loadMovie(imdbId: String) {
-        movie?.let {
+        passedMovie?.let {
             @Suppress("UselessCallOnNotNull")
             if (it.isComplete(Movie.Check.USER_PREFERENCES)) {
-                showMovie(movie)
+                showMovie(passedMovie)
                 return
             } else if (!it.poster.isNullOrEmpty()) {
                 updateState(MoviePage.State(MoviePage.Ui.LOAD_IMAGE, it))
@@ -75,7 +75,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterNext {
                     if (it.type == Constants.TitleType.SERIES.type) {
-                        getEpisodes(it.imdbId, 1)
+                        getEpisodes(it, 1)
                     }
                 }
                 .subscribe({
@@ -91,17 +91,17 @@ class MoviePresenter(private val provider: MovieProvider,
 
     override fun selectSeason(season: Int) {
         season.takeIf { it != currentSeason }.let {
-            movie?.let {
+            loadedMovie?.let {
                 it.takeIf { it.type == Constants.TitleType.SERIES.type }?.let {
-                    getEpisodes(it.imdbId, season)
+                    getEpisodes(it, season)
                 }
             }
         }
     }
 
-    private fun getEpisodes(seriesImdbId: String, season: Int) {
+    private fun getEpisodes(series: Movie, season: Int) {
         val d = provider
-                .getEpisodes(seriesImdbId, season)
+                .getEpisodes(series, season)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

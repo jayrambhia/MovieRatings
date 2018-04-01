@@ -352,6 +352,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                 val adapter = EpisodesAdapter(context)
                 adapter.setHasStableIds(true)
                 recyclerView.layoutManager = LinearLayoutManager(context)
+                recyclerView.layoutManager.isAutoMeasureEnabled = true
+                recyclerView.isNestedScrollingEnabled = false
                 recyclerView.adapter = adapter
                 this.adapter = adapter
             }
