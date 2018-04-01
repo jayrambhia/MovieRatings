@@ -1,5 +1,12 @@
 # Flutter Changelog
 
+### 0.1.9
+
+ - When showing ratings for movies on Netlfix and Amazon Prime, parse year of the release and
+ use it to get accurate ratings.
+ - Pagination added to search results. Now, you can search for more than 12 results.
+ - List of episodes and seasons added on the page for a TV series.
+
 ### 0.1.8
 
  - Support added for Amazon Prime Video.
