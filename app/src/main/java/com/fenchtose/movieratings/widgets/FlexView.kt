@@ -34,7 +34,7 @@ class FlexView : ViewGroup {
 
         if (isInEditMode) {
             val inflater = LayoutInflater.from(context)
-            for (i in 0 .. 3) {
+            for (i in 0 .. 1) {
                 val textview = inflater.inflate(R.layout.movie_page_collection_item_layout, this, false) as TextView
                 @SuppressLint("SetTextI18n")
                 textview.text = "Flex item view $i"

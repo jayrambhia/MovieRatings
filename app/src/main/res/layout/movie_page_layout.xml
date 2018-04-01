@@ -11,7 +11,6 @@
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/movie_app_bar_height"
-        tools:layout_height="0dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -137,7 +136,6 @@
 		    <com.fenchtose.movieratings.widgets.FlexView
 			    android:id="@+id/collections_flexview"
 			    android:layout_marginTop="8dp"
-			    tools:visibility="gone"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    app:flex__horizontal_spacing="8dp"
@@ -231,12 +229,14 @@
 			    android:text="@string/movie_page_episodes_title"/>
 
 		    <android.support.v7.widget.AppCompatSpinner
+			    android:visibility="gone"
+			    tools:visibility="visible"
 			    android:id="@+id/seasons_spinner"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
 			    android:backgroundTint="@android:color/white"
 			    android:popupBackground="@color/colorAccent"
-			    tools:text="Season 1"/>
+			    tools:listitem="@layout/spinner_selection_season"/>
 
 		    <android.support.v7.widget.RecyclerView
 			    android:visibility="gone"

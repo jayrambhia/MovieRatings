@@ -43,12 +43,12 @@ open class MovieRatingsApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+/*        if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.
             return
         }
-        refWatcher = LeakCanary.install(this)
+        refWatcher = LeakCanary.install(this)*/
         flavorHelper.onAppCreated(this)
     }
 }

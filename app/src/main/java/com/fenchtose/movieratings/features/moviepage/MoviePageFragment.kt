@@ -41,25 +41,17 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     private var posterView: ImageView? = null
     private var ratingView: TextView? = null
     private var titleView: TextView? = null
-    private var genreView: TextView? = null
-    private var directorView: TextView? = null
-    private var releasedView:TextView? = null
-    private var actorsHeader:TextView? = null
-    private var actorsView:TextView? = null
-    private var writersHeader:TextView? = null
-    private var writersView:TextView? = null
 
     private var collectionsFlexView: MoviePageFlexView? = null
-
-    private var plotHeader:LinearLayout? = null
-    private var plotToggle:ImageView? = null
-    private var plotView:TextView? = null
 
     private var fab: FloatingActionButton? = null
 
     private var isTransitionPostponeStarted = false
     private var isPosterLoaded = false
 
+    private var genreSection: SimpleTextSection? = null
+    private var directorSection: InlineTextSection? = null
+    private var releaseSection: InlineTextSection? = null
     private var actorSection: TextSection? = null
     private var writerSection: TextSection? = null
     private var plotSection: ExpandableSection? = null
@@ -92,13 +84,6 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         posterView = view.findViewById(R.id.poster_view)
         ratingView = view.findViewById(R.id.rating_view)
         titleView = view.findViewById(R.id.title_view)
-        genreView = view.findViewById(R.id.genre_view)
-        directorView = view.findViewById(R.id.director_view)
-        releasedView = view.findViewById(R.id.released_view)
-        actorsHeader = view.findViewById(R.id.actors_header)
-        actorsView = view.findViewById(R.id.actors_view)
-        writersHeader = view.findViewById(R.id.writers_header)
-        writersView = view.findViewById(R.id.writers_view)
 
         collectionsFlexView = MoviePageFlexView(context, view.findViewById(R.id.collections_flexview),
                 object : MoviePageFlexView.CollectionCallback {
@@ -111,15 +96,15 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                     }
         })
 
-        plotHeader = view.findViewById(R.id.plot_header)
-        plotToggle = view.findViewById(R.id.plot_toggle)
-        plotView = view.findViewById(R.id.plot_view)
 
         fab = view.findViewById(R.id.fab)
 
-        actorSection = TextSection(actorsHeader, actorsView!!)
-        writerSection = TextSection(writersHeader, writersView!!)
-        plotSection = ExpandableSection(plotHeader, plotToggle!!, plotView!!)
+        genreSection = SimpleTextSection(view.findViewById(R.id.genre_view))
+        directorSection = InlineTextSection(view.findViewById(R.id.director_view), R.string.movie_page_direct_by)
+        releaseSection = InlineTextSection(view.findViewById(R.id.released_view), R.string.movie_page_released_on)
+        actorSection = TextSection(view.findViewById(R.id.actors_header), view.findViewById(R.id.actors_view))
+        writerSection = TextSection(view.findViewById(R.id.writers_header), view.findViewById(R.id.writers_view))
+        plotSection = ExpandableSection(view.findViewById(R.id.plot_header), view.findViewById(R.id.plot_toggle), view.findViewById(R.id.plot_view))
 
         episodesSection = EpisodesSection(context, view.findViewById<TextView>(R.id.episodes_header),
                 view.findViewById(R.id.episodes_recyclerview), view.findViewById(R.id.seasons_spinner), presenter)
@@ -142,15 +127,15 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     private fun showMovie(movie: Movie) {
         MovieRatingsApplication.router?.updateTitle(movie.title)
         titleView?.text = movie.title
-        genreView?.text = movie.genre
+        genreSection?.setContent(movie.genre)
         if (movie.ratings.size > 0) {
             setRating(movie.ratings[0].value)
         } else {
             ratingView?.visibility = View.GONE
         }
 
-        directorView?.text = buildEntry(R.string.movie_page_direct_by, " ${movie.director}")
-        releasedView?.text = buildEntry(R.string.movie_page_released_on, " ${movie.released}")
+        directorSection?.setContent(" ${movie.director}")
+        releaseSection?.setContent(" ${movie.released}")
         actorSection?.setContent(movie.actors)
         writerSection?.setContent(movie.writers)
         plotSection?.setContent(movie.plot)
@@ -243,14 +228,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         ratingView?.visibility = View.VISIBLE
     }
 
-    private fun buildEntry(@StringRes id: Int, content: String): SpannableStringBuilder {
-        return SpannableStringBuilder(context.getText(id))
-                .bold {
-                    scale(1.1f, {
-                        append(content)
-                    })
-                }
-    }
+
 
     override fun canGoBack(): Boolean {
         return true
@@ -274,27 +252,61 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     }
 
-    class TextSection(private val header: View?, private val contentView: TextView) : PageSection<String?> {
+    class SimpleTextSection(private val contentView: TextView): PageSection<String?> {
         override fun setContent(content: String?) {
-            if (content.isNullOrBlank()) {
-                header?.visibility = View.GONE
+            if (content.isNullOrBlank() || content?.trim() == "N/A") {
+                contentView.visibility = View.GONE
+                return
+            }
+
+            contentView.visibility = View.VISIBLE
+            contentView.text = content
+        }
+    }
+
+    class InlineTextSection(private val contentView: TextView, @StringRes private val resId: Int): PageSection<String?> {
+        override fun setContent(content: String?) {
+            if (content.isNullOrBlank() || content?.trim() == "N/A") {
+                contentView.visibility = View.GONE
+                return
+            }
+
+            contentView.visibility = View.VISIBLE
+            contentView.text = buildEntry(resId, content!!)
+
+        }
+
+        private fun buildEntry(@StringRes id: Int, content: String): SpannableStringBuilder {
+            return SpannableStringBuilder(contentView.context.getText(id))
+                    .bold {
+                        scale(1.1f, {
+                            append(content)
+                        })
+                    }
+        }
+    }
+
+    class TextSection(private val header: View, private val contentView: TextView) : PageSection<String?> {
+        override fun setContent(content: String?) {
+            if (content.isNullOrBlank() || content?.trim() == "N/A") {
+                header.visibility = View.GONE
                 contentView.visibility = View.GONE
             } else {
-                header?.visibility = View.VISIBLE
+                header.visibility = View.VISIBLE
                 contentView.visibility = View.VISIBLE
                 contentView.text = content
             }
         }
     }
 
-    class ExpandableSection(private val header: View?, private val toggleButton: View,
+    class ExpandableSection(private val header: View, private val toggleButton: View,
                             private val contentView: TextView) : PageSection<String?> {
         private var isExpanded = false
 
         override fun setContent(content: String?) {
             contentView.visibility = View.GONE
-            if (content.isNullOrBlank()) {
-                header?.visibility = View.GONE
+            if (content.isNullOrBlank() || content?.trim() == "N/A") {
+                header.visibility = View.GONE
                 return
             }
 
@@ -308,7 +320,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
             }
 
             toggleButton.setOnClickListener(listener)
-            header?.setOnClickListener(listener)
+            header.setOnClickListener(listener)
         }
 
     }
