@@ -44,6 +44,7 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         val observable =  when(title) {
             "thor" -> Observable.just(convertToSearchResult(R.raw.thor))
             "batman" -> Observable.just(convertToSearchResult(R.raw.batman))
+            "parks" -> Observable.just(convertToSearchResult(R.raw.park_n_rec_search))
             else -> Observable.error(Throwable("PreloadedMovieProvider does not support this search: $title"))
         }
         return observable
@@ -62,7 +63,11 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
     }
 
     override fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Observable.defer {
+            val data = readRawFile(if (season == 1) R.raw.parks_n_rec_season_1 else R.raw.parks_n_rec_season_2)
+            val gson = Gson()
+            Observable.just(gson.fromJson(data, EpisodesList::class.java))
+        }
     }
 
 
@@ -81,8 +86,8 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         }
     }
 
-    private fun getMovieInfo(@Suppress("UNUSED_PARAMETER") title: String): Observable<Movie> {
-        val data = readRawFile(R.raw.thor_ragnarok)
+    private fun getMovieInfo(title: String): Observable<Movie> {
+        val data = readRawFile(if (title == "tt1266020") R.raw.parks_n_rec else R.raw.thor_ragnarok)
         val gson = Gson()
         return Observable.just(gson.fromJson(data, Movie::class.java))
     }
