@@ -90,7 +90,7 @@ class MoviePresenter(private val provider: MovieProvider,
     }
 
     override fun selectSeason(season: Int) {
-        season.takeIf { it != currentSeason }.let {
+        season.takeIf { it != currentSeason }?.let {
             loadedMovie?.let {
                 it.takeIf { it.type == Constants.TitleType.SERIES.type }?.let {
                     getEpisodes(it, season)
