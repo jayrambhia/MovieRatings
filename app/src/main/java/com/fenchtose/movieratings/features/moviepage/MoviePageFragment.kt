@@ -1,19 +1,24 @@
 package com.fenchtose.movieratings.features.moviepage
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.support.annotation.StringRes
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewCompat
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
+import androidx.text.bold
+import androidx.text.scale
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
@@ -58,6 +63,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     private var actorSection: TextSection? = null
     private var writerSection: TextSection? = null
     private var plotSection: ExpandableSection? = null
+
+    private var episodesSection: EpisodesSection? = null
 
     private var presenter: MoviePresenter? = null
 
@@ -114,6 +121,9 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         writerSection = TextSection(writersHeader, writersView!!)
         plotSection = ExpandableSection(plotHeader, plotToggle!!, plotView!!)
 
+        episodesSection = EpisodesSection(context, view.findViewById<TextView>(R.id.episodes_header),
+                view.findViewById(R.id.episodes_recyclerview), view.findViewById(R.id.seasons_spinner), presenter)
+
         isPosterLoaded = false
 
         presenter?.attachView(this)
@@ -139,8 +149,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
             ratingView?.visibility = View.GONE
         }
 
-        directorView?.text = getString(R.string.movie_page_direct_by, movie.director)
-        releasedView?.text = getString(R.string.movie_page_released_on, movie.released)
+        directorView?.text = buildEntry(R.string.movie_page_direct_by, " ${movie.director}")
+        releasedView?.text = buildEntry(R.string.movie_page_released_on, " ${movie.released}")
         actorSection?.setContent(movie.actors)
         writerSection?.setContent(movie.writers)
         plotSection?.setContent(movie.plot)
@@ -208,6 +218,10 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         showSnackbar(context.getString(resId, state.collection.name))
     }
 
+    override fun updateState(state: MoviePage.EpisodeState) {
+        episodesSection?.setContent(state)
+    }
+
     private fun showError() {
         showSnackbar(R.string.movie_page_load_error)
     }
@@ -227,6 +241,15 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         params.behavior = RatingBehavior(context)
         ratingView?.layoutParams = params
         ratingView?.visibility = View.VISIBLE
+    }
+
+    private fun buildEntry(@StringRes id: Int, content: String): SpannableStringBuilder {
+        return SpannableStringBuilder(context.getText(id))
+                .bold {
+                    scale(1.1f, {
+                        append(content)
+                    })
+                }
     }
 
     override fun canGoBack(): Boolean {
@@ -251,7 +274,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     }
 
-    class TextSection(header: View?, contentView: TextView) : PageSection<TextView>(header, contentView) {
+    class TextSection(private val header: View?, private val contentView: TextView) : PageSection<String?> {
         override fun setContent(content: String?) {
             if (content.isNullOrBlank()) {
                 header?.visibility = View.GONE
@@ -264,7 +287,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         }
     }
 
-    class ExpandableSection(header: View?, private val toggleButton: View, contentView: TextView) : PageSection<TextView>(header, contentView) {
+    class ExpandableSection(private val header: View?, private val toggleButton: View,
+                            private val contentView: TextView) : PageSection<String?> {
         private var isExpanded = false
 
         override fun setContent(content: String?) {
@@ -289,8 +313,79 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     }
 
-    abstract class PageSection<out T: View>(val header: View?, val contentView: T) {
-        abstract fun setContent(content: String?)
+    class EpisodesSection(private val context: Context, private val header: View, private val recyclerView: RecyclerView,
+                          private val spinner: Spinner, private val seasonSelector: SeasonSelector?): PageSection<MoviePage.EpisodeState> {
+
+        private var adapter: EpisodesAdapter? = null
+        private var spinnerAdapter: SpinnerAdapter? = null
+
+        override fun setContent(state: MoviePage.EpisodeState) {
+            when(state.ui) {
+                MoviePage.EpisodeUi.LOADED -> showEpisodes(state)
+                MoviePage.EpisodeUi.INVALID -> setVisibility(View.GONE)
+                else -> {
+
+                }
+            }
+        }
+
+        private fun showEpisodes(state: MoviePage.EpisodeState) {
+            state.season?.let {
+                setupSpinner(it.totalSeasons, it.season)
+                setVisibility(View.VISIBLE)
+                val adapter = getAdapter()
+                adapter.updateEpisodes(it.episodes)
+                adapter.notifyDataSetChanged()
+                return
+            }
+
+        }
+
+        private fun setVisibility(visible: Int) {
+            header.visibility = visible
+            recyclerView.visibility = visible
+            spinner.visibility = visible
+        }
+
+        private fun getAdapter(): EpisodesAdapter {
+            if (this.adapter == null) {
+                val adapter = EpisodesAdapter(context)
+                adapter.setHasStableIds(true)
+                recyclerView.layoutManager = LinearLayoutManager(context)
+                recyclerView.adapter = adapter
+                this.adapter = adapter
+            }
+
+            return this.adapter!!
+        }
+
+        private fun setupSpinner(total: Int, current: Int) {
+            if (spinnerAdapter == null) {
+                val seasons = ArrayList<String>()
+                for (season in 1..total) {
+                    seasons.add(context.getString(R.string.movie_page_seasons_title, season))
+                }
+                val adapter = ArrayAdapter<String>(context, R.layout.spinner_selection_season, seasons)
+                adapter.setDropDownViewResource(R.layout.spinner_selection_season_item)
+                spinner.adapter = adapter
+                spinner.setSelection(current - 1)
+                this.spinnerAdapter = adapter
+                spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+
+                    }
+
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        seasonSelector?.selectSeason(position + 1)
+                    }
+                }
+            }
+        }
+
+    }
+
+    interface PageSection<in DATA> {
+        fun setContent(content: DATA)
     }
 }
 

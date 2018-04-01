@@ -12,6 +12,7 @@ import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.util.Constants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -21,10 +22,11 @@ class MoviePresenter(private val provider: MovieProvider,
                      private val collectionStore: MovieCollectionStore,
                      private val preferences: UserPreferences,
                      private val imdbId: String?,
-                     private val movie: Movie?): Presenter<MoviePage>() {
+                     private val movie: Movie?): Presenter<MoviePage>(), SeasonSelector {
 
     private var loadedMovie: Movie? = null
     private var selectedCollection: MovieCollection? = null
+    private var currentSeason: Int = -1
 
     init {
         provider.addPreferenceApplier(likeStore)
@@ -71,6 +73,11 @@ class MoviePresenter(private val provider: MovieProvider,
                 .getMovieWithImdb(imdbId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doAfterNext {
+                    if (it.type == Constants.TitleType.SERIES.type) {
+                        getEpisodes(it.imdbId, 1)
+                    }
+                }
                 .subscribe({
                     showMovie(it)
                 }, {
@@ -80,6 +87,37 @@ class MoviePresenter(private val provider: MovieProvider,
                 })
 
         subscribe(d)
+    }
+
+    override fun selectSeason(season: Int) {
+        season.takeIf { it != currentSeason }.let {
+            movie?.let {
+                it.takeIf { it.type == Constants.TitleType.SERIES.type }?.let {
+                    getEpisodes(it.imdbId, season)
+                }
+            }
+        }
+    }
+
+    private fun getEpisodes(seriesImdbId: String, season: Int) {
+        val d = provider
+                .getEpisodes(seriesImdbId, season)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.success) {
+                        currentSeason = it.season
+                        updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.LOADED, it))
+                    } else {
+                        updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.ERROR))
+                    }
+                },{
+                    updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.ERROR))
+                    it.printStackTrace()
+                })
+
+        subscribe(d)
+        updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.LOADING))
     }
 
     private fun showMovie(movie: Movie) {
@@ -135,6 +173,10 @@ class MoviePresenter(private val provider: MovieProvider,
     private fun updateState(state: MoviePage.CollectionState) {
         getView()?.updateState(state)
         selectedCollection = null
+    }
+
+    private fun updateState(state: MoviePage.EpisodeState) {
+        getView()?.updateState(state)
     }
 
     fun likeToggle(): Boolean {

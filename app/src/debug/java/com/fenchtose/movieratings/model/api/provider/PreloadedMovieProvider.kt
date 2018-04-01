@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.model.api.provider
 import android.content.Context
 import android.support.annotation.RawRes
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferneceApplier
@@ -14,6 +15,9 @@ import java.io.IOException
 
 
 class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieProvider {
+    override fun getEpisodes(seriesImdbId: String, season: Int): Observable<EpisodesList> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     private val context = context.applicationContext
     private val preferenceAppliers = ArrayList<UserPreferneceApplier>()

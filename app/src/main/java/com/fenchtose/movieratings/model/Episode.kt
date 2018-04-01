@@ -33,4 +33,10 @@ class Episode {
 
     @ColumnInfo(name = "SERIESIMDBID")
     var seriesId: String = ""
+
+    override fun toString(): String {
+        return "Episode(id=$id, title='$title', released='$released', episode=$episode, imdbRating='$imdbRating', imdbId='$imdbId', seriesId='$seriesId')"
+    }
+
+
 }

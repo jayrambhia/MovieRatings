@@ -4,10 +4,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import com.fenchtose.movieratings.model.CollectedMovie
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.MovieCollectionEntry
-import com.fenchtose.movieratings.model.RecentlyBrowsedMovie
+import com.fenchtose.movieratings.model.*
 
 @Dao
 interface MovieDao {
@@ -34,4 +31,7 @@ interface MovieDao {
 
     @Query("SELECT * FROM COLLECTION_ENTRIES WHERE COLLECTION_ID = :collectionId")
     fun getCollectionMovies(collectionId: String): List<CollectedMovie>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(episode: Episode): Long
 }

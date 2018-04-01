@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.api
 
+import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
 import io.reactivex.Observable
@@ -16,4 +17,7 @@ interface MovieApi {
 
     @GET("/ ")
     fun search(@Query("apikey") apiKey: String, @Query("s") title: String, @Query("page") page: Int = 1) : Observable<SearchResult>
+
+    @GET("/ ")
+    fun getEpisodesList(@Query("apikey") apiKey: String, @Query("i") seriesImdbId: String, @Query("season") season: Int): Observable<EpisodesList>
 }

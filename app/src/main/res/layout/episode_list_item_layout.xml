@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:padding="8dp"
+	tools:background="@color/colorAccent">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/episode_number"
+		android:textColor="@android:color/white"
+		android:textSize="18sp"
+		android:fontFamily="sans-serif-medium"
+		tools:text="25."/>
+
+	<LinearLayout
+		android:layout_marginStart="36dp"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/episode_title"
+			android:textColor="@android:color/white"
+			android:textSize="18sp"
+			android:fontFamily="sans-serif-medium"
+			tools:text="Canvassing"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/episode_release"
+			android:textColor="@android:color/white"
+			android:textSize="14sp"
+			tools:text="Released on: 14 Apr 2009"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:id="@+id/episode_rating"
+			android:textColor="@android:color/white"
+			android:textSize="14sp"
+			tools:text="Rated: 7.1"/>
+
+	</LinearLayout>
+
+
+</FrameLayout>

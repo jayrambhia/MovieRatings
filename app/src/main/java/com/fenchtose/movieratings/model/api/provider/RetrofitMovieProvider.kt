@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.model.api.provider
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.analytics.events.Event
+import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
@@ -96,6 +97,16 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                 .doOnNext {
                     it.results.map {
                         dao.insertSearch(it)
+                    }
+                }
+    }
+
+    override fun getEpisodes(seriesImdbId: String, season: Int): Observable<EpisodesList> {
+        return api.getEpisodesList(BuildConfig.OMDB_API_KEY, seriesImdbId, season)
+                .doOnNext {
+                    it.episodes.map {
+                        it.seriesId = seriesImdbId
+                        dao.insert(it)
                     }
                 }
     }

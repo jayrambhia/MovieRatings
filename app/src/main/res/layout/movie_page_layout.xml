@@ -11,7 +11,7 @@
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/movie_app_bar_height"
-        tools:layout_height="180dp"
+        tools:layout_height="0dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -137,6 +137,7 @@
 		    <com.fenchtose.movieratings.widgets.FlexView
 			    android:id="@+id/collections_flexview"
 			    android:layout_marginTop="8dp"
+			    tools:visibility="gone"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    app:flex__horizontal_spacing="8dp"
@@ -216,6 +217,35 @@
 			    android:textColor="@android:color/white"
 			    android:textSize="16sp"
 			    tools:text="After saving Xandar from Ronan's wrath, the Guardians are now recognized as heroes."/>
+
+		    <TextView
+			    android:visibility="gone"
+			    tools:visibility="visible"
+			    android:id="@+id/episodes_header"
+			    android:layout_marginTop="16dp"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:textColor="@android:color/white"
+			    android:textSize="24sp"
+			    android:fontFamily="sans-serif-medium"
+			    android:text="@string/movie_page_episodes_title"/>
+
+		    <android.support.v7.widget.AppCompatSpinner
+			    android:id="@+id/seasons_spinner"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:backgroundTint="@android:color/white"
+			    android:popupBackground="@color/colorAccent"
+			    tools:text="Season 1"/>
+
+		    <android.support.v7.widget.RecyclerView
+			    android:visibility="gone"
+			    tools:visibility="visible"
+			    android:id="@+id/episodes_recyclerview"
+			    android:layout_marginTop="8dp"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    tools:listitem="@layout/episode_list_item_layout"/>
 
 	    </LinearLayout>
 
