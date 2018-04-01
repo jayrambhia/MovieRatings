@@ -92,6 +92,10 @@ class Movie {
     @SerializedName("Website")
     var website: String = ""
 
+    @ColumnInfo(name = "TOTALSEASONS")
+    @SerializedName("totalSeasons")
+    var totalSeasons: Int = -1
+
     @Ignore
     var liked: Boolean = false
 

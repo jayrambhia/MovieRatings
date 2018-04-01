@@ -13,7 +13,7 @@ import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import com.fenchtose.movieratings.model.db.dao.RecentlyBrowsedDao
 
-@Database(entities = [(Movie::class), (Fav::class), (RecentlyBrowsed::class), (MovieCollection::class), (MovieCollectionEntry::class)], version = 4)
+@Database(entities = [(Movie::class), (Fav::class), (RecentlyBrowsed::class), (MovieCollection::class), (MovieCollectionEntry::class), (Episode::class)], version = 5)
 abstract class MovieDb : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
@@ -24,7 +24,7 @@ abstract class MovieDb : RoomDatabase() {
     companion object {
         val instance: MovieDb by lazy {
             Room.databaseBuilder(MovieRatingsApplication.instance!!, MovieDb::class.java, "ex")
-                    .addMigrations(MIGRATION_1_to_2, MIGRATION_2_to_3, MIGRATION_3_to_4)
+                    .addMigrations(MIGRATION_1_to_2, MIGRATION_2_to_3, MIGRATION_3_to_4, MIGRATION_4_to_5)
                     .build()
         }
 
@@ -54,6 +54,14 @@ abstract class MovieDb : RoomDatabase() {
             override fun migrate(_db: SupportSQLiteDatabase) {
                 _db.execSQL("CREATE TABLE IF NOT EXISTS `COLLECTIONS` (`COLLECTION_ID` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `COLLECTION_NAME` TEXT NOT NULL, `CREATED_AT` INTEGER NOT NULL, `UPDATED_AT` INTEGER NOT NULL, `IS_DELETED` INTEGER NOT NULL)")
                 _db.execSQL("CREATE TABLE IF NOT EXISTS `COLLECTION_ENTRIES` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `COLLECTION_ID` INTEGER NOT NULL, `IMDBID` TEXT NOT NULL, `CREATED_AT` INTEGER NOT NULL, `UPDATED_AT` INTEGER NOT NULL, `IS_DELETED` INTEGER NOT NULL)")
+            }
+        }
+
+        private val MIGRATION_4_to_5 = object: Migration(4, 5) {
+            override fun migrate(_db: SupportSQLiteDatabase) {
+                _db.execSQL("ALTER TABLE `MOVIES` ADD COLUMN `TOTALSEASONS` INTEGER DEFAULT -1 NOT NULL")
+                _db.execSQL("CREATE TABLE IF NOT EXISTS `EPISODES` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `TITLE` TEXT NOT NULL, `RELEASED` TEXT NOT NULL, `EPISODE` INTEGER NOT NULL, `IMDBRATING` TEXT NOT NULL, `IMDBID` TEXT NOT NULL, `SERIESIMDBID` TEXT NOT NULL)")
+                _db.execSQL("CREATE UNIQUE INDEX `index_EPISODES_IMDBID` ON `EPISODES` (`IMDBID`)")
             }
         }
     }
