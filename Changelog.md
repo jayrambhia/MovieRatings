@@ -1,5 +1,10 @@
 # Flutter Changelog
 
+### 0.2.0
+
+ - Detailed episode page added
+ - Open Imdb page menu action added
+
 ### 0.1.9
 
  - When showing ratings for movies on Netlfix and Amazon Prime, parse year of the release and

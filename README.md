@@ -8,7 +8,7 @@
 ## Note
 Flutter has been **unpublished** from Google Playstore. It uses accessibility service and recent Playstore policy suggests that `Apps requesting accessibility services should only be used to help users with disabilities use Android devices and apps`. So I have decided to remove it from the playstore. I am planning to add Flutter to other app stores such as F-Droid.
 
-You can get the latest Playstore version here - [0.1.9](https://github.com/jayrambhia/MovieRatings/releases/download/v0.1.9/flutter_v0.1.9.apk)
+You can get the latest Playstore version here - [0.2.0](https://github.com/jayrambhia/MovieRatings/releases/download/v0.2.0/flutter_v0.2.0.apk)
 
 ## Screenshots of master
 
