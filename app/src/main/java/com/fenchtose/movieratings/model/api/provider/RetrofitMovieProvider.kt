@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.model.api.provider
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.analytics.events.Event
+import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.Movie
@@ -140,12 +141,45 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         )
     }
 
+    override fun getEpisode(episode: Episode): Observable<Movie> {
+        return getEpisode(
+                {
+                    getMovieFromDbWithImdb(episode.imdbId)
+                },
+                {
+                    api.getEpisode(BuildConfig.OMDB_API_KEY, episode.seriesId, episode.season, episode.episode)
+                            .doOnNext {
+                                dao.insert(it)
+                            }
+                }
+        ).map {
+            for (preferenceApplier in preferenceAppliers) {
+                preferenceApplier.apply(it)
+            }
+            it
+        }
+    }
+
     private fun getEpisodes(dbCall: () -> Observable<EpisodesList>,
                             apiCall: () -> Observable<EpisodesList>): Observable<EpisodesList> {
 
         return dbCall()
                 .flatMap {
                     if (it.success) {
+                        Observable.just(it)
+                    } else {
+                        apiCall()
+                    }
+                }
+
+    }
+
+    private fun getEpisode(dbCall: () -> Observable<Movie>,
+                            apiCall: () -> Observable<Movie>): Observable<Movie> {
+
+        return dbCall()
+                .flatMap {
+                    if (it.id != -1) {
                         Observable.just(it)
                     } else {
                         apiCall()

@@ -15,6 +15,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         tools:title="Flutter"
+        android:elevation="0dp"
         android:background="?attr/colorPrimary"/>
 
     <FrameLayout

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="@color/colorAccent"
+	tools:parentTag="android.widget.FrameLayout"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<ProgressBar
+		android:id="@+id/progressbar"
+		android:layout_width="48dp"
+		android:layout_height="48dp"
+		android:layout_gravity="center_horizontal"
+		android:layout_marginTop="96dp"/>
+
+	<include
+		android:id="@+id/episode_content"
+		layout="@layout/episode_content_layout"/>
+
+</merge>

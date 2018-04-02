@@ -34,7 +34,7 @@
 
     <ImageView
         android:id="@+id/poster_view"
-        android:layout_width="wrap_content"
+        android:layout_width="180dp"
         android:layout_height="@dimen/movie_poster_height"
         tools:layout_height="240dp"
         app:layout_anchor="@id/main.appbar"

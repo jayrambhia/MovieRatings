@@ -136,4 +136,12 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 
 	<string name="show_more">Show more</string>
 
+	<string name="season_page_title">Season</string>
+	<string name="season_page_tab_title">Episode %1d</string>
+	<string name="episode_page_loading_error">Unable to load this episode</string>
+	<string name="episode_page_series_title">%1$s - Season %2$d</string>
+	<string name="episode_page_directed_by">Directed by</string>
+	<string name="episode_page_released_on">Released on</string>
+	<string name="episode_page_rating">Rated %1s</string>
+
 </resources>

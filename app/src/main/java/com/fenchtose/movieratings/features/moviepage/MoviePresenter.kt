@@ -4,9 +4,8 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.router.ResultBus
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.MovieCollection
-import com.fenchtose.movieratings.model.RecentlyBrowsed
+import com.fenchtose.movieratings.features.season.SeasonPageFragment
+import com.fenchtose.movieratings.model.*
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
@@ -27,6 +26,7 @@ class MoviePresenter(private val provider: MovieProvider,
     private var loadedMovie: Movie? = null
     private var selectedCollection: MovieCollection? = null
     private var currentSeason: Int = -1
+    private var episodes: EpisodesList? = null
 
     init {
         provider.addPreferenceApplier(likeStore)
@@ -107,11 +107,14 @@ class MoviePresenter(private val provider: MovieProvider,
                 .subscribe({
                     if (it.success) {
                         currentSeason = it.season
+                        episodes = it
                         updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.LOADED, it))
                     } else {
+                        episodes = null
                         updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.ERROR))
                     }
                 },{
+                    episodes = null
                     updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.ERROR))
                     it.printStackTrace()
                 })
@@ -191,5 +194,15 @@ class MoviePresenter(private val provider: MovieProvider,
 
     fun addToCollection() {
         MovieRatingsApplication.router?.go(CollectionListPageFragment.CollectionListPagePath(true))
+    }
+
+    override fun openEpisode(episode: Episode) {
+        loadedMovie?.let {
+            series -> run {
+                episodes?.let {
+                    MovieRatingsApplication.router?.go(SeasonPageFragment.SeasonPath(series, it, episode.episode))
+                }
+            }
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.fenchtose.movieratings.features.moviepage
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.support.annotation.StringRes
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewCompat
@@ -11,20 +10,18 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
 import android.text.style.RelativeSizeSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.text.bold
-import androidx.text.scale
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
+import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
@@ -33,6 +30,7 @@ import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStor
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.widgets.pagesection.*
 
 class MoviePageFragment: BaseFragment(), MoviePage {
 
@@ -252,79 +250,6 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     }
 
-    class SimpleTextSection(private val contentView: TextView): PageSection<String?> {
-        override fun setContent(content: String?) {
-            if (content.isNullOrBlank() || content?.trim() == "N/A") {
-                contentView.visibility = View.GONE
-                return
-            }
-
-            contentView.visibility = View.VISIBLE
-            contentView.text = content
-        }
-    }
-
-    class InlineTextSection(private val contentView: TextView, @StringRes private val resId: Int): PageSection<String?> {
-        override fun setContent(content: String?) {
-            if (content.isNullOrBlank() || content?.trim() == "N/A") {
-                contentView.visibility = View.GONE
-                return
-            }
-
-            contentView.visibility = View.VISIBLE
-            contentView.text = buildEntry(resId, content!!)
-
-        }
-
-        private fun buildEntry(@StringRes id: Int, content: String): SpannableStringBuilder {
-            return SpannableStringBuilder(contentView.context.getText(id))
-                    .bold {
-                        scale(1.1f, {
-                            append(content)
-                        })
-                    }
-        }
-    }
-
-    class TextSection(private val header: View, private val contentView: TextView) : PageSection<String?> {
-        override fun setContent(content: String?) {
-            if (content.isNullOrBlank() || content?.trim() == "N/A") {
-                header.visibility = View.GONE
-                contentView.visibility = View.GONE
-            } else {
-                header.visibility = View.VISIBLE
-                contentView.visibility = View.VISIBLE
-                contentView.text = content
-            }
-        }
-    }
-
-    class ExpandableSection(private val header: View, private val toggleButton: View,
-                            private val contentView: TextView) : PageSection<String?> {
-        private var isExpanded = false
-
-        override fun setContent(content: String?) {
-            contentView.visibility = View.GONE
-            if (content.isNullOrBlank() || content?.trim() == "N/A") {
-                header.visibility = View.GONE
-                return
-            }
-
-            contentView.text = content
-            isExpanded = false
-
-            val listener = View.OnClickListener {
-                contentView.visibility = if (isExpanded) View.GONE else View.VISIBLE
-                toggleButton.rotation = if (isExpanded) 0f else 180f
-                isExpanded = !isExpanded
-            }
-
-            toggleButton.setOnClickListener(listener)
-            header.setOnClickListener(listener)
-        }
-
-    }
-
     class EpisodesSection(private val context: Context, private val header: View, private val recyclerView: RecyclerView,
                           private val spinner: Spinner, private val seasonSelector: SeasonSelector?): PageSection<MoviePage.EpisodeState> {
 
@@ -361,7 +286,11 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
         private fun getAdapter(): EpisodesAdapter {
             if (this.adapter == null) {
-                val adapter = EpisodesAdapter(context)
+                val adapter = EpisodesAdapter(context, object : EpisodesAdapter.Callback {
+                    override fun onSelected(episode: Episode) {
+                        seasonSelector?.openEpisode(episode)
+                    }
+                })
                 adapter.setHasStableIds(true)
                 recyclerView.layoutManager = LinearLayoutManager(context)
                 recyclerView.layoutManager.isAutoMeasureEnabled = true
@@ -398,8 +327,5 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     }
 
-    interface PageSection<in DATA> {
-        fun setContent(content: DATA)
-    }
 }
 

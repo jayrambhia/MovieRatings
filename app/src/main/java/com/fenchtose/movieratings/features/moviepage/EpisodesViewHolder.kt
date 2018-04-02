@@ -9,14 +9,25 @@ import androidx.text.scale
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.Episode
 
-class EpisodesViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class EpisodesViewHolder(itemView: View, callback: EpisodesAdapter.Callback): RecyclerView.ViewHolder(itemView) {
+
+    private var episode: Episode? = null
 
     private val number: TextView = itemView.findViewById(R.id.episode_number)
     private val title: TextView = itemView.findViewById(R.id.episode_title)
     private val rating: TextView = itemView.findViewById(R.id.episode_rating)
     private val release: TextView = itemView.findViewById(R.id.episode_release)
 
+    init {
+        itemView.setOnClickListener {
+            episode?.let {
+                callback.onSelected(it)
+            }
+        }
+    }
+
     fun bind(episode: Episode) {
+        this.episode = episode
         number.text = episode.episode.toString()
         title.text = episode.title
         rating.text = SpannableStringBuilder(rating.context.getText(R.string.movie_page_episodes_rated))

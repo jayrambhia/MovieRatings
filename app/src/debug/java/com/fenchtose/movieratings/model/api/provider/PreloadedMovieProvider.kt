@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.model.api.provider
 import android.content.Context
 import android.support.annotation.RawRes
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
@@ -70,6 +71,9 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         }
     }
 
+    override fun getEpisode(episode: Episode): Observable<Movie> {
+        return Observable.just(Movie.empty())
+    }
 
     override fun addPreferenceApplier(applier: UserPreferneceApplier) {
         preferenceAppliers.add(applier)

@@ -7,13 +7,14 @@ import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.Episode
 
-class EpisodesAdapter(context: Context): RecyclerView.Adapter<EpisodesViewHolder>() {
+class EpisodesAdapter(context: Context,
+                      private val callback: Callback): RecyclerView.Adapter<EpisodesViewHolder>() {
 
     private val inflater = LayoutInflater.from(context)
     private val episodes: ArrayList<Episode> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodesViewHolder {
-        return EpisodesViewHolder(inflater.inflate(R.layout.episode_list_item_layout, parent, false))
+        return EpisodesViewHolder(inflater.inflate(R.layout.episode_list_item_layout, parent, false), callback)
     }
 
     override fun onBindViewHolder(holder: EpisodesViewHolder, position: Int) {
@@ -31,5 +32,9 @@ class EpisodesAdapter(context: Context): RecyclerView.Adapter<EpisodesViewHolder
     fun updateEpisodes(episodes: List<Episode>) {
         this.episodes.clear()
         this.episodes.addAll(episodes)
+    }
+
+    interface Callback {
+        fun onSelected(episode: Episode)
     }
 }
