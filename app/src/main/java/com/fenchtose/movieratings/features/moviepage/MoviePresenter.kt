@@ -2,6 +2,7 @@ package com.fenchtose.movieratings.features.moviepage
 
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.ResultBus
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
 import com.fenchtose.movieratings.features.season.SeasonPageFragment
@@ -75,7 +76,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterNext {
                     if (it.type == Constants.TitleType.SERIES.type) {
-                        getEpisodes(it, 1)
+                        getEpisodes(it, if (currentSeason <= 0) 1 else currentSeason)
                     }
                 }
                 .subscribe({
@@ -204,5 +205,21 @@ class MoviePresenter(private val provider: MovieProvider,
                 }
             }
         }
+    }
+
+    override fun saveState(): PresenterState? {
+        return MovieState(currentSeason)
+    }
+
+    override fun restoreState(state: PresenterState?) {
+        state?.takeIf { it is MovieState }
+                ?.let { it as MovieState }
+                ?.let {
+                    this.currentSeason = it.currentSeason
+                }
+    }
+
+    data class MovieState(val currentSeason: Int): PresenterState {
+
     }
 }

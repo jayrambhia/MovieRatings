@@ -100,7 +100,7 @@
 			    android:id="@+id/genre_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:layout_marginTop="4dp"
+			    android:layout_marginTop="8dp"
 			    android:textColor="@android:color/white"
 			    android:textSize="16sp"
 			    tools:text="Action, Adventure, Sci-Fi"/>
@@ -109,7 +109,6 @@
 			    android:id="@+id/director_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:layout_marginTop="4dp"
 			    android:textColor="@android:color/white"
 			    android:textSize="16sp"
 			    tools:text="Directed by James Gunn"/>
@@ -118,7 +117,6 @@
 			    android:id="@+id/released_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:layout_marginTop="4dp"
 			    android:textColor="@android:color/white"
 			    android:textSize="16sp"
 			    tools:text="Released on 05 May 2017"/>
@@ -129,13 +127,13 @@
 			    android:layout_height="wrap_content"
 			    android:layout_marginTop="16dp"
 			    android:textColor="@android:color/white"
-			    android:textSize="24sp"
+			    android:textSize="@dimen/movie_page_header_textsize"
 			    android:fontFamily="sans-serif-medium"
 			    android:text="@string/movie_page_collections_title"/>
 
 		    <com.fenchtose.movieratings.widgets.FlexView
 			    android:id="@+id/collections_flexview"
-			    android:layout_marginTop="8dp"
+			    android:layout_marginTop="2dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    app:flex__horizontal_spacing="8dp"
@@ -147,13 +145,12 @@
 			    android:layout_height="wrap_content"
 			    android:layout_marginTop="16dp"
 			    android:textColor="@android:color/white"
-			    android:textSize="24sp"
+			    android:textSize="@dimen/movie_page_header_textsize"
 			    android:fontFamily="sans-serif-medium"
 			    android:text="@string/movie_page_actors_title"/>
 
 		    <TextView
 			    android:id="@+id/actors_view"
-			    android:layout_marginTop="4dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:textColor="@android:color/white"
@@ -166,13 +163,12 @@
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:textColor="@android:color/white"
-			    android:textSize="24sp"
+			    android:textSize="@dimen/movie_page_header_textsize"
 			    android:fontFamily="sans-serif-medium"
 			    android:text="@string/movie_page_writers_title"/>
 
 		    <TextView
 			    android:id="@+id/writers_view"
-			    android:layout_marginTop="4dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:textColor="@android:color/white"
@@ -192,7 +188,7 @@
 				    android:layout_weight="1"
 				    android:layout_height="wrap_content"
 				    android:textColor="@android:color/white"
-				    android:textSize="24sp"
+				    android:textSize="@dimen/movie_page_header_textsize"
 				    android:fontFamily="sans-serif-medium"
 				    android:text="@string/movie_page_plot_title"/>
 
@@ -209,7 +205,6 @@
 			    android:visibility="gone"
 			    tools:visibility="visible"
 			    android:id="@+id/plot_view"
-			    android:layout_marginTop="4dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:textColor="@android:color/white"
@@ -224,7 +219,7 @@
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:textColor="@android:color/white"
-			    android:textSize="24sp"
+			    android:textSize="@dimen/movie_page_header_textsize"
 			    android:fontFamily="sans-serif-medium"
 			    android:text="@string/movie_page_episodes_title"/>
 
@@ -242,7 +237,6 @@
 			    android:visibility="gone"
 			    tools:visibility="visible"
 			    android:id="@+id/episodes_recyclerview"
-			    android:layout_marginTop="8dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    tools:listitem="@layout/episode_list_item_layout"/>

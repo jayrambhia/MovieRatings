@@ -13,6 +13,7 @@
 	<dimen name="movie_app_bar_pin_height">96dp</dimen>
 	<dimen name="movie_poster_height">240dp</dimen>
 	<dimen name="movie_rating_x_movement">72dp</dimen>
+	<dimen name="movie_page_header_textsize">21sp</dimen>
 
 	<dimen name="season_app_bar_height">240dp</dimen>
 	<dimen name="season_poster_height">196dp</dimen>

@@ -5,7 +5,7 @@
 	android:layout_height="wrap_content"
 	android:background="@drawable/movie_page_add_to_collection_background"
 	android:textColor="@color/colorAccent"
-	android:textSize="16sp"
+	android:textSize="14sp"
 	android:paddingStart="16dp"
 	android:paddingEnd="16dp"
 	android:paddingTop="8dp"

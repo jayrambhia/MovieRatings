@@ -74,7 +74,7 @@
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
 			android:textColor="@android:color/white"
-			android:textSize="24sp"
+			android:textSize="21sp"
 			android:fontFamily="sans-serif-medium"
 			android:text="@string/movie_page_actors_title"/>
 
@@ -92,7 +92,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:textColor="@android:color/white"
-			android:textSize="24sp"
+			android:textSize="21sp"
 			android:fontFamily="sans-serif-medium"
 			android:text="@string/movie_page_writers_title"/>
 
@@ -117,7 +117,7 @@
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
 				android:textColor="@android:color/white"
-				android:textSize="24sp"
+				android:textSize="21sp"
 				android:fontFamily="sans-serif-medium"
 				android:text="@string/movie_page_plot_title"/>
 

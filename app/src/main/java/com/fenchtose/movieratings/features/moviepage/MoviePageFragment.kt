@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
 import com.fenchtose.movieratings.model.Episode
@@ -71,6 +72,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                 SettingsPreferences(context),
                 movie?.imdbId, movie)
 
+        presenter?.restoreState(path?.restoreState())
+
         imageLoader = GlideLoader(Glide.with(this))
     }
 
@@ -110,6 +113,10 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         isPosterLoaded = false
 
         presenter?.attachView(this)
+    }
+
+    override fun saveState(): PresenterState? {
+        return presenter?.saveState()
     }
 
     override fun onDestroyView() {
