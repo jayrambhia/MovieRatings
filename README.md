@@ -22,7 +22,7 @@ Collections Page | Collection Page | Settings Page
 
 Series Page | List of Episodes on Series Page | Episode Page (Coming in 0.2) |
 :----------:|:-------------------------------:|:-----------------------------:
-![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/series_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/series_episodes_page.png) |
+![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/series_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/series_episodes_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/episodes_page.png)
 
 ## Contribute
 
