@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.model.api.provider
 
 import android.content.Context
+import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferneceApplier
