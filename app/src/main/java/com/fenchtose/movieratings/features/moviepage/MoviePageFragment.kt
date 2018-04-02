@@ -12,6 +12,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -75,6 +76,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         presenter?.restoreState(path?.restoreState())
 
         imageLoader = GlideLoader(Glide.with(this))
+
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -117,6 +120,16 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     override fun saveState(): PresenterState? {
         return presenter?.saveState()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        var consumed = true
+        when(item?.itemId) {
+            R.id.action_open_imdb -> presenter?.openImdb(context)
+            else -> consumed = false
+        }
+
+        return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
     override fun onDestroyView() {
@@ -253,6 +266,10 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
         override fun getSharedTransitionElement(): Pair<View, String>? {
             return sharedElement
+        }
+
+        override fun showMenuIcons(): IntArray {
+            return intArrayOf(R.id.action_open_imdb)
         }
 
     }

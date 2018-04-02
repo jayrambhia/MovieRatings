@@ -58,4 +58,9 @@
         android:icon="@drawable/ic_settings_white_24dp"
         app:showAsAction="always"/>
 
+	<item
+		android:id="@+id/action_open_imdb"
+	    android:title="@string/menu_action_open_imdb"
+	    app:showAsAction="never"/>
+
 </menu>

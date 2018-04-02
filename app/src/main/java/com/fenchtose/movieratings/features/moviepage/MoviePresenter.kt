@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.moviepage
 
+import android.content.Context
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
@@ -13,6 +14,7 @@ import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.Constants
+import com.fenchtose.movieratings.util.IntentUtils
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -219,7 +221,9 @@ class MoviePresenter(private val provider: MovieProvider,
                 }
     }
 
-    data class MovieState(val currentSeason: Int): PresenterState {
-
+    fun openImdb(context: Context) {
+        IntentUtils.openImdb(context, loadedMovie?.imdbId)
     }
+
+    data class MovieState(val currentSeason: Int): PresenterState
 }

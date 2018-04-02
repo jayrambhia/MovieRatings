@@ -54,6 +54,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="menu_action_sort_year">Year</string>
 	<string name="menu_action_info">Info</string>
 	<string name="menu_action_collection">Collections</string>
+	<string name="menu_action_open_imdb">Open Imdb</string>
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
@@ -143,5 +144,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="episode_page_directed_by">Directed by</string>
 	<string name="episode_page_released_on">Released on</string>
 	<string name="episode_page_rating">Rated %1s</string>
+	<string name="episode_page_open_imdb">See on IMDB</string>
+
 
 </resources>
