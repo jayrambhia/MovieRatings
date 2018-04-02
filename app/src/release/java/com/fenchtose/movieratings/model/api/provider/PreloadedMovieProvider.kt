@@ -30,4 +30,8 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
     override fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList> {
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }
+
+    override fun getEpisode(episode: Episode): Observable<Movie> {
+        throw RuntimeException("PreloadedMovieProvider should not be used in release")
+    }
 }
