@@ -10,6 +10,27 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+	    <TextView
+		    android:id="@+id/tts_info"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:text="@string/settings_tts_info"
+		    android:padding="@dimen/gutter"
+		    android:textSize="@dimen/settings_header_text_size"/>
+
+	    <android.support.v7.widget.SwitchCompat
+		    android:id="@+id/tts_toggle"
+		    android:padding="@dimen/gutter"
+		    android:textSize="@dimen/settings_text_size"
+		    android:text="@string/settings_tts_button_text"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"/>
+
+	    <View
+		    android:layout_width="match_parent"
+		    android:layout_height="1dp"
+		    android:background="#44444444"/>
+
         <TextView
             android:id="@+id/toast_duration_info"
             android:layout_width="match_parent"

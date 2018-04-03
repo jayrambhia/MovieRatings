@@ -12,6 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.display.RatingDisplayer
+import com.fenchtose.movieratings.features.tts.Speaker
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
@@ -37,6 +38,7 @@ class NetflixReaderService : AccessibilityService() {
     private var analytics: AnalyticsDispatcher? = null
 
     private var displayer: RatingDisplayer? = null
+    private var speaker: Speaker? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -45,6 +47,7 @@ class NetflixReaderService : AccessibilityService() {
         provider = MovieRatingsApplication.movieProviderModule.movieProvider
         analytics = MovieRatingsApplication.analyticsDispatcher
         displayer = RatingDisplayer(this, analytics!!, preferences!!)
+        speaker = Speaker(this)
 
     }
 
@@ -203,5 +206,8 @@ class NetflixReaderService : AccessibilityService() {
 
     private fun showRating(movie: Movie) {
         displayer?.showRatingWindow(movie)
+        if (preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true) {
+            speaker?.talk(movie)
+        }
     }
 }

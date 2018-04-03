@@ -1,7 +1,9 @@
 package com.fenchtose.movieratings.features.settings
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.support.annotation.IdRes
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.SwitchCompat
@@ -37,6 +39,8 @@ class SettingsFragment: BaseFragment() {
 
     private var toastDuration: TextView? = null
 
+    val CHECK_TTS = 12
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         root = inflater.inflate(R.layout.settings_page_layout, container, false) as ViewGroup
         return root!!
@@ -53,6 +57,28 @@ class SettingsFragment: BaseFragment() {
         addAppToggle(preferences, view, R.id.prime_video_toggle, UserPreferences.PRIMEVIDEO)
         addAppToggle(preferences, view, R.id.save_browsing_toggle, UserPreferences.SAVE_HISTORY)
         addAppToggle(preferences, view, R.id.show_activate_toggle, UserPreferences.SHOW_ACTIVATE_FLUTTER)
+
+        val ttsToggle = view.findViewById<SwitchCompat>(R.id.tts_toggle)
+        ttsToggle.isChecked = preferences.isSettingEnabled(UserPreferences.TTS_AVAILABLE) && preferences.isSettingEnabled(UserPreferences.USE_TTS)
+        ttsToggle.setOnCheckedChangeListener {
+            toggle, isChcecked ->
+            run {
+                if (!isChcecked) {
+                    this.preferences?.setSettingEnabled(UserPreferences.USE_TTS, false)
+                    updatePublisher?.onNext(true)
+                    return@setOnCheckedChangeListener
+                }
+
+                if (this.preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true) {
+                    this.preferences?.setSettingEnabled(UserPreferences.USE_TTS, true)
+                    updatePublisher?.onNext(true)
+                    return@setOnCheckedChangeListener
+                }
+
+                toggle.isChecked = false
+                checkForTTS()
+            }
+        }
 
         val toastInfo = view.findViewById<TextView>(R.id.toast_duration_info)
         val toastSeekbar = view.findViewById<SeekBar>(R.id.toast_duration_seekbar)
@@ -188,6 +214,34 @@ class SettingsFragment: BaseFragment() {
                 }, {
                     showSnackbar(R.string.settings_data_deleted)
                 })
+    }
+
+    private fun checkForTTS() {
+        startActivityForResult(Intent().setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA), CHECK_TTS)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CHECK_TTS) {
+            if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+                preferences?.setSettingEnabled(UserPreferences.TTS_AVAILABLE, true)
+            } else {
+                showTtsInstallDialog()
+            }
+        }
+    }
+
+    private fun showTtsInstallDialog() {
+        AlertDialog.Builder(context)
+                .setTitle(R.string.settings_install_tts_dialog_title)
+                .setMessage(R.string.settings_install_tts_dialog_content)
+                .setPositiveButton(R.string.settings_install_tts_dialog_cta) { _, _ -> installTTS() }
+                .setNeutralButton(R.string.settings_install_tts_dialog_later) {d, _ -> d.dismiss()}
+                .show()
+    }
+
+    private fun installTTS() {
+        startActivity(Intent().setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA))
     }
 
     override fun canGoBack(): Boolean {

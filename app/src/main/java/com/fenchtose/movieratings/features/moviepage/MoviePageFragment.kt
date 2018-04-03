@@ -23,6 +23,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
+import com.fenchtose.movieratings.features.tts.Speaker
 import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.Movie
@@ -33,6 +34,7 @@ import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStor
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.widgets.pagesection.*
 
 class MoviePageFragment: BaseFragment(), MoviePage {
@@ -170,6 +172,11 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         fab?.setOnClickListener {
             val isLiked = presenter?.likeToggle()
             setLiked(isLiked)
+        }
+
+        val preferences = SettingsPreferences(context)
+        if (preferences.isSettingEnabled(UserPreferences.USE_TTS) && preferences.isSettingEnabled(UserPreferences.TTS_AVAILABLE)) {
+            Speaker(context).talk(movie)
         }
     }
 

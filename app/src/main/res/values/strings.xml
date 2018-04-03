@@ -44,6 +44,12 @@ But don\'t worry. Flutter is cool and believes in personal privacy and hence col
 	<string name="settings_delete_data_dialog_cta">Yes, delete everything</string>
 	<string name="settings_data_deleted">Your collections, favorites, recent history has been deleted.</string>
 	<string name="settings_data_delete_error">Unable to delete your data.</string>
+	<string name="settings_tts_info">Flutter provides a functionality to listen to movie ratings using in-built Text to Speech feature.</string>
+	<string name="settings_tts_button_text">Enable Text to Speech</string>
+	<string name="settings_install_tts_dialog_title">Install Text to Speech</string>
+	<string name="settings_install_tts_dialog_content">Flutter supports only US and UK English for Text to Speech as of now. To enable Text to Speech, please download Text to Speech using your device settigns.</string>
+	<string name="settings_install_tts_dialog_cta">Install</string>
+	<string name="settings_install_tts_dialog_later">Not now</string>
 	<string name="settings_misc">Miscellaneous settings</string>
 	<string name="settings_activate_flutter">Show \'Activate Flutter\'</string>
 
@@ -151,5 +157,6 @@ But don\'t worry. Flutter is cool and believes in personal privacy and hence col
 	<string name="episode_page_rating">Rated %1s</string>
 	<string name="episode_page_open_imdb">See on IMDB</string>
 
+	<string name="rating_tts">%1$s is rated %2$s.</string>
 
 </resources>
