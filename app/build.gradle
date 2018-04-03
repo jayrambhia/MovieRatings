@@ -40,6 +40,7 @@ android {
             applicationIdSuffix ".dev"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            ext.enableCrashlytics = false
         }
         release {
             minifyEnabled true

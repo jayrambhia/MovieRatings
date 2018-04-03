@@ -32,13 +32,15 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         return getMovie(
                 { this.getMovieFromDb(title, year) },
                 { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title, year) },
-                { analytics.sendEvent(Event("get_movie_online").putAttribute("title", title)) }
+                { analytics.sendEvent(Event("get_movie_online").putAttribute("title", title)) },
+                { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title)}
         )
     }
 
     private fun getMovie(dbCall: () -> Observable<Movie>,
                          apiCall: () -> Observable<Movie>,
-                         analyticsCall: () -> Unit): Observable<Movie> {
+                         analyticsCall: () -> Unit,
+                         fallbackApiCall: (() -> Observable<Movie>)? = null): Observable<Movie> {
 
         return dbCall()
                 .flatMap {
@@ -50,6 +52,14 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                                     analyticsCall()
                                 }.flatMap {
                                     apiCall()
+                                    .flatMap {
+                                        if (it.imdbId.isNullOrEmpty() && fallbackApiCall != null) {
+                                            fallbackApiCall.invoke()
+                                        } else {
+                                            Observable.just(it)
+                                        }
+                                    }
+                                    .filter { it.isComplete(Movie.Check.BASE) }
                                     .doOnNext {
                                         dao.insert(it)
                                     }
@@ -57,6 +67,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
                         }
                 }
+                .filter { it.isComplete(Movie.Check.BASE) }
                 .doOnNext {
                     for (preferenceApplier in preferenceAppliers) {
                         preferenceApplier.apply(it)
