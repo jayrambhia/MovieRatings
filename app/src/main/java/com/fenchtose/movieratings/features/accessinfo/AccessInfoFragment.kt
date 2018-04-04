@@ -17,6 +17,7 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.VersionUtils
 
@@ -58,7 +59,7 @@ class AccessInfoFragment : BaseFragment() {
                 getString(R.string.accessibility_info_app_name),
                 getString(R.string.accessibility_info_target_name))
 
-        analytics = MovieRatingsApplication.analyticsDispatcher
+        analytics = DependencyProvider.di()?.analytics
 
     }
 

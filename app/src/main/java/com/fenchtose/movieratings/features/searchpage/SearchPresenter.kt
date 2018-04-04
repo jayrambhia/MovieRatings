@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.features.searchpage
 
 import android.view.View
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
@@ -14,7 +14,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class SearchPresenter(private val provider: MovieProvider, private val likeStore: LikeStore) : Presenter<SearchPage>() {
+class SearchPresenter(private val provider: MovieProvider, private val likeStore: LikeStore,
+                      private val router: Router?) : Presenter<SearchPage>() {
 
     private var currentQuery = ""
     private val data: ArrayList<Movie> = ArrayList()
@@ -136,7 +137,7 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
     }
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
-        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
+        router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
     }
 
     override fun saveState() = SearchState(currentQuery, data.map { it -> it } as ArrayList<Movie>, pageNum)

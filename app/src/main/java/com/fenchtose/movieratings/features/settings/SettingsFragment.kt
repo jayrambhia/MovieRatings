@@ -11,10 +11,10 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
@@ -146,7 +146,9 @@ class SettingsFragment: BaseFragment() {
     }
 
     private fun clearHistory() {
-        DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao())
+        val database = DependencyProvider.di()?.database ?: return
+
+        DbRecentlyBrowsedStore(database.recentlyBrowsedDao())
                 .deleteAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -159,10 +161,12 @@ class SettingsFragment: BaseFragment() {
     }
 
     private fun deleteData() {
-        val collectionStore = DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao())
+        val database = DependencyProvider.di()?.database ?: return
+
+        val collectionStore = DbMovieCollectionStore(database.movieCollectionDao())
         Observable.concat(
-                DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()).deleteAll(),
-                DbLikeStore(MovieRatingsApplication.database.favDao()).deleteAll(),
+                DbRecentlyBrowsedStore(database.recentlyBrowsedDao()).deleteAll(),
+                DbLikeStore(database.favDao()).deleteAll(),
                 collectionStore.deleteAllCollectionEntries(),
                 collectionStore.deleteAllCollections())
                 .subscribeOn(Schedulers.io())

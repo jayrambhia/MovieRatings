@@ -17,11 +17,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.bumptech.glide.Glide
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
 import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.Movie
@@ -66,12 +66,22 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         postponeEnterTransition()
-        presenter = MoviePresenter(MovieRatingsApplication.movieProviderModule.movieProvider,
-                DbLikeStore(MovieRatingsApplication.database.favDao()),
-                DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()),
-                DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
-                SettingsPreferences(context),
-                movie?.imdbId, movie)
+
+        DependencyProvider.di()?.let {
+            it.database?.run {
+                val provider = it.movieProviderModule
+                if (provider != null) {
+                    presenter = MoviePresenter(provider.movieProvider,
+                            DbLikeStore(favDao()),
+                            DbRecentlyBrowsedStore(recentlyBrowsedDao()),
+                            DbMovieCollectionStore(movieCollectionDao()),
+                            SettingsPreferences(context),
+                            movie?.imdbId, movie, it.router)
+                }
+            }
+
+        }
+
 
         presenter?.restoreState(path?.restoreState())
 
@@ -92,7 +102,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         collectionsFlexView = MoviePageFlexView(context, view.findViewById(R.id.collections_flexview),
                 object : MoviePageFlexView.CollectionCallback {
                     override fun onItemClicked(collection: MovieCollection) {
-                        MovieRatingsApplication.router?.go(CollectionPageFragment.CollectionPagePath(collection))
+                        DependencyProvider.di()?.router?.go(CollectionPageFragment.CollectionPagePath(collection))
                     }
 
                     override fun onAddToCollectionClicked() {
@@ -137,13 +147,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         presenter?.detachView(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        MovieRatingsApplication.refWatcher?.watch(this)
-    }
-
     private fun showMovie(movie: Movie) {
-        MovieRatingsApplication.router?.updateTitle(movie.title)
+        DependencyProvider.di()?.router?.updateTitle(movie.title)
         titleView?.text = movie.title
         genreSection?.setContent(movie.genre)
         if (movie.ratings.size > 0) {

@@ -5,7 +5,7 @@ import android.view.View
 abstract class RouterPath<T : BaseFragment> {
 
     var fragment: T? = null
-    var savedState: PresenterState? = null
+    private var savedState: PresenterState? = null
 
     private fun createFragment() : T {
         fragment = createFragmentInstance()
@@ -33,6 +33,10 @@ abstract class RouterPath<T : BaseFragment> {
 
     fun clearState() {
         savedState = null
+    }
+
+    fun clear() {
+        fragment = null
     }
 
     abstract fun createFragmentInstance(): T

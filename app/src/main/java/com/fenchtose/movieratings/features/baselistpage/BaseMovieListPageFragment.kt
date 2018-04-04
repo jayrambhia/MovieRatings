@@ -27,6 +27,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = createPresenter()
+        onCreated()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -97,7 +98,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         adapter?.notifyDataSetChanged()
     }
 
-    abstract fun createPresenter(): P
+    abstract fun createPresenter(): P?
 
     abstract fun getErrorContent(): Int
 

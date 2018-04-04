@@ -3,10 +3,9 @@ package com.fenchtose.movieratings.features.moviecollection.collectionpage
 import android.app.AlertDialog
 import android.view.MenuItem
 import android.view.View
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.model.Movie
@@ -27,12 +26,20 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
     override fun getErrorContent() = R.string.movie_collection_page_error_content
 
-    override fun createPresenter(): CollectionPagePresenter {
-        return CollectionPagePresenter(DbLikeStore(MovieRatingsApplication.database.favDao()),
-                DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
-                DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
-                SettingsPreferences(context),
-                path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection })
+    override fun createPresenter(): CollectionPagePresenter? {
+        DependencyProvider.di()?.let {
+            it.database?.run {
+                return CollectionPagePresenter(DbLikeStore(favDao()),
+                        DbMovieCollectionProvider(movieCollectionDao()),
+                        DbMovieCollectionStore(movieCollectionDao()),
+                        SettingsPreferences(context),
+                        path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection },
+                        it.router)
+            }
+
+        }
+
+        return null
     }
 
     override fun onCreated() {
@@ -40,7 +47,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
         path?.takeIf { it is CollectionPagePath }
                 ?.let { (it as CollectionPagePath).collection }
-                ?.let { MovieRatingsApplication.router?.updateTitle(it.name) }
+                ?.let { DependencyProvider.di()?.router?.updateTitle(it.name) }
     }
 
     override fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? {

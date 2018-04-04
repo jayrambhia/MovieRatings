@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
@@ -16,7 +17,8 @@ class CollectionPagePresenter(likeStore: LikeStore,
                               private val provider: MovieCollectionProvider,
                               private val collectionStore: MovieCollectionStore,
                               private val userPreferences: UserPreferences,
-                              private val collection: MovieCollection?) : BaseMovieListPresenter<CollectionPage>(likeStore) {
+                              private val collection: MovieCollection?,
+                              router: Router?) : BaseMovieListPresenter<CollectionPage>(likeStore, router) {
 
     private var currentSort: Sort = userPreferences.getLatestCollectionSort(collection?.id)
         set(value) {

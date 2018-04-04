@@ -10,11 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.ResultBus
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
@@ -31,9 +31,11 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = CollectionListPresenter(
-                DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
-                DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()))
+        DependencyProvider.di()?.database?.run {
+            presenter = CollectionListPresenter(
+                    DbMovieCollectionProvider(movieCollectionDao()),
+                    DbMovieCollectionStore(movieCollectionDao()))
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -79,6 +81,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.detachView(this)
+        presenter = null
     }
 
     override fun updateState(state: CollectionListPage.State) {
@@ -162,11 +165,13 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     }
 
     private fun onCollectionSelected(collection: MovieCollection) {
-        if (shouldReturnSelection()) {
-            MovieRatingsApplication.router?.onBackRequested()
-            ResultBus.setResult(CollectionListPagePath.SELECTED_COLLECTION, ResultBus.Result.create(collection))
-        } else {
-            MovieRatingsApplication.router?.go(CollectionPageFragment.CollectionPagePath(collection))
+        DependencyProvider.di()?.router?.run {
+            if (shouldReturnSelection()) {
+                onBackRequested()
+                ResultBus.setResult(CollectionListPagePath.SELECTED_COLLECTION, ResultBus.Result.create(collection))
+            } else {
+                go(CollectionPageFragment.CollectionPagePath(collection))
+            }
         }
     }
 

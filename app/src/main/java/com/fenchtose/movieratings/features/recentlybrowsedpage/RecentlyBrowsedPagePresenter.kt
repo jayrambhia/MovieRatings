@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.recentlybrowsedpage
 
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.model.Movie
@@ -9,7 +10,8 @@ import io.reactivex.Observable
 
 class RecentlyBrowsedPagePresenter(
         private val movieProvider: RecentlyBrowsedMovieProvider,
-        likeStore: LikeStore): BaseMovieListPresenter<BaseMovieListPage>(likeStore) {
+        likeStore: LikeStore,
+        router: Router?): BaseMovieListPresenter<BaseMovieListPage>(likeStore, router) {
 
     init {
         movieProvider.addPreferenceApplier(likeStore)

@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.features.recentlybrowsedpage
 
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.model.api.provider.DbRecentlyBrowsedMovieProvider
@@ -17,9 +17,16 @@ class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, 
 
     override fun getErrorContent() = R.string.recently_browsed_page_error_content
 
-    override fun createPresenter(): RecentlyBrowsedPagePresenter {
-        return RecentlyBrowsedPagePresenter(DbRecentlyBrowsedMovieProvider(MovieRatingsApplication.database.movieDao()),
-                DbLikeStore(MovieRatingsApplication.database.favDao()))
+    override fun createPresenter(): RecentlyBrowsedPagePresenter? {
+        DependencyProvider.di()?.let {
+            it.database?.run {
+                return RecentlyBrowsedPagePresenter(DbRecentlyBrowsedMovieProvider(movieDao()),
+                        DbLikeStore(favDao()), it.router)
+            }
+
+        }
+
+        return null
     }
 
     class RecentlyBrowsedPath: RouterPath<RecentlyBrowsedPageFragment>() {

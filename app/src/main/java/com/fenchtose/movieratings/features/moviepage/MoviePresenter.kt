@@ -1,10 +1,10 @@
 package com.fenchtose.movieratings.features.moviepage
 
 import android.content.Context
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.ResultBus
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
 import com.fenchtose.movieratings.features.season.SeasonPageFragment
 import com.fenchtose.movieratings.model.*
@@ -24,7 +24,8 @@ class MoviePresenter(private val provider: MovieProvider,
                      private val collectionStore: MovieCollectionStore,
                      private val preferences: UserPreferences,
                      private val imdbId: String?,
-                     private val passedMovie: Movie?): Presenter<MoviePage>(), SeasonSelector {
+                     private val passedMovie: Movie?,
+                     private val router: Router?): Presenter<MoviePage>(), SeasonSelector {
 
     private var loadedMovie: Movie? = null
     private var selectedCollection: MovieCollection? = null
@@ -196,14 +197,14 @@ class MoviePresenter(private val provider: MovieProvider,
     }
 
     fun addToCollection() {
-        MovieRatingsApplication.router?.go(CollectionListPageFragment.CollectionListPagePath(true))
+        router?.go(CollectionListPageFragment.CollectionListPagePath(true))
     }
 
     override fun openEpisode(episode: Episode) {
         loadedMovie?.let {
             series -> run {
                 episodes?.let {
-                    MovieRatingsApplication.router?.go(SeasonPageFragment.SeasonPath(series, it, episode.episode))
+                    router?.go(SeasonPageFragment.SeasonPath(series, it, episode.episode))
                 }
             }
         }

@@ -5,6 +5,7 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.migration.Migration
+import android.content.Context
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.*
 import com.fenchtose.movieratings.model.MovieCollection
@@ -22,8 +23,9 @@ abstract class MovieDb : RoomDatabase() {
     abstract fun movieCollectionDao(): MovieCollectionDao
 
     companion object {
-        val instance: MovieDb by lazy {
-            Room.databaseBuilder(MovieRatingsApplication.instance!!, MovieDb::class.java, "ex")
+
+        fun instance(context: Context): MovieDb {
+            return Room.databaseBuilder(context, MovieDb::class.java, "ex")
                     .addMigrations(MIGRATION_1_to_2, MIGRATION_2_to_3, MIGRATION_3_to_4, MIGRATION_4_to_5)
                     .build()
         }

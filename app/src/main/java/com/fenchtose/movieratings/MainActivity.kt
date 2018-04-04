@@ -15,17 +15,15 @@ import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
-import com.fenchtose.movieratings.features.moviepage.MoviePage
-import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
-import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.PackageUtils
@@ -43,8 +41,6 @@ class MainActivity : AppCompatActivity() {
     private var toolbar: Toolbar? = null
     private var titlebar: ActionBar? = null
 
-    private var router: Router? = null
-
     private var accessibilityPublisher: PublishSubject<Boolean>? = null
     private var accessibilityPagePublisher: PublishSubject<Boolean>? = null
     private var disposable: Disposable? = null
@@ -52,6 +48,8 @@ class MainActivity : AppCompatActivity() {
     private var analytics: AnalyticsDispatcher? = null
 
     private var visibleMenuItems: IntArray? = null
+
+    private var di: DependencyProvider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +62,11 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         titlebar = supportActionBar
 
+        di = DependencyProvider.createInstance(this)
+
         setupObservables()
 
-        router = Router(this)
-        MovieRatingsApplication.router = router
-
-        router?.callback = object: Router.RouterCallback {
+        di?.router?.callback = object: Router.RouterCallback {
             override fun movedTo(path: RouterPath<out BaseFragment>) {
                 updateMenuItems(path)
                 if (path is AccessInfoFragment.AccessibilityPath) {
@@ -92,7 +89,7 @@ class MainActivity : AppCompatActivity() {
         showSearchPage()
         accessibilityPagePublisher?.onNext(false)
 
-        analytics = MovieRatingsApplication.analyticsDispatcher
+        analytics = DependencyProvider.di()?.analytics
     }
 
     override fun onResume() {
@@ -101,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (router?.onBackRequested() == false) {
+        if (di?.router?.onBackRequested() == false) {
             return
         }
 
@@ -110,9 +107,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        MovieRatingsApplication.router = null
-        router?.callback = null
-        router = null
+        di?.clear()
+        di = null
+
         accessibilityPublisher?.onComplete()
         accessibilityPagePublisher?.onComplete()
         disposable?.dispose()
@@ -157,36 +154,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSearchPage() {
-        router?.go(SearchPageFragment.SearchPath(SettingsPreferences(this)))
+        di?.router?.go(SearchPageFragment.SearchPath(SettingsPreferences(this)))
     }
 
     private fun showInfoPage() {
-        router?.go(AppInfoFragment.AppInfoPath())
+        di?.router?.go(AppInfoFragment.AppInfoPath())
     }
 
     private fun showAccessibilityInfo() {
         analytics?.sendEvent(Event("activate_button_clicked"))
-        router?.go(AccessInfoFragment.AccessibilityPath())
+        di?.router?.go(AccessInfoFragment.AccessibilityPath())
     }
 
     private fun showSettingsPage() {
-        router?.go(SettingsFragment.SettingsPath())
+        di?.router?.go(SettingsFragment.SettingsPath())
     }
 
     private fun showFavoritesPage() {
-        router?.go(LikesPageFragment.LikesPath())
+        di?.router?.go(LikesPageFragment.LikesPath())
     }
 
     private fun showRecentlyBrowsedPage() {
-        router?.go(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
+        di?.router?.go(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
     }
 
     private fun showMovieCollectionsPage() {
-        router?.go(CollectionListPageFragment.CollectionListPagePath(false))
+        di?.router?.go(CollectionListPageFragment.CollectionListPagePath(false))
     }
 
     private fun onAccessibilityActivated() {
-        router?.onBackRequested()
+        di?.router?.onBackRequested()
         // Show a dialog?
         val builder = AlertDialog.Builder(this)
                 .setTitle(R.string.accessibility_enabled_dialog_title)

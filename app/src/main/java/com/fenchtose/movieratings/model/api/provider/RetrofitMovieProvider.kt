@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.BuildConfig
-import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.EpisodesList
@@ -14,17 +14,17 @@ import com.fenchtose.movieratings.util.Constants
 import io.reactivex.Observable
 import retrofit2.Retrofit
 
-class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvider {
+class RetrofitMovieProvider(retrofit: Retrofit, private val dao: MovieDao,
+                            private val analytics: AnalyticsDispatcher?) : MovieProvider {
 
-    val api: MovieApi = retrofit.create(MovieApi::class.java)
-    val analytics = MovieRatingsApplication.analyticsDispatcher
+    private val api: MovieApi = retrofit.create(MovieApi::class.java)
     private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
 
     override fun getMovieWithImdb(imdbId: String): Observable<Movie> {
         return getMovie(
                 { this.getMovieFromDbWithImdb(imdbId) },
                 { api.getMovieInfoWithImdb(BuildConfig.OMDB_API_KEY, imdbId) },
-                { analytics.sendEvent(Event("get_movie_online").putAttribute("imdb", imdbId)) }
+                { analytics?.sendEvent(Event("get_movie_online").putAttribute("imdb", imdbId)) }
         )
     }
 
@@ -32,7 +32,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         return getMovie(
                 { this.getMovieFromDb(title, year) },
                 { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title, year) },
-                { analytics.sendEvent(Event("get_movie_online").putAttribute("title", title)) },
+                { analytics?.sendEvent(Event("get_movie_online").putAttribute("title", title)) },
                 { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title)}
         )
     }

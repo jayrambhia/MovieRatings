@@ -17,7 +17,7 @@ class TVActivity : AppCompatActivity() {
         setContentView(R.layout.activity_tv)
         router = Router(this)
         router?.go(AppInfoFragment.AppInfoPath())
-        MovieRatingsApplication.router = router
+//        MovieRatingsApplication.router = router
     }
 
     override fun onBackPressed() {

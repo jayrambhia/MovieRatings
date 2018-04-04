@@ -18,6 +18,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.image.GlideLoader
@@ -45,9 +46,19 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
-        presenter = SearchPresenter(MovieRatingsApplication.movieProviderModule.movieProvider, likeStore)
+        DependencyProvider.di()?.let {
+            it.database?.run {
+                val provider = it.movieProviderModule
+                if (provider != null) {
+                    val likeStore = DbLikeStore(favDao())
+                    presenter = SearchPresenter(provider.movieProvider, likeStore, it.router)
+                }
+            }
+
+        }
+
         presenter?.restoreState(path?.restoreState())
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -59,7 +70,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         progressbar = view.findViewById(R.id.progressbar)
         attributeView = view.findViewById(R.id.api_attr)
         recyclerView = view.findViewById(R.id.recyclerview)
-        searchView = view.findViewById(R.id.search_view)
+//        searchView = view.findViewById(R.id.search_view)
         clearButton = view.findViewById(R.id.clear_button)
 
         val adapter = SearchPageAdapter.Builder(context, GlideLoader(Glide.with(this)))

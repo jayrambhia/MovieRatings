@@ -10,12 +10,12 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import com.fenchtose.movieratings.BuildConfig
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
@@ -42,7 +42,7 @@ class AppInfoFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        analytics = MovieRatingsApplication.analyticsDispatcher
+        analytics = DependencyProvider.di()?.analytics
 
         view.findViewById<View>(R.id.rate_view).setOnClickListener {
             analytics?.sendEvent(Event("rate_app_clicked"))
@@ -74,7 +74,7 @@ class AppInfoFragment: BaseFragment() {
 
         settingsView = view.findViewById(R.id.settings_view)
         settingsView?.setOnClickListener {
-            MovieRatingsApplication.router?.go(SettingsFragment.SettingsPath())
+            DependencyProvider.di()?.router?.go(SettingsFragment.SettingsPath())
         }
 
         activationWarning = view.findViewById(R.id.activation_warning_view)

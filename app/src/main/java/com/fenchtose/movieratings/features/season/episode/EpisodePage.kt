@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.widgets.pagesection.ExpandableSection
@@ -55,7 +55,9 @@ class EpisodePage(context: Context, private val episode: Episode,
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter = EpisodePresenter(MovieRatingsApplication.movieProviderModule.movieProvider, episode)
+        DependencyProvider.di()?.movieProviderModule?.run {
+            presenter = EpisodePresenter(movieProvider, episode)
+        }
         presenter?.attachView(this)
     }
 

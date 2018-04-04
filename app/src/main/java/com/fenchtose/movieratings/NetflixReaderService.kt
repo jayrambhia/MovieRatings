@@ -13,10 +13,14 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.api.provider.MovieProviderModule
+import com.fenchtose.movieratings.model.db.MovieDb
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FixTitleUtils
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -24,6 +28,7 @@ class NetflixReaderService : AccessibilityService() {
     private var title: String? = null
     private val TAG: String = "NetflixReaderService"
 
+    private var database: MovieDb? = null
     private var provider: MovieProvider? = null
 
     private var preferences: UserPreferences? = null
@@ -38,14 +43,54 @@ class NetflixReaderService : AccessibilityService() {
 
     private var displayer: RatingDisplayer? = null
 
+    private var resourceRemover: PublishSubject<Boolean>? = null
+
+    val RESOURCE_THRESHOLD = 15L
+
     override fun onCreate() {
         super.onCreate()
+    }
 
-        preferences = SettingsPreferences(this)
-        provider = MovieRatingsApplication.movieProviderModule.movieProvider
-        analytics = MovieRatingsApplication.analyticsDispatcher
-        displayer = RatingDisplayer(this, analytics!!, preferences!!)
+    private fun initResources() {
+        synchronized(this) {
+            if (analytics == null) {
+                analytics = AnalyticsDispatcher()
+                analytics?.attachDispatcher("answers", AppFlavorHelper().getAnswersDispatcher())
+            }
 
+            if (preferences == null) {
+                preferences = SettingsPreferences(this)
+            }
+
+            if (database?.isOpen == false) {
+                database = MovieDb.instance(this)
+                provider = MovieProviderModule(this, database!!.movieDao(), analytics).movieProvider
+            }
+
+            displayer = RatingDisplayer(this, analytics!!, preferences!!)
+
+            if (resourceRemover != null) {
+                resourceRemover = PublishSubject.create()
+                resourceRemover?.debounce(RESOURCE_THRESHOLD, TimeUnit.SECONDS)
+                        ?.subscribe({
+                            clearResources()
+                        })
+            }
+        }
+    }
+
+    private fun clearResources() {
+        synchronized(this) {
+            preferences = null
+            database?.close()
+            database = null
+            provider = null
+            displayer = null
+            analytics?.removeDispatcher("answers")
+            analytics = null
+            resourceRemover?.onComplete()
+            resourceRemover = null
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -186,6 +231,10 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun getMovieInfo(title: String, year: String) {
+        // Need resources here!
+
+        initResources()
+
         analytics?.sendEvent(Event("get_movie").putAttribute("title", title))
 
         provider?.let {

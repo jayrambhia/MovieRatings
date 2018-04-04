@@ -27,6 +27,7 @@ class Router(activity: AppCompatActivity) {
             }
 
             top.saveState()
+//            top.clear()
         }
 
         move(path)
@@ -78,7 +79,10 @@ class Router(activity: AppCompatActivity) {
 
     private fun move(path: RouterPath<out BaseFragment>) {
         val fragment = path.createOrGetFragment()
-        val transaction = manager.beginTransaction().replace(R.id.fragment_container, fragment)
+        val transaction = manager.beginTransaction()
+
+        transaction.replace(R.id.fragment_container, fragment)
+
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             path.getSharedTransitionElement()?.let {
             transaction.addSharedElement(it.first, it.second)
@@ -103,6 +107,7 @@ class Router(activity: AppCompatActivity) {
 
     private fun moveBack() {
         val path = history.pop()
+        path.clear()
         path.clearState()
         callback?.removed(path)
         if (!history.empty()) {
@@ -111,6 +116,16 @@ class Router(activity: AppCompatActivity) {
                 move(top)
             }
         }
+    }
+
+    fun clear() {
+        // force release
+        history.forEach {
+            it.clearState()
+            it.clear()
+        }
+
+        history.clear()
     }
 
     interface RouterCallback {

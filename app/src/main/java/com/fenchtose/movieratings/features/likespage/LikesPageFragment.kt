@@ -2,10 +2,9 @@ package com.fenchtose.movieratings.features.likespage
 
 import android.view.MenuItem
 import android.view.View
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.di.DependencyProvider
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.Sort
@@ -25,12 +24,18 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
         setHasOptionsMenu(true)
     }
 
-    override fun createPresenter(): LikesPresenter {
-        val dao = MovieRatingsApplication.database.movieDao()
-        val favoriteProvider = DbFavoriteMovieProvider(dao)
-        val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
-        val userPreferences = SettingsPreferences(context)
-        return LikesPresenter(favoriteProvider, likeStore, userPreferences)
+    override fun createPresenter(): LikesPresenter? {
+        DependencyProvider.di()?.let {
+            it.database?.run {
+                val dao = movieDao()
+                val favoriteProvider = DbFavoriteMovieProvider(dao)
+                val likeStore = DbLikeStore(favDao())
+                val userPreferences = SettingsPreferences(context)
+                return LikesPresenter(favoriteProvider, likeStore, userPreferences, it.router)
+            }
+        }
+
+        return null
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
