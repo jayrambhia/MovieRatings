@@ -82,18 +82,15 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     }
 
     override fun updateState(state: CollectionListPage.State) {
-        when(state.ui) {
-            CollectionListPage.Ui.DEFAULT -> return
-            CollectionListPage.Ui.LOADING -> return
-            CollectionListPage.Ui.ERROR -> return
-            CollectionListPage.Ui.DATA_LOADED -> {
+        when(state) {
+            is CollectionListPage.State.Success -> {
                 fab?.visibility = View.VISIBLE
                 emptyContent?.visibility = View.GONE
                 recyclerView?.visibility = View.VISIBLE
-                adapter?.updateData(state.data!!)
+                adapter?.updateData(state.collections)
                 adapter?.notifyDataSetChanged()
             }
-            CollectionListPage.Ui.EMPTY -> {
+            is CollectionListPage.State.Empty-> {
                 fab?.visibility = View.GONE
                 emptyContent?.visibility = View.VISIBLE
                 recyclerView?.visibility = View.GONE
@@ -104,11 +101,11 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     }
 
     override fun updateState(state: CollectionListPage.OpState) {
-        val resId = when(state.op) {
-            CollectionListPage.Op.COLLECTION_CREATED -> R.string.movie_collection_list_page_create_success
-            CollectionListPage.Op.COLLECTION_DELETED -> R.string.movie_collection_list_page_delete_success
-            CollectionListPage.Op.COLLECTION_CREATE_ERROR -> R.string.movie_collection_list_page_create_error
-            CollectionListPage.Op.COLLECTION_DELETE_ERROR -> R.string.movie_collection_list_page_delete_error
+        val resId = when(state) {
+            is CollectionListPage.OpState.Created -> R.string.movie_collection_list_page_create_success
+            is CollectionListPage.OpState.Deleted -> R.string.movie_collection_list_page_delete_success
+            is CollectionListPage.OpState.CreateError -> R.string.movie_collection_list_page_create_error
+            is CollectionListPage.OpState.DeleteError -> R.string.movie_collection_list_page_delete_error
         }
 
         showSnackbar(context.getString(resId, state.data))

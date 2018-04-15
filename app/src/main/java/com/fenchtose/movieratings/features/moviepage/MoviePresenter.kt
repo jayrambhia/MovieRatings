@@ -63,7 +63,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 showMovie(passedMovie)
                 return
             } else if (!it.poster.isNullOrEmpty()) {
-                updateState(MoviePage.State(MoviePage.Ui.LOAD_IMAGE, it))
+                updateState(MoviePage.State.LoadImage(it.poster))
             }
         }
 
@@ -86,7 +86,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 }, {
                     loadedMovie = null
                     it.printStackTrace()
-                    updateState(MoviePage.State(MoviePage.Ui.ERROR))
+                    updateState(MoviePage.State.Error())
                 })
 
         subscribe(d)
@@ -111,24 +111,24 @@ class MoviePresenter(private val provider: MovieProvider,
                     if (it.success) {
                         currentSeason = it.season
                         episodes = it
-                        updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.LOADED, it))
+                        updateState(MoviePage.EpisodeState.Success(it))
                     } else {
                         episodes = null
-                        updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.ERROR))
+                        updateState(MoviePage.EpisodeState.Error())
                     }
                 },{
                     episodes = null
-                    updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.ERROR))
+                    updateState(MoviePage.EpisodeState.Error())
                     it.printStackTrace()
                 })
 
         subscribe(d)
-        updateState(MoviePage.EpisodeState(MoviePage.EpisodeUi.LOADING))
+        updateState(MoviePage.EpisodeState.Loading())
     }
 
     private fun showMovie(movie: Movie) {
         loadedMovie = movie
-        updateState(MoviePage.State(MoviePage.Ui.LOADED, movie))
+        updateState(MoviePage.State.Success(movie))
         updateRecent(movie.imdbId)
         selectedCollection?.let {
             addedToCollection(it, movie)
@@ -152,7 +152,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
                     if (it) {
-                        updateState(MoviePage.CollectionState(MoviePage.CollectionUi.EXISTS, collection))
+                        updateState(MoviePage.CollectionState.Exists(collection))
                     }
                 }.filter {
                     !it
@@ -163,11 +163,11 @@ class MoviePresenter(private val provider: MovieProvider,
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    updateState(MoviePage.CollectionState(MoviePage.CollectionUi.ADDED, collection))
+                    updateState(MoviePage.CollectionState.Added(collection))
                     getMovie(movie.imdbId)
                 }, {
                     it.printStackTrace()
-                    updateState(MoviePage.CollectionState(MoviePage.CollectionUi.ERROR, collection))
+                    updateState(MoviePage.CollectionState.Error(collection))
                 })
         subscribe(d)
     }

@@ -19,7 +19,7 @@ class SearchPageAdapter(context: Context,
     private val TYPE_MOVIE = 1
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    var data: ArrayList<Movie> = ArrayList()
+    var data: List<Movie> = ArrayList()
     private var showLoadingMore: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

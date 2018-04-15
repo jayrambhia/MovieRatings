@@ -24,6 +24,7 @@ import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
 import com.fenchtose.movieratings.model.Episode
+import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
@@ -203,19 +204,19 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     }
 
     override fun updateState(state: MoviePage.State) {
-        when(state.ui) {
-            MoviePage.Ui.LOADING -> return
-            MoviePage.Ui.LOADED -> showMovie(state.movie!!)
-            MoviePage.Ui.LOAD_IMAGE -> loadImage(state.movie!!.poster)
-            MoviePage.Ui.ERROR -> showError()
+        when(state) {
+            is MoviePage.State.Loading -> return
+            is MoviePage.State.Success -> showMovie(state.movie)
+            is MoviePage.State.LoadImage -> loadImage(state.image)
+            is MoviePage.State.Error -> showError()
         }
     }
 
     override fun updateState(state: MoviePage.CollectionState) {
-        val resId = when(state.ui) {
-            MoviePage.CollectionUi.EXISTS -> R.string.movie_collection_movie_exists
-            MoviePage.CollectionUi.ADDED -> R.string.movie_collection_movie_added
-            MoviePage.CollectionUi.ERROR -> R.string.movie_collection_movie_error
+        val resId = when(state) {
+            is MoviePage.CollectionState.Exists -> R.string.movie_collection_movie_exists
+            is MoviePage.CollectionState.Added -> R.string.movie_collection_movie_added
+            is MoviePage.CollectionState.Error -> R.string.movie_collection_movie_error
         }
 
         showSnackbar(context.getString(resId, state.collection.name))
@@ -281,25 +282,22 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         private var spinnerAdapter: SpinnerAdapter? = null
 
         override fun setContent(state: MoviePage.EpisodeState) {
-            when(state.ui) {
-                MoviePage.EpisodeUi.LOADED -> showEpisodes(state)
-                MoviePage.EpisodeUi.INVALID -> setVisibility(View.GONE)
+            when(state) {
+                is MoviePage.EpisodeState.Success -> showEpisodes(state.season)
+                is MoviePage.EpisodeState.Invalid -> setVisibility(View.GONE)
                 else -> {
 
                 }
             }
         }
 
-        private fun showEpisodes(state: MoviePage.EpisodeState) {
-            state.season?.let {
-                setupSpinner(it.totalSeasons, it.season)
-                setVisibility(View.VISIBLE)
-                val adapter = getAdapter()
-                adapter.updateEpisodes(it.episodes)
-                adapter.notifyDataSetChanged()
-                return
-            }
-
+        private fun showEpisodes(season: EpisodesList) {
+            setupSpinner(season.totalSeasons, season.season)
+            setVisibility(View.VISIBLE)
+            val adapter = getAdapter()
+            adapter.updateEpisodes(season.episodes)
+            adapter.notifyDataSetChanged()
+            return
         }
 
         private fun setVisibility(visible: Int) {

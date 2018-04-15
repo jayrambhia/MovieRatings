@@ -6,12 +6,10 @@ interface BaseMovieListPage {
 
     fun updateState(state: State)
 
-    data class State(val ui: Ui, val data: ArrayList<Movie>?)
-
-    enum class Ui {
-        LOADING,
-        DATA_LOADED,
-        EMPTY,
-        ERROR
+    sealed class State {
+        class Loading: State()
+        class Success(val movies: List<Movie>): State()
+        class Empty: State()
+        class Error: State()
     }
 }

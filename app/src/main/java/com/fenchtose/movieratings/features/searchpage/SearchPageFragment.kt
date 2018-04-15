@@ -41,7 +41,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
 
-    private var state: SearchPage.State = SearchPage.State(SearchPage.Ui.DEFAULT)
+    private var state: SearchPage.State = SearchPage.State.Default()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,15 +170,13 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             return
         }
 
-        when (state.ui) {
-            SearchPage.Ui.DEFAULT -> clearQuery()
-            SearchPage.Ui.LOADING -> showLoading(true)
-            SearchPage.Ui.DATA_LOADED -> setData(state)
-            SearchPage.Ui.DATA_RESTORED -> setData(state)
-            SearchPage.Ui.ERROR -> showApiError()
-            SearchPage.Ui.LOADING_MORE -> adapter?.showLoadingMore(true)
-            SearchPage.Ui.MORE_DATA_LOADED -> setData(state)
-            SearchPage.Ui.LOAD_MORE_ERROR -> showApiError()
+        when (state) {
+            is SearchPage.State.Default -> clearQuery()
+            is SearchPage.State.Loading -> showLoading(true)
+            is SearchPage.State.Loaded -> setData(state)
+            is SearchPage.State.Error -> showApiError()
+            is SearchPage.State.LoadingMore -> adapter?.showLoadingMore(true)
+            is SearchPage.State.PaginationError -> showApiError()
         }
     }
 
@@ -199,15 +197,15 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         showSnackbar(R.string.search_page_api_error_content)
     }
 
-    private fun setData(state: SearchPage.State) {
+    private fun setData(state: SearchPage.State.Loaded) {
         showLoading(false)
         adapter?.data = state.movies
         adapter?.notifyDataSetChanged()
         recyclerView?.post {
-            if (state.ui == SearchPage.Ui.DATA_LOADED) {
-                recyclerView?.scrollToPosition(0)
-            } else if (state.ui == SearchPage.Ui.MORE_DATA_LOADED) {
-                adapter?.showLoadingMore(false)
+            when(state) {
+                is SearchPage.State.Loaded.PaginationSuccess -> adapter?.showLoadingMore(false)
+                is SearchPage.State.Loaded.Restored -> {}
+                is SearchPage.State.Loaded.Success -> recyclerView?.scrollToPosition(0)
             }
         }
         recyclerView?.visibility = View.VISIBLE

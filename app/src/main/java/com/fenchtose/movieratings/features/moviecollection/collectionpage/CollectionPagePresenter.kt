@@ -50,16 +50,15 @@ class CollectionPagePresenter(likeStore: LikeStore,
                                 val index = it.indexOf(movie)
                                 if (index >= 0) {
                                     val removed = it.removeAt(index)
-                                    getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_REMOVED, removed, index))
-                                    getView()?.onRemoved(removed, index)
+                                    getView()?.updateState(CollectionPage.OpState.Removed(removed, index))
                                     return@subscribe
                                 }
                             }
                         }
-                        getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_REMOVE_ERROR, movie))
+                        getView()?.updateState(CollectionPage.OpState.RemoveError(movie))
                     }, {
                         it.printStackTrace()
-                        getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_REMOVE_ERROR, movie))
+                        getView()?.updateState(CollectionPage.OpState.RemoveError(movie))
                     })
 
             subscribe(d)
@@ -83,13 +82,12 @@ class CollectionPagePresenter(likeStore: LikeStore,
                                     it.size - 1
                                 }
                             }
-                            getView()?.showAdded(movie, addedIndex)
-                            getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_ADDED, movie, addedIndex))
+                            getView()?.updateState(CollectionPage.OpState.Added(movie, addedIndex))
                         }
 
                     }, {
                         it.printStackTrace()
-                        getView()?.updateState(CollectionPage.OpState(CollectionPage.Op.MOVIE_ADD_ERROR, movie))
+                        getView()?.updateState(CollectionPage.OpState.AddError(movie))
                     })
         }
     }

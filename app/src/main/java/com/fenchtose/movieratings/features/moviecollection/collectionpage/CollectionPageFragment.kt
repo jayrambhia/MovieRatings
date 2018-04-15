@@ -5,7 +5,6 @@ import android.view.MenuItem
 import android.view.View
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
@@ -65,28 +64,26 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
     }
 
-    override fun onRemoved(movie: Movie, position: Int) {
-        adapter?.notifyItemRemoved(position)
-
-    }
-
-    override fun showAdded(movie: Movie, position: Int) {
-        adapter?.notifyItemInserted(position)
-    }
-
     override fun updateState(state: CollectionPage.OpState) {
-        val resId = when(state.op) {
-            CollectionPage.Op.MOVIE_REMOVED -> R.string.movie_collection_remove_movie_success
-            CollectionPage.Op.MOVIE_REMOVE_ERROR -> R.string.movie_collection_remove_movie_error
-            CollectionPage.Op.MOVIE_ADDED -> R.string.movie_collection_add_movie_success
-            CollectionPage.Op.MOVIE_ADD_ERROR -> R.string.movie_collection_add_movie_error
+        val resId = when(state) {
+            is CollectionPage.OpState.Removed -> {
+                adapter?.notifyItemRemoved(state.position)
+                R.string.movie_collection_remove_movie_success
+            }
+
+            is CollectionPage.OpState.RemoveError -> R.string.movie_collection_remove_movie_error
+            is CollectionPage.OpState.Added-> {
+                adapter?.notifyItemInserted(state.position)
+                R.string.movie_collection_add_movie_success
+            }
+            is CollectionPage.OpState.AddError -> R.string.movie_collection_add_movie_error
         }
 
-        if (state.op != CollectionPage.Op.MOVIE_REMOVED) {
-            showSnackbar(context.getString(resId, state.movie.title))
-        } else {
+        if (state is CollectionPage.OpState.Removed) {
             showSnackbarWithAction(context.getString(resId, state.movie.title), R.string.undo_action,
                     View.OnClickListener { presenter?.undoRemove(state.movie, state.position) })
+        } else {
+            showSnackbar(context.getString(resId, state.movie.title))
         }
     }
 

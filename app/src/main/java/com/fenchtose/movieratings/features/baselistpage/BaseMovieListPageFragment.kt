@@ -27,6 +27,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = createPresenter()
+        onCreated()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -76,11 +77,11 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     }
 
     override fun updateState(state: BaseMovieListPage.State) {
-        when(state.ui) {
-            BaseMovieListPage.Ui.LOADING -> return
-            BaseMovieListPage.Ui.DATA_LOADED -> setData(state.data!!)
-            BaseMovieListPage.Ui.EMPTY -> showContentState(getEmptyContent())
-            BaseMovieListPage.Ui.ERROR -> showContentState(getErrorContent())
+        when(state) {
+            is BaseMovieListPage.State.Loading -> return
+            is BaseMovieListPage.State.Success -> setData(state.movies)
+            is BaseMovieListPage.State.Empty -> showContentState(getEmptyContent())
+            is BaseMovieListPage.State.Error -> showContentState(getErrorContent())
         }
     }
 
@@ -90,7 +91,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         stateContent?.setText(resId)
     }
 
-    private fun setData(movies: ArrayList<Movie>) {
+    private fun setData(movies: List<Movie>) {
         stateContent?.visibility = View.GONE
         recyclerView?.visibility = View.VISIBLE
         adapter?.data = movies

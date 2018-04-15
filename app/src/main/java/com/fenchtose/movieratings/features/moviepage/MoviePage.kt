@@ -9,27 +9,24 @@ interface MoviePage {
     fun updateState(state: CollectionState)
     fun updateState(state: EpisodeState)
 
-    data class State(val ui: Ui, val movie: Movie? = null)
-    data class CollectionState(val ui: CollectionUi, val collection: MovieCollection)
-    data class EpisodeState(val ui: EpisodeUi, val season: EpisodesList? = null)
-
-    enum class Ui {
-        LOADING,
-        LOADED,
-        LOAD_IMAGE,
-        ERROR
+    sealed class State {
+        class Loading: State()
+        class Success(val movie: Movie): State()
+        class LoadImage(val image: String): State()
+        class Error: State()
     }
 
-    enum class CollectionUi {
-        EXISTS,
-        ADDED,
-        ERROR
+    sealed class CollectionState(val collection: MovieCollection) {
+        class Exists(collection: MovieCollection): CollectionState(collection)
+        class Added(collection: MovieCollection): CollectionState(collection)
+        class Error(collection: MovieCollection): CollectionState(collection)
     }
 
-    enum class EpisodeUi {
-        INVALID,
-        LOADING,
-        LOADED,
-        ERROR
+    sealed class EpisodeState {
+        class Loading: EpisodeState()
+        class Success(val season: EpisodesList): EpisodeState()
+        class Error: EpisodeState()
+        class Invalid: EpisodeState()
     }
+
 }

@@ -45,7 +45,7 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
         queryDisposables.dispose()
 
         pageNum = 1
-        updateState(SearchPage.Ui.LOADING)
+        updateState(SearchPage.State.Loading())
         currentQuery = query
         queryDisposables = CompositeDisposable()
         makeApiCall(query, pageNum, queryDisposables)
@@ -57,7 +57,7 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
             if (queryDisposables.isDisposed) {
                 queryDisposables = CompositeDisposable()
             }
-            updateState(SearchPage.Ui.LOADING_MORE)
+            updateState(SearchPage.State.LoadingMore())
             makeApiCall(it, pageNum, queryDisposables)
         }
     }
@@ -82,43 +82,31 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
     private fun updateData(result: SearchResult?) {
 
         val state = when {
-            result == null -> {
-                if (pageNum == 1) {
-                    data.clear()
-                    SearchPage.Ui.ERROR
-                } else {
-                    SearchPage.Ui.LOAD_MORE_ERROR
-                }
-            }
-            result.success -> {
+            result != null && result.success -> {
                 if (pageNum == 1) {
                     data.clear()
                     data.addAll(result.results)
-                    SearchPage.Ui.DATA_LOADED
+                    SearchPage.State.Loaded.Success(data)
                 } else {
                     data.addAll(result.results)
-                    SearchPage.Ui.MORE_DATA_LOADED
+                    SearchPage.State.Loaded.PaginationSuccess(data)
                 }
             }
             else -> {
                 if (pageNum == 1) {
                     data.clear()
-                    SearchPage.Ui.ERROR
+                    SearchPage.State.Error()
                 } else {
-                    SearchPage.Ui.LOAD_MORE_ERROR
+                    SearchPage.State.PaginationError()
                 }
             }
         }
 
-        updateState(SearchPage.State(state, data))
+        updateState(state)
     }
 
     private fun showAlreadyLoadedData(data: ArrayList<Movie>) {
-        updateState(SearchPage.State(SearchPage.Ui.DATA_RESTORED, data))
-    }
-
-    private fun updateState(state: SearchPage.Ui) {
-        updateState(SearchPage.State(state))
+        updateState(SearchPage.State.Loaded.Restored(data))
     }
 
     private fun updateState(state: SearchPage.State) {

@@ -34,16 +34,16 @@ class EpisodePresenter(private val provider: MovieProvider,
                     showEpisode(it)
                 },{
                     it.printStackTrace()
-                    updateState(EpisodePage.State(EpisodePage.Ui.ERROR))
+                    updateState(EpisodePage.State.Error())
                 })
 
         subscribe(d)
-        updateState(EpisodePage.State(EpisodePage.Ui.LOADING))
+        updateState(EpisodePage.State.Loading())
     }
 
     private fun showEpisode(episode: Movie) {
         this.episode = episode
-        updateState(EpisodePage.State(EpisodePage.Ui.DATA_LOADED, episode))
+        updateState(EpisodePage.State.Success(episode))
     }
 
     private fun updateState(state: EpisodePage.State) {

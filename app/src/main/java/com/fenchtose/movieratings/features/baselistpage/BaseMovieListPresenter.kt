@@ -34,7 +34,7 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
                         onError = {
                             data = null
                             it.printStackTrace()
-                            getView()?.updateState(BaseMovieListPage.State(BaseMovieListPage.Ui.ERROR, data))
+                            getView()?.updateState(BaseMovieListPage.State.Error())
                         }
                 )
 
@@ -45,12 +45,12 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         this.data = movies
 
         val state = if (movies.isEmpty()) {
-            BaseMovieListPage.Ui.EMPTY
+            BaseMovieListPage.State.Empty()
         } else {
-            BaseMovieListPage.Ui.DATA_LOADED
+            BaseMovieListPage.State.Success(movies)
         }
 
-        getView()?.updateState(BaseMovieListPage.State(state, movies))
+        getView()?.updateState(state)
     }
 
     open fun toggleLike(movie: Movie) {

@@ -22,13 +22,13 @@ class CollectionListPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.isEmpty()) {
-                        updateState(CollectionListPage.State(CollectionListPage.Ui.EMPTY))
+                        updateState(CollectionListPage.State.Empty())
                     } else {
-                        updateState(CollectionListPage.State(CollectionListPage.Ui.DATA_LOADED, ArrayList(it)))
+                        updateState(CollectionListPage.State.Success(ArrayList(it)))
                     }
                 }, {
                     it.printStackTrace()
-                    updateState(CollectionListPage.State(CollectionListPage.Ui.ERROR))
+                    updateState(CollectionListPage.State.Error())
                 })
     }
 
@@ -45,11 +45,11 @@ class CollectionListPresenter(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    updateState(CollectionListPage.OpState(CollectionListPage.Op.COLLECTION_CREATED, it.name))
+                    updateState(CollectionListPage.OpState.Created(it.name))
                     loadCollections()
                 }, {
                     it.printStackTrace()
-                    updateState(CollectionListPage.OpState(CollectionListPage.Op.COLLECTION_CREATE_ERROR, name))
+                    updateState(CollectionListPage.OpState.CreateError(name))
                 })
     }
 
@@ -58,11 +58,11 @@ class CollectionListPresenter(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    updateState(CollectionListPage.OpState(CollectionListPage.Op.COLLECTION_DELETED, collection.name))
+                    updateState(CollectionListPage.OpState.Deleted(collection.name))
                     loadCollections()
                 }, {
                     it.printStackTrace()
-                    updateState(CollectionListPage.OpState(CollectionListPage.Op.COLLECTION_DELETE_ERROR, collection.name))
+                    updateState(CollectionListPage.OpState.DeleteError(collection.name))
                 })
     }
 }

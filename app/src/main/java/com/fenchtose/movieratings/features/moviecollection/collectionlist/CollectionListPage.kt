@@ -7,21 +7,18 @@ interface CollectionListPage {
     fun updateState(state: State)
     fun updateState(state: OpState)
 
-    data class State(val ui: Ui, val data: ArrayList<MovieCollection>? = null)
-    data class OpState(val op: Op, val data: String)
-
-    enum class Op {
-        COLLECTION_CREATED,
-        COLLECTION_CREATE_ERROR,
-        COLLECTION_DELETED,
-        COLLECTION_DELETE_ERROR
+    sealed class State {
+        class Default: State()
+        class Loading: State()
+        class Error: State()
+        class Success(val collections: ArrayList<MovieCollection>): State()
+        class Empty: State()
     }
 
-    enum class Ui {
-        DEFAULT,
-        LOADING,
-        ERROR,
-        DATA_LOADED,
-        EMPTY
+    sealed class OpState(val data: String) {
+        class Created(data: String): OpState(data)
+        class CreateError(data: String): OpState(data)
+        class Deleted(data: String): OpState(data)
+        class DeleteError(data: String): OpState(data)
     }
 }

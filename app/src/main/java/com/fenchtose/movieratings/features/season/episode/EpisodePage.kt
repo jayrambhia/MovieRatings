@@ -66,10 +66,10 @@ class EpisodePage(context: Context, private val episode: Episode,
     }
 
     fun updateState(state: State) {
-        when(state.ui) {
-            Ui.LOADING -> showLoading()
-            Ui.DATA_LOADED -> showEpisode(state.episode)
-            Ui.ERROR -> showError()
+        when(state) {
+            is State.Loading -> showLoading()
+            is State.Success -> showEpisode(state.episode)
+            is State.Error -> showError()
         }
     }
 
@@ -102,12 +102,10 @@ class EpisodePage(context: Context, private val episode: Episode,
 
     }
 
-    data class State(val ui: Ui, val episode: Movie = Movie.empty())
-
-    enum class Ui {
-        LOADING,
-        DATA_LOADED,
-        ERROR
+    sealed class State {
+        class Loading: State()
+        class Success(val episode: Movie): State()
+        class Error: State()
     }
 
     interface EpisodeCallback {
