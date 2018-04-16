@@ -3,17 +3,21 @@ package com.fenchtose.movieratings.features.moviecollection.collectionpage
 import android.app.AlertDialog
 import android.view.MenuItem
 import android.view.View
+import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
+import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
+import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 
 class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, CollectionPagePresenter>(), CollectionPage {
@@ -40,6 +44,22 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         path?.takeIf { it is CollectionPagePath }
                 ?.let { (it as CollectionPagePath).collection }
                 ?.let { MovieRatingsApplication.router?.updateTitle(it.name) }
+    }
+
+    override fun createAdapterConfig(presenter: CollectionPagePresenter?): BaseMovieAdapter.AdapterConfig {
+        val glide = GlideLoader(Glide.with(this))
+
+        val callback = object: SearchPageAdapter.AdapterCallback {
+            override fun onLiked(movie: Movie) {
+                presenter?.toggleLike(movie)
+            }
+
+            override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
+                presenter?.openMovie(movie, sharedElement)
+            }
+        }
+
+        return CollectionPageAdapterConfig(callback, glide, ::createExtraLayoutHelperMethod)
     }
 
     override fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? {

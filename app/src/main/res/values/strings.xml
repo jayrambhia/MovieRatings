@@ -134,6 +134,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_collection_remove_movie_error">Unable to remove %1s</string>
 	<string name="movie_collection_add_movie_success">Added %1s to this collection</string>
 	<string name="movie_collection_add_movie_error">Unable to add %1s to this collection</string>
+	<string name="movie_collection_search_and_add">Search and add to this collection</string>
 
 	<string name="show_more">Show more</string>
 

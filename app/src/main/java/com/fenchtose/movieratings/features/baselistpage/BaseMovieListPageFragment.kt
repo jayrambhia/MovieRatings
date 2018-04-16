@@ -10,6 +10,7 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
+import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
@@ -20,7 +21,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     protected var presenter: P? = null
 
     protected var recyclerView: RecyclerView? = null
-    protected var adapter: SearchPageAdapter? = null
+    protected var adapter: BaseMovieAdapter? = null
 
     private var stateContent: TextView? = null
 
@@ -39,18 +40,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         recyclerView = view.findViewById(R.id.recyclerview)
         stateContent = view.findViewById(R.id.screen_state_content)
 
-        val adapter = SearchPageAdapter(context, GlideLoader(Glide.with(this)),
-                object : SearchPageAdapter.AdapterCallback {
-                    override fun onLiked(movie: Movie) {
-                        presenter?.toggleLike(movie)
-                    }
-
-                    override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                        // TODO check for api compatibility
-                        presenter?.openMovie(movie, sharedElement)
-                    }
-                }, createExtraLayoutHelper())
-
+        val adapter = BaseMovieAdapter(context, createAdapterConfig(presenter))
         adapter.setHasStableIds(true)
 
         recyclerView?.let {
@@ -103,6 +93,23 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     abstract fun getErrorContent(): Int
 
     abstract fun getEmptyContent(): Int
+
+    open fun createAdapterConfig(presenter: P?): BaseMovieAdapter.AdapterConfig {
+
+        val callback = object: SearchPageAdapter.AdapterCallback {
+            override fun onLiked(movie: Movie) {
+                presenter?.toggleLike(movie)
+            }
+
+            override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
+                presenter?.openMovie(movie, sharedElement)
+            }
+        }
+
+        val glide = GlideLoader(Glide.with(this))
+
+        return BaseMovieListAdapterConfig(callback, glide, createExtraLayoutHelper())
+    }
 
     open fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
 
