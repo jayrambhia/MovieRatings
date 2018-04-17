@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.model.Movie
@@ -53,6 +54,9 @@ class CollectionPagePresenter(likeStore: LikeStore,
                                 if (index >= 0) {
                                     val removed = it.removeAt(index)
                                     getView()?.updateState(CollectionPage.OpState.Removed(removed, index))
+                                    if (it.isEmpty()) {
+                                        getView()?.updateState(BaseMovieListPage.State.Empty())
+                                    }
                                     return@subscribe
                                 }
                             }

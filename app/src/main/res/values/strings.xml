@@ -57,6 +57,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="menu_action_info">Info</string>
 	<string name="menu_action_collection">Collections</string>
 	<string name="menu_action_open_imdb">Open Imdb</string>
+	<string name="menu_action_add_to_collection">Add to collection</string>
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
@@ -126,6 +127,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 
 	<string name="movie_collection_page_title">Movie collection</string>
 	<string name="movie_collection_page_empty_content">There are no movies in this collection!</string>
+	<string name="movie_collection_page_empty_content_cta">Search and add movies</string>
 	<string name="movie_collection_page_error_content">Unable to load this collection.\nTry again later.</string>
 	<string name="movie_collection_page_remove_cta">Remove</string>
 	<string name="movie_collection_remove_movie_dialog_title">Remove title</string>
