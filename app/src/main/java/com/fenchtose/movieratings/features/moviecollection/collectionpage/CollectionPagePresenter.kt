@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
+import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.Sort
@@ -104,7 +106,9 @@ class CollectionPagePresenter(likeStore: LikeStore,
     }
 
     fun searchToAddToCollection() {
-
+        collection?.let {
+            MovieRatingsApplication.router?.go(SearchPageFragment.SearchPath.AddToCollection(it))
+        }
     }
 
     private fun getSorted(type: Sort, data: List<Movie>): List<Movie> = when(type) {

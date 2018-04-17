@@ -6,15 +6,18 @@ import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.SearchResult
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
+import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
-class SearchPresenter(private val provider: MovieProvider, private val likeStore: LikeStore) : Presenter<SearchPage>() {
+sealed class SearchPresenter(private val provider: MovieProvider,
+                      private val likeStore: LikeStore) : Presenter<SearchPage>() {
 
     private var currentQuery = ""
     private val data: ArrayList<Movie> = ArrayList()
@@ -109,7 +112,7 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
         updateState(SearchPage.State.Loaded.Restored(data))
     }
 
-    private fun updateState(state: SearchPage.State) {
+    protected fun updateState(state: SearchPage.State) {
         getView()?.updateState(state)
     }
 
@@ -138,5 +141,43 @@ class SearchPresenter(private val provider: MovieProvider, private val likeStore
             data.addAll(movies)
             pageNum = page
         }
+    }
+
+    class DefaultPresenter(provider: MovieProvider, likeStore: LikeStore): SearchPresenter(provider, likeStore)
+
+    class AddToCollectionPresenter(provider: MovieProvider,
+                                   likeStore: LikeStore,
+                                   private val collectionStore: MovieCollectionStore,
+                                   private val collection: MovieCollection): SearchPresenter(provider, likeStore) {
+
+        fun addToCollection(movie: Movie) {
+            val d = collectionStore.isMovieAddedToCollection(collection, movie)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext {
+                        if (it) {
+                            updateState(SearchPage.CollectionState.Exists(collection))
+                        }
+                    }.filter {
+                        !it
+                    }
+                    .observeOn(Schedulers.io())
+                    .flatMap {
+                        collectionStore.addMovieToCollection(collection, movie)
+                    }
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        updateState(SearchPage.CollectionState.Added(collection))
+                    }, {
+                        it.printStackTrace()
+                        updateState(SearchPage.CollectionState.Error(collection))
+                    })
+            subscribe(d)
+        }
+
+        fun updateState(state: SearchPage.CollectionState) {
+            getView()?.updateState(state)
+        }
+
     }
 }

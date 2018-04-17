@@ -20,7 +20,9 @@ import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
+import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -48,7 +50,19 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
-        presenter = SearchPresenter(MovieRatingsApplication.movieProviderModule.movieProvider, likeStore)
+        path?.let {
+            presenter = when(it as SearchPath) {
+                is SearchPath.Default -> SearchPresenter.DefaultPresenter(
+                        MovieRatingsApplication.movieProviderModule.movieProvider,
+                        likeStore)
+                is SearchPath.AddToCollection -> SearchPresenter.AddToCollectionPresenter(
+                        MovieRatingsApplication.movieProviderModule.movieProvider,
+                        likeStore,
+                        DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
+                        (it as SearchPath.AddToCollection).collection)
+            }
+        }
+
         presenter?.restoreState(path?.restoreState())
     }
 
@@ -63,23 +77,6 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         recyclerView = view.findViewById(R.id.recyclerview)
         searchView = view.findViewById(R.id.search_view)
         clearButton = view.findViewById(R.id.clear_button)
-
-        /*val adapter = SearchPageAdapter.Builder(context, GlideLoader(Glide.with(this)))
-                .withLoadMore()
-                .withCallback(object : BaseMovieAdapter.AdapterCallback {
-                    override fun onLiked(movie: Movie) {
-                        presenter?.setLiked(movie)
-                    }
-
-                    override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                        presenter?.openMovie(movie, null)
-                    }
-
-                    override fun onLoadMore() {
-                        presenter?.loadMore()
-                    }
-
-                }).build()*/
 
 
         val adapterConfig = SearchAdapterConfig(GlideLoader(Glide.with(this)),
@@ -96,7 +93,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                             presenter?.loadMore()
                         }
                     },
-                null)
+                    createExtraLayoutHelper())
 
         val adapter = BaseMovieAdapter(context, adapterConfig)
         adapterConfig.adapter = adapter
@@ -184,6 +181,12 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     }
 
     override fun getScreenTitle(): Int {
+        path?.takeIf { it is SearchPath }?.let {
+            return when(it as SearchPath) {
+                is SearchPath.Default -> R.string.search_page_title
+                is SearchPath.AddToCollection -> R.string.search_page_add_to_collection_title
+            }
+        }
         return R.string.search_page_title
     }
 
@@ -200,6 +203,16 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             is SearchPage.State.LoadingMore -> adapterConfig?.showLoadingMore(true)
             is SearchPage.State.PaginationError -> showApiError()
         }
+    }
+
+    override fun updateState(state: SearchPage.CollectionState) {
+        val resId = when(state) {
+            is SearchPage.CollectionState.Exists -> R.string.movie_collection_movie_exists
+            is SearchPage.CollectionState.Added -> R.string.movie_collection_movie_added
+            is SearchPage.CollectionState.Error -> R.string.movie_collection_movie_error
+        }
+
+        showSnackbar(context.getString(resId, state.collection.name))
     }
 
     private fun showLoading(status: Boolean) {
@@ -248,20 +261,52 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
     }
 
-    class SearchPath(private val preferences: UserPreferences) : RouterPath<SearchPageFragment>() {
-        override fun createFragmentInstance(): SearchPageFragment {
-            return SearchPageFragment()
+    private fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? {
+        presenter?.let {
+            return when(it) {
+                is SearchPresenter.DefaultPresenter -> null
+                is SearchPresenter.AddToCollectionPresenter -> {
+                    return ::createAddToCollectionExtraLayout
+                }
+            }
         }
+        return null
+    }
 
-        override fun showMenuIcons(): IntArray {
-            val icons = arrayListOf(R.id.action_info, R.id.action_fav, R.id.action_collection)
-            if (preferences.isAppEnabled(UserPreferences.SAVE_HISTORY)) {
-                icons.add(R.id.action_history)
+    private fun createAddToCollectionExtraLayout(): SearchItemViewHolder.ExtraLayoutHelper {
+        return AddToCollectionMovieLayoutHelper(object : AddToCollectionMovieLayoutHelper.Callback {
+            override fun onAddRequested(movie: Movie) {
+                presenter?.takeIf { it is SearchPresenter.AddToCollectionPresenter }
+                                ?.let { it as SearchPresenter.AddToCollectionPresenter }?.addToCollection(movie)
+            }
+        })
+    }
+
+    sealed class SearchPath: RouterPath<SearchPageFragment>() {
+        class Default(private val preferences: UserPreferences): SearchPath() {
+            override fun createFragmentInstance(): SearchPageFragment {
+                return SearchPageFragment()
             }
 
-            return icons.toIntArray()
+            override fun showMenuIcons(): IntArray {
+                val icons = arrayListOf(R.id.action_info, R.id.action_fav, R.id.action_collection)
+                if (preferences.isAppEnabled(UserPreferences.SAVE_HISTORY)) {
+                    icons.add(R.id.action_history)
+                }
+
+                return icons.toIntArray()
+            }
+
+            override fun showBackButton() = false
         }
 
-        override fun showBackButton() = false
+        class AddToCollection(val collection: MovieCollection): SearchPath() {
+            override fun createFragmentInstance(): SearchPageFragment {
+                return SearchPageFragment()
+            }
+
+            override fun showBackButton() = true
+        }
     }
+
 }
