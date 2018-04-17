@@ -18,6 +18,8 @@ import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FixTitleUtils
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -40,6 +42,10 @@ class NetflixReaderService : AccessibilityService() {
     private var displayer: RatingDisplayer? = null
     private var speaker: Speaker? = null
 
+    private val RESOURCE_THRESHOLD = 60L
+
+    private var resourceRemover: PublishSubject<Boolean>? = null
+
     override fun onCreate() {
         super.onCreate()
 
@@ -47,8 +53,40 @@ class NetflixReaderService : AccessibilityService() {
         provider = MovieRatingsApplication.movieProviderModule.movieProvider
         analytics = MovieRatingsApplication.analyticsDispatcher
         displayer = RatingDisplayer(this, analytics!!, preferences!!)
-        speaker = Speaker(this)
+    }
 
+    private fun initResources() {
+        synchronized(this) {
+
+            if (speaker == null && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true
+                    && preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true) {
+                speaker = Speaker(this)
+            }
+
+            if (resourceRemover == null) {
+                resourceRemover = PublishSubject.create()
+                resourceRemover
+                        ?.doOnNext {
+                            Log.d(TAG, "resource remover event")
+                        }
+                        ?.debounce(RESOURCE_THRESHOLD, TimeUnit.SECONDS)
+                        ?.subscribe({
+                            clearResources()
+                        })
+            }
+
+            resourceRemover?.onNext(true)
+        }
+    }
+
+    private fun clearResources() {
+        Log.d(TAG, "clear resources")
+        synchronized(this) {
+            speaker?.shutdown()
+            speaker = null
+            resourceRemover?.onComplete()
+            resourceRemover = null
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -189,6 +227,8 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun getMovieInfo(title: String, year: String) {
+        initResources()
+
         analytics?.sendEvent(Event("get_movie"))
 
         provider?.let {

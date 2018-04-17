@@ -3,6 +3,8 @@ package com.fenchtose.movieratings.features.tts
 import android.content.Context
 import android.os.Build
 import android.speech.tts.TextToSpeech
+import android.util.Log
+import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.Movie
 import java.util.Locale
@@ -34,6 +36,9 @@ class Speaker(context: Context): TextToSpeech.OnInitListener {
     fun talk(content: String) {
         val tts = init()
         if (ready) {
+            if (BuildConfig.DEBUG) {
+                Log.d("Speaker", "speak: $content")
+            }
             if (Build.VERSION.SDK_INT >= 21) {
                 tts.speak(content, TextToSpeech.QUEUE_FLUSH, null, null)
             } else {
@@ -62,6 +67,10 @@ class Speaker(context: Context): TextToSpeech.OnInitListener {
         ready = false
         tts?.shutdown()
         tts = null
+
+        if (BuildConfig.DEBUG) {
+            Log.d("Speaker", "shut down")
+        }
     }
 
 }
