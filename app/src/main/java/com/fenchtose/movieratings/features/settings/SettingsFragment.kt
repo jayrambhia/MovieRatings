@@ -61,17 +61,17 @@ class SettingsFragment: BaseFragment() {
         val ttsToggle = view.findViewById<SwitchCompat>(R.id.tts_toggle)
         ttsToggle.isChecked = preferences.isSettingEnabled(UserPreferences.TTS_AVAILABLE) && preferences.isSettingEnabled(UserPreferences.USE_TTS)
         ttsToggle.setOnCheckedChangeListener {
-            toggle, isChcecked ->
+            toggle, isChecked ->
             run {
-                if (!isChcecked) {
+                if (!isChecked) {
                     this.preferences?.setSettingEnabled(UserPreferences.USE_TTS, false)
-                    updatePublisher?.onNext(true)
+                    updatePublisher?.onNext(UserPreferences.USE_TTS)
                     return@setOnCheckedChangeListener
                 }
 
                 if (this.preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true) {
                     this.preferences?.setSettingEnabled(UserPreferences.USE_TTS, true)
-                    updatePublisher?.onNext(true)
+                    updatePublisher?.onNext(UserPreferences.USE_TTS)
                     return@setOnCheckedChangeListener
                 }
 
