@@ -11,6 +11,8 @@
     <string name="search_page_title">Flutter</string>
 	<string name="search_page_query_hint">Search for Movies, Series, etc</string>
 	<string name="search_page_api_error_content">Unable to search</string>
+	<string name="search_page_add_to_collection_title">Search and add to collection</string>
+	<string name="search_page_add_to_collection_cta">Add to collection</string>
 
     <string name="accessibility_info_app_name"><b>Flutter</b></string>
     <string name="accessibility_info_target_name"><b>Netflix</b></string>
@@ -55,6 +57,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="menu_action_info">Info</string>
 	<string name="menu_action_collection">Collections</string>
 	<string name="menu_action_open_imdb">Open Imdb</string>
+	<string name="menu_action_add_to_collection">Add to collection</string>
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
@@ -124,6 +127,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 
 	<string name="movie_collection_page_title">Movie collection</string>
 	<string name="movie_collection_page_empty_content">There are no movies in this collection!</string>
+	<string name="movie_collection_page_empty_content_cta">Search and add movies</string>
 	<string name="movie_collection_page_error_content">Unable to load this collection.\nTry again later.</string>
 	<string name="movie_collection_page_remove_cta">Remove</string>
 	<string name="movie_collection_remove_movie_dialog_title">Remove title</string>
@@ -134,6 +138,7 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="movie_collection_remove_movie_error">Unable to remove %1s</string>
 	<string name="movie_collection_add_movie_success">Added %1s to this collection</string>
 	<string name="movie_collection_add_movie_error">Unable to add %1s to this collection</string>
+	<string name="movie_collection_search_and_add">Search and add to this collection</string>
 
 	<string name="show_more">Show more</string>
 

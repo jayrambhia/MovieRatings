@@ -19,13 +19,10 @@ import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
-import com.fenchtose.movieratings.features.moviepage.MoviePage
-import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
-import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.PackageUtils
@@ -157,7 +154,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showSearchPage() {
-        router?.go(SearchPageFragment.SearchPath(SettingsPreferences(this)))
+        router?.go(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
     }
 
     private fun showInfoPage() {

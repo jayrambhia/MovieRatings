@@ -1,6 +1,9 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
+import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
+import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.Sort
@@ -51,6 +54,9 @@ class CollectionPagePresenter(likeStore: LikeStore,
                                 if (index >= 0) {
                                     val removed = it.removeAt(index)
                                     getView()?.updateState(CollectionPage.OpState.Removed(removed, index))
+                                    if (it.isEmpty()) {
+                                        getView()?.updateState(BaseMovieListPage.State.Empty())
+                                    }
                                     return@subscribe
                                 }
                             }
@@ -100,6 +106,12 @@ class CollectionPagePresenter(likeStore: LikeStore,
         if (data != null) {
             updateData(ArrayList(getSorted(type, data!!)))
             currentSort = type
+        }
+    }
+
+    fun searchToAddToCollection() {
+        collection?.let {
+            MovieRatingsApplication.router?.go(SearchPageFragment.SearchPath.AddToCollection(it))
         }
     }
 

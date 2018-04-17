@@ -20,6 +20,12 @@
 		android:icon="@drawable/ic_collections_white_24dp"
 		app:showAsAction="always"/>
 
+	<item
+		android:id="@+id/action_add_to_collection"
+		android:title="@string/menu_action_add_to_collection"
+		android:icon="@drawable/ic_playlist_add_white_24dp"
+		app:showAsAction="always"/>
+
     <item
         android:id="@+id/action_sort"
         android:title="@string/menu_action_sort"

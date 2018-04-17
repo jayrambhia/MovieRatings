@@ -1,11 +1,17 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import android.app.AlertDialog
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.model.Movie
@@ -14,9 +20,12 @@ import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
+import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 
 class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, CollectionPagePresenter>(), CollectionPage {
+
+    private var emptyStateCta: View? = null
 
     override fun canGoBack() = true
 
@@ -34,12 +43,54 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
                 path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection })
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.movies_collection_page_layout, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        emptyStateCta = view.findViewById(R.id.empty_cta)
+        emptyStateCta?.setOnClickListener {
+            presenter?.searchToAddToCollection()
+        }
+    }
+
+    override fun updateState(state: BaseMovieListPage.State) {
+        super.updateState(state)
+        val visible = when(state) {
+            is BaseMovieListPage.State.Empty -> View.VISIBLE
+            else -> View.GONE
+        }
+
+        emptyStateCta?.visibility = visible
+    }
+
     override fun onCreated() {
         setHasOptionsMenu(true)
 
         path?.takeIf { it is CollectionPagePath }
                 ?.let { (it as CollectionPagePath).collection }
                 ?.let { MovieRatingsApplication.router?.updateTitle(it.name) }
+    }
+
+    override fun createAdapterConfig(presenter: CollectionPagePresenter?): BaseMovieAdapter.AdapterConfig {
+        val glide = GlideLoader(Glide.with(this))
+
+        val callback = object: CollectionPageAdapterConfig.Callback {
+            override fun onLiked(movie: Movie) {
+                presenter?.toggleLike(movie)
+            }
+
+            override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
+                presenter?.openMovie(movie, sharedElement)
+            }
+
+            override fun onAddToCollection() {
+                presenter?.searchToAddToCollection()
+            }
+        }
+
+        return CollectionPageAdapterConfig(callback, glide, ::createExtraLayoutHelperMethod)
     }
 
     override fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? {
@@ -67,7 +118,13 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
     override fun updateState(state: CollectionPage.OpState) {
         val resId = when(state) {
             is CollectionPage.OpState.Removed -> {
-                adapter?.notifyItemRemoved(state.position)
+                adapter?.let {
+                    if (it.itemCount > state.position) {
+                        it.notifyItemRemoved(state.position)
+                    } else {
+                        it.notifyDataSetChanged()
+                    }
+                }
                 R.string.movie_collection_remove_movie_success
             }
 
@@ -93,6 +150,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
             R.id.action_sort_alphabetically -> presenter?.sort(Sort.ALPHABETICAL)
 //            R.id.action_sort_genre -> presenter?.sort(Sort.GENRE)
             R.id.action_sort_year -> presenter?.sort(Sort.YEAR)
+            R.id.action_add_to_collection -> presenter?.searchToAddToCollection()
             else -> consumed = false
         }
 
@@ -106,7 +164,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         }
 
         override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_sort)
+            return intArrayOf(R.id.action_sort, R.id.action_add_to_collection)
         }
     }
 }

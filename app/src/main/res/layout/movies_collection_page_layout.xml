@@ -20,17 +20,33 @@
         android:layout_height="match_parent"
         android:background="#fffafafa"/>
 
-	<TextView
-		android:visibility="gone"
-		tools:visibility="visible"
-		android:id="@+id/screen_state_content"
+	<LinearLayout
+		android:id="@+id/empty_state_view"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textSize="16sp"
-		android:layout_margin="16dp"
 		android:layout_gravity="center"
-		android:gravity="center"
-		android:textColor="@color/colorAccent"
-		tools:text="Unable to load titles :("/>
+		android:gravity="center_horizontal"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/screen_state_content"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="32dp"
+			android:gravity="center"
+			android:textColor="@color/colorAccent"
+			android:textSize="16sp"
+			android:text="@string/movie_collection_page_empty_content"/>
+
+		<Button
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:id="@+id/empty_cta"
+			style="@style/Widget.AppCompat.Button.Borderless.Colored"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/movie_collection_page_empty_content_cta"/>
+
+	</LinearLayout>
 
 </FrameLayout>
