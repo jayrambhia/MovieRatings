@@ -68,7 +68,7 @@ class SettingsFragment: BaseFragment() {
         } else {
             val progress = preferences.getToastDuration()/1000
             toastDuration?.text = (progress).toString()
-            toastSeekbar?.progress = progress
+            toastSeekbar?.progress = progress - 1
 
             toastSeekbar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {
