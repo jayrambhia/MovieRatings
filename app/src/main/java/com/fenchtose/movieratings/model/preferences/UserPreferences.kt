@@ -8,6 +8,7 @@ interface UserPreferences {
         val NETFLIX = "netflix"
         val PRIMEVIDEO = "primevideo"
         val SAVE_HISTORY = "save_history"
+        val SHOW_ACTIVATE_FLUTTER = "show_activate_flutter"
     }
 
     fun isAppEnabled(app: String): Boolean

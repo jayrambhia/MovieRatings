@@ -23,6 +23,7 @@ import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPa
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.PackageUtils
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity() {
     private var analytics: AnalyticsDispatcher? = null
 
     private var visibleMenuItems: IntArray? = null
+    private var userPreference: UserPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +62,8 @@ class MainActivity : AppCompatActivity() {
         toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         titlebar = supportActionBar
+
+        userPreference = SettingsPreferences(this)
 
         setupObservables()
 
@@ -94,6 +98,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        triggerAccessibilityCheck()
+    }
+
+    fun triggerAccessibilityCheck() {
         accessibilityPublisher?.onNext(AccessibilityUtils.hasAllPermissions(this))
     }
 
@@ -215,6 +223,15 @@ class MainActivity : AppCompatActivity() {
                     }
 
                 })
+                .map {
+                      userPreference?.let {
+                          if (!it.isAppEnabled(UserPreferences.SHOW_ACTIVATE_FLUTTER)) {
+                              return@map 3
+                          }
+                      }
+
+                    it
+                }
                 .subscribeBy(
                         onNext = {
                             when(it) {

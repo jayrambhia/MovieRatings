@@ -46,6 +46,8 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="settings_delete_data_dialog_cta">Yes, delete everything</string>
 	<string name="settings_data_deleted">Your collections, favorites, recent history has been deleted.</string>
 	<string name="settings_data_delete_error">Unable to delete your data.</string>
+	<string name="settings_misc">Miscellaneous settings</string>
+	<string name="settings_activate_flutter">Show \'Activate Flutter\'</string>
 
     <string name="menu_action_settings">Settings</string>
 	<string name="menu_action_fav">Favorites</string>

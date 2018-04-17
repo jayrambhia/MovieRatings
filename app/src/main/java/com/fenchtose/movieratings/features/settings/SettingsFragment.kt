@@ -11,6 +11,7 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
+import com.fenchtose.movieratings.MainActivity
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
@@ -30,7 +31,7 @@ import java.util.concurrent.TimeUnit
 class SettingsFragment: BaseFragment() {
 
     private var root: ViewGroup? = null
-    private var updatePublisher: PublishSubject<Boolean>? = null
+    private var updatePublisher: PublishSubject<String>? = null
 
     private var preferences: UserPreferences? = null
 
@@ -51,6 +52,7 @@ class SettingsFragment: BaseFragment() {
         addAppToggle(preferences, view, R.id.netflix_toggle, UserPreferences.NETFLIX)
         addAppToggle(preferences, view, R.id.prime_video_toggle, UserPreferences.PRIMEVIDEO)
         addAppToggle(preferences, view, R.id.save_browsing_toggle, UserPreferences.SAVE_HISTORY)
+        addAppToggle(preferences, view, R.id.show_activate_toggle, UserPreferences.SHOW_ACTIVATE_FLUTTER)
 
         val toastInfo = view.findViewById<TextView>(R.id.toast_duration_info)
         val toastSeekbar = view.findViewById<SeekBar>(R.id.toast_duration_seekbar)
@@ -85,10 +87,21 @@ class SettingsFragment: BaseFragment() {
         view.findViewById<View>(R.id.delete_data_button).setOnClickListener { showDeleteDataDialog() }
 
 
-        val publisher = PublishSubject.create<Boolean>()
+        val publisher = PublishSubject.create<String>()
         subscribe(publisher
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext {
+                    when(it) {
+                        UserPreferences.SHOW_ACTIVATE_FLUTTER -> {
+                            activity?.let {
+                                if (it is MainActivity) {
+                                    it.triggerAccessibilityCheck()
+                                }
+                            }
+                        }
+                    }
+                }
                 .subscribe { showUpdatePreferenceSnackbar() })
 
         updatePublisher = publisher
@@ -112,12 +125,12 @@ class SettingsFragment: BaseFragment() {
 
     private fun updatePreference(preferences: UserPreferences, app: String, checked: Boolean) {
         preferences.setAppEnabled(app, checked)
-        updatePublisher?.onNext(true)
+        updatePublisher?.onNext(app)
     }
 
     private fun updateToastDuration(durationInMs: Int) {
         preferences?.setToastDuration(durationInMs)
-        updatePublisher?.onNext(true)
+        updatePublisher?.onNext("toast")
         toastDuration?.text = (preferences!!.getToastDuration()/1000).toString()
     }
 
