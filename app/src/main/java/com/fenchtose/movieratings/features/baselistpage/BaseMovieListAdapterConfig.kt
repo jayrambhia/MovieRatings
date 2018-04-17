@@ -7,11 +7,10 @@ import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
-import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 
-class BaseMovieListAdapterConfig(val callback: SearchPageAdapter.AdapterCallback, val glide: ImageLoader,
+class BaseMovieListAdapterConfig(val callback: BaseMovieAdapter.AdapterCallback, val glide: ImageLoader,
                                  private val extraLayoutCreator: (() -> SearchItemViewHolder.ExtraLayoutHelper)?): BaseMovieAdapter.AdapterConfig {
     override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         return SearchItemViewHolder(inflater.inflate(R.layout.search_movie_item_layout, parent, false), callback, extraLayoutCreator)

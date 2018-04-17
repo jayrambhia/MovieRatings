@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
+import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.Movie
@@ -34,7 +35,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var searchView: EditText? = null
     private var clearButton: View? = null
     private var recyclerView: RecyclerView? = null
-    private var adapter: SearchPageAdapter? = null
+    private var adapter: BaseMovieAdapter? = null
+    private var adapterConfig: SearchAdapterConfig? = null
 
     private var presenter: SearchPresenter? = null
 
@@ -62,9 +64,9 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         searchView = view.findViewById(R.id.search_view)
         clearButton = view.findViewById(R.id.clear_button)
 
-        val adapter = SearchPageAdapter.Builder(context, GlideLoader(Glide.with(this)))
+        /*val adapter = SearchPageAdapter.Builder(context, GlideLoader(Glide.with(this)))
                 .withLoadMore()
-                .withCallback(object : SearchPageAdapter.AdapterCallback {
+                .withCallback(object : BaseMovieAdapter.AdapterCallback {
                     override fun onLiked(movie: Movie) {
                         presenter?.setLiked(movie)
                     }
@@ -77,9 +79,27 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                         presenter?.loadMore()
                     }
 
-                }).build()
+                }).build()*/
 
 
+        val adapterConfig = SearchAdapterConfig(GlideLoader(Glide.with(this)),
+                object: SearchAdapterConfig.SearchCallback {
+                        override fun onLiked(movie: Movie) {
+                            presenter?.setLiked(movie)
+                        }
+
+                        override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
+                            presenter?.openMovie(movie, sharedElement)
+                        }
+
+                        override fun onLoadMore() {
+                            presenter?.loadMore()
+                        }
+                    },
+                null)
+
+        val adapter = BaseMovieAdapter(context, adapterConfig)
+        adapterConfig.adapter = adapter
 
         adapter.setHasStableIds(true)
 
@@ -90,6 +110,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
 
         this.adapter = adapter
+        this.adapterConfig = adapterConfig
 
         presenter?.attachView(this)
 
@@ -150,6 +171,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         querySubject?.onComplete()
         recyclerView?.adapter = null
         adapter = null
+        adapterConfig = null
     }
 
     override fun onDestroy() {
@@ -175,7 +197,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             is SearchPage.State.Loading -> showLoading(true)
             is SearchPage.State.Loaded -> setData(state)
             is SearchPage.State.Error -> showApiError()
-            is SearchPage.State.LoadingMore -> adapter?.showLoadingMore(true)
+            is SearchPage.State.LoadingMore -> adapterConfig?.showLoadingMore(true)
             is SearchPage.State.PaginationError -> showApiError()
         }
     }
@@ -193,7 +215,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     private fun showApiError() {
         showLoading(false)
-        adapter?.showLoadingMore(false)
+        adapterConfig?.showLoadingMore(false)
         showSnackbar(R.string.search_page_api_error_content)
     }
 
@@ -203,7 +225,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         adapter?.notifyDataSetChanged()
         recyclerView?.post {
             when(state) {
-                is SearchPage.State.Loaded.PaginationSuccess -> adapter?.showLoadingMore(false)
+                is SearchPage.State.Loaded.PaginationSuccess -> adapterConfig?.showLoadingMore(false)
                 is SearchPage.State.Loaded.Restored -> {}
                 is SearchPage.State.Loaded.Success -> recyclerView?.scrollToPosition(0)
             }

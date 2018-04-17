@@ -10,7 +10,6 @@ import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
-import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.Sort
@@ -49,13 +48,17 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
     override fun createAdapterConfig(presenter: CollectionPagePresenter?): BaseMovieAdapter.AdapterConfig {
         val glide = GlideLoader(Glide.with(this))
 
-        val callback = object: SearchPageAdapter.AdapterCallback {
+        val callback = object: CollectionPageAdapterConfig.Callback {
             override fun onLiked(movie: Movie) {
                 presenter?.toggleLike(movie)
             }
 
             override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
                 presenter?.openMovie(movie, sharedElement)
+            }
+
+            override fun onAddToCollection() {
+                presenter?.searchToAddToCollection()
             }
         }
 

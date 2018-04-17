@@ -5,7 +5,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.fenchtose.movieratings.R
 
-class LoaderMoreViewHolder(itemView: View, val callback: SearchPageAdapter.LoadMoreCallback?): RecyclerView.ViewHolder(itemView) {
+class LoaderMoreViewHolder(itemView: View, val callback: SearchAdapterConfig.LoadMoreCallback?): RecyclerView.ViewHolder(itemView) {
     val button = itemView.findViewById<View>(R.id.load_more_button)
     val progress = itemView.findViewById<View>(R.id.load_more_progressbar)
 

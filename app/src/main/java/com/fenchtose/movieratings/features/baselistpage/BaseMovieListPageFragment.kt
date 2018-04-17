@@ -12,7 +12,6 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
-import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
 
@@ -96,7 +95,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
 
     open fun createAdapterConfig(presenter: P?): BaseMovieAdapter.AdapterConfig {
 
-        val callback = object: SearchPageAdapter.AdapterCallback {
+        val callback = object: BaseMovieAdapter.AdapterCallback {
             override fun onLiked(movie: Movie) {
                 presenter?.toggleLike(movie)
             }

@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.base
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.model.Movie
 
@@ -29,6 +30,11 @@ class BaseMovieAdapter(private val context: Context, private val config: Adapter
         fun getItemCount(data: List<Movie>): Int
         fun getItemId(data: List<Movie>, position: Int): Long
         fun getItemViewType(data: List<Movie>, position: Int): Int
+    }
+
+    interface AdapterCallback {
+        fun onLiked(movie: Movie)
+        fun onClicked(movie: Movie, sharedElement: Pair<View, String>?)
     }
 
 }

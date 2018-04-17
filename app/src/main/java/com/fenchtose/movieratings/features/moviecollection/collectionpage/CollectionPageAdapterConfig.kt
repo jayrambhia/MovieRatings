@@ -7,11 +7,10 @@ import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
-import com.fenchtose.movieratings.features.searchpage.SearchPageAdapter
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 
-class CollectionPageAdapterConfig(val callback: SearchPageAdapter.AdapterCallback, val glide: ImageLoader,
+class CollectionPageAdapterConfig(val callback: Callback, val glide: ImageLoader,
                                   private val extraLayoutCreator: (() -> SearchItemViewHolder.ExtraLayoutHelper)): BaseMovieAdapter.AdapterConfig {
     val MOVIE = 1
     val ADD = 2
@@ -19,7 +18,7 @@ class CollectionPageAdapterConfig(val callback: SearchPageAdapter.AdapterCallbac
     override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         return when(viewType) {
             MOVIE ->  SearchItemViewHolder(inflater.inflate(R.layout.search_movie_item_layout, parent, false), callback, extraLayoutCreator)
-            ADD -> SearchAndAddViewHolder(inflater.inflate(R.layout.add_movie_item_layout, parent, false))
+            ADD -> SearchAndAddViewHolder(inflater.inflate(R.layout.add_movie_item_layout, parent, false), callback)
             else -> null
         }
     }
@@ -40,5 +39,9 @@ class CollectionPageAdapterConfig(val callback: SearchPageAdapter.AdapterCallbac
 
     override fun getItemViewType(data: List<Movie>, position: Int): Int {
         return if (data.isEmpty()) -1 else (if (position >= data.size) ADD else MOVIE)
+    }
+
+    interface Callback: BaseMovieAdapter.AdapterCallback {
+        fun onAddToCollection()
     }
 }

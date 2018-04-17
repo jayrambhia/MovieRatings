@@ -103,6 +103,10 @@ class CollectionPagePresenter(likeStore: LikeStore,
         }
     }
 
+    fun searchToAddToCollection() {
+
+    }
+
     private fun getSorted(type: Sort, data: List<Movie>): List<Movie> = when(type) {
         Sort.YEAR -> data.sortedWith(compareByDescending { it.year })
         Sort.ALPHABETICAL -> data.sortedBy { it.title }
