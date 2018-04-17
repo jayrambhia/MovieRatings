@@ -172,7 +172,11 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     }
 
     private fun shouldReturnSelection(): Boolean {
-        return (path as CollectionListPagePath).returnSelection
+        path?.let {
+            return (it as CollectionListPagePath).returnSelection
+        }
+
+        return false
     }
 
     override fun getScreenTitle(): Int {

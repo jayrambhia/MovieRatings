@@ -9,7 +9,6 @@
     android:layout_margin="4dp"
     tools:layout_width="180dp"
     tools:layout_margin="8dp"
-    android:alpha="0.4"
     app:cardBackgroundColor="@color/colorAccent"
     app:cardCornerRadius="4dp">
 
