@@ -49,12 +49,16 @@ Flutter is a smart app that helps you decide what to watch on streaming apps lik
 <b>What does Flutter do?</b>
  
 Some of the video streaming apps do not show you ratings of the feature that you want to see, be it a movie, a documentary or a TV show. You would probably search it on Google or Imdb to make sure that it's good. Flutter makes your life easier by showing you the movie ratings directly on your screen without typing a single letter.
+
+<b>Is that all Flutter does?</b>
+
+That is the primary functionality of the app. But it has much more to offer. Flutter provides an in-built search to find new movies, TV shows to watch. You can create your own collections based on your personal choices, browse your history and keep a list of everything that you like. Keep up with the latest version to get the new features.
  
 <b>How does Flutter work?</b>
  
 Flutter is smart and lightweight. It uses Android's accessibility feature 📋 to get movie names from streaming apps. It looks up the movie on the internet 🌐, gets basic details and accurate ratings from Open Movie Database, and shows you the ratings on your screen instantly. Whenever you open a page of a movie or a TV show, you'll see the ratings on the bottom-right side of your screen.
  
-Flutter is cool 😎. It doesn't ask for your contacts or personal details, bother you with push notifications. Flutter is active only when you're browsing the content on video streaming apps and it will sleep peacefully the rest of the time.
+Flutter is cool 😎. It doesn't ask for your contacts or personal details, bother you with push notifications. Flutter is active only when you're browsing the content on video streaming apps and it will sleep peacefully the rest of the time. Flutter cares about your privacy and does not send your personal information or what you browse to the cloud.
  
 <b>How to make it work?</b>
  
@@ -75,6 +79,6 @@ Flutter is brilliant but you're the boss! You need to enable Flutter's accessibi
 
 Flutter uses Open Movie Database to get movie ratings so it is possible that it might not have the ratings of some not so popular movies.
 Open Movie Database has ratings gathered from various popular websites like Imdb.
-Flutter is not endorsed by or affiliated with Imdb.com, Netflix.com or omdbapi.com
+Flutter is not endorsed by or affiliated with Imdb.com, Netflix.com, primevideo.com or omdbapi.com
 
 -----
