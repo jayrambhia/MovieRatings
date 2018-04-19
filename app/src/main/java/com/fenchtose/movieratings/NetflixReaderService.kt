@@ -186,7 +186,7 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun getMovieInfo(title: String, year: String) {
-        analytics?.sendEvent(Event("get_movie").putAttribute("title", title))
+        analytics?.sendEvent(Event("get_movie"))
 
         provider?.let {
             it.getMovie(title, year)

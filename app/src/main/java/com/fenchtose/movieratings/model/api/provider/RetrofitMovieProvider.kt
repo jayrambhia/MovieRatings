@@ -24,7 +24,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         return getMovie(
                 { this.getMovieFromDbWithImdb(imdbId) },
                 { api.getMovieInfoWithImdb(BuildConfig.OMDB_API_KEY, imdbId) },
-                { analytics.sendEvent(Event("get_movie_online").putAttribute("imdb", imdbId)) }
+                { analytics.sendEvent(Event("get_movie_online")) }
         )
     }
 
@@ -32,7 +32,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         return getMovie(
                 { this.getMovieFromDb(title, year) },
                 { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title, year) },
-                { analytics.sendEvent(Event("get_movie_online").putAttribute("title", title)) },
+                { analytics.sendEvent(Event("get_movie_online")) },
                 { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title)}
         )
     }

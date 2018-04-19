@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
-if (getGradle().getStartParameter().getTaskRequests()
+/*if (getGradle().getStartParameter().getTaskRequests()
         .toString().contains("Playstore")) {
     apply plugin: 'io.fabric'
-}
+}*/
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -56,9 +56,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    playstoreCompile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+    /*playstoreCompile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true
-    }
+    }*/
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.android.support:cardview-v7:26.1.0'
@@ -93,9 +93,9 @@ dependencies {
 
 repositories {
     mavenCentral()
-    maven {
+    /*maven {
         url 'https://maven.fabric.io/public'
-    }
+    }*/
 }
 
 private Integer generateVersionCode() {

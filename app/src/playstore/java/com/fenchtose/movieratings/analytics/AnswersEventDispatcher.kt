@@ -1,16 +1,16 @@
 package com.fenchtose.movieratings.analytics
 
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.CustomEvent
+//import com.crashlytics.android.answers.Answers
+//import com.crashlytics.android.answers.CustomEvent
 import com.fenchtose.movieratings.analytics.events.Event
 
 class AnswersEventDispatcher: EventDispatcher {
 
     override fun sendEvent(event: Event) {
-        Answers.getInstance().logCustom(convert(event))
+//        Answers.getInstance().logCustom(convert(event))
     }
 
-    private fun convert(event: Event): CustomEvent {
+    /*private fun convert(event: Event): CustomEvent {
         val customEvent = CustomEvent(event.name)
         val it = event.data.entrySet().iterator()
         it.forEach {
@@ -22,5 +22,5 @@ class AnswersEventDispatcher: EventDispatcher {
         }
 
         return customEvent
-    }
+    }*/
 }
