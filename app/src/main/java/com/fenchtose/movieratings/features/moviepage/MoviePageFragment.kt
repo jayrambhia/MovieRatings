@@ -33,6 +33,7 @@ import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStor
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.widgets.pagesection.*
 
 class MoviePageFragment: BaseFragment(), MoviePage {
@@ -68,9 +69,9 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         super.onCreate(savedInstanceState)
         postponeEnterTransition()
         presenter = MoviePresenter(MovieRatingsApplication.movieProviderModule.movieProvider,
-                DbLikeStore(MovieRatingsApplication.database.favDao()),
+                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
                 DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()),
-                DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
+                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 SettingsPreferences(context),
                 movie?.imdbId, movie)
 
@@ -238,7 +239,11 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     private fun setRating(score: String) {
         val text = SpannableString(score)
-        text.setSpan(RelativeSizeSpan(2f), 0, score.indexOfFirst { it == '/' }, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        if (score.indexOfFirst { it == '/' } != -1) {
+            text.setSpan(RelativeSizeSpan(2f), 0, score.indexOfFirst { it == '/' }, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        } else {
+            text.setSpan(RelativeSizeSpan(2f), 0, score.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        }
         ratingView?.text = text
 
         val params = ratingView?.layoutParams as CoordinatorLayout.LayoutParams

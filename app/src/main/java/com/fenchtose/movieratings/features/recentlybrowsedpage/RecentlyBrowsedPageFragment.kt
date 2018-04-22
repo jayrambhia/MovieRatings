@@ -19,7 +19,7 @@ class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, 
 
     override fun createPresenter(): RecentlyBrowsedPagePresenter {
         return RecentlyBrowsedPagePresenter(DbRecentlyBrowsedMovieProvider(MovieRatingsApplication.database.movieDao()),
-                DbLikeStore(MovieRatingsApplication.database.favDao()))
+                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()))
     }
 
     class RecentlyBrowsedPath: RouterPath<RecentlyBrowsedPageFragment>() {

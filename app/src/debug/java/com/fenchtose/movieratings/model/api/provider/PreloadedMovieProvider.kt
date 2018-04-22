@@ -7,7 +7,7 @@ import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
-import com.fenchtose.movieratings.model.db.UserPreferneceApplier
+import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import com.google.gson.Gson
 import io.reactivex.Observable
@@ -17,7 +17,7 @@ import java.io.IOException
 
 class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieProvider {
     private val context = context.applicationContext
-    private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
+    private val preferenceAppliers = ArrayList<UserPreferenceApplier>()
 
     override fun getMovieWithImdb(imdbId: String): Observable<Movie> {
         return getMovie(imdbId, "")
@@ -75,7 +75,7 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         return Observable.just(Movie.empty())
     }
 
-    override fun addPreferenceApplier(applier: UserPreferneceApplier) {
+    override fun addPreferenceApplier(applier: UserPreferenceApplier) {
         preferenceAppliers.add(applier)
     }
 

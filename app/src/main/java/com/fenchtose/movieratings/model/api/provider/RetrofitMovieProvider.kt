@@ -8,7 +8,7 @@ import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
-import com.fenchtose.movieratings.model.db.UserPreferneceApplier
+import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import com.fenchtose.movieratings.util.Constants
 import io.reactivex.Observable
@@ -18,7 +18,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
     val api: MovieApi = retrofit.create(MovieApi::class.java)
     val analytics = MovieRatingsApplication.analyticsDispatcher
-    private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
+    private val preferenceAppliers = HashSet<UserPreferenceApplier>()
 
     override fun getMovieWithImdb(imdbId: String): Observable<Movie> {
         return getMovie(
@@ -199,7 +199,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
     }
 
-    override fun addPreferenceApplier(applier: UserPreferneceApplier) {
+    override fun addPreferenceApplier(applier: UserPreferenceApplier) {
         preferenceAppliers.add(applier)
     }
 

@@ -1,10 +1,10 @@
 package com.fenchtose.movieratings.model.db.like
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.model.db.UserPreferneceApplier
+import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import io.reactivex.Observable
 
-interface LikeStore: UserPreferneceApplier {
+interface LikeStore: UserPreferenceApplier {
     @WorkerThread
     fun isLiked(imdbId: String): Boolean
     fun setLiked(imdbId: String, liked: Boolean)

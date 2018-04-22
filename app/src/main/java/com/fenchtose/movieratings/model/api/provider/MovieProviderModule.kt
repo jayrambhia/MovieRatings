@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.model.gsonadapters.IntAdapter
 import com.fenchtose.movieratings.util.Constants
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
@@ -9,7 +10,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieProviderModule(val app: MovieRatingsApplication) {
 
-    private val gson = GsonBuilder().setDateFormat("dd MM yyyy").create()
+    private val gson = GsonBuilder()
+            .setDateFormat("dd MM yyyy")
+            .registerTypeAdapter(Int::class.java, IntAdapter())
+            .create()
+
     private val dao = MovieRatingsApplication.database.movieDao()
 
     val movieProvider by lazy {

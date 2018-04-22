@@ -12,11 +12,14 @@ import io.reactivex.schedulers.Schedulers
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.display.RatingDisplayer
+import com.fenchtose.movieratings.features.tts.Speaker
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FixTitleUtils
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 
 
 class NetflixReaderService : AccessibilityService() {
@@ -37,6 +40,11 @@ class NetflixReaderService : AccessibilityService() {
     private var analytics: AnalyticsDispatcher? = null
 
     private var displayer: RatingDisplayer? = null
+    private var speaker: Speaker? = null
+
+    private val RESOURCE_THRESHOLD = 300L
+
+    private var resourceRemover: PublishSubject<Boolean>? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -45,7 +53,40 @@ class NetflixReaderService : AccessibilityService() {
         provider = MovieRatingsApplication.movieProviderModule.movieProvider
         analytics = MovieRatingsApplication.analyticsDispatcher
         displayer = RatingDisplayer(this, analytics!!, preferences!!)
+    }
 
+    private fun initResources() {
+        synchronized(this) {
+
+            if (speaker == null && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true
+                    && preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true) {
+                speaker = Speaker(this)
+            }
+
+            if (resourceRemover == null) {
+                resourceRemover = PublishSubject.create()
+                resourceRemover
+                        ?.doOnNext {
+                            Log.d(TAG, "resource remover event")
+                        }
+                        ?.debounce(RESOURCE_THRESHOLD, TimeUnit.SECONDS)
+                        ?.subscribe({
+                            clearResources()
+                        })
+            }
+
+            resourceRemover?.onNext(true)
+        }
+    }
+
+    private fun clearResources() {
+        Log.d(TAG, "clear resources")
+        synchronized(this) {
+            speaker?.shutdown()
+            speaker = null
+            resourceRemover?.onComplete()
+            resourceRemover = null
+        }
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
@@ -158,7 +199,13 @@ class NetflixReaderService : AccessibilityService() {
             if (BuildConfig.DEBUG) {
                 Log.i(TAG, "Movie :- title: $text, year: $year")
             }
-            getMovieInfo(text, year ?: "")
+
+            if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) {
+                getMovieInfo(text, year ?: "")
+            } else {
+                getMovieInfo(text, "")
+            }
+
         }
     }
 
@@ -186,6 +233,8 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun getMovieInfo(title: String, year: String) {
+        initResources()
+
         analytics?.sendEvent(Event("get_movie"))
 
         provider?.let {
@@ -203,5 +252,8 @@ class NetflixReaderService : AccessibilityService() {
 
     private fun showRating(movie: Movie) {
         displayer?.showRatingWindow(movie)
+        if (preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true) {
+            speaker?.talk(movie)
+        }
     }
 }

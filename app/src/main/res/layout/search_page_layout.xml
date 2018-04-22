@@ -27,12 +27,10 @@
 		    android:layout_height="wrap_content"
 		    android:layout_gravity="center"
 		    android:padding="8dp"
-		    android:layout_marginRight="8dp"
+		    android:layout_marginEnd="8dp"
 		    android:src="@drawable/ic_close_onyx_black_24dp"/>
 
     </LinearLayout>
-
-
 
     <TextView
         android:id="@+id/api_attr"

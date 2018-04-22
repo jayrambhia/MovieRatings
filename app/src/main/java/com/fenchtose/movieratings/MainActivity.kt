@@ -1,7 +1,9 @@
 package com.fenchtose.movieratings
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
@@ -52,6 +54,9 @@ class MainActivity : AppCompatActivity() {
     private var visibleMenuItems: IntArray? = null
     private var userPreference: UserPreferences? = null
 
+    private var preferences: UserPreferences? = null
+    private val TTS_REG_CHECK = 11
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -94,6 +99,8 @@ class MainActivity : AppCompatActivity() {
         accessibilityPagePublisher?.onNext(false)
 
         analytics = MovieRatingsApplication.analyticsDispatcher
+        preferences = SettingsPreferences(this)
+        checkForTTS()
     }
 
     override fun onResume() {
@@ -241,6 +248,19 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                 )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode) {
+            TTS_REG_CHECK -> {
+                preferences?.setAppEnabled(UserPreferences.TTS_AVAILABLE, resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
+            }
+        }
+    }
+
+    private fun checkForTTS() {
+        startActivityForResult(Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA), TTS_REG_CHECK)
     }
 
 }

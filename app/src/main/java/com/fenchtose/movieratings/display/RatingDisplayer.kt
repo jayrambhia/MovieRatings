@@ -36,7 +36,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
         }
 
         if (!AccessibilityUtils.canDrawOverWindow(context)) {
-            Log.e(TAG, "no drawing permission or TV or stupid devices")
+            Log.e(TAG, "no drawing permission")
             val duration = preferences.getToastDuration()
             ToastUtils.showMovieRating(context, movie, duration)
             return

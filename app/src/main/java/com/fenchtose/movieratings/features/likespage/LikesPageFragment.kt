@@ -28,7 +28,7 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
     override fun createPresenter(): LikesPresenter {
         val dao = MovieRatingsApplication.database.movieDao()
         val favoriteProvider = DbFavoriteMovieProvider(dao)
-        val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
+        val likeStore = DbLikeStore.getInstance(MovieRatingsApplication.database.favDao())
         val userPreferences = SettingsPreferences(context)
         return LikesPresenter(favoriteProvider, likeStore, userPreferences)
     }

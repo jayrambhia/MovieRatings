@@ -22,6 +22,14 @@ class SettingsPreferences(context: Context): UserPreferences {
         preferences.edit().putBoolean(app, status).apply()
     }
 
+    override fun isSettingEnabled(app: String): Boolean {
+        return preferences.getBoolean(app, false)
+    }
+
+    override fun setSettingEnabled(app: String, status: Boolean) {
+        preferences.edit().putBoolean(app, status).apply()
+    }
+
     override fun getToastDuration(): Int {
         return preferences.getInt(DURATION_KEY, 2000)
     }

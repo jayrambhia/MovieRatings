@@ -36,9 +36,9 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
     override fun getErrorContent() = R.string.movie_collection_page_error_content
 
     override fun createPresenter(): CollectionPagePresenter {
-        return CollectionPagePresenter(DbLikeStore(MovieRatingsApplication.database.favDao()),
+        return CollectionPagePresenter(DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
-                DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
+                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 SettingsPreferences(context),
                 path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection })
     }

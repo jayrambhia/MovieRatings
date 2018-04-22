@@ -15,15 +15,12 @@
 	<string name="search_page_add_to_collection_cta">Add to collection</string>
 
     <string name="accessibility_info_app_name"><b>Flutter</b></string>
-    <string name="accessibility_info_target_name"><b>Netflix</b></string>
+    <string name="accessibility_info_target_name"><b>Netflix, Amazon Prime Video</b></string>
     <string name="accessibility_info_page_header">Activate Flutter</string>
 
-    <string name="accessibility_description">Turn ON the accessibility for Flutter to get movie ratings while you\'re browsing. It helps Flutter to get the name of the movie from the app.\n\n
-Once you turn on the button, Android will show you a dialog which will give you info about what Flutter will get access to.
-But don\'t worry. Flutter is cool and believes in personal privacy and hence collects no personal data.\n\n\n
-If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> on top and you can enable/disable Flutter for particular apps.
+    <string name="accessibility_description">Turn ON the accessibility for Flutter to get movie ratings while you\'re browsing. It helps Flutter to get the name of the movie from the app.\n\nOnce you turn on the button, Android will show you a dialog which will give you info about what Flutter will get access to.\n\nFlutter also offers Text to Speech support to help people with disabilities by speaking out loud the rating of the movie.\n\nFlutter will retrieve window content and process it to find the movie title in apps (Netflix, Prime Video only) and show you the rating of the movie.\n\nIf you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> in the app on top and you can enable/disable Flutter for particular apps.
     </string>
-    <string name="accessibility_summary">Flutter requires accessibility to get movie names from the app.</string>
+    <string name="accessibility_summary">Flutter requires accessibility permission to retrieve name of the movie to show you the ratings.</string>
     <string name="accessibility_label">Flutter Movie Ratings</string>
 
     <string name="settings_header">Settings</string>
@@ -46,8 +43,16 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="settings_delete_data_dialog_cta">Yes, delete everything</string>
 	<string name="settings_data_deleted">Your collections, favorites, recent history has been deleted.</string>
 	<string name="settings_data_delete_error">Unable to delete your data.</string>
+	<string name="settings_tts_info">Flutter provides a functionality to listen to movie ratings using in-built Text to Speech feature.</string>
+	<string name="settings_tts_button_text">Enable Text to Speech</string>
+	<string name="settings_install_tts_dialog_title">Install Text to Speech</string>
+	<string name="settings_install_tts_dialog_content">Flutter supports only US and UK English for Text to Speech as of now. To enable Text to Speech, please download Text to Speech using your device settigns.</string>
+	<string name="settings_install_tts_dialog_cta">Install</string>
+	<string name="settings_install_tts_dialog_later">Not now</string>
 	<string name="settings_misc">Miscellaneous settings</string>
 	<string name="settings_activate_flutter">Show \'Activate Flutter\'</string>
+	<string name="settings_use_year_info">Flutter can try to obtain the \'release\' year of the movie to get more accurate ratings.\n\nNote: A lot of TV shows on Netflix do not have correct release year.</string>
+	<string name="settings_use_year">Use \'release\' year</string>
 
     <string name="menu_action_settings">Settings</string>
 	<string name="menu_action_fav">Favorites</string>
@@ -153,5 +158,6 @@ If you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> o
 	<string name="episode_page_rating">Rated %1s</string>
 	<string name="episode_page_open_imdb">See on IMDB</string>
 
+	<string name="rating_tts">%1$s is rated %2$s.</string>
 
 </resources>

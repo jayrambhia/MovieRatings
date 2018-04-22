@@ -1,13 +1,13 @@
 package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.model.RecentlyBrowsedMovie
-import com.fenchtose.movieratings.model.db.UserPreferneceApplier
+import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import io.reactivex.Observable
 
 class DbRecentlyBrowsedMovieProvider(private val movieDao: MovieDao): RecentlyBrowsedMovieProvider {
 
-    private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
+    private val preferenceAppliers = ArrayList<UserPreferenceApplier>()
 
     override fun getMovies(): Observable<List<RecentlyBrowsedMovie>> {
         return Observable.fromCallable {
@@ -29,7 +29,7 @@ class DbRecentlyBrowsedMovieProvider(private val movieDao: MovieDao): RecentlyBr
             }
     }
 
-    override fun addPreferenceApplier(applier: UserPreferneceApplier) {
+    override fun addPreferenceApplier(applier: UserPreferenceApplier) {
         preferenceAppliers.add(applier)
     }
 }
