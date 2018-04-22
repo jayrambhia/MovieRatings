@@ -199,7 +199,13 @@ class NetflixReaderService : AccessibilityService() {
             if (BuildConfig.DEBUG) {
                 Log.i(TAG, "Movie :- title: $text, year: $year")
             }
-            getMovieInfo(text, year ?: "")
+
+            if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) {
+                getMovieInfo(text, year ?: "")
+            } else {
+                getMovieInfo(text, "")
+            }
+
         }
     }
 

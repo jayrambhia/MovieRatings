@@ -57,6 +57,7 @@ class SettingsFragment: BaseFragment() {
         addAppToggle(preferences, view, R.id.prime_video_toggle, UserPreferences.PRIMEVIDEO)
         addAppToggle(preferences, view, R.id.save_browsing_toggle, UserPreferences.SAVE_HISTORY)
         addAppToggle(preferences, view, R.id.show_activate_toggle, UserPreferences.SHOW_ACTIVATE_FLUTTER)
+        addAppToggle(preferences, view, R.id.use_year_toggle, UserPreferences.USE_YEAR)
 
         val ttsToggle = view.findViewById<SwitchCompat>(R.id.tts_toggle)
         ttsToggle.isChecked = preferences.isSettingEnabled(UserPreferences.TTS_AVAILABLE) && preferences.isSettingEnabled(UserPreferences.USE_TTS)
