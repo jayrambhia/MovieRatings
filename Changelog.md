@@ -1,5 +1,14 @@
 # Flutter Changelog
 
+### 0.2.1
+
+ - Text to Speech support added
+ - Crashyltics and Fabric disabled
+ - 'Add to collection' shortcut support added
+ - Bugfixes and memory optimizations
+ - More options added to settings
+ - Some refactoring around search adapter and base movie list fragment
+
 ### 0.2.0
 
  - Detailed episode page added

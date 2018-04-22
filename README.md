@@ -8,7 +8,7 @@
 ## Note
 Flutter has been **unpublished** from Google Playstore. It uses accessibility service and recent Playstore policy suggests that `Apps requesting accessibility services should only be used to help users with disabilities use Android devices and apps`. So I have decided to remove it from the playstore. I am planning to add Flutter to other app stores such as F-Droid.
 
-You can get the latest Playstore version here - [0.2.0](https://github.com/jayrambhia/MovieRatings/releases/download/v0.2.0/flutter_v0.2.0.apk)
+You can get the latest Playstore version here - [0.2.1](https://github.com/jayrambhia/MovieRatings/releases/download/v0.2.1/flutter_v0.2.1.apk)
 
 ## Screenshots of master
 
@@ -53,6 +53,7 @@ This app uses Accessibility services. Flutter uses accessibility services to ret
 <b>What does Flutter do?</b>
  
 Some of the video streaming apps do not show you ratings of the feature that you want to see, be it a movie, a documentary or a TV show. You would probably search it on Google or Imdb to make sure that it's good. Flutter makes your life easier by showing you the movie ratings directly on your screen without typing a single letter.
+Flutter also offers a support for Text to speech and speaks out the movie rating which is very useful for someone with disabilities.
 
 <b>Is that all Flutter does?</b>
 

@@ -4,7 +4,7 @@ import android.content.Context
 import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
-import com.fenchtose.movieratings.model.db.UserPreferneceApplier
+import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import com.fenchtose.movieratings.model.EpisodesList
 import io.reactivex.Observable
@@ -24,7 +24,7 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }
 
-    override fun addPreferenceApplier(applier: UserPreferneceApplier) {
+    override fun addPreferenceApplier(applier: UserPreferenceApplier) {
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }
 
