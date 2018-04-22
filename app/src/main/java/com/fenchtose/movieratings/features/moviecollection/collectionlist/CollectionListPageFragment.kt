@@ -33,7 +33,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         super.onCreate(savedInstanceState)
         presenter = CollectionListPresenter(
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
-                DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()))
+                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

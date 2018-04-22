@@ -2,13 +2,13 @@ package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
-import com.fenchtose.movieratings.model.db.UserPreferneceApplier
+import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
 import io.reactivex.Observable
 
 class DbMovieCollectionProvider(private val dao: MovieCollectionDao) : MovieCollectionProvider {
 
-    private val preferenceAppliers = ArrayList<UserPreferneceApplier>()
+    private val preferenceAppliers = ArrayList<UserPreferenceApplier>()
 
     override fun getCollections(): Observable<List<MovieCollection>> {
         return Observable.defer {
@@ -29,7 +29,7 @@ class DbMovieCollectionProvider(private val dao: MovieCollectionDao) : MovieColl
         }
     }
 
-    override fun addPreferenceApplier(preferenceApplier: UserPreferneceApplier) {
+    override fun addPreferenceApplier(preferenceApplier: UserPreferenceApplier) {
         preferenceAppliers.add(preferenceApplier)
     }
 }

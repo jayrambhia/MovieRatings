@@ -198,10 +198,10 @@ class SettingsFragment: BaseFragment() {
     }
 
     private fun deleteData() {
-        val collectionStore = DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao())
+        val collectionStore = DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao())
         Observable.concat(
                 DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()).deleteAll(),
-                DbLikeStore(MovieRatingsApplication.database.favDao()).deleteAll(),
+                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()).deleteAll(),
                 collectionStore.deleteAllCollectionEntries(),
                 collectionStore.deleteAllCollections())
                 .subscribeOn(Schedulers.io())

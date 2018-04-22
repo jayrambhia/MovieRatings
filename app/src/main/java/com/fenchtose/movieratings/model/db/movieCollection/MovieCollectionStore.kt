@@ -3,10 +3,10 @@ package com.fenchtose.movieratings.model.db.movieCollection
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.MovieCollectionEntry
-import com.fenchtose.movieratings.model.db.UserPreferneceApplier
+import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import io.reactivex.Observable
 
-interface MovieCollectionStore : UserPreferneceApplier {
+interface MovieCollectionStore : UserPreferenceApplier {
     fun createCollection(name: String): Observable<MovieCollection>
     fun deleteCollection(collection: MovieCollection): Observable<Boolean>
     fun addMovieToCollection(collection: MovieCollection, movie: Movie): Observable<MovieCollectionEntry>

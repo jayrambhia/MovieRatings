@@ -4,7 +4,7 @@ import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.EpisodesList
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.SearchResult
-import com.fenchtose.movieratings.model.db.UserPreferneceApplier
+import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import io.reactivex.Observable
 
 interface MovieProvider {
@@ -13,5 +13,5 @@ interface MovieProvider {
     fun search(title: String, page:Int = 1): Observable<SearchResult>
     fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList>
     fun getEpisode(episode: Episode): Observable<Movie>
-    fun addPreferenceApplier(applier: UserPreferneceApplier)
+    fun addPreferenceApplier(applier: UserPreferenceApplier)
 }

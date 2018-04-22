@@ -49,7 +49,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val likeStore = DbLikeStore(MovieRatingsApplication.database.favDao())
+        val likeStore = DbLikeStore.getInstance(MovieRatingsApplication.database.favDao())
         path?.let {
             presenter = when(it as SearchPath) {
                 is SearchPath.Default -> SearchPresenter.DefaultPresenter(
@@ -58,7 +58,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                 is SearchPath.AddToCollection -> SearchPresenter.AddToCollectionPresenter(
                         MovieRatingsApplication.movieProviderModule.movieProvider,
                         likeStore,
-                        DbMovieCollectionStore(MovieRatingsApplication.database.movieCollectionDao()),
+                        DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                         (it as SearchPath.AddToCollection).collection)
             }
         }

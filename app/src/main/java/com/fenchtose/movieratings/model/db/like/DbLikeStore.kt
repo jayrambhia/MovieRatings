@@ -7,7 +7,19 @@ import com.fenchtose.movieratings.model.db.dao.FavDao
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 
-class DbLikeStore(val likeDao: FavDao) : LikeStore {
+class DbLikeStore private constructor(private val likeDao: FavDao) : LikeStore {
+
+    companion object {
+        private var instance: DbLikeStore? = null
+
+        fun getInstance(likeDao: FavDao) :DbLikeStore {
+            if (instance == null) {
+                instance = DbLikeStore(likeDao)
+            }
+
+            return instance!!
+        }
+    }
 
     @WorkerThread
     override fun apply(movie: Movie) {

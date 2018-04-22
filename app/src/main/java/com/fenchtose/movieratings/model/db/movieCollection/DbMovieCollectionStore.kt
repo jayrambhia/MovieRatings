@@ -8,7 +8,19 @@ import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 
-class DbMovieCollectionStore(private val dao: MovieCollectionDao) : MovieCollectionStore {
+class DbMovieCollectionStore private constructor(private val dao: MovieCollectionDao) : MovieCollectionStore {
+
+    companion object {
+        private var instance: DbMovieCollectionStore? = null
+        fun getInstance(dao: MovieCollectionDao): DbMovieCollectionStore {
+            if (instance == null) {
+                instance = DbMovieCollectionStore(dao)
+            }
+
+            return instance!!
+        }
+    }
+
     override fun createCollection(name: String): Observable<MovieCollection> {
         return Observable.defer {
             Observable.just(name)
