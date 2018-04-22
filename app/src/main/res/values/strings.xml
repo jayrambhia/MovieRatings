@@ -18,8 +18,7 @@
     <string name="accessibility_info_target_name"><b>Netflix, Amazon Prime Video</b></string>
     <string name="accessibility_info_page_header">Activate Flutter</string>
 
-    <string name="accessibility_description">Turn ON the accessibility for Flutter to get movie ratings while you\'re browsing. It helps Flutter to get the name of the movie from the app.\n\nOnce you turn on the button, Android will show you a dialog which will give you info about what Flutter will get access to.
-But don\'t worry. Flutter is cool and believes in personal privacy and hence collects no personal data.\n\nFlutter will retrieve window content and process it to find the movie title in apps (Netflix, Prime Video only) and show you the rating of the movie.\n\nIf you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> in the app on top and you can enable/disable Flutter for particular apps.
+    <string name="accessibility_description">Turn ON the accessibility for Flutter to get movie ratings while you\'re browsing. It helps Flutter to get the name of the movie from the app.\n\nOnce you turn on the button, Android will show you a dialog which will give you info about what Flutter will get access to.\n\nFlutter also offers Text to Speech support to help people with disabilities by speaking out loud the rating of the movie.\n\nFlutter will retrieve window content and process it to find the movie title in apps (Netflix, Prime Video only) and show you the rating of the movie.\n\nIf you want to turn Flutter off for a particular app, click on <b>SETTINGS</b> in the app on top and you can enable/disable Flutter for particular apps.
     </string>
     <string name="accessibility_summary">Flutter requires accessibility permission to retrieve name of the movie to show you the ratings.</string>
     <string name="accessibility_label">Flutter Movie Ratings</string>

@@ -42,7 +42,7 @@ class NetflixReaderService : AccessibilityService() {
     private var displayer: RatingDisplayer? = null
     private var speaker: Speaker? = null
 
-    private val RESOURCE_THRESHOLD = 60L
+    private val RESOURCE_THRESHOLD = 300L
 
     private var resourceRemover: PublishSubject<Boolean>? = null
 

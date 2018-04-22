@@ -4,7 +4,7 @@
     android:packageNames="com.netflix.mediaclient, com.amazon.avod.thirdpartyclient, android.system.ui"
     android:description="@string/accessibility_description"
     android:summary="@string/accessibility_summary"
-    android:accessibilityFeedbackType="feedbackVisual"
+    android:accessibilityFeedbackType="feedbackVisual|feedbackSpoken"
     android:notificationTimeout="0"
     android:settingsActivity="com.fenchtose.movieratings.features.settings.SettingsActivity"
     android:canRetrieveWindowContent="true"
