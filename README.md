@@ -5,10 +5,7 @@
 <img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png" width="480px"/>
 </p>
 
-## Note
-Flutter has been **unpublished** from Google Playstore. It uses accessibility service and recent Playstore policy suggests that `Apps requesting accessibility services should only be used to help users with disabilities use Android devices and apps`. So I have decided to remove it from the playstore. I am planning to add Flutter to other app stores such as F-Droid.
-
-You can get the latest Playstore version here - [0.2.1](https://github.com/jayrambhia/MovieRatings/releases/download/v0.2.1/flutter_v0.2.1.apk)
+You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.2.1](https://github.com/jayrambhia/MovieRatings/releases/download/v0.2.1/flutter_v0.2.1.apk)
 
 ## Screenshots of master
 
