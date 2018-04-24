@@ -7,6 +7,7 @@ import android.speech.tts.TextToSpeech
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -267,7 +268,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkForTTS() {
-        startActivityForResult(Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA), TTS_REG_CHECK)
+        val intent = Intent(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA)
+        if (PackageUtils.isIntentCallabale(this, intent)) {
+            startActivityForResult(intent, TTS_REG_CHECK)
+        } else {
+            preferences?.setSettingEnabled(UserPreferences.TTS_AVAILABLE, false)
+            Log.e("Flutter", "TTS is not supported")
+        }
     }
 
 }

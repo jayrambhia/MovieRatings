@@ -24,6 +24,7 @@ import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStor
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
+import com.fenchtose.movieratings.util.PackageUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -218,7 +219,12 @@ class SettingsFragment: BaseFragment() {
     }
 
     private fun checkForTTS() {
-        startActivityForResult(Intent().setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA), CHECK_TTS)
+        val intent = Intent().setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA)
+        if (PackageUtils.isIntentCallabale(context, intent)) {
+            startActivityForResult(intent, CHECK_TTS)
+        } else {
+            showSnackbar(R.string.settings_install_tts_unsupported)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -242,7 +248,12 @@ class SettingsFragment: BaseFragment() {
     }
 
     private fun installTTS() {
-        startActivity(Intent().setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA))
+        val intent = Intent().setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA)
+        if (PackageUtils.isIntentCallabale(context, intent)) {
+            startActivity(intent)
+        } else {
+            showSnackbar(R.string.settings_install_tts_unsupported)
+        }
     }
 
     override fun canGoBack(): Boolean {

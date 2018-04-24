@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.util
 
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 
 class PackageUtils {
 
@@ -15,6 +17,12 @@ class PackageUtils {
                 }
             }
             return false
+        }
+
+        fun isIntentCallabale(context: Context, intent: Intent): Boolean {
+            return false
+            /*val activities = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            return activities.size > 0*/
         }
     }
 
