@@ -27,8 +27,11 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
 
     var isShowingView: Boolean = false
     private var ratingView: WeakReference<FloatingRatingView?> = WeakReference(null)
-
     private val handler = Handler(Looper.getMainLooper())
+
+    private val dismissRunnable = Runnable {
+        removeView()
+    }
 
     fun showRatingWindow(movie: Movie) {
         if (movie.ratings.isEmpty()) {
@@ -37,7 +40,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
 
         if (!AccessibilityUtils.canDrawOverWindow(context)) {
             Log.e(TAG, "no drawing permission")
-            val duration = preferences.getToastDuration()
+            val duration = preferences.getRatingDisplayDuration()
             ToastUtils.showMovieRating(context, movie, duration)
             return
         }
@@ -48,6 +51,13 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
 
         ratingView.get()?.let {
             it.movie = movie
+
+            handler.removeCallbacks(dismissRunnable)
+
+            val duration = preferences.getRatingDisplayDuration()
+            if (duration > 0) {
+                handler.postDelayed(dismissRunnable, duration.toLong())
+            }
 
             if (it.parent != null) {
                 return

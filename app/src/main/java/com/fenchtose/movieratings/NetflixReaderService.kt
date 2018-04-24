@@ -66,9 +66,6 @@ class NetflixReaderService : AccessibilityService() {
             if (resourceRemover == null) {
                 resourceRemover = PublishSubject.create()
                 resourceRemover
-                        ?.doOnNext {
-                            Log.d(TAG, "resource remover event")
-                        }
                         ?.debounce(RESOURCE_THRESHOLD, TimeUnit.SECONDS)
                         ?.subscribe({
                             clearResources()
@@ -194,7 +191,12 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun setMovieTitle(text: String, year: String?) {
-        if (title == null || title != text) {
+
+        // When the third condition is added, it could work better but could also be annoying because
+        // event when the user scrolls, this would be triggered. This is just for Netflix because they
+        // changed activity based navigation.
+
+        if (title == null || title != text /*|| displayer?.isShowingView == false*/) {
             title = text
             if (BuildConfig.DEBUG) {
                 Log.i(TAG, "Movie :- title: $text, year: $year")
@@ -205,7 +207,6 @@ class NetflixReaderService : AccessibilityService() {
             } else {
                 getMovieInfo(text, "")
             }
-
         }
     }
 

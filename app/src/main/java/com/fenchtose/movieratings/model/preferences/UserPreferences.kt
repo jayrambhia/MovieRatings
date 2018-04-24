@@ -27,8 +27,8 @@ interface UserPreferences {
     fun isSettingEnabled(app: String): Boolean
     fun setSettingEnabled(app: String, status: Boolean)
 
-    fun getToastDuration():Int
-    fun setToastDuration(durationInMS: Int)
+    fun getRatingDisplayDuration():Int
+    fun setRatingDisplayDuration(durationInMS: Int)
 
     fun setLatestLikeSort(type: Sort)
     fun getLatestLikeSort(): Sort

@@ -9,7 +9,6 @@ import android.support.design.widget.Snackbar
 import android.support.v7.widget.SwitchCompat
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
@@ -23,7 +22,6 @@ import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStor
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
-import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.PackageUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -38,7 +36,7 @@ class SettingsFragment: BaseFragment() {
 
     private var preferences: UserPreferences? = null
 
-    private var toastDuration: TextView? = null
+    private var ratingDurationView: TextView? = null
 
     val CHECK_TTS = 12
 
@@ -82,34 +80,24 @@ class SettingsFragment: BaseFragment() {
             }
         }
 
-        val toastInfo = view.findViewById<TextView>(R.id.toast_duration_info)
-        val toastSeekbar = view.findViewById<SeekBar>(R.id.toast_duration_seekbar)
-        val seekbarContainer = view.findViewById<View>(R.id.seekbar_container)
-        toastDuration = view.findViewById(R.id.toast_duration_view)
+        val ratingDurationSeekbar = view.findViewById<SeekBar>(R.id.rating_duration_seekbar)
+        ratingDurationView = view.findViewById(R.id.rating_duration_view)
 
-        val showToastDurationInfo = !AccessibilityUtils.canDrawOverWindow(context)
-        if (!showToastDurationInfo) {
-            toastInfo?.visibility = GONE
-            toastSeekbar?.visibility = GONE
-            toastDuration?.visibility = GONE
-            seekbarContainer?.visibility = GONE
-        } else {
-            val progress = preferences.getToastDuration()/1000
-            toastDuration?.text = (progress).toString()
-            toastSeekbar?.progress = progress - 1
+        val progress = preferences.getRatingDisplayDuration()/1000
+        ratingDurationView?.text = (progress).toString()
+        ratingDurationSeekbar?.progress = progress - 1
 
-            toastSeekbar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                }
+        ratingDurationSeekbar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
 
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                }
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
 
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    updateToastDuration((progress + 1) * 1000)
-                }
-            })
-        }
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                updateRatingDisplayDuration((progress + 1) * 1000)
+            }
+        })
 
         view.findViewById<View>(R.id.clear_history_button).setOnClickListener { showClearHistoryDialog() }
         view.findViewById<View>(R.id.delete_data_button).setOnClickListener { showDeleteDataDialog() }
@@ -156,10 +144,10 @@ class SettingsFragment: BaseFragment() {
         updatePublisher?.onNext(app)
     }
 
-    private fun updateToastDuration(durationInMs: Int) {
-        preferences?.setToastDuration(durationInMs)
+    private fun updateRatingDisplayDuration(durationInMs: Int) {
+        preferences?.setRatingDisplayDuration(durationInMs)
         updatePublisher?.onNext("toast")
-        toastDuration?.text = (preferences!!.getToastDuration()/1000).toString()
+        ratingDurationView?.text = (preferences!!.getRatingDisplayDuration()/1000).toString()
     }
 
     private fun showUpdatePreferenceSnackbar() {

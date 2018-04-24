@@ -30,11 +30,11 @@ class SettingsPreferences(context: Context): UserPreferences {
         preferences.edit().putBoolean(app, status).apply()
     }
 
-    override fun getToastDuration(): Int {
-        return preferences.getInt(DURATION_KEY, 2000)
+    override fun getRatingDisplayDuration(): Int {
+        return preferences.getInt(DURATION_KEY, 5000)
     }
 
-    override fun setToastDuration(durationInMS: Int) {
+    override fun setRatingDisplayDuration(durationInMS: Int) {
         preferences.edit().putInt(DURATION_KEY, durationInMS).apply()
     }
 
