@@ -1,5 +1,12 @@
 # Flutter Changelog
 
+### 0.2.2
+
+ - Fix crash if Text to Speech is not supported by the device
+ - Auto hide floating rating window
+ - Hide floating window if the movie has changed
+ - Relatively better onboarding
+
 ### 0.2.1
 
  - Text to Speech support added

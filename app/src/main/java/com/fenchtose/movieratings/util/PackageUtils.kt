@@ -20,9 +20,8 @@ class PackageUtils {
         }
 
         fun isIntentCallabale(context: Context, intent: Intent): Boolean {
-            return false
-            /*val activities = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-            return activities.size > 0*/
+            val activities = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            return activities.size > 0
         }
     }
 
