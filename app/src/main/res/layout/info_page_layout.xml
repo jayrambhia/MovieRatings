@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
+        android:background="@color/colorAccent"
         android:layout_above="@+id/bottom_container">
 
         <LinearLayout
@@ -21,16 +22,11 @@
             android:gravity="center_horizontal"
             android:layout_gravity="center">
 
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@mipmap/ic_launcher"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="36sp"
-                android:textColor="@color/colorAccent"
+                android:textSize="32sp"
+                android:textColor="@android:color/white"
                 android:layout_marginTop="8dp"
                 android:text="@string/app_name_short"/>
 
@@ -40,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="14sp"
                 android:alpha="0.8"
-                android:textColor="@color/colorAccent"
+                android:textColor="@android:color/white"
                 android:layout_marginTop="4dp"
                 tools:text="0.1.1"/>
 

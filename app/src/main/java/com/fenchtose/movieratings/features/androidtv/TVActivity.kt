@@ -16,7 +16,7 @@ class TVActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tv)
         router = Router(this)
-        router?.go(AppInfoFragment.AppInfoPath())
+        router?.go(AppInfoFragment.AppInfoPath(false))
         MovieRatingsApplication.router = router
     }
 

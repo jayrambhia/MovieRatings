@@ -56,6 +56,7 @@
 
     <string name="menu_action_settings">Settings</string>
 	<string name="menu_action_fav">Favorites</string>
+	<string name="menu_action_search">Search</string>
 	<string name="menu_action_history">Recently Browsed</string>
 	<string name="menu_action_sort">Sort</string>
 	<string name="menu_action_sort_alphabetically">A-Z</string>
@@ -68,14 +69,15 @@
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
-    <string name="info_screen_content_no_accessibility">Flutter can help you decide what you want to watch today! When you\'re browsing Netflix, it will show you movie ratings on your screen (just like Fb Messenger chat).\n\nClick on <b>\'Activate Flutter\'</b> at the bottom to get started with Flutter!</string>
-    <string name="info_screen_content_with_accessibility">Flutter is active now. Whene you\'re browsing Netflix, it will show you the movie ratings on the screen.\n\nFlutter doesn\'t have much at the moment but we\'re adding support for more apps and some awesome new features!</string>
+	<string name="info_screen_content_no_accessibility">Flutter can help you decide what you want to watch today! When you\'re browsing Netflix or Amazon Prime Video, it will show you movie ratings on your screen (just like Fb Messenger chat).\n\nClick on <b>\'Activate Flutter\'</b> at the bottom to get started with Flutter!\n\nGo to <b>Settings</b> to check out what you can configure.</string>
+    <string name="info_screen_content_with_accessibility">Flutter is active now. Whene you\'re browsing Netflix or Amazon Prime Video, it will show you the movie ratings on the screen.\n\nYou may also use Flutter to search for movies and TV shows and create your own collections.</string>
 
     <string name="info_page_share_cta">Let your friends know about Flutter</string>
     <string name="info_page_rate_cta">Rate the app on Playstore</string>
     <string name="info_page_credit_cta">Credits</string>
     <string name="info_page_test_cta">See how it works</string>
     <string name="info_page_settings_cta">Configure settings</string>
+	<string name="info_page_share_content">Hey, check out Flutter Ratings! It shows movie ratings on your screen when you\'re browsing Netflix. Get the app %1s.</string>
 
     <string name="credit_dialog_title">Credits</string>
     <string name="credit_dialog_content">Flutter uses Open Movie Database to get movie ratings.\n\nPlaystore icon used in app is made by Pixel Buddha at Flaticon.</string>

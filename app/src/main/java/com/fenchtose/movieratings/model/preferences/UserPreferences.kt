@@ -12,6 +12,7 @@ interface UserPreferences {
         val TTS_AVAILABLE = "tts_available"
         val SHOW_ACTIVATE_FLUTTER = "show_activate_flutter"
         val USE_YEAR = "use_year"
+        val ONBOARDING_SHOWN = "onboarding_shown"
     }
 
     /**

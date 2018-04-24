@@ -94,12 +94,18 @@ class MainActivity : AppCompatActivity() {
             showAccessibilityInfo()
         }
 
-//        showInfoPage()
-        showSearchPage()
         accessibilityPagePublisher?.onNext(false)
 
         analytics = MovieRatingsApplication.analyticsDispatcher
         preferences = SettingsPreferences(this)
+
+        if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
+            showInfoPage(true)
+            preferences?.setSettingEnabled(UserPreferences.ONBOARDING_SHOWN, true)
+        } else {
+            showSearchPage()
+        }
+
         checkForTTS()
     }
 
@@ -152,9 +158,10 @@ class MainActivity : AppCompatActivity() {
         var consumed = true
         when(item?.itemId) {
             android.R.id.home -> onBackPressed()
+            R.id.action_search -> showSearchPage()
             R.id.action_settings -> showSettingsPage()
             R.id.action_fav -> showFavoritesPage()
-            R.id.action_info -> showInfoPage()
+            R.id.action_info -> showInfoPage(false)
             R.id.action_history -> showRecentlyBrowsedPage()
             R.id.action_collection -> showMovieCollectionsPage()
             else -> consumed = false
@@ -172,8 +179,8 @@ class MainActivity : AppCompatActivity() {
         router?.go(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
     }
 
-    private fun showInfoPage() {
-        router?.go(AppInfoFragment.AppInfoPath())
+    private fun showInfoPage(showSearchOption: Boolean) {
+        router?.go(AppInfoFragment.AppInfoPath(showSearchOption))
     }
 
     private fun showAccessibilityInfo() {

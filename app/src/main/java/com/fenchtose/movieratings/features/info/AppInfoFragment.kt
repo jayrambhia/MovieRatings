@@ -18,6 +18,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
+import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.IntentUtils
 
 class AppInfoFragment: BaseFragment() {
@@ -53,7 +54,7 @@ class AppInfoFragment: BaseFragment() {
         share?.let {
             share.setOnClickListener {
                 analytics?.sendEvent(Event("share_app_clicked"))
-                IntentUtils.openShareIntent(context, "Have you met Flutter? It shows movie ratings on your screen when you're browsing Netflix. Get the app. https://goo.gl/y3HXVi")
+                IntentUtils.openShareIntent(context, context.getString(R.string.info_page_share_content, Constants.APP_SHARE_URL))
             }
         }
 
@@ -62,7 +63,7 @@ class AppInfoFragment: BaseFragment() {
 
         testView = view.findViewById(R.id.test_view)
         testView?.let {
-            testView!!.setOnClickListener {
+            it.setOnClickListener {
                 handler?.postDelayed({
                     testContainer?.visibility = VISIBLE
                     handler?.postDelayed({
@@ -118,13 +119,13 @@ class AppInfoFragment: BaseFragment() {
         return R.string.search_page_title
     }
 
-    class AppInfoPath: RouterPath<AppInfoFragment>() {
+    class AppInfoPath(private val showSearchOption: Boolean): RouterPath<AppInfoFragment>() {
         override fun createFragmentInstance(): AppInfoFragment {
             return AppInfoFragment()
         }
 
         override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_settings)
+            return if (showSearchOption) intArrayOf(R.id.action_search, R.id.action_settings) else intArrayOf(R.id.action_settings)
         }
     }
 }
