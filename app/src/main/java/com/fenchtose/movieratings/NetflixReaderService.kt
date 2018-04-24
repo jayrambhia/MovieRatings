@@ -77,7 +77,6 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun clearResources() {
-        Log.d(TAG, "clear resources")
         synchronized(this) {
             speaker?.shutdown()
             speaker = null
@@ -202,6 +201,8 @@ class NetflixReaderService : AccessibilityService() {
                 Log.i(TAG, "Movie :- title: $text, year: $year")
             }
 
+            displayer?.removeView()
+
             if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) {
                 getMovieInfo(text, year ?: "")
             } else {
@@ -240,6 +241,7 @@ class NetflixReaderService : AccessibilityService() {
 
         provider?.let {
             it.getMovie(title, year)
+                    .debounce(30, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .filter { it.ratings.size > 0 }
                     .observeOn(AndroidSchedulers.mainThread())

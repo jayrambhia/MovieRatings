@@ -33,8 +33,25 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
         removeView()
     }
 
+    private val removeRunnable = Runnable {
+        val view = ratingView.get()
+        view?.let {
+            it.parent?.let {
+                try {
+                    getWindowManager().removeViewImmediate(view)
+                } catch(e: RuntimeException) {
+                    e.printStackTrace()
+                    analytics.sendEvent(Event("runtime_error")
+                            .putAttribute("error", if (e.message != null) e.message!! else "unknown")
+                            .putAttribute("where", "service_remove_view"))
+                }
+            }
+        }
+    }
+
     fun showRatingWindow(movie: Movie) {
         if (movie.ratings.isEmpty()) {
+            removeView()
             return
         }
 
@@ -51,8 +68,8 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
 
         ratingView.get()?.let {
             it.movie = movie
-
             handler.removeCallbacks(dismissRunnable)
+            handler.removeCallbacks(removeRunnable)
 
             val duration = preferences.getRatingDisplayDuration()
             if (duration > 0) {
@@ -102,21 +119,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
 
     fun removeView() {
         isShowingView = false
-        handler.postDelayed({
-            val view = ratingView.get()
-            view?.let {
-                view.parent?.let {
-                    try {
-                        getWindowManager().removeViewImmediate(view)
-                    } catch(e: RuntimeException) {
-                        e.printStackTrace()
-                        analytics.sendEvent(Event("runtime_error")
-                                .putAttribute("error", if (e.message != null) e.message!! else "unknown")
-                                .putAttribute("where", "service_remove_view"))
-                    }
-                }
-            }
-        }, 10)
+        handler.postDelayed(removeRunnable, 10)
     }
 
     private fun getWindowManager() : WindowManager {

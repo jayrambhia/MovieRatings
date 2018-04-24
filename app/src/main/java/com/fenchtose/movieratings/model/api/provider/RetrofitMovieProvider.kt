@@ -76,10 +76,13 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
     }
 
+    /**
+     * checks for ratings also.
+     */
     private fun getMovieFromDb(title: String, year: String): Observable<Movie> {
         return Observable.defer {
             val movie = if (year.isNotEmpty()) dao.getMovie(title, year) else dao.getMovie(title)
-            if (movie != null && movie.isComplete(Movie.Check.BASE)) {
+            if (movie != null && movie.isComplete(Movie.Check.BASE) && movie.ratings.size > 0) {
                 Observable.just(movie)
             } else {
                 Observable.just(Movie.empty())
