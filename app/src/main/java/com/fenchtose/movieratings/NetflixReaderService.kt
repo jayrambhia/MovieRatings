@@ -122,7 +122,7 @@ class NetflixReaderService : AccessibilityService() {
             }
 
             if (isAppEnabled == null || !isAppEnabled) {
-                return
+                return@let
             }
 
             val titles: List<AccessibilityNodeInfoCompat> = when(it.packageName) {
@@ -141,7 +141,10 @@ class NetflixReaderService : AccessibilityService() {
                                 val children = ArrayList<AccessibilityNodeInfoCompat>()
                                 (0 until it.childCount).map {
                                     i -> it.getChild(i)
-                                }.toCollection(children)
+                                }.filter {
+                                    it != null
+                                }
+                                .toCollection(children)
                                 children
                             }
                             // filter node which has text containing 4 digits
@@ -168,6 +171,8 @@ class NetflixReaderService : AccessibilityService() {
 
             }
         }
+
+        event.recycle()
     }
 
     @Suppress("unused")
