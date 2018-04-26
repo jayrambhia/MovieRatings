@@ -1,5 +1,11 @@
 # Flutter Changelog
 
+### 0.2.3
+
+ - NPE bugfixes in Accessibility Services
+ - Fix activity not found issues
+ - Fix volume slider issue
+
 ### 0.2.2
 
  - Fix crash if Text to Speech is not supported by the device
