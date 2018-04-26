@@ -18,6 +18,7 @@ import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.util.AccessibilityUtils
+import com.fenchtose.movieratings.util.PackageUtils
 import com.fenchtose.movieratings.util.VersionUtils
 
 class AccessInfoFragment : BaseFragment() {
@@ -70,14 +71,22 @@ class AccessInfoFragment : BaseFragment() {
 
     private fun openSettings() {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-        startActivity(intent)
+        if (PackageUtils.isIntentCallabale(context, intent)) {
+            startActivity(intent)
+        } else {
+            showSnackbar(R.string.accessibility_settings_launch_error)
+        }
     }
 
     private fun openDrawSettings() {
         @SuppressLint("InlinedApi")
         val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:" + activity.packageName))
-        startActivity(intent)
+        if (PackageUtils.isIntentCallabale(context, intent)) {
+            startActivity(intent)
+        } else {
+            showSnackbar(R.string.accessibility_draw_permission_launch_error)
+        }
     }
 
     override fun canGoBack(): Boolean {

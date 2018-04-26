@@ -5,6 +5,8 @@
     <string name="accessibility_settings_button_content">Open Accessibility Settings</string>
     <string name="draw_access_info_content"><b>%1$s</b> needs permission to draw over other apps to show movie ratings when you\'re browsing <b>%2$s</b></string>
     <string name="draw_settings_button_content">Open Permissions Settings</string>
+	<string name="accessibility_draw_permission_launch_error">Unable to open device settings page. Please enable the permission manually. We apologize for the inconvenience.</string>
+	<string name="accessibility_settings_launch_error">Unable to open accessibility settings page. Please enable the permission manually. We apologize for the inconvenience.</string>
     <string name="powered_by_api">Powered by OMDB</string>
     <string name="activate_app_cta">Activate Flutter</string>
 
