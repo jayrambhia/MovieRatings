@@ -1,6 +1,6 @@
 # Flutter Changelog
 
-### 0.2.4
+### 0.2.5
 
  - In-app purchases added for 'donations'
  - Node recycle bugfix
