@@ -12,10 +12,12 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
         tools:title="Flutter"
         android:elevation="0dp"
+        app:titleTextColor="@color/colorAccent"
+        app:navigationIcon="@drawable/ic_arrow_back_accent_24dp"
         android:background="?attr/colorPrimary"/>
 
     <FrameLayout

@@ -17,4 +17,7 @@
 
 	<dimen name="season_app_bar_height">240dp</dimen>
 	<dimen name="season_poster_height">196dp</dimen>
+
+	<dimen name="floating_rating_view_width">156dp</dimen>
+	<dimen name="floating_rating_view_y">180dp</dimen>
 </resources>

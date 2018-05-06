@@ -5,37 +5,37 @@
 	<item
 		android:id="@+id/action_search"
 		android:title="@string/menu_action_search"
-		android:icon="@drawable/ic_search_white_24dp"
+		android:icon="@drawable/ic_search_accent_24dp"
 		app:showAsAction="always"/>
 
 	<item
 		android:id="@+id/action_history"
 		android:title="@string/menu_action_history"
-		android:icon="@drawable/ic_history_white_24dp"
+		android:icon="@drawable/ic_history_accent_24dp"
 		app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_fav"
         android:title="@string/menu_action_fav"
-        android:icon="@drawable/ic_favorite_white_24dp"
+        android:icon="@drawable/ic_favorite_accent_24dp"
         app:showAsAction="always"/>
 
 	<item
 		android:id="@+id/action_collection"
 		android:title="@string/menu_action_collection"
-		android:icon="@drawable/ic_collections_white_24dp"
+		android:icon="@drawable/ic_collections_accent_24dp"
 		app:showAsAction="always"/>
 
 	<item
 		android:id="@+id/action_add_to_collection"
 		android:title="@string/menu_action_add_to_collection"
-		android:icon="@drawable/ic_playlist_add_white_24dp"
+		android:icon="@drawable/ic_playlist_add_accent_24dp"
 		app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_sort"
         android:title="@string/menu_action_sort"
-        android:icon="@drawable/ic_sort_white_24dp"
+        android:icon="@drawable/ic_sort_accent_24dp"
         app:showAsAction="always">
 
 	    <menu>
@@ -61,13 +61,13 @@
 	<item
 		android:id="@+id/action_info"
 		android:title="@string/menu_action_info"
-		android:icon="@drawable/ic_info_outline_white_24dp"
+		android:icon="@drawable/ic_info_outline_accent_24dp"
 		app:showAsAction="always"/>
 
     <item
         android:id="@+id/action_settings"
         android:title="@string/menu_action_settings"
-        android:icon="@drawable/ic_settings_white_24dp"
+        android:icon="@drawable/ic_settings_accent_24dp"
         app:showAsAction="always"/>
 
 	<item

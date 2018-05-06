@@ -54,7 +54,7 @@
 		android:elevation="4dp"
 		android:fontFamily="sans-serif-medium"
 		android:layout_marginEnd="16dp"
-		android:textColor="@android:color/white"
+		android:textColor="@color/colorAccent"
 		app:layout_anchor="@id/main.appbar"
 		app:layout_anchorGravity="center_vertical|end"
 		tools:text="8.1/10"

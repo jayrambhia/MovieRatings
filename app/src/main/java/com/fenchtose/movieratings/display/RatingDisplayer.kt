@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
+import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.features.stickyview.FloatingRatingView
@@ -28,6 +29,8 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
     var isShowingView: Boolean = false
     private var ratingView: WeakReference<FloatingRatingView?> = WeakReference(null)
     private val handler = Handler(Looper.getMainLooper())
+    private val width = context.resources.getDimensionPixelOffset(R.dimen.floating_rating_view_width)
+    private val yPos = context.resources.getDimensionPixelOffset(R.dimen.floating_rating_view_y)
 
     private val dismissRunnable = Runnable {
         removeView()
@@ -95,12 +98,10 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
         val dm = DisplayMetrics()
         manager.defaultDisplay.getMetrics(dm)
 
-        val width = (136*dm.density).toInt()
-
         val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_PHONE
 
         val params = WindowManager.LayoutParams(width, WindowManager.LayoutParams.WRAP_CONTENT ,
-                dm.widthPixels-width, (180*dm.density).toInt(),
+                dm.widthPixels-width, yPos,
                 layoutFlag, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT)
 
