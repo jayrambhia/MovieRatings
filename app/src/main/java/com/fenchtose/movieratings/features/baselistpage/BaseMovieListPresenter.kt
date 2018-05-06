@@ -55,6 +55,7 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
 
     open fun toggleLike(movie: Movie) {
         likeStore.setLiked(movie.imdbId, !movie.liked)
+        movie.liked = !movie.liked
     }
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
