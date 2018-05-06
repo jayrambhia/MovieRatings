@@ -1,5 +1,12 @@
 # Flutter Changelog
 
+### 0.2.4
+
+ - In-app purchases added for 'donations'
+ - Node recycle bugfix
+ - Fix like toggle
+ - Changed text and icon colors to improve contrast
+
 ### 0.2.3
 
  - NPE bugfixes in Accessibility Services
