@@ -45,11 +45,11 @@ Flutter is a smart app that helps you decide what to watch on streaming apps lik
 
 <b>Accessibility services disclaimer</b>
 
-This app uses Accessibility services. Flutter uses accessibility services to retrieve and read the window content to obtain name of the movies when you're using Netlfix or Prime Video app. Once the title is obtained, the app will show how its IMDB rating on your screen.
+This app uses Accessibility services. Flutter uses accessibility services to retrieve and read the window content to obtain name of the movies when you're using Netlfix or Prime Video app. Once the title is obtained, the app will show its IMDb rating on your screen.
 
 <b>What does Flutter do?</b>
  
-Some of the video streaming apps do not show you ratings of the feature that you want to see, be it a movie, a documentary or a TV show. You would probably search it on Google or Imdb to make sure that it's good. Flutter makes your life easier by showing you the movie ratings directly on your screen without typing a single letter.
+Some of the video streaming apps do not show you ratings of the titles that you want to see, be it a movie, a documentary or a TV show. You would probably search it on Google or Imdb to make sure that it's good. Flutter makes your life easier by showing you the movie ratings directly on your screen without typing a single letter.
 Flutter also offers a support for Text to speech and speaks out the movie rating which is very useful for someone with disabilities.
 
 <b>Is that all Flutter does?</b>
