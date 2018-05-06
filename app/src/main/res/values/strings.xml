@@ -81,6 +81,7 @@
     <string name="info_page_test_cta">See how it works</string>
     <string name="info_page_settings_cta">Configure settings</string>
 	<string name="info_page_share_content">Hey, check out Flutter Ratings! It shows movie ratings on your screen when you\'re browsing Netflix. Get the app %1s.</string>
+	<string name="info_page_go_premium_cta">Go Premium!</string>
 
     <string name="credit_dialog_title">Credits</string>
     <string name="credit_dialog_content">Flutter uses Open Movie Database to get movie ratings.\n\nPlaystore icon used in app is made by Pixel Buddha at Flaticon.</string>

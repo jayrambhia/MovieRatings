@@ -12,7 +12,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 
 ext.versionMajor = 0
 ext.versionMinor = 2
-ext.versionPatch = 3
+ext.versionPatch = 4
 
 android {
     compileSdkVersion 26
@@ -89,6 +89,8 @@ dependencies {
     // Leak canary
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
+
+    playstoreCompile 'com.android.billingclient:billing:1.0'
 }
 
 repositories {

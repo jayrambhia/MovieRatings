@@ -63,6 +63,36 @@
             android:text="@string/info_screen_content_no_accessibility"/>
 
         <LinearLayout
+            android:id="@+id/premium_view"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            tools:visibility="visible"
+            android:background="@drawable/ripple_onyx_bg">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#22ffffff"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="46dp"
+                android:text="@string/info_page_go_premium_cta"
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/yellow_primary"
+                android:drawableStart="@drawable/ic_monetization_on_yellow_24dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/credit_view"
             android:orientation="vertical"
             android:layout_width="match_parent"

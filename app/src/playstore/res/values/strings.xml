@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="donate_page_title">Go Premium!</string>
+	<string name="donate_page_content">Hi, thanks for deciding to go premium. Flutter is free for all and contains no ads.\n\nIf you liked the app and wish to appreciate the developers\' efforts, you may choose to buy any of the following premium packages. These packages do not unlock any features and you\'ll have all the features in the free version also.</string>
+	<string name="donate_already_purchased_text">You have already purchased this for %1s. Thanks for your support!</string>
+	<string name="donate_dialog_title">You\'re the best!</string>
+	<string name="donate_dialog_message">Thanks for buying a premium package and supporting the developer and the app.</string>
+</resources>

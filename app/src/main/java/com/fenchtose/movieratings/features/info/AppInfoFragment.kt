@@ -16,6 +16,7 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.Constants
@@ -28,6 +29,7 @@ class AppInfoFragment: BaseFragment() {
     private var testView: View? = null
     private var testContainer: View? = null
     private var settingsView: View? = null
+    private var premiumView: View? = null
     private var activationWarning: View? = null
     private var handler: Handler? = null
 
@@ -76,6 +78,15 @@ class AppInfoFragment: BaseFragment() {
         settingsView = view.findViewById(R.id.settings_view)
         settingsView?.setOnClickListener {
             MovieRatingsApplication.router?.go(SettingsFragment.SettingsPath())
+        }
+
+        premiumView = view.findViewById(R.id.premium_view)
+        if (BuildConfig.FLAVOR == "playstore") {
+            premiumView?.visibility = View.VISIBLE
+            premiumView?.setOnClickListener {
+                analytics?.sendEvent(Event("go_premium_clicked"))
+                MovieRatingsApplication.router?.go(DonatePageFragment.DonatePath())
+            }
         }
 
         activationWarning = view.findViewById(R.id.activation_warning_view)
