@@ -172,7 +172,7 @@ class NetflixReaderService : AccessibilityService() {
             }
         }
 
-        event.recycle()
+//        event.recycle()
     }
 
     @Suppress("unused")
