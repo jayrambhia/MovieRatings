@@ -2,7 +2,6 @@ package com.fenchtose.movieratings.features.info
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -10,26 +9,17 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import com.fenchtose.movieratings.BuildConfig
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
-import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.features.premium.DonatePageFragment
-import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.util.AccessibilityUtils
-import com.fenchtose.movieratings.util.Constants
-import com.fenchtose.movieratings.util.IntentUtils
 
 class AppInfoFragment: BaseFragment() {
 
-    private var analytics: AnalyticsDispatcher? = null
     private var isTV: Boolean = false
     private var testView: View? = null
     private var testContainer: View? = null
     private var settingsView: View? = null
-    private var premiumView: View? = null
     private var activationWarning: View? = null
     private var handler: Handler? = null
 
@@ -44,21 +34,6 @@ class AppInfoFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        analytics = MovieRatingsApplication.analyticsDispatcher
-
-        view.findViewById<View>(R.id.rate_view).setOnClickListener {
-            analytics?.sendEvent(Event("rate_app_clicked"))
-            IntentUtils.openPlaystore(context)
-        }
-
-        val share = view.findViewById<View>(R.id.share_view)
-        share?.let {
-            share.setOnClickListener {
-                analytics?.sendEvent(Event("share_app_clicked"))
-                IntentUtils.openShareIntent(context, context.getString(R.string.info_page_share_content, Constants.APP_SHARE_URL))
-            }
-        }
 
         testContainer = view.findViewById(R.id.test_container)
         handler = Handler()
@@ -76,29 +51,14 @@ class AppInfoFragment: BaseFragment() {
         }
 
         settingsView = view.findViewById(R.id.settings_view)
-        settingsView?.setOnClickListener {
-            MovieRatingsApplication.router?.go(SettingsFragment.SettingsPath())
-        }
-
-        premiumView = view.findViewById(R.id.premium_view)
-        if (BuildConfig.FLAVOR == "playstore") {
-            premiumView?.visibility = View.VISIBLE
-            premiumView?.setOnClickListener {
-                analytics?.sendEvent(Event("go_premium_clicked"))
-                MovieRatingsApplication.router?.go(DonatePageFragment.DonatePath())
-            }
-        }
 
         activationWarning = view.findViewById(R.id.activation_warning_view)
 
-        view.findViewById<View>(R.id.credit_view).setOnClickListener {
-            showCreditsDialog()
-        }
-
         view.findViewById<TextView>(R.id.version_view).text = BuildConfig.VERSION_NAME
 
-        view.findViewById<TextView>(R.id.info_content_view)
-                .setText(
+        val contentView = view.findViewById<TextView?>(R.id.info_content_view)
+        contentView?.visibility = View.VISIBLE
+        contentView?.setText(
                 if (AccessibilityUtils.hasAllPermissions(context))
                     R.string.info_screen_content_with_accessibility
                 else
@@ -113,13 +73,6 @@ class AppInfoFragment: BaseFragment() {
             settingsView?.visibility = if (hasAccessibility) VISIBLE else GONE
             activationWarning?.visibility = if (hasAccessibility) GONE else VISIBLE
         }
-    }
-
-    private fun showCreditsDialog() {
-        AlertDialog.Builder(context)
-                .setTitle(R.string.credit_dialog_title)
-                .setMessage(R.string.credit_dialog_content)
-                .show()
     }
 
     override fun canGoBack(): Boolean {

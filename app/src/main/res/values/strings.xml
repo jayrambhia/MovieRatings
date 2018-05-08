@@ -75,7 +75,7 @@
 	<string name="info_screen_content_no_accessibility">Flutter can help you decide what you want to watch today! When you\'re browsing Netflix or Amazon Prime Video, it will show you movie ratings on your screen (just like Fb Messenger chat).\n\nClick on <b>\'Activate Flutter\'</b> at the bottom to get started with Flutter!\n\nGo to <b>Settings</b> to check out what you can configure.</string>
     <string name="info_screen_content_with_accessibility">Flutter is active now. Whene you\'re browsing Netflix or Amazon Prime Video, it will show you the movie ratings on the screen.\n\nYou may also use Flutter to search for movies and TV shows and create your own collections.</string>
 
-    <string name="info_page_share_cta">Let your friends know about Flutter</string>
+    <string name="info_page_share_cta">Tell your friends about Flutter</string>
     <string name="info_page_rate_cta">Rate the app on Playstore</string>
     <string name="info_page_credit_cta">Credits</string>
     <string name="info_page_test_cta">See how it works</string>

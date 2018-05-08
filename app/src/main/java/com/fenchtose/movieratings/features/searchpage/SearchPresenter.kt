@@ -30,7 +30,11 @@ sealed class SearchPresenter(private val provider: MovieProvider,
 
     override fun attachView(view: SearchPage) {
         super.attachView(view)
-        data.takeIf { data.isNotEmpty() }?.let { showAlreadyLoadedData(it) }
+        if (data.isEmpty()) {
+            updateState(SearchPage.State.Default())
+        } else {
+            showAlreadyLoadedData(data)
+        }
     }
 
     override fun detachView(view: SearchPage) {

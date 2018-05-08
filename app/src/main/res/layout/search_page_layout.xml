@@ -58,4 +58,12 @@
         tools:listitem="@layout/search_movie_item_layout"
         android:background="#fffafafa"/>
 
+	<com.fenchtose.movieratings.features.info.InfoPageBottomView
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:id="@+id/info_page_container"
+		android:layout_gravity="bottom"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"/>
+
 </FrameLayout>

@@ -25,6 +25,8 @@ import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.util.bottomSlide
+import com.fenchtose.movieratings.util.slideUp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
@@ -39,6 +41,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var recyclerView: RecyclerView? = null
     private var adapter: BaseMovieAdapter? = null
     private var adapterConfig: SearchAdapterConfig? = null
+    private var appInfoContainer: View? = null
 
     private var presenter: SearchPresenter? = null
 
@@ -78,6 +81,11 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         searchView = view.findViewById(R.id.search_view)
         clearButton = view.findViewById(R.id.clear_button)
 
+        path?.takeIf { it is SearchPath.Default }?.let {
+            appInfoContainer = view.findViewById(R.id.info_page_container)
+            view.findViewById<View?>(R.id.settings_view)?.visibility = View.VISIBLE
+            view.findViewById<View?>(R.id.credit_view)?.visibility = View.GONE
+        }
 
         val adapterConfig = SearchAdapterConfig(GlideLoader(Glide.with(this)),
                 object: SearchAdapterConfig.SearchCallback {
@@ -196,9 +204,17 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
 
         when (state) {
-            is SearchPage.State.Default -> clearQuery()
-            is SearchPage.State.Loading -> showLoading(true)
-            is SearchPage.State.Loaded -> setData(state)
+            is SearchPage.State.Default -> {
+                clearQuery()
+            }
+            is SearchPage.State.Loading -> {
+                showLoading(true)
+                appInfoContainer?.bottomSlide(500)
+            }
+            is SearchPage.State.Loaded -> {
+                setData(state)
+                appInfoContainer?.bottomSlide(500)
+            }
             is SearchPage.State.Error -> showApiError()
             is SearchPage.State.LoadingMore -> adapterConfig?.showLoadingMore(true)
             is SearchPage.State.PaginationError -> showApiError()
@@ -249,6 +265,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private fun clearQuery() {
         clearData()
         showLoading(false)
+        appInfoContainer?.slideUp(500)
         presenter?.onQueryCleared()
         clearButton?.visibility = View.GONE
     }

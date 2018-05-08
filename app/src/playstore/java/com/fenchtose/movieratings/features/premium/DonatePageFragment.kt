@@ -86,14 +86,14 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
         }
     }
 
-    private fun showDetails(skus: List<SkuDetails>, purchases: List<Purchase>) {
+    private fun showDetails(skus: List<SkuDetails>, purchases: List<Purchase>?) {
 
         val margin = (context.resources.displayMetrics.density * 8).toInt()
 
         cards.clear()
         skuContainer?.removeAllViews()
 
-        val pSkus = purchases.map { it.sku }
+        val pSkus = purchases?.map { it.sku } ?: ArrayList()
 
         for (sku in skus.sortedBy { it.priceAmountMicros }) {
             val view = InAppPurchaseCard(context)
