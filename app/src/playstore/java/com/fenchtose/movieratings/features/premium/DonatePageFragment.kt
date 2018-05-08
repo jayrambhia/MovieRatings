@@ -47,6 +47,11 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        billingClient?.endConnection()
+    }
+
     override fun onPurchasesUpdated(@BillingClient.BillingResponse responseCode: Int, purchases: MutableList<Purchase>?) {
         if (responseCode == BillingClient.BillingResponse.OK && purchases != null && !purchases.isEmpty()) {
             AlertDialog.Builder(context)
@@ -60,12 +65,20 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
     }
 
     private fun queryPurchaseHistory(skus: List<SkuDetails>) {
+        if (isDetached || !isAdded) {
+            return
+        }
+
         billingClient?.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP) {
-            responseCode, purchases -> showDetails(skus, purchases)
+            _, purchases -> showDetails(skus, purchases)
         }
     }
 
     private fun queryAvailablePurchases() {
+        if (isDetached || !isAdded) {
+            return
+        }
+
         val params = SkuDetailsParams.newBuilder()
         params.setSkusList(arrayListOf("donate_small", "donate_medium", "donate_large"))
         params.setType(BillingClient.SkuType.INAPP)
@@ -87,6 +100,10 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
     }
 
     private fun showDetails(skus: List<SkuDetails>, purchases: List<Purchase>?) {
+
+        if (isDetached || !isAdded) {
+            return
+        }
 
         val margin = (context.resources.displayMetrics.density * 8).toInt()
 

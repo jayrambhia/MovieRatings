@@ -82,3 +82,5 @@
 
 -dontwarn okio.**
 -dontwarn javax.annotation.**
+
+-keep class com.android.vending.billing.**
