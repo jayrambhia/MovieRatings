@@ -1,5 +1,11 @@
 # Flutter Changelog
 
+### 0.2.6
+
+ - Fix crash for in-app billing services
+ - Google Play Movies & TV app support added
+ - App info page merged with search page empty state
+
 ### 0.2.5
 
  - In-app purchases added for 'donations'
