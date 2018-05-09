@@ -1,10 +1,9 @@
 package com.fenchtose.movieratings
 
 import android.accessibilityservice.AccessibilityService
-import android.support.v4.view.accessibility.AccessibilityEventCompat
-import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
@@ -32,7 +31,7 @@ class NetflixReaderService : AccessibilityService() {
     private var preferences: UserPreferences? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
-    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO/*, BuildConfig.APPLICATION_ID*/)
+    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV/*, BuildConfig.APPLICATION_ID*/)
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -88,7 +87,7 @@ class NetflixReaderService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName)
+            Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName + ", " + event.action + " ${event.text}, ${event.className}\n$event")
         }
 
         if (!supportedPackages.contains(event.packageName)) {
@@ -104,20 +103,21 @@ class NetflixReaderService : AccessibilityService() {
             return
         }
 
+
         if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             displayer?.removeView()
             lastWindowStateChangeEventTime = System.currentTimeMillis()
             title = null
         }
 
-        val record = AccessibilityEventCompat.asRecord(event)
-        val info = record.source
+        val info = event.source
         info?.let {
 
             val isAppEnabled = when (it.packageName) {
                 BuildConfig.APPLICATION_ID -> true
                 Constants.PACKAGE_NETFLIX -> preferences?.isAppEnabled(UserPreferences.NETFLIX)
                 Constants.PACKAGE_PRIMEVIDEO -> preferences?.isAppEnabled(UserPreferences.PRIMEVIDEO)
+                Constants.PACKAGE_PLAY_MOVIES_TV -> preferences?.isAppEnabled(UserPreferences.PLAY_MOVIES)
                 else -> false
             }
 
@@ -125,22 +125,33 @@ class NetflixReaderService : AccessibilityService() {
                 return@let
             }
 
-            val titles: List<AccessibilityNodeInfoCompat> = when(it.packageName) {
-                BuildConfig.APPLICATION_ID -> it.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
-                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_title")
-                Constants.PACKAGE_PRIMEVIDEO -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/TitleText")
-                else -> ArrayList()
-            }.distinctBy { it.text }
+            val titles: List<CharSequence> = when(it.packageName) {
+                BuildConfig.APPLICATION_ID -> it.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title").filter { it.text != null }.map { it.text }
+                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_title").filter { it.text != null }.map { it.text }
+                Constants.PACKAGE_PRIMEVIDEO -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/TitleText").filter { it.text != null }.map { it.text }
+                Constants.PACKAGE_PLAY_MOVIES_TV ->  {
+                    val nodes = ArrayList<CharSequence>()
+                    if (event.className == "com.google.android.apps.play.movies.mobile.usecase.details.DetailsActivity" && event.text != null) {
+                        val text = event.text.toString().replace("[", "").replace("]", "")
+                        nodes.add(text)
+                    }
+                    nodes
+                }
+                else -> {
+                    checkNodeRecursively(it, 0)
+                    ArrayList()
+                }
+            }.distinctBy { it }
 
-            val years: List<AccessibilityNodeInfoCompat> = when(it.packageName) {
-                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_basic_info")
+            val years: List<CharSequence> = when(it.packageName) {
+                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_basic_info").filter { it.text != null }.map { it.text }
                 Constants.PACKAGE_PRIMEVIDEO -> {
                     it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/ItemMetadataView")
                             // get children of that node
                             .flatMap {
-                                val children = ArrayList<AccessibilityNodeInfoCompat>()
+                                val children = ArrayList<CharSequence>()
                                 (0 until it.childCount).map {
-                                    i -> it.getChild(i)
+                                    i -> it.getChild(i).text
                                 }.filter {
                                     it != null
                                 }
@@ -149,22 +160,36 @@ class NetflixReaderService : AccessibilityService() {
                             }
                             // filter node which has text containing 4 digits
                             .filter {
-                                it.text?.let {
-                                    return@filter !FixTitleUtils.fixPrimeVideoYear(it.toString()).isNullOrEmpty()
-                                }
-                                false
+                                !FixTitleUtils.fixPrimeVideoYear(it.toString()).isNullOrEmpty()
                             }
                 }
+                Constants.PACKAGE_PLAY_MOVIES_TV ->  {
+                    val nodes = ArrayList<CharSequence>()
+                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PLAY_MOVIES_TV + ":id/play_header_listview")
+                            .takeIf { it.size > 0 }
+                            ?.first()
+                            ?.run {
+                                (0 until childCount).map {
+                                    i -> getChild(i)
+                                }.filter {
+                                    it != null && it.text != null && it.className.contains("TextView") && FixTitleUtils.matchesPlayMoviesYear(it.text.toString())
+                                }.map { it.text }
+                                 .toCollection(nodes)
+                            }
+
+                    nodes
+                }
+
                 else -> ArrayList()
-            }.distinctBy { it.text }
+            }.distinctBy { it }
 
             if (titles.isNotEmpty()) {
-                titles.first { it.text != null }
+                titles.first { it != null }
                         .let {
                             setMovieTitle(
-                                    fixTitle(it.packageName, it.text.toString()),
+                                    fixTitle(info.packageName, it.toString()),
                                     years.takeIf { it.isNotEmpty() }?.first()?.let {
-                                        fixYear(it.packageName, it.text?.toString())
+                                        fixYear(info.packageName, it.toString())
                                     }
                             )
                         }
@@ -176,17 +201,22 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     @Suppress("unused")
-    private fun checkNodeRecursively(info: AccessibilityNodeInfoCompat?) {
+    private fun checkNodeRecursively(info: AccessibilityNodeInfo?, level: Int) {
+        if (!BuildConfig.DEBUG) {
+            return
+        }
+
         info?.let {
-            Log.d(TAG, "info: text:" + it.text + ", id:" + it.viewIdResourceName + ", class:" + it.className + ", parent:" + it.parent?.viewIdResourceName)
+
+            Log.d(TAG, "${" ".repeat(level)}info: text: ${it.text}, id: ${it.viewIdResourceName}, class: ${it.className}, parent: ${it.parent?.viewIdResourceName}")
             if (info.childCount > 0) {
-                Log.d(TAG, "--- <children> ---")
+                Log.d(TAG, "${" ".repeat(level)}--- <children> ---")
                 (0 until info.childCount)
                         .forEach { index ->
-                            checkNodeRecursively(it.getChild(index))
+                            checkNodeRecursively(it.getChild(index), level + 1)
                         }
 
-                Log.d(TAG, "--- </children> ---")
+                Log.d(TAG, "${" ".repeat(level)}--- </children> ---")
             }
         }
     }
@@ -228,6 +258,7 @@ class NetflixReaderService : AccessibilityService() {
             val fixed = when(packageName) {
                 Constants.PACKAGE_NETFLIX -> FixTitleUtils.fixNetflixYear(it)
                 Constants.PACKAGE_PRIMEVIDEO -> FixTitleUtils.fixPrimeVideoYear(it)
+                Constants.PACKAGE_PLAY_MOVIES_TV -> FixTitleUtils.fixPlayMoviesYear(it)
                 else -> ""
             }
 

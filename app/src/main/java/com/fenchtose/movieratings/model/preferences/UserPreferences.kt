@@ -7,6 +7,7 @@ interface UserPreferences {
     companion object {
         val NETFLIX = "netflix"
         val PRIMEVIDEO = "primevideo"
+        val PLAY_MOVIES = "play_movies"
         val SAVE_HISTORY = "save_history"
         val USE_TTS = "use_tts"
         val TTS_AVAILABLE = "tts_available"

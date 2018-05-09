@@ -54,6 +54,7 @@ class SettingsFragment: BaseFragment() {
 
         addAppToggle(preferences, view, R.id.netflix_toggle, UserPreferences.NETFLIX)
         addAppToggle(preferences, view, R.id.prime_video_toggle, UserPreferences.PRIMEVIDEO)
+        addAppToggle(preferences, view, R.id.play_movies_toggle, UserPreferences.PLAY_MOVIES)
         addAppToggle(preferences, view, R.id.save_browsing_toggle, UserPreferences.SAVE_HISTORY)
         addAppToggle(preferences, view, R.id.show_activate_toggle, UserPreferences.SHOW_ACTIVATE_FLUTTER)
         addAppToggle(preferences, view, R.id.use_year_toggle, UserPreferences.USE_YEAR)

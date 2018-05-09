@@ -29,6 +29,7 @@
     <string name="settings_info">Activate Flutter for following apps</string>
     <string name="settings_netflix">Netflix</string>
 	<string name="settings_primevideo">Amazon Prime Video</string>
+	<string name="settings_playmovies">Google Play Movies &amp; TV</string>
     <string name="settings_preference_update_content">Your preferences have been updated</string>
     <string name="settings_toast_duration_info">Set the duration for movie ratings to be displayed on your screen (in seconds)</string>
 	<string name="settings_privacy_info">Set your privacy preferences</string>
