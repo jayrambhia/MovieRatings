@@ -49,7 +49,9 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
 
     override fun onDestroyView() {
         super.onDestroyView()
-        billingClient?.endConnection()
+        if (billingClient?.isReady == true) {
+            billingClient?.endConnection()
+        }
     }
 
     override fun onPurchasesUpdated(@BillingClient.BillingResponse responseCode: Int, purchases: MutableList<Purchase>?) {

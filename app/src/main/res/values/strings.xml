@@ -167,4 +167,7 @@
 
 	<string name="rating_tts">%1$s is rated %2$s.</string>
 
+	<string name="locale_info_dialog_title">Apologies</string>
+	<string name="locale_info_dialog_content">It seems that the primary language on your device is not English.\n\nUnfortunately, Flutter does not support translated titles and may sometimes show incorrect ratings.\n\nWe are working on adding support for other languages.</string>
+
 </resources>

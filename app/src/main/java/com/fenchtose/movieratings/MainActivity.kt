@@ -1,9 +1,11 @@
 package com.fenchtose.movieratings
 
 import android.content.Intent
+import android.content.res.Resources
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.support.v4.os.ConfigurationCompat
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
@@ -108,6 +110,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         checkForTTS()
+        checkForLocale()
     }
 
     override fun onResume() {
@@ -274,6 +277,24 @@ class MainActivity : AppCompatActivity() {
         } else {
             preferences?.setSettingEnabled(UserPreferences.TTS_AVAILABLE, false)
             Log.e("Flutter", "TTS is not supported")
+        }
+    }
+
+    private fun checkForLocale() {
+        val locales = ConfigurationCompat.getLocales(Resources.getSystem().configuration)
+        if (locales.size() > 0) {
+            if (!locales[0].toLanguageTag().startsWith("en") && preferences?.isSettingEnabled(UserPreferences.LOCALE_INFO_SHOWN) == false) {
+                AlertDialog.Builder(this)
+                        .setTitle(R.string.locale_info_dialog_title)
+                        .setMessage(R.string.locale_info_dialog_content)
+                        .setPositiveButton(android.R.string.ok) {
+                            dialog, _ ->
+                                preferences?.setSettingEnabled(UserPreferences.LOCALE_INFO_SHOWN, true)
+                                dialog.dismiss()
+                        }
+                        .setCancelable(false)
+                        .show()
+            }
         }
     }
 

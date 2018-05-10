@@ -14,6 +14,7 @@ interface UserPreferences {
         val SHOW_ACTIVATE_FLUTTER = "show_activate_flutter"
         val USE_YEAR = "use_year"
         val ONBOARDING_SHOWN = "onboarding_shown"
+        val LOCALE_INFO_SHOWN = "locale_info_shown"
     }
 
     /**
