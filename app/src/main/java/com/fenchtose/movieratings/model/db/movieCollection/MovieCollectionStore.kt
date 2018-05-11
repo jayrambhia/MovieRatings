@@ -4,6 +4,7 @@ import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.MovieCollectionEntry
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
+import com.google.gson.JsonArray
 import io.reactivex.Observable
 
 interface MovieCollectionStore : UserPreferenceApplier {
@@ -14,4 +15,5 @@ interface MovieCollectionStore : UserPreferenceApplier {
     fun removeMovieFromCollection(collection: MovieCollection, movie: Movie): Observable<Boolean>
     fun deleteAllCollectionEntries(): Observable<Int>
     fun deleteAllCollections(): Observable<Int>
+    fun export(): Observable<JsonArray>
 }

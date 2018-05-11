@@ -2,6 +2,7 @@ package com.fenchtose.movieratings.model
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.arch.persistence.room.PrimaryKey
 
 @Entity(tableName = "COLLECTIONS")
@@ -21,6 +22,9 @@ class MovieCollection {
 
     @ColumnInfo(name = "IS_DELETED")
     var deleted: Int = 0
+
+    @Ignore
+    var entries: List<MovieCollectionEntry> = ArrayList()
 
     companion object {
         fun create(name: String): MovieCollection {

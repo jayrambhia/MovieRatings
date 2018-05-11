@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:paddingStart="16dp"
+	android:paddingEnd="16dp"
+	android:paddingTop="8dp"
+	android:paddingBottom="8dp">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textColor="@color/colorAccent"
+		android:textSize="14sp"
+		android:padding="8dp"
+		android:text="@string/settings_export_data_dialog_content"/>
+
+	<android.support.v7.widget.AppCompatCheckBox
+		android:id="@+id/include_history_checkbox"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:checked="false"
+		android:layout_marginTop="8dp"
+		android:text="@string/settings_export_data_dialog_include_browsing_history"/>
+
+</LinearLayout>

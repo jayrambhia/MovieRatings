@@ -70,7 +70,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         postponeEnterTransition()
         presenter = MoviePresenter(MovieRatingsApplication.movieProviderModule.movieProvider,
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
-                DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()),
+                DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 SettingsPreferences(context),
                 movie?.imdbId, movie)

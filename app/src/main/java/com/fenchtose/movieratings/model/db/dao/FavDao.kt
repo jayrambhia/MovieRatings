@@ -18,4 +18,7 @@ interface FavDao {
     @Query("DELETE FROM FAVS")
     fun deleteAll(): Int
 
+    @Query("SELECT * FROM FAVS")
+    fun getAll(): List<Fav>
+
 }

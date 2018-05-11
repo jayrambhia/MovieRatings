@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
+    <!-- For import and export feature -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <!--<uses-feature android:name="android.software.leanback"
                   android:required="false" />
 

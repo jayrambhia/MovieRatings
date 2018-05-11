@@ -5,6 +5,9 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.model.api.provider.MovieProviderModule
 import com.fenchtose.movieratings.model.db.MovieDb
+import com.fenchtose.movieratings.model.gsonadapters.IntAdapter
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import okhttp3.OkHttpClient
@@ -31,8 +34,15 @@ open class MovieRatingsApplication : Application() {
         var router: Router? = null
         var refWatcher: RefWatcher? = null
 
+        val gson: Gson by lazy {
+            GsonBuilder()
+                    .setDateFormat("dd MM yyyy")
+                    .registerTypeAdapter(Int::class.java, IntAdapter())
+                    .create()
+        }
+
         val movieProviderModule by lazy {
-            MovieProviderModule(instance!!)
+            MovieProviderModule(instance!!, gson)
         }
     }
 

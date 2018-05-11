@@ -33,6 +33,8 @@
     <string name="settings_preference_update_content">Your preferences have been updated</string>
     <string name="settings_toast_duration_info">Set the duration for movie ratings to be displayed on your screen (in seconds)</string>
 	<string name="settings_privacy_info">Set your privacy preferences</string>
+	<string name="settings_export_data_info">You may save your data offline</string>
+	<string name="settings_export_data">Export data</string>
 	<string name="settings_browse_history">Save recently browsed</string>
 	<string name="settings_clear_history">Clear history</string>
 	<string name="settings_delete_data">Delete all data</string>
@@ -57,6 +59,12 @@
 	<string name="settings_use_year_info">Flutter can try to obtain the \'release\' year of the movie to get more accurate ratings.\n\nNote: A lot of TV shows on Netflix do not have correct release year.</string>
 	<string name="settings_use_year">Use \'release\' year</string>
 	<string name="settings_install_tts_unsupported">It seems that Text to Speech is not supported by the device.</string>
+	<string name="settings_export_data_dialog_title">Export your data</string>
+	<string name="settings_export_data_dialog_content">Flutter lets you export your data in json format. You may share it with your friends, send yourself a copy for back-up or just keep it on your device.</string>
+	<string name="settings_export_data_dialog_include_browsing_history">Include browsing history</string>
+	<string name="settings_export_data_dialog_positive_cta">Export</string>
+	<string name="settings_export_data_permission_title">Permission required</string>
+	<string name="settings_export_data_permission_content">The app needs access to file storage to export your data. Would you like to grant the permission?</string>
 
     <string name="menu_action_settings">Settings</string>
 	<string name="menu_action_fav">Favorites</string>

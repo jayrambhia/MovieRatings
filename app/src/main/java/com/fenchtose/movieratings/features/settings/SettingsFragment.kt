@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.settings
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -7,19 +8,25 @@ import android.speech.tts.TextToSpeech
 import android.support.annotation.IdRes
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.SwitchCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.SeekBar
 import android.widget.TextView
 import com.fenchtose.movieratings.MainActivity
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
+import com.fenchtose.movieratings.base.BasePermissionFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
+import com.fenchtose.movieratings.model.db.movie.DbMovieStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
+import com.fenchtose.movieratings.model.offline.export.DataExporter
+import com.fenchtose.movieratings.model.offline.export.DataFileExporter
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.PackageUtils
@@ -29,7 +36,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
-class SettingsFragment: BaseFragment() {
+class SettingsFragment: BasePermissionFragment() {
 
     private var root: ViewGroup? = null
     private var updatePublisher: PublishSubject<String>? = null
@@ -38,7 +45,9 @@ class SettingsFragment: BaseFragment() {
 
     private var ratingDurationView: TextView? = null
 
-    val CHECK_TTS = 12
+    private val CHECK_TTS = 12
+
+    private val PERMISSION_FOR_EXPORT = 31
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         root = inflater.inflate(R.layout.settings_page_layout, container, false) as ViewGroup
@@ -102,7 +111,7 @@ class SettingsFragment: BaseFragment() {
 
         view.findViewById<View>(R.id.clear_history_button).setOnClickListener { showClearHistoryDialog() }
         view.findViewById<View>(R.id.delete_data_button).setOnClickListener { showDeleteDataDialog() }
-
+        view.findViewById<View>(R.id.export_data_button).setOnClickListener { showExportDataDialog() }
 
         val publisher = PublishSubject.create<String>()
         subscribe(publisher
@@ -176,7 +185,7 @@ class SettingsFragment: BaseFragment() {
     }
 
     private fun clearHistory() {
-        DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao())
+        DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao())
                 .deleteAll()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -191,7 +200,7 @@ class SettingsFragment: BaseFragment() {
     private fun deleteData() {
         val collectionStore = DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao())
         Observable.concat(
-                DbRecentlyBrowsedStore(MovieRatingsApplication.database.recentlyBrowsedDao()).deleteAll(),
+                DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()).deleteAll(),
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()).deleteAll(),
                 collectionStore.deleteAllCollectionEntries(),
                 collectionStore.deleteAllCollections())
@@ -205,6 +214,46 @@ class SettingsFragment: BaseFragment() {
                 }, {
                     showSnackbar(R.string.settings_data_deleted)
                 })
+    }
+
+    private fun showExportDataDialog() {
+
+        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
+        if (!hasPermission(permission)) {
+            showRationaleDialog(R.string.settings_export_data_permission_title,
+                    R.string.settings_export_data_permission_content,
+                    permission,
+                    PERMISSION_FOR_EXPORT)
+            return
+        }
+
+        var historyCheckbox: CheckBox? = null
+        val dialog = AlertDialog.Builder(context)
+                .setTitle(R.string.settings_export_data_dialog_title)
+                .setView(R.layout.export_data_dialog_layout)
+                .setPositiveButton(R.string.settings_export_data_dialog_positive_cta) {
+                    dialog, _ ->
+                        exportData(historyCheckbox?.isChecked ?: false)
+                        dialog.dismiss()
+                }.setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
+                .show()
+
+        historyCheckbox = dialog.findViewById(R.id.include_history_checkbox)
+    }
+
+    private fun exportData(includeHistory: Boolean) {
+        val exported = DataFileExporter(
+                DbMovieStore.getInstance(MovieRatingsApplication.database.movieDao()),
+                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
+                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
+                DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()))
+        exported.observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    progress -> Log.d("SettingsFragment", progress.toString())
+                })
+
+        exported.export(DataExporter.Config(includeHistory))
     }
 
     private fun checkForTTS() {
@@ -251,6 +300,12 @@ class SettingsFragment: BaseFragment() {
 
     override fun getScreenTitle(): Int {
         return R.string.settings_header
+    }
+
+    override fun onRequestGranted(code: Int) {
+        when(code) {
+            PERMISSION_FOR_EXPORT -> showExportDataDialog()
+        }
     }
 
     class SettingsPath: RouterPath<SettingsFragment>() {

@@ -97,12 +97,15 @@ class Movie {
     var totalSeasons: Int = -1
 
     @Ignore
+    @Transient
     var liked: Boolean = false
 
     @Ignore
+    @Transient
     var collections: List<MovieCollection>? = null
 
     @Ignore
+    @Transient
     val appliedPreferences: AppliedPreferences = AppliedPreferences()
 
     override fun toString(): String {

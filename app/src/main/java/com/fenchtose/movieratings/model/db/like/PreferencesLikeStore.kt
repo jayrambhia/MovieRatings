@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.model.Movie
+import com.google.gson.JsonArray
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
 import io.reactivex.Observable
 
 class PreferencesLikeStore(val context: Context) : LikeStore {
@@ -25,5 +28,9 @@ class PreferencesLikeStore(val context: Context) : LikeStore {
     @WorkerThread
     override fun apply(movie: Movie) {
         movie.liked = isLiked(movie.imdbId)
+    }
+
+    override fun export(): Observable<JsonArray> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

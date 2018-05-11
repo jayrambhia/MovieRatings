@@ -1,10 +1,12 @@
 package com.fenchtose.movieratings.model.db.movieCollection
 
 import android.support.annotation.WorkerThread
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.MovieCollectionEntry
 import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
+import com.google.gson.JsonArray
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 
@@ -77,5 +79,20 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
     override fun apply(movie: Movie) {
         movie.collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name }
         movie.appliedPreferences.collections = true
+    }
+
+    override fun export(): Observable<JsonArray> {
+        return Observable.defer {
+            Observable.fromCallable { dao.getMovieCollections() }
+                    .map {
+                        it.map {
+                            it.entries = dao.getCollectionEntties(it.id)
+                        }
+                        it
+                    }
+                    .map {
+                        MovieRatingsApplication.gson.toJsonTree(it).asJsonArray
+                    }
+        }
     }
 }

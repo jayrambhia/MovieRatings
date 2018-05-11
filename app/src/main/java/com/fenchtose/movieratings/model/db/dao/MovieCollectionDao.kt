@@ -29,6 +29,9 @@ interface MovieCollectionDao {
     @Query("SELECT * FROM MOVIES as m INNER JOIN COLLECTION_ENTRIES as ce ON m.IMDBID == ce.IMDBID WHERE ce.COLLECTION_ID == :collectionId")
     fun getMoviesForCollection(collectionId: Long): List<Movie>
 
+    @Query("SELECT * FROM COLLECTION_ENTRIES WHERE COLLECTION_ID == :collectionId")
+    fun getCollectionEntties(collectionId: Long): List<MovieCollectionEntry>
+
     @Query("DELETE FROM COLLECTION_ENTRIES WHERE COLLECTION_ID == :collectionId")
     fun deleteCollectionEntries(collectionId: Long): Int
 

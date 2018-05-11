@@ -40,4 +40,7 @@ interface MovieDao {
 
     @Query("SELECT * FROM MOVIES as m INNER JOIN EPISODES as e ON m.IMDBID == e.IMDBID WHERE e.SERIESIMDBID = :seriesImdbId AND e.season = :season AND e.episode = :episode")
     fun getEpisode(seriesImdbId: String, season: Int, episode: Int): Movie?
+
+    @Query("SELECT * FROM MOVIES")
+    fun getAll(): List<Movie>
 }

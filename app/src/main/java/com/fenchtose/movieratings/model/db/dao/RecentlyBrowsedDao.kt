@@ -13,4 +13,7 @@ interface RecentlyBrowsedDao {
 
     @Query("DELETE FROM RECENTLY_BROWSED")
     fun deleteAll(): Int
+
+    @Query("SELECT * FROM RECENTLY_BROWSED")
+    fun getAll(): List<RecentlyBrowsed>
 }
