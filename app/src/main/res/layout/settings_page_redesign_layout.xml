@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content">
+
+	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
+		android:id="@+id/settings_app_section"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:settings__title="@string/settings_app_section_title"
+		app:settings__subtitle="@string/settings_app_section_subtitle"/>
+
+	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
+		android:id="@+id/settings_data_section"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:settings__title="@string/settings_data_and_privacy_section_title"
+		app:settings__subtitle="@string/settings_data_and_privacy_section_subtitle"/>
+
+	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
+		android:id="@+id/settings_tts_section"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:settings__title="@string/settings_tts_section_title"
+		app:settings__subtitle="@string/settings_tts_section_subtitle"/>
+
+	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
+		android:id="@+id/settings_misc_section"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		app:settings__title="@string/settings_misc_section_title"
+		app:settings__subtitle="@string/settings_misc_section_subtitle"/>
+
+</LinearLayout>

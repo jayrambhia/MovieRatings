@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/settings_info"
+			android:padding="@dimen/gutter"
+			android:textSize="@dimen/settings_header_text_size"/>
+
+		<android.support.v7.widget.SwitchCompat
+			android:id="@+id/netflix_toggle"
+			android:padding="@dimen/gutter"
+			android:textSize="@dimen/settings_text_size"
+			android:text="@string/settings_netflix"
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
+		<android.support.v7.widget.SwitchCompat
+			android:id="@+id/prime_video_toggle"
+			android:padding="@dimen/gutter"
+			android:textSize="@dimen/settings_text_size"
+			android:text="@string/settings_primevideo"
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
+		<android.support.v7.widget.SwitchCompat
+			android:id="@+id/play_movies_toggle"
+			android:padding="@dimen/gutter"
+			android:textSize="@dimen/settings_text_size"
+			android:text="@string/settings_playmovies"
+			android:visibility="gone"
+			tools:visibility="visible"
+			tools:checked="true"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginBottom="8dp"
+			android:background="@color/divider_color" />
+
+		<TextView
+			android:id="@+id/rating_duration_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/settings_toast_duration_info"
+			android:padding="@dimen/gutter"
+			android:textSize="@dimen/settings_header_text_size"/>
+
+		<LinearLayout
+			android:id="@+id/seekbar_container"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="@dimen/gutter"
+			android:orientation="horizontal">
+
+			<android.support.v7.widget.AppCompatSeekBar
+				android:id="@+id/rating_duration_seekbar"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:max="9"
+				android:layout_weight="1"/>
+
+			<TextView
+				android:id="@+id/rating_duration_view"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:paddingStart="16dp"
+				android:paddingEnd="16dp"
+				android:textColor="@color/colorAccent"
+				tools:text="3"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</ScrollView>

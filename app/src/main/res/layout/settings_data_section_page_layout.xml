@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/settings_privacy_info"
+		android:paddingStart="@dimen/gutter"
+		android:paddingEnd="@dimen/gutter"
+		android:layout_marginTop="@dimen/gutter"
+		android:textSize="@dimen/settings_header_text_size"/>
+
+	<android.support.v7.widget.SwitchCompat
+		android:id="@+id/save_browsing_toggle"
+		android:paddingStart="@dimen/gutter"
+		android:paddingEnd="@dimen/gutter"
+		android:layout_marginTop="@dimen/gutter"
+		android:textSize="@dimen/settings_text_size"
+		android:text="@string/settings_browse_history"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"/>
+
+	<Button
+		android:id="@+id/clear_history_button"
+		style="@style/Widget.AppCompat.Button.Colored"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="8dp"
+		android:text="@string/settings_clear_history"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="#44444444"/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/settings_export_data_info"
+		android:layout_marginTop="@dimen/gutter"
+		android:paddingStart="@dimen/gutter"
+		android:paddingEnd="@dimen/gutter"
+		android:textSize="@dimen/settings_header_text_size"/>
+
+	<Button
+		android:id="@+id/export_data_button"
+		style="@style/Widget.AppCompat.Button.Colored"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="8dp"
+		android:text="@string/settings_export_data"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="#44444444"/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/settings_delete_data_info"
+		android:paddingStart="@dimen/gutter"
+		android:paddingEnd="@dimen/gutter"
+		android:layout_marginTop="@dimen/gutter"
+		android:textSize="@dimen/settings_header_text_size"/>
+
+	<Button
+		android:id="@+id/delete_data_button"
+		style="@style/Widget.AppCompat.Button.Colored"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="8dp"
+		android:text="@string/settings_delete_data"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="#44444444"/>
+</LinearLayout>

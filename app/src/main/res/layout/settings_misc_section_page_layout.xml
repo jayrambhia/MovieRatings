@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<android.support.v7.widget.SwitchCompat
+		android:id="@+id/show_activate_toggle"
+		android:padding="@dimen/gutter"
+		android:textSize="@dimen/settings_text_size"
+		android:text="@string/settings_activate_flutter"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="#44444444"/>
+
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/settings_use_year_info"
+		android:paddingStart="@dimen/gutter"
+		android:paddingEnd="@dimen/gutter"
+		android:layout_marginTop="@dimen/gutter"
+		android:textSize="@dimen/settings_header_text_size"/>
+
+	<android.support.v7.widget.SwitchCompat
+		android:id="@+id/use_year_toggle"
+		android:padding="@dimen/gutter"
+		android:textSize="@dimen/settings_text_size"
+		android:text="@string/settings_use_year"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"/>
+
+	<View
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="#44444444"/>
+
+</LinearLayout>

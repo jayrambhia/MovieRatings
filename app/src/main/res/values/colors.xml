@@ -19,4 +19,5 @@
     <color name="floating_rating_color">@color/yellow_primary</color>
 
     <color name="netflix_accent_color">#E50914</color>
+    <color name="divider_color">#44444444</color>
 </resources>
