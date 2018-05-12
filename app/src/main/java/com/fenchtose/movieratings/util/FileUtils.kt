@@ -24,7 +24,7 @@ class FileUtils {
                 return null
             }
 
-            val filename = "flutter_${SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(Date())}.json"
+            val filename = "flutter_${SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(Date())}.txt"
             val base = File(Environment.getExternalStorageDirectory(), "Flutter")
             if (!base.exists() && !base.mkdirs()) {
                 // could not create directory

@@ -61,7 +61,6 @@ class DataFileExporter(
                     json -> movieStore.export()
                         .doOnNext { json.add("movies", it) }.map { json }
                 }
-//                .doOnNext { Log.d(TAG, "received: $it") }
                 .flatMap {
                     json -> Observable.defer {
                         Observable.fromCallable {

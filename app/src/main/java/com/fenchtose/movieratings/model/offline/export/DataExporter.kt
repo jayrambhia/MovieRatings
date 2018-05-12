@@ -11,9 +11,9 @@ interface DataExporter<T> {
     sealed class Progress<T> {
         class Started<T>: Progress<T>()
         class Error<T>: Progress<T>()
-        class Success<T>(val t: T): Progress<T>() {
+        class Success<T>(val data: T): Progress<T>() {
             override fun toString(): String {
-                return "success: filename: $t"
+                return "success: filename: $data"
             }
         }
     }

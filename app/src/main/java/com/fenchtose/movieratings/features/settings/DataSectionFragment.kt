@@ -1,11 +1,10 @@
 package com.fenchtose.movieratings.features.settings
 
 import android.Manifest
-import android.app.AlertDialog
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.SwitchCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +21,7 @@ import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.offline.export.DataFileExporter
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.util.IntentUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -158,13 +158,37 @@ class DataSectionFragment: BasePermissionFragment() {
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()))
+
         exported.observe()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    progress -> Log.d("SettingsFragment", progress.toString())
+                    when(it) {
+                        is DataExporter.Progress.Started -> {}
+                        is DataExporter.Progress.Error -> showSnackbar(R.string.settings_export_data_error)
+                        is DataExporter.Progress.Success -> showExportDataReady(it.data)
+                    }
+                }, {
+                    exported.release()
+                }, {
+                    exported.release()
                 })
 
         exported.export(DataExporter.Config(includeHistory))
+    }
+
+    private fun showExportDataReady(filename: String) {
+        AlertDialog.Builder(context)
+                .setTitle(R.string.settings_export_data_ready_dialog_title)
+                .setMessage(context.getString(R.string.settings_export_data_ready_dialog_content, filename))
+                .setPositiveButton(R.string.settings_export_data_ready_dialog_positive_cta) {
+                    dialog, _ ->
+                        dialog.dismiss()
+                        IntentUtils.openShareFileIntent(context, filename)
+                }
+                .setNeutralButton(android.R.string.ok) {
+                    dialog, _ -> dialog.dismiss()
+                }
+                .show()
     }
 
     class DataSettingsPath: RouterPath<DataSectionFragment>() {
