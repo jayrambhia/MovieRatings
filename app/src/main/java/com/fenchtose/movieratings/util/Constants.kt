@@ -11,6 +11,14 @@ class Constants {
         val PACKAGE_PLAY_MOVIES_TV = "com.google.android.videos"
         val APP_SHARE_URL = "https://goo.gl/y3HXVi"
 
+        val EXPORT_MOVIES = "movies"
+        val EXPORT_COLLECTIONS = "collections"
+        val EXPORT_LIKES = "likes"
+        val EXPORT_APP = "app"
+        val EXPORT_VERSION = "version"
+        val EXPORT_RECENTLY_BROWSED = "recently_browsed"
+        val EXPORT_APP_NAME = "Flutter"
+
     }
 
     enum class TitleType(val type: String) {

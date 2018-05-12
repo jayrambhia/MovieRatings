@@ -38,6 +38,7 @@ open class MovieRatingsApplication : Application() {
             GsonBuilder()
                     .setDateFormat("dd MM yyyy")
                     .registerTypeAdapter(Int::class.java, IntAdapter())
+                    .setPrettyPrinting()
                     .create()
         }
 

@@ -1,11 +1,13 @@
 package com.fenchtose.movieratings.model.offline.export
 
 import android.util.Log
+import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movie.MovieStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
+import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FileUtils
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -43,15 +45,15 @@ class DataFileExporter(
         Observable.zip(likeStore.export(), collectionStore.export(),
                 BiFunction<JsonArray, JsonArray, JsonObject> { likes, collections ->
                     val json = JsonObject()
-                    json.add("likes", likes)
-                    json.add("collections", collections)
+                    json.add(Constants.EXPORT_LIKES, likes)
+                    json.add(Constants.EXPORT_COLLECTIONS, collections)
                     json
                 })
                 .flatMap {
                     json ->
                         if (config.includeHistory) {
                             recentlyBrowsedStore.export()
-                                    .doOnNext{json.add("recently_browsed", it)}
+                                    .doOnNext{json.add(Constants.EXPORT_RECENTLY_BROWSED, it)}
                                     .map { json }
                         } else {
                             Observable.just(json)
@@ -59,12 +61,16 @@ class DataFileExporter(
                 }
                 .flatMap {
                     json -> movieStore.export()
-                        .doOnNext { json.add("movies", it) }.map { json }
+                        .doOnNext { json.add(Constants.EXPORT_MOVIES, it) }.map { json }
+                }
+                .doOnNext {
+                    it.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
+                    it.addProperty(Constants.EXPORT_VERSION, BuildConfig.VERSION_NAME)
                 }
                 .flatMap {
                     json -> Observable.defer {
                         Observable.fromCallable {
-                            FileUtils.export(MovieRatingsApplication.instance!!, json.toString())?: ""
+                            FileUtils.export(MovieRatingsApplication.instance!!, MovieRatingsApplication.gson.toJson(json))?: ""
                         }
                     }
                 }
