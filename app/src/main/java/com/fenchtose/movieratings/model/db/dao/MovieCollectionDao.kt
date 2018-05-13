@@ -16,6 +16,9 @@ interface MovieCollectionDao {
     @Query("SELECT * FROM COLLECTIONS")
     fun getMovieCollections(): List<MovieCollection>
 
+    @Query("SELECT * FROM COLLECTIONS WHERE COLLECTION_NAME = :collectionName LIMIT 1")
+    fun findCollectionByName(collectionName: String): MovieCollection?
+
     @Query("SELECT CASE WHEN EXISTS (" +
             " SELECT * FROM COLLECTION_ENTRIES WHERE COLLECTION_ID = :collectionId AND IMDBID = :imdbId LIMIT 1" +
             ")" +

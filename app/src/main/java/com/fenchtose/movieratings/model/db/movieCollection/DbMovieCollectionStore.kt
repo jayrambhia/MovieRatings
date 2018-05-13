@@ -104,12 +104,16 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
             it.entries.isNotEmpty()
         }.run {
             for (collection in this) {
-                // Add to database
-                val collectionId = dao.insert(MovieCollection.create(collection.name))
+                val existingCollection = dao.findCollectionByName(collection.name)
+                val collectionId = existingCollection?.id ?: dao.insert(MovieCollection.create(collection.name))
                 if (collectionId != -1L) {
-                    collection.entries.map {
+                    val existingEntries = dao.getCollectionEntties(collectionId).map { it.movieId }
+                    collection.entries.filter {
+                        it.movieId !in existingEntries
+                    }.map {
                         MovieCollectionEntry.create(collectionId, it.movieId)
-                    }.run {
+                    }
+                    .run {
                         totalEntries += dao.importEntries(this).filter { it != -1L }.count()
                     }
                 }
