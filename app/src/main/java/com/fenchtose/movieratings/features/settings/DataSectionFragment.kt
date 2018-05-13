@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.SwitchCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +22,6 @@ import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStor
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.offline.export.DataFileExporter
-import com.fenchtose.movieratings.model.offline.import.DataFileImporter
-import com.fenchtose.movieratings.model.offline.import.DataImporter
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.IntentUtils
@@ -226,26 +223,7 @@ class DataSectionFragment: BasePermissionFragment() {
     }
 
     private fun importData(uri: Uri) {
-        val importer = DataFileImporter(context,
-                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
-                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
-                DbMovieStore.getInstance(MovieRatingsApplication.database.movieDao()))
-
-        subscribe(importer.observe()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    when(it) {
-                        is DataImporter.Progress.Started -> {}
-                        is DataImporter.Progress.Error -> showSnackbar(it.error)
-                        is DataImporter.Progress.Success -> showSnackbar(R.string.settings_import_data_success)
-                    }
-                }, {
-                    importer.release()
-                }, {
-                    importer.release()
-                }))
-
-        importer.import(uri)
+        MovieRatingsApplication.router?.go(ImportDataFragment.ImportDataPath(uri))
     }
 
     class DataSettingsPath: RouterPath<DataSectionFragment>() {

@@ -16,4 +16,7 @@ interface RecentlyBrowsedDao {
 
     @Query("SELECT * FROM RECENTLY_BROWSED")
     fun getAll(): List<RecentlyBrowsed>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun importData(data: List<RecentlyBrowsed>): List<Long>
 }

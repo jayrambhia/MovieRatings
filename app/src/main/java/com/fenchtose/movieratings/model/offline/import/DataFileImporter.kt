@@ -9,9 +9,11 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.Fav
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.RecentlyBrowsed
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movie.MovieStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
+import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FileUtils
 import com.fenchtose.movieratings.util.fromJson
@@ -26,6 +28,7 @@ import io.reactivex.subjects.PublishSubject
 class DataFileImporter(private val context: Context,
                        private val likeStore: LikeStore,
                        private val collectionStore: MovieCollectionStore,
+                       private val recentlyBrowsedStore: RecentlyBrowsedStore,
                        private val movieStore: MovieStore): DataImporter {
 
     private val TAG = "DataFileImporter"
@@ -45,7 +48,20 @@ class DataFileImporter(private val context: Context,
         return resultPublisher!!
     }
 
-    override fun import(uri: Uri) {
+    override fun report(uri: Uri): Observable<DataImporter.Report> {
+        return Observable.defer {
+            Observable.fromCallable {
+                generateReport(context, uri)
+            }
+        }
+    }
+
+    override fun import(uri: Uri, config: DataImporter.Config) {
+
+        if (!config.collections && !config.favs && !config.recentlyBrowsed) {
+            return
+        }
+
         Observable.defer {
             Observable.fromCallable {
                 FileUtils.readUri(context, uri)
@@ -60,7 +76,7 @@ class DataFileImporter(private val context: Context,
                     }
                 }
                 .map {
-                    saveData(it)
+                    saveData(it, config)
                 }
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -87,7 +103,22 @@ class DataFileImporter(private val context: Context,
     }
 
     @WorkerThread
-    private fun saveData(data: JsonObject): String {
+    private fun generateReport(context: Context, uri: Uri): DataImporter.Report {
+
+        val data = MovieRatingsApplication.gson.fromJson<JsonElement>(FileUtils.readUri(context, uri), JsonElement::class.java) as JsonObject
+
+        return DataImporter.Report(
+                data.get(Constants.EXPORT_APP)?.asString,
+                data.get(Constants.EXPORT_VERSION)?.asString,
+                data.has(Constants.EXPORT_LIKES),
+                data.has(Constants.EXPORT_COLLECTIONS),
+                data.has(Constants.EXPORT_RECENTLY_BROWSED),
+                data.has(Constants.EXPORT_MOVIES)
+        )
+    }
+
+    @WorkerThread
+    private fun saveData(data: JsonObject, config: DataImporter.Config): String {
         val name = data.get(Constants.EXPORT_APP)?.asString
         val version = data.get(Constants.EXPORT_VERSION)?.asString
 
@@ -99,19 +130,33 @@ class DataFileImporter(private val context: Context,
             return IMPORT_UNSUPPORTED_VERSION
         }
 
-        data.get(Constants.EXPORT_LIKES)?.asJsonArray?.run {
-            val favs = MovieRatingsApplication.gson.fromJson<List<Fav>>(this)
-            val entries = likeStore.import(favs)
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "favs: total ${favs.size}, entries added: $entries")
+        if (config.favs) {
+            data.get(Constants.EXPORT_LIKES)?.asJsonArray?.run {
+                val favs = MovieRatingsApplication.gson.fromJson<List<Fav>>(this)
+                val entries = likeStore.import(favs)
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "favs: total ${favs.size}, entries added: $entries")
+                }
             }
         }
 
-        data.get(Constants.EXPORT_COLLECTIONS)?.asJsonArray?.run {
-            val collections = MovieRatingsApplication.gson.fromJson<List<MovieCollection>>(this)
-            val entries = collectionStore.import(collections)
-            if (BuildConfig.DEBUG) {
-                Log.d(TAG, "collection entries: total ${collections.sumBy { it.entries.size }}, entries added: $entries")
+        if (config.collections) {
+            data.get(Constants.EXPORT_COLLECTIONS)?.asJsonArray?.run {
+                val collections = MovieRatingsApplication.gson.fromJson<List<MovieCollection>>(this)
+                val entries = collectionStore.import(collections)
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "collection entries: total ${collections.sumBy { it.entries.size }}, entries added: $entries")
+                }
+            }
+        }
+
+        if (config.recentlyBrowsed) {
+            data.get(Constants.EXPORT_RECENTLY_BROWSED)?.asJsonArray?.run {
+                val recentlyBrowsed = MovieRatingsApplication.gson.fromJson<List<RecentlyBrowsed>>(this)
+                val entries = recentlyBrowsedStore.import(recentlyBrowsed)
+                if (BuildConfig.DEBUG) {
+                    Log.d(TAG, "collection entries: total ${recentlyBrowsed.size}, entries added: $entries")
+                }
             }
         }
 

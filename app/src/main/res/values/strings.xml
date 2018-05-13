@@ -201,4 +201,18 @@
 	<string name="locale_info_dialog_title">Apologies</string>
 	<string name="locale_info_dialog_content">It seems that the primary language on your device is not English.\n\nUnfortunately, Flutter does not support translated titles and may sometimes show incorrect ratings.\n\nWe are working on adding support for other languages.</string>
 
+	<string name="import_screen_title">Flutter - import data</string>
+	<string name="import_screen_info">Flutter lets you import data from the exported files. Please go over the following options and select what you would like to import.</string>
+	<string name="import_screen_recently_browsed_movies">Recently browsed movies</string>
+	<string name="import_screen_favorites">Liked movies</string>
+	<string name="import_screen_collections">Movie collections</string>
+	<string name="import_screen_import_cta">Import</string>
+	<string name="import_screen_error_info">Unable to import data from this file</string>
+	<string name="import_screen_success_info">Data successfully imported.</string>
+	<string name="import_screen_open_flutter_cta">Open Flutter</string>
+	<string name="import_screen_go_back_cta">Go back</string>
+	<string name="import_screen_error_unsupported_file">This file is not supported by the app.</string>
+	<string name="import_screen_error_unsupported_version">This file version is not supported by the app.</string>
+	<string name="import_screen_error_no_data_file">This file does not contain any data that the app can import.</string>
+
 </resources>

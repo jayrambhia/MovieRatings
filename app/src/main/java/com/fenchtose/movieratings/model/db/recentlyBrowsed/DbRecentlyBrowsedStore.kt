@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.db.recentlyBrowsed
 
+import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.RecentlyBrowsed
 import com.fenchtose.movieratings.model.db.dao.RecentlyBrowsedDao
@@ -41,5 +42,10 @@ class DbRecentlyBrowsedStore private constructor(private val dao: RecentlyBrowse
                 MovieRatingsApplication.gson.toJsonTree(it).asJsonArray
             }
         }
+    }
+
+    @WorkerThread
+    override fun import(history: List<RecentlyBrowsed>): Int {
+        return dao.importData(history).filter { it != -1L }.count()
     }
 }

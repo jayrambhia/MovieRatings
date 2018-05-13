@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<LinearLayout
+		android:id="@+id/state_container"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center"
+		android:visibility="gone"
+		android:orientation="vertical">
+
+		<TextView
+			android:id="@+id/state_info"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:gravity="center"
+			android:padding="16dp"
+			android:textSize="18sp"
+			android:textColor="?attr/colorAccent"
+			tools:text="@string/import_screen_error_info"/>
+
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:orientation="horizontal">
+
+			<Button
+				android:id="@+id/open_flutter_cta"
+				style="@style/Widget.AppCompat.Button.Colored"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_margin="16dp"
+				android:layout_gravity="center_horizontal"
+				android:text="@string/import_screen_open_flutter_cta"/>
+
+			<Button
+				android:id="@+id/go_back_cta"
+				style="@style/Widget.AppCompat.Button.Colored"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_margin="16dp"
+				android:layout_gravity="center_horizontal"
+				android:text="@string/import_screen_go_back_cta"/>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/import_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:orientation="vertical">
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			android:text="@string/import_screen_info"
+			android:textSize="18sp"
+			android:textColor="?attr/colorAccent"/>
+
+		<android.support.v7.widget.AppCompatCheckBox
+			android:id="@+id/fav_checkbox"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			android:textSize="16sp"
+			android:checked="true"
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="16dp"
+			android:text="@string/import_screen_favorites"/>
+
+		<android.support.v7.widget.AppCompatCheckBox
+			android:id="@+id/collections_checkbox"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			android:textSize="16sp"
+			android:checked="true"
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="16dp"
+			android:text="@string/import_screen_collections"/>
+
+		<android.support.v7.widget.AppCompatCheckBox
+			android:id="@+id/recently_browsed_checkbox"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="16dp"
+			android:textSize="16sp"
+			android:checked="true"
+			android:layout_marginStart="16dp"
+			android:layout_marginEnd="16dp"
+			android:text="@string/import_screen_recently_browsed_movies"/>
+
+		<Button
+			android:id="@+id/import_button"
+			style="@style/Widget.AppCompat.Button.Colored"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_margin="16dp"
+			android:layout_gravity="center_horizontal"
+			android:text="@string/import_screen_import_cta"/>
+
+	</LinearLayout>
+
+</FrameLayout>
