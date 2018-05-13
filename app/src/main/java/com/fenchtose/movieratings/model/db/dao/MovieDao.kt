@@ -43,4 +43,7 @@ interface MovieDao {
 
     @Query("SELECT * FROM MOVIES")
     fun getAll(): List<Movie>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun importData(movies: List<Movie>): List<Long>
 }

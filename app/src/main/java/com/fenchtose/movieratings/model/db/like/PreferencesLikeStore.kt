@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.model.db.like
 import android.content.Context
 import android.content.SharedPreferences
 import android.support.annotation.WorkerThread
+import com.fenchtose.movieratings.model.Fav
 import com.fenchtose.movieratings.model.Movie
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -31,6 +32,10 @@ class PreferencesLikeStore(val context: Context) : LikeStore {
     }
 
     override fun export(): Observable<JsonArray> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun import(favs: List<Fav>): Int {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

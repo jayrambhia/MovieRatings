@@ -25,9 +25,13 @@ class MovieCollectionEntry {
 
     companion object {
         fun create(collection: MovieCollection, movie: Movie): MovieCollectionEntry {
+            return create(collection.id, movie.imdbId)
+        }
+
+        fun create(collectionId: Long, movieId: String): MovieCollectionEntry {
             val entry = MovieCollectionEntry()
-            entry.collectionId = collection.id
-            entry.movieId = movie.imdbId
+            entry.collectionId = collectionId
+            entry.movieId = movieId
             entry.createdAt = System.currentTimeMillis()
             entry.updatedAt = entry.createdAt
             return entry

@@ -1,10 +1,14 @@
 package com.fenchtose.movieratings.features.settings
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.SwitchCompat
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +23,8 @@ import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStor
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.offline.export.DataFileExporter
+import com.fenchtose.movieratings.model.offline.import.DataFileImporter
+import com.fenchtose.movieratings.model.offline.import.DataImporter
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.IntentUtils
@@ -29,6 +35,7 @@ import io.reactivex.schedulers.Schedulers
 class DataSectionFragment: BasePermissionFragment() {
 
     private val PERMISSION_FOR_EXPORT = 31
+    private val REQUEST_OPEN_FILE = 32
 
     private var updatePublisher: PreferenceUpdater? = null
 
@@ -48,6 +55,7 @@ class DataSectionFragment: BasePermissionFragment() {
         view.findViewById<View>(R.id.clear_history_button).setOnClickListener { showClearHistoryDialog() }
         view.findViewById<View>(R.id.delete_data_button).setOnClickListener { showDeleteDataDialog() }
         view.findViewById<View>(R.id.export_data_button).setOnClickListener { showExportDataDialog() }
+        view.findViewById<View>(R.id.import_data_button).setOnClickListener { showImportDataDialog() }
     }
 
     override fun onDestroyView() {
@@ -74,6 +82,17 @@ class DataSectionFragment: BasePermissionFragment() {
     override fun onRequestGranted(code: Int) {
         when(code) {
             PERMISSION_FOR_EXPORT -> showExportDataDialog()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when(requestCode) {
+            REQUEST_OPEN_FILE -> {
+                if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+                    importData(data.data)
+                }
+            }
         }
     }
 
@@ -153,13 +172,13 @@ class DataSectionFragment: BasePermissionFragment() {
     }
 
     private fun exportData(includeHistory: Boolean) {
-        val exported = DataFileExporter(
+        val exporter = DataFileExporter(
                 DbMovieStore.getInstance(MovieRatingsApplication.database.movieDao()),
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()))
 
-        exported.observe()
+        subscribe(exporter.observe()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     when(it) {
@@ -168,12 +187,12 @@ class DataSectionFragment: BasePermissionFragment() {
                         is DataExporter.Progress.Success -> showExportDataReady(it.data)
                     }
                 }, {
-                    exported.release()
+                    exporter.release()
                 }, {
-                    exported.release()
-                })
+                    exporter.release()
+                }))
 
-        exported.export(DataExporter.Config(includeHistory))
+        exporter.export(DataExporter.Config(includeHistory))
     }
 
     private fun showExportDataReady(filename: String) {
@@ -189,6 +208,44 @@ class DataSectionFragment: BasePermissionFragment() {
                     dialog, _ -> dialog.dismiss()
                 }
                 .show()
+    }
+
+    private fun showImportDataDialog() {
+        AlertDialog.Builder(context)
+                .setTitle(R.string.settings_import_data_dialog_title)
+                .setMessage(R.string.settings_import_data_dialog_content)
+                .setPositiveButton(R.string.settings_import_data_dialog_positive_cta) {
+                    dialog, _ -> startFileSelection()
+                    dialog.dismiss()
+                }.setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
+                .show()
+    }
+
+    private fun startFileSelection() {
+        startActivityForResult(Intent.createChooser(IntentUtils.getFileSelectionIntnet(), "Find file via"), REQUEST_OPEN_FILE)
+    }
+
+    private fun importData(uri: Uri) {
+        val importer = DataFileImporter(context,
+                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
+                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
+                DbMovieStore.getInstance(MovieRatingsApplication.database.movieDao()))
+
+        subscribe(importer.observe()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    when(it) {
+                        is DataImporter.Progress.Started -> {}
+                        is DataImporter.Progress.Error -> showSnackbar(it.error)
+                        is DataImporter.Progress.Success -> showSnackbar(R.string.settings_import_data_success)
+                    }
+                }, {
+                    importer.release()
+                }, {
+                    importer.release()
+                }))
+
+        importer.import(uri)
     }
 
     class DataSettingsPath: RouterPath<DataSectionFragment>() {

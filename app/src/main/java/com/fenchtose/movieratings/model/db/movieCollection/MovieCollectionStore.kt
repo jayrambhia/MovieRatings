@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.db.movieCollection
 
+import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.MovieCollectionEntry
@@ -16,4 +17,8 @@ interface MovieCollectionStore : UserPreferenceApplier {
     fun deleteAllCollectionEntries(): Observable<Int>
     fun deleteAllCollections(): Observable<Int>
     fun export(): Observable<JsonArray>
+
+    // TODO should we skip same name collection? Append to it?
+    @WorkerThread
+    fun import(collections: List<MovieCollection>): Int
 }

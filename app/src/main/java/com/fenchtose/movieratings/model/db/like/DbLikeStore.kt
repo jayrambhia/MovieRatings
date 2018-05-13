@@ -59,9 +59,14 @@ class DbLikeStore private constructor(private val likeDao: FavDao) : LikeStore {
     override fun export(): Observable<JsonArray> {
         val gson = MovieRatingsApplication.gson
         return Observable.defer {
-            Observable.fromCallable { likeDao.getAll() }
+            Observable.fromCallable { likeDao.exportData() }
         }.map {
             gson.toJsonTree(it).asJsonArray
         }
+    }
+
+    @WorkerThread
+    override fun import(favs: List<Fav>): Int {
+        return likeDao.importData(favs.filter { it.liked }).filter { it != -1L }.count()
     }
 }

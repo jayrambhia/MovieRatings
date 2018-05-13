@@ -45,6 +45,13 @@ class IntentUtils {
             context.startActivity(Intent.createChooser(intent, "Share via"))
         }
 
+        fun getFileSelectionIntnet(): Intent {
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "text/plain"
+            return intent
+        }
+
         fun canStartIntent(context: Context, intent: Intent): Boolean {
             return intent.resolveActivity(context.packageManager) != null
         }

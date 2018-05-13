@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Environment
 import android.support.v4.content.ContextCompat
 import java.io.File
@@ -42,6 +43,10 @@ class FileUtils {
             }*/
 
             return file.absolutePath
+        }
+
+        fun readUri(context: Context, uri: Uri): String {
+            return context.contentResolver.openInputStream(uri).reader().readText()
         }
 
     }

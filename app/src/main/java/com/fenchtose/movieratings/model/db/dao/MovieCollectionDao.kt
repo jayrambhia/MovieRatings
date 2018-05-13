@@ -8,7 +8,7 @@ import com.fenchtose.movieratings.model.MovieCollectionEntry
 @Dao
 interface MovieCollectionDao {
     @Insert(onConflict = OnConflictStrategy.FAIL)
-    fun insert(collection: MovieCollection)
+    fun insert(collection: MovieCollection): Long
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
     fun insert(entry: MovieCollectionEntry)
@@ -46,5 +46,8 @@ interface MovieCollectionDao {
 
     @Query("DELETE FROM COLLECTION_ENTRIES")
     fun deleteAllCollectionEntries(): Int
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun importEntries(entries: List<MovieCollectionEntry>): List<Long>
 
 }

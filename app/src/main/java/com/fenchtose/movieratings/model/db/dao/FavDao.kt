@@ -18,7 +18,10 @@ interface FavDao {
     @Query("DELETE FROM FAVS")
     fun deleteAll(): Int
 
-    @Query("SELECT * FROM FAVS")
-    fun getAll(): List<Fav>
+    @Query("SELECT * FROM FAVS WHERE IS_FAV == 1")
+    fun exportData(): List<Fav>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun importData(favs: List<Fav>): List<Long>
 
 }

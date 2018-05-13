@@ -30,7 +30,7 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
                         name -> MovieCollection.create(name)
                     }
                     .doOnNext {
-                        dao.insert(it)
+                        it.id = dao.insert(it)
                     }
         }
     }
@@ -94,5 +94,28 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
                         MovieRatingsApplication.gson.toJsonTree(it).asJsonArray
                     }
         }
+    }
+
+    @WorkerThread
+    override fun import(collections: List<MovieCollection>): Int {
+        var totalEntries = 0
+
+        collections.filter {
+            it.entries.isNotEmpty()
+        }.run {
+            for (collection in this) {
+                // Add to database
+                val collectionId = dao.insert(MovieCollection.create(collection.name))
+                if (collectionId != -1L) {
+                    collection.entries.map {
+                        MovieCollectionEntry.create(collectionId, it.movieId)
+                    }.run {
+                        totalEntries += dao.importEntries(this).filter { it != -1L }.count()
+                    }
+                }
+            }
+        }
+
+        return totalEntries
     }
 }

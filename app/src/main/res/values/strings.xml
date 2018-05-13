@@ -35,6 +35,7 @@
 	<string name="settings_privacy_info">Set your privacy preferences</string>
 	<string name="settings_export_data_info">You may save your data offline</string>
 	<string name="settings_export_data">Export</string>
+	<string name="settings_import_data">Import</string>
 	<string name="settings_browse_history">Save recently browsed</string>
 	<string name="settings_clear_history">Clear history</string>
 	<string name="settings_delete_data_info">Delete all your data including likes, collections and history</string>
@@ -70,6 +71,11 @@
 	<string name="settings_export_data_ready_dialog_title">Data exported</string>
 	<string name="settings_export_data_ready_dialog_content">Your data has been successfully exported.\nThe file is available at %1s.\n\nShare the file with your friends or send yourself a copy via email.</string>
 	<string name="settings_export_data_ready_dialog_positive_cta">Share</string>
+	<string name="settings_import_data_dialog_title">Import from a file</string>
+	<string name="settings_import_data_dialog_content">Please select a flutter data format supported file and the app will import the data.</string>
+	<string name="settings_import_data_dialog_positive_cta">Import</string>
+	<string name="settings_import_data_success">Flutter has successfully imported data</string>
+
 	<string name="settings_app_section_title">Manage supported apps</string>
 	<string name="settings_app_section_subtitle">Manage preferences for apps &amp; rating display duration</string>
 	<string name="settings_data_and_privacy_section_title">Manage your data</string>

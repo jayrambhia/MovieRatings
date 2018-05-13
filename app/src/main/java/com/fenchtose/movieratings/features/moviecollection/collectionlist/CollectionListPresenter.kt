@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionlist
 
+import android.util.Log
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
@@ -45,6 +46,7 @@ class CollectionListPresenter(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    Log.d("create collection: ", "${it.name}, ${it.id}")
                     updateState(CollectionListPage.OpState.Created(it.name))
                     loadCollections()
                 }, {
