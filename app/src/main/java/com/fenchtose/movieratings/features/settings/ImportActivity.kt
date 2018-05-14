@@ -24,6 +24,8 @@ class ImportActivity: AppCompatActivity() {
         var uri: Uri? = null
         if (action == Intent.ACTION_SEND && type == "text/plain") {
             uri = intent?.getParcelableExtra(Intent.EXTRA_STREAM)
+        } else if (action == Intent.ACTION_VIEW && type == "text/plain") {
+            uri = intent?.data
         }
 
         val fragment = ImportDataFragment()

@@ -43,6 +43,11 @@
 			    <action android:name="android.intent.action.SEND"/>
 			    <data android:mimeType="text/plain"/>
 		    </intent-filter>
+		    <intent-filter tools:ignore="AppLinkUrlError">
+			    <category android:name="android.intent.category.DEFAULT"/>
+			    <action android:name="android.intent.action.VIEW"/>
+			    <data android:mimeType="text/plain"/>
+		    </intent-filter>
 	    </activity>
 
         <service
