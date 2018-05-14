@@ -27,12 +27,6 @@
 		app:showAsAction="always"/>
 
 	<item
-		android:id="@+id/action_share"
-	    android:title="@string/menu_action_share"
-		android:icon="@drawable/ic_share_accent_24dp"
-		app:showAsAction="always"/>
-
-	<item
 		android:id="@+id/action_add_to_collection"
 		android:title="@string/menu_action_add_to_collection"
 		android:icon="@drawable/ic_playlist_add_accent_24dp"
@@ -63,6 +57,12 @@
 
 
     </item>
+
+	<item
+		android:id="@+id/action_share"
+		android:title="@string/menu_action_share"
+		android:icon="@drawable/ic_share_accent_24dp"
+		app:showAsAction="always"/>
 
 	<item
 		android:id="@+id/action_info"

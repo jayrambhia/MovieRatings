@@ -169,7 +169,7 @@
 	<string name="movie_collection_delete_dialog_negative">Yes, delete</string>
 	<string name="movie_collection_delete_dialog_neutral">No, keep</string>
 	<string name="movie_collection_list_share_dialog_title">Share all your collections</string>
-	<string name="movie_collection_list_share_dialog_content">Do you want to share all your collections? If you want to share a particular collection, please open that collection and click on share.</string>
+	<string name="movie_collection_list_share_dialog_content">Do you want to share all your collections? The app will generate a text file which you can send to your friends and they can import it to the app.</string>
 	<string name="movie_collection_list_share_dialog_positive_cta">Yes, Share</string>
 	<string name="movie_collection_list_share_error">Unable to share your collections.</string>
 
@@ -188,7 +188,7 @@
 	<string name="movie_collection_add_movie_error">Unable to add %1s to this collection</string>
 	<string name="movie_collection_search_and_add">Search and add to this collection</string>
 	<string name="movie_collection_share_dialog_title">Share this collection</string>
-	<string name="movie_collection_share_dialog_content">Do you want to share this collection?</string>
+	<string name="movie_collection_share_dialog_content">Do you want to share this collection? The app will generate a text file which you can send to your friends and they can import it to the app.</string>
 	<string name="movie_collection_share_dialog_positive_cta">Yes, Share</string>
 	<string name="movie_collection_share_error">Unable to share this collection.</string>
 	<string name="movie_collection_share_empty">Can not share empty collection.</string>

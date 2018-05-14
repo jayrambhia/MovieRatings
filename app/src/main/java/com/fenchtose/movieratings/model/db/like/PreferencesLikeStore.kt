@@ -30,10 +30,31 @@ class PreferencesLikeStore(val context: Context) : LikeStore {
     }
 
     override fun export(): Single<List<Fav>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return Single.defer {
+            Single.fromCallable {
+                val favs = ArrayList<Fav>()
+                preferences.all.filter { it.value != null && it.value is Boolean && it.value == true }
+                        .map {
+                            val fav = Fav()
+                            fav.id = it.key
+                            fav.liked = it.value as Boolean
+                            fav
+                        }.toCollection(favs)
+                favs
+            }
+        }
     }
 
+    @WorkerThread
     override fun import(favs: List<Fav>): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val editor = preferences.edit()
+        var count = 0
+        for (fav in favs.filter { it.liked }) {
+            editor.putBoolean(fav.id, fav.liked)
+            count++
+        }
+        editor.apply()
+
+        return count
     }
 }
