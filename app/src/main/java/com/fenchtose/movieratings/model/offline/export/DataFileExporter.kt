@@ -3,9 +3,14 @@ package com.fenchtose.movieratings.model.offline.export
 import android.net.Uri
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.model.db.MovieDb
+import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.LikeStore
+import com.fenchtose.movieratings.model.db.movie.DbMovieStore
 import com.fenchtose.movieratings.model.db.movie.MovieStore
+import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
+import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FileUtils
@@ -22,6 +27,16 @@ class DataFileExporter(
         private val recentlyBrowsedStore: RecentlyBrowsedStore) : DataExporter<Uri> {
 
     private val TAG = "DataFileExported"
+
+    companion object {
+        fun newInstance(db: MovieDb): DataFileExporter {
+            return DataFileExporter(
+                    DbMovieStore.getInstance(db.movieDao()),
+                    DbLikeStore.getInstance(db.favDao()),
+                    DbMovieCollectionStore.getInstance(db.movieCollectionDao()),
+                    DbRecentlyBrowsedStore.getInstance(db.recentlyBrowsedDao()))
+        }
+    }
 
     private var resultPublisher: PublishSubject<DataExporter.Progress<Uri>>? = null
 

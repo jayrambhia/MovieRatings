@@ -58,6 +58,18 @@
                 android:resource="@xml/serviceconfig"/>
         </service>
 
+	    <provider
+		    android:authorities="${applicationId}.provider"
+		    android:name="android.support.v4.content.FileProvider"
+		    android:exported="false"
+		    android:grantUriPermissions="true">
+
+		    <meta-data
+			    android:name="android.support.FILE_PROVIDER_PATHS"
+		        android:resource="@xml/fileprovider"/>
+
+	    </provider>
+
         <!--<activity android:name=".features.android_tv.TVActivity"
                   android:label="@string/app_name">
 

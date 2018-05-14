@@ -1,12 +1,13 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionlist
 
-import android.app.AlertDialog
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
@@ -19,6 +20,8 @@ import com.fenchtose.movieratings.features.moviecollection.collectionpage.Collec
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
+import com.fenchtose.movieratings.model.offline.export.DataFileExporter
+import com.fenchtose.movieratings.util.IntentUtils
 
 class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
@@ -33,7 +36,9 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         super.onCreate(savedInstanceState)
         presenter = CollectionListPresenter(
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
-                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()))
+                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
+                DataFileExporter.newInstance(MovieRatingsApplication.database))
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -111,6 +116,14 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         showSnackbar(context.getString(resId, state.data))
     }
 
+    override fun updateState(state: CollectionListPage.ShareState) {
+        when(state) {
+            is CollectionListPage.ShareState.Start -> {}
+            is CollectionListPage.ShareState.Error -> showSnackbar(R.string.movie_collection_list_share_error)
+            is CollectionListPage.ShareState.Success -> IntentUtils.openShareFileIntent(context, state.uri)
+        }
+    }
+
     private fun onCreateCollectionRequested() {
 
         var edittext: EditText? = null
@@ -167,6 +180,19 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         }
     }
 
+    private fun showShareDialog() {
+        AlertDialog.Builder(context)
+                .setTitle(R.string.movie_collection_list_share_dialog_title)
+                .setMessage(R.string.movie_collection_list_share_dialog_content)
+                .setPositiveButton(R.string.movie_collection_list_share_dialog_positive_cta) {
+                    dialog, _ ->
+                    dialog.dismiss()
+                    presenter?.share()
+                }
+                .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }
+                .show()
+    }
+
     override fun canGoBack(): Boolean {
         return true
     }
@@ -177,6 +203,16 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         }
 
         return false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        var consumed = true
+        when(item?.itemId) {
+            R.id.action_share -> showShareDialog()
+            else -> consumed = false
+        }
+
+        return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
     override fun getScreenTitle(): Int {
@@ -194,6 +230,10 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
         override fun createFragmentInstance(): CollectionListPageFragment {
             return CollectionListPageFragment()
+        }
+
+        override fun showMenuIcons(): IntArray {
+            return if (returnSelection) super.showMenuIcons() else intArrayOf(R.id.action_share)
         }
     }
 }

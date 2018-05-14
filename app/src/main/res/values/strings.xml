@@ -99,6 +99,7 @@
 	<string name="menu_action_collection">Collections</string>
 	<string name="menu_action_open_imdb">Open Imdb</string>
 	<string name="menu_action_add_to_collection">Add to collection</string>
+	<string name="menu_action_share">Share</string>
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
@@ -167,6 +168,10 @@
 	<string name="movie_collection_delete_dialog_content">Do you want to delete the collection: %1s?\nYou can not retrieve it once deleted.</string>
 	<string name="movie_collection_delete_dialog_negative">Yes, delete</string>
 	<string name="movie_collection_delete_dialog_neutral">No, keep</string>
+	<string name="movie_collection_list_share_dialog_title">Share all your collections</string>
+	<string name="movie_collection_list_share_dialog_content">Do you want to share all your collections? If you want to share a particular collection, please open that collection and click on share.</string>
+	<string name="movie_collection_list_share_dialog_positive_cta">Yes, Share</string>
+	<string name="movie_collection_list_share_error">Unable to share your collections.</string>
 
 	<string name="movie_collection_page_title">Movie collection</string>
 	<string name="movie_collection_page_empty_content">There are no movies in this collection!</string>
