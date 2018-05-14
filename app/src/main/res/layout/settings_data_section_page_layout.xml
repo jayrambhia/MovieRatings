@@ -30,7 +30,7 @@
 	<Button
 		android:id="@+id/clear_history_button"
 		style="@style/Widget.AppCompat.Button.Colored"
-		android:layout_width="wrap_content"
+		android:layout_width="160dp"
 		android:layout_height="wrap_content"
 		android:layout_margin="8dp"
 		android:text="@string/settings_clear_history"/>
@@ -43,7 +43,7 @@
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:text="@string/settings_export_data_info"
+		android:text="@string/settings_export_import_data_info"
 		android:layout_marginTop="@dimen/gutter"
 		android:paddingStart="@dimen/gutter"
 		android:paddingEnd="@dimen/gutter"
@@ -57,15 +57,20 @@
 		<Button
 			android:id="@+id/export_data_button"
 			style="@style/Widget.AppCompat.Button.Colored"
-			android:layout_width="wrap_content"
+			android:layout_width="160dp"
 			android:layout_height="wrap_content"
 			android:layout_margin="8dp"
 			android:text="@string/settings_export_data"/>
 
+		<android.support.v4.widget.Space
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			android:layout_height="wrap_content"/>
+
 		<Button
 			android:id="@+id/import_data_button"
 			style="@style/Widget.AppCompat.Button.Colored"
-			android:layout_width="wrap_content"
+			android:layout_width="160dp"
 			android:layout_height="wrap_content"
 			android:layout_margin="8dp"
 			android:text="@string/settings_import_data"/>
@@ -89,7 +94,7 @@
 	<Button
 		android:id="@+id/delete_data_button"
 		style="@style/Widget.AppCompat.Button.Colored"
-		android:layout_width="wrap_content"
+		android:layout_width="160dp"
 		android:layout_height="wrap_content"
 		android:layout_margin="8dp"
 		android:text="@string/settings_delete_data"/>

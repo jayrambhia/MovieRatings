@@ -33,7 +33,7 @@
     <string name="settings_preference_update_content">Your preferences have been updated</string>
     <string name="settings_toast_duration_info">Set the duration for movie ratings to be displayed on your screen (in seconds)</string>
 	<string name="settings_privacy_info">Set your privacy preferences</string>
-	<string name="settings_export_data_info">You may save your data offline</string>
+	<string name="settings_export_import_data_info">Flutter allows you to save your data offline. You may also import data (collections, likes) from a file.</string>
 	<string name="settings_export_data">Export</string>
 	<string name="settings_import_data">Import</string>
 	<string name="settings_browse_history">Save recently browsed</string>
