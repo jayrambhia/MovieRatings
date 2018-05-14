@@ -140,7 +140,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
 
     fun share() {
         collection?.let {
-            val uri = FileUtils.createCacheFile(MovieRatingsApplication.instance!!, FileUtils.createCacheFilename())
+            val uri = FileUtils.createCacheFile(MovieRatingsApplication.instance!!, "collection_${it.name}.txt")
             exporter.exportCollection(uri, it)
         }
     }

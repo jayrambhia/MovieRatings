@@ -97,7 +97,7 @@ class CollectionListPresenter(
     }
 
     fun share() {
-        val uri = FileUtils.createCacheFile(MovieRatingsApplication.instance!!, FileUtils.createCacheFilename())
+        val uri = FileUtils.createCacheFile(MovieRatingsApplication.instance!!, "flutter_collections.txt")
         exporter.export(uri, DataExporter.Config(false, true, false))
     }
 }

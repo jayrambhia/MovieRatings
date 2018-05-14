@@ -1,6 +1,5 @@
 package com.fenchtose.movieratings.util
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.support.v4.content.FileProvider
@@ -9,8 +8,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
 
 class FileUtils {
 
@@ -40,13 +37,8 @@ class FileUtils {
         }
 
         fun createCacheFile(context: Context, filename: String): Uri {
-            val cacheFile = File.createTempFile(filename, ".txt", context.cacheDir)
+            val cacheFile = File(context.cacheDir, filename)
             return FileProvider.getUriForFile(context, "${BuildConfig.APPLICATION_ID}.provider", cacheFile)
-        }
-
-        @SuppressLint("SimpleDateFormat")
-        fun createCacheFilename(): String {
-            return "flutter_${SimpleDateFormat("yyyy-MM-dd_HH:mm:ss").format(Date())}"
         }
 
     }

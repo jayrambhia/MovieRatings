@@ -37,6 +37,7 @@ class IntentUtils {
             val intent = Intent(Intent.ACTION_SEND)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.putExtra(Intent.EXTRA_STREAM, uri)
+            intent.putExtra(Intent.EXTRA_TITLE, "flutter_data.txt")
             intent.type = "text/plain"
             context.startActivity(Intent.createChooser(intent, "Share via"))
         }
