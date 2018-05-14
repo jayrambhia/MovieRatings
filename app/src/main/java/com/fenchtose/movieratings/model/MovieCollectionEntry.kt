@@ -14,12 +14,15 @@ class MovieCollectionEntry {
     @ColumnInfo(name = "IMDBID")
     var movieId: String = ""
 
+    @Transient
     @ColumnInfo(name = "CREATED_AT")
     var createdAt: Long = 0
 
+    @Transient
     @ColumnInfo(name = "UPDATED_AT")
     var updatedAt: Long = 0
 
+    @Transient
     @ColumnInfo(name = "IS_DELETED")
     var deleted: Int = 0
 
