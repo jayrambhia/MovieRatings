@@ -118,7 +118,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
     override fun updateState(state: CollectionListPage.ShareState) {
         when(state) {
-            is CollectionListPage.ShareState.Start -> {}
+            is CollectionListPage.ShareState.Started -> {}
             is CollectionListPage.ShareState.Error -> showSnackbar(R.string.movie_collection_list_share_error)
             is CollectionListPage.ShareState.Success -> IntentUtils.openShareFileIntent(context, state.uri)
         }

@@ -85,10 +85,25 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
             Single.fromCallable { dao.getMovieCollections() }
                     .map {
                         it.map {
-                            it.entries = dao.getCollectionEntties(it.id)
+                            it.entries = dao.getCollectionEntries(it.id)
                         }
                         it
                     }
+        }
+    }
+
+    override fun export(collectionId: Long): Single<List<MovieCollection>> {
+        return Single.defer {
+            Single.fromCallable {
+                dao.getMovieCollection(collectionId) ?: MovieCollection.invalid()
+            }.map {
+                if (it.id != -1L) {
+                    it.entries = dao.getCollectionEntries(it.id)
+                    arrayListOf(it)
+                } else {
+                    ArrayList()
+                }
+            }
         }
     }
 
@@ -103,7 +118,7 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
                 val existingCollection = dao.findCollectionByName(collection.name)
                 val collectionId = existingCollection?.id ?: dao.insert(MovieCollection.create(collection.name))
                 if (collectionId != -1L) {
-                    val existingEntries = dao.getCollectionEntties(collectionId).map { it.movieId }
+                    val existingEntries = dao.getCollectionEntries(collectionId).map { it.movieId }
                     collection.entries.filter {
                         it.movieId !in existingEntries
                     }.map {

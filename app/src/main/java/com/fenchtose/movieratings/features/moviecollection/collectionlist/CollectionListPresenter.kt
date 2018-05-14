@@ -24,9 +24,9 @@ class CollectionListPresenter(
                 .observeOn(AndroidSchedulers.mainThread())
                 .map {
                     when(it) {
-                        is DataExporter.Progress.Started -> CollectionListPage.ShareState.Start()
+                        is DataExporter.Progress.Started -> CollectionListPage.ShareState.Started()
                         is DataExporter.Progress.Error -> CollectionListPage.ShareState.Error()
-                        is DataExporter.Progress.Success -> CollectionListPage.ShareState.Success(it.data)
+                        is DataExporter.Progress.Success -> CollectionListPage.ShareState.Success(it.output)
                     }
                 }
                 .subscribe({
@@ -98,6 +98,6 @@ class CollectionListPresenter(
 
     fun share() {
         val uri = FileUtils.createCacheFile(MovieRatingsApplication.instance!!, FileUtils.createCacheFilename())
-        exporter.export(DataExporter.Config(uri, false, true, false))
+        exporter.export(uri, DataExporter.Config(false, true, false))
     }
 }

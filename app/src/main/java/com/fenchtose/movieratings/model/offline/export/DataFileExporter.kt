@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.model.offline.export
 import android.net.Uri
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.db.MovieDb
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.LikeStore
@@ -53,7 +54,7 @@ class DataFileExporter(
         resultPublisher = null
     }
 
-    override fun export(config: DataExporter.Config) {
+    override fun export(output: Uri, config: DataExporter.Config) {
         Single.defer {
             val json = JsonObject()
             json.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
@@ -115,16 +116,60 @@ class DataFileExporter(
         }.flatMap {
             json -> Single.defer {
                 Single.fromCallable {
-                    FileUtils.export(MovieRatingsApplication.instance!!, config.uri, MovieRatingsApplication.gson.toJson(json))
+                    FileUtils.export(MovieRatingsApplication.instance!!, output, MovieRatingsApplication.gson.toJson(json))
                 }
             }
         }.subscribeOn(Schedulers.io())
         .subscribe ({
-            success -> resultPublisher?.onNext(if (success) DataExporter.Progress.Success(config.uri) else DataExporter.Progress.Error())
+            success -> resultPublisher?.onNext(if (success) DataExporter.Progress.Success(output) else DataExporter.Progress.Error())
         }, {
             error -> resultPublisher?.onNext(DataExporter.Progress.Error())
             error.printStackTrace()
         })
+
+        resultPublisher?.onNext(DataExporter.Progress.Started())
+
+    }
+
+    override fun exportCollection(output: Uri, collection: MovieCollection) {
+        Single.defer {
+            val json = JsonObject()
+            json.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
+            json.addProperty(Constants.EXPORT_VERSION, BuildConfig.VERSION_NAME)
+            Single.just(Pair(HashSet<String>(), json))
+        }.flatMap {
+            pair ->
+                collectionStore.export(collection.id)
+                        .map {
+                            if (it.isNotEmpty()) {
+                                pair.second.add(Constants.EXPORT_COLLECTIONS, MovieRatingsApplication.gson.toJsonTree(it))
+                                it.map { it.entries }.flatten().map { it.movieId }.toCollection(pair.first)
+                            }
+                            pair
+                        }
+
+        }.flatMap {
+            pair -> movieStore.export(pair.first)
+                .map {
+                    if (it.isNotEmpty()) {
+                        pair.second.add(Constants.EXPORT_MOVIES, MovieRatingsApplication.gson.toJsonTree(it))
+                    }
+
+                    pair.second
+                }
+        }.flatMap {
+            json -> Single.defer {
+            Single.fromCallable {
+                FileUtils.export(MovieRatingsApplication.instance!!, output, MovieRatingsApplication.gson.toJson(json))
+            }
+        }
+        }.subscribeOn(Schedulers.io())
+                .subscribe ({
+                    success -> resultPublisher?.onNext(if (success) DataExporter.Progress.Success(output) else DataExporter.Progress.Error())
+                }, {
+                    error -> resultPublisher?.onNext(DataExporter.Progress.Error())
+                    error.printStackTrace()
+                })
 
         resultPublisher?.onNext(DataExporter.Progress.Started())
 

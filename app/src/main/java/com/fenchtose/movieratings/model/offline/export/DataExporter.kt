@@ -1,23 +1,24 @@
 package com.fenchtose.movieratings.model.offline.export
 
-import android.net.Uri
+import com.fenchtose.movieratings.model.MovieCollection
 import io.reactivex.Observable
 
 interface DataExporter<T> {
 
     fun observe(): Observable<Progress<T>>
-    fun export(config: Config)
+    fun export(output: T, config: Config)
     fun release()
+    fun exportCollection(output: T, collection: MovieCollection)
 
     sealed class Progress<T> {
         class Started<T>: Progress<T>()
         class Error<T>: Progress<T>()
-        class Success<T>(val data: T): Progress<T>() {
+        class Success<T>(val output: T): Progress<T>() {
             override fun toString(): String {
-                return "success: filename: $data"
+                return "success: output: $output"
             }
         }
     }
 
-    data class Config(val uri: Uri, val favs: Boolean, val collections: Boolean, val recentlyBrowsed: Boolean)
+    data class Config(val favs: Boolean, val collections: Boolean, val recentlyBrowsed: Boolean)
 }

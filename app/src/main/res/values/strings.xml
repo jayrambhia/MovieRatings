@@ -187,6 +187,11 @@
 	<string name="movie_collection_add_movie_success">Added %1s to this collection</string>
 	<string name="movie_collection_add_movie_error">Unable to add %1s to this collection</string>
 	<string name="movie_collection_search_and_add">Search and add to this collection</string>
+	<string name="movie_collection_share_dialog_title">Share this collection</string>
+	<string name="movie_collection_share_dialog_content">Do you want to share this collection?</string>
+	<string name="movie_collection_share_dialog_positive_cta">Yes, Share</string>
+	<string name="movie_collection_share_error">Unable to share this collection.</string>
+	<string name="movie_collection_share_empty">Can not share empty collection.</string>
 
 	<string name="show_more">Show more</string>
 

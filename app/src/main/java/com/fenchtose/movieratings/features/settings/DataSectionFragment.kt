@@ -179,7 +179,7 @@ class DataSectionFragment: BaseFragment() {
                     when(it) {
                         is DataExporter.Progress.Started -> {}
                         is DataExporter.Progress.Error -> showSnackbar(R.string.settings_export_data_error)
-                        is DataExporter.Progress.Success -> showExportDataReady(it.data)
+                        is DataExporter.Progress.Success -> showExportDataReady(it.output)
                     }
                 }, {
                     exporter.release()
@@ -187,7 +187,7 @@ class DataSectionFragment: BaseFragment() {
                     exporter.release()
                 }))
 
-        exporter.export(DataExporter.Config(uri,true, true, includeHistory))
+        exporter.export(uri, DataExporter.Config(true, true, includeHistory))
     }
 
     private fun showExportDataReady(uri: Uri) {

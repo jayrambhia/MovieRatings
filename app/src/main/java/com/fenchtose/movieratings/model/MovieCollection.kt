@@ -34,5 +34,12 @@ class MovieCollection {
             collection.updatedAt = collection.createdAt
             return collection
         }
+
+        fun invalid(): MovieCollection {
+            val collection = MovieCollection()
+            collection.name = ""
+            collection.id = -1
+            return collection
+        }
     }
 }

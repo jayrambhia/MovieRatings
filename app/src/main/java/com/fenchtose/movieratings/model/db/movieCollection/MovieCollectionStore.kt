@@ -17,6 +17,7 @@ interface MovieCollectionStore : UserPreferenceApplier {
     fun deleteAllCollectionEntries(): Observable<Int>
     fun deleteAllCollections(): Observable<Int>
     fun export(): Single<List<MovieCollection>>
+    fun export(collectionId: Long): Single<List<MovieCollection>>
     @WorkerThread
     fun import(collections: List<MovieCollection>): Int
 }

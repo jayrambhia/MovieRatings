@@ -25,7 +25,7 @@ interface CollectionListPage {
     }
 
     sealed class ShareState {
-        class Start: ShareState()
+        class Started: ShareState()
         class Error: ShareState()
         class Success(val uri: Uri): ShareState()
     }

@@ -16,6 +16,9 @@ interface MovieCollectionDao {
     @Query("SELECT * FROM COLLECTIONS")
     fun getMovieCollections(): List<MovieCollection>
 
+    @Query("SELECT * FROM COLLECTIONS WHERE COLLECTION_ID = :collectionId")
+    fun getMovieCollection(collectionId: Long): MovieCollection?
+
     @Query("SELECT * FROM COLLECTIONS WHERE COLLECTION_NAME = :collectionName LIMIT 1")
     fun findCollectionByName(collectionName: String): MovieCollection?
 
@@ -33,7 +36,7 @@ interface MovieCollectionDao {
     fun getMoviesForCollection(collectionId: Long): List<Movie>
 
     @Query("SELECT * FROM COLLECTION_ENTRIES WHERE COLLECTION_ID == :collectionId")
-    fun getCollectionEntties(collectionId: Long): List<MovieCollectionEntry>
+    fun getCollectionEntries(collectionId: Long): List<MovieCollectionEntry>
 
     @Query("DELETE FROM COLLECTION_ENTRIES WHERE COLLECTION_ID == :collectionId")
     fun deleteCollectionEntries(collectionId: Long): Int

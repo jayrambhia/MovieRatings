@@ -21,7 +21,9 @@ import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.image.GlideLoader
+import com.fenchtose.movieratings.model.offline.export.DataFileExporter
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.util.IntentUtils
 
 class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, CollectionPagePresenter>(), CollectionPage {
 
@@ -40,6 +42,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 SettingsPreferences(context),
+                DataFileExporter.newInstance(MovieRatingsApplication.database),
                 path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection })
     }
 
@@ -115,6 +118,24 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
     }
 
+    private fun showShareDialog() {
+        if (presenter?.canShare() == true) {
+            android.support.v7.app.AlertDialog.Builder(context)
+                    .setTitle(R.string.movie_collection_share_dialog_title)
+                    .setMessage(R.string.movie_collection_share_dialog_content)
+                    .setPositiveButton(R.string.movie_collection_share_dialog_positive_cta) {
+                        dialog, _ ->
+                        dialog.dismiss()
+                        presenter?.share()
+                    }
+                    .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }
+                    .show()
+            return
+        }
+
+        showSnackbar(R.string.movie_collection_share_empty)
+    }
+
     override fun updateState(state: CollectionPage.OpState) {
         val resId = when(state) {
             is CollectionPage.OpState.Removed -> {
@@ -144,6 +165,14 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         }
     }
 
+    override fun updateState(state: CollectionPage.ShareState) {
+        when(state) {
+            is CollectionPage.ShareState.Started -> {}
+            is CollectionPage.ShareState.Error -> showSnackbar(R.string.movie_collection_share_error)
+            is CollectionPage.ShareState.Success -> IntentUtils.openShareFileIntent(context, state.uri)
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var consumed = true
         when(item?.itemId) {
@@ -151,6 +180,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 //            R.id.action_sort_genre -> presenter?.sort(Sort.GENRE)
             R.id.action_sort_year -> presenter?.sort(Sort.YEAR)
             R.id.action_add_to_collection -> presenter?.searchToAddToCollection()
+            R.id.action_share -> showShareDialog()
             else -> consumed = false
         }
 
@@ -164,7 +194,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         }
 
         override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_sort, R.id.action_add_to_collection)
+            return intArrayOf(R.id.action_sort, R.id.action_add_to_collection, R.id.action_share)
         }
     }
 }

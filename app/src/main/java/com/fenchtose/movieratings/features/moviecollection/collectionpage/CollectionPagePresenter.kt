@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
+import android.net.Uri
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
@@ -10,7 +11,9 @@ import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
+import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.util.FileUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -19,7 +22,9 @@ class CollectionPagePresenter(likeStore: LikeStore,
                               private val provider: MovieCollectionProvider,
                               private val collectionStore: MovieCollectionStore,
                               private val userPreferences: UserPreferences,
-                              private val collection: MovieCollection?) : BaseMovieListPresenter<CollectionPage>(likeStore) {
+                              private val exporter: DataExporter<Uri>,
+                              private val collection: MovieCollection?
+                              ) : BaseMovieListPresenter<CollectionPage>(likeStore) {
 
     private var currentSort: Sort = userPreferences.getLatestCollectionSort(collection?.id)
         set(value) {
@@ -29,6 +34,24 @@ class CollectionPagePresenter(likeStore: LikeStore,
 
     init {
         provider.addPreferenceApplier(likeStore)
+    }
+
+    override fun attachView(view: CollectionPage) {
+        super.attachView(view)
+        subscribe(exporter.observe()
+                .map {
+                    when(it) {
+                        is DataExporter.Progress.Started -> CollectionPage.ShareState.Started()
+                        is DataExporter.Progress.Error -> CollectionPage.ShareState.Error()
+                        is DataExporter.Progress.Success -> CollectionPage.ShareState.Success(it.output)
+                    }
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    getView()?.updateState(it)
+                },{
+                    getView()?.updateState(CollectionPage.ShareState.Error())
+                }))
     }
 
     override fun load(): Observable<List<Movie>> {
@@ -113,6 +136,17 @@ class CollectionPagePresenter(likeStore: LikeStore,
         collection?.let {
             MovieRatingsApplication.router?.go(SearchPageFragment.SearchPath.AddToCollection(it))
         }
+    }
+
+    fun share() {
+        collection?.let {
+            val uri = FileUtils.createCacheFile(MovieRatingsApplication.instance!!, FileUtils.createCacheFilename())
+            exporter.exportCollection(uri, it)
+        }
+    }
+
+    fun canShare(): Boolean {
+        return collection != null && data != null && data!!.size > 0
     }
 
     private fun getSorted(type: Sort, data: List<Movie>): List<Movie> = when(type) {
