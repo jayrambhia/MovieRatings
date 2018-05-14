@@ -1,5 +1,16 @@
 # Flutter Changelog
 
+### 0.2.7
+
+ - Dialog added for locale not supported
+ - In-app purchases tags updated
+ - Cleaned-up settings page and created different sections
+ - Functionality added to export your data offline and import it again
+ - Similarly, the same can be used to share complete app data with other users
+ - FileProvider added to share exported files through other apps
+ - Intent filters added to catch intents for ACTION_SEND and ACTION_VIEW for 'text/plain' type
+ - Share collection feature added
+
 ### 0.2.6
 
  - Fix crash for in-app billing services
