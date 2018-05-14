@@ -65,11 +65,9 @@
 	<string name="settings_export_data_dialog_content">Flutter lets you export your data in json format. You may share it with your friends, send yourself a copy for back-up or just keep it on your device.</string>
 	<string name="settings_export_data_dialog_include_browsing_history">Include browsing history</string>
 	<string name="settings_export_data_dialog_positive_cta">Export</string>
-	<string name="settings_export_data_permission_title">Permission required</string>
-	<string name="settings_export_data_permission_content">The app needs access to file storage to export your data. Would you like to grant the permission?</string>
 	<string name="settings_export_data_error">Unable to export your data.</string>
 	<string name="settings_export_data_ready_dialog_title">Data exported</string>
-	<string name="settings_export_data_ready_dialog_content">Your data has been successfully exported.\nThe file is available at %1s.\n\nShare the file with your friends or send yourself a copy via email.</string>
+	<string name="settings_export_data_ready_dialog_content">Your data has been successfully exported.\n\nYou may share the file with your friends or send yourself a copy via email.</string>
 	<string name="settings_export_data_ready_dialog_positive_cta">Share</string>
 	<string name="settings_import_data_dialog_title">Import from a file</string>
 	<string name="settings_import_data_dialog_content">Please select a flutter data format supported file and the app will import the data.</string>
@@ -201,6 +199,7 @@
 	<string name="locale_info_dialog_title">Apologies</string>
 	<string name="locale_info_dialog_content">It seems that the primary language on your device is not English.\n\nUnfortunately, Flutter does not support translated titles and may sometimes show incorrect ratings.\n\nWe are working on adding support for other languages.</string>
 
+	<string name="import_activity_label">Import data to Flutter</string>
 	<string name="import_screen_title">Flutter - import data</string>
 	<string name="import_screen_info">Flutter lets you import data from the exported files. Please go over the following options and select what you would like to import.</string>
 	<string name="import_screen_recently_browsed_movies">Recently browsed movies</string>

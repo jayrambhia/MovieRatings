@@ -1,6 +1,5 @@
 package com.fenchtose.movieratings.features.settings
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -14,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.base.BasePermissionFragment
+import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movie.DbMovieStore
@@ -29,12 +28,14 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class DataSectionFragment: BasePermissionFragment() {
+class DataSectionFragment: BaseFragment() {
 
-    private val PERMISSION_FOR_EXPORT = 31
     private val REQUEST_OPEN_FILE = 32
+    private val REQUEST_CREATE_FILE = 33
 
     private var updatePublisher: PreferenceUpdater? = null
+
+    private var historyCheckboxSelected: Boolean? = null
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.settings_data_section_page_header
@@ -76,12 +77,6 @@ class DataSectionFragment: BasePermissionFragment() {
         updatePublisher?.show(app)
     }
 
-    override fun onRequestGranted(code: Int) {
-        when(code) {
-            PERMISSION_FOR_EXPORT -> showExportDataDialog()
-        }
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode) {
@@ -89,6 +84,12 @@ class DataSectionFragment: BasePermissionFragment() {
                 if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
                     importData(data.data)
                 }
+            }
+            REQUEST_CREATE_FILE -> {
+                if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+                    exportData(data.data, historyCheckboxSelected == true)
+                }
+                historyCheckboxSelected = null
             }
         }
     }
@@ -144,23 +145,14 @@ class DataSectionFragment: BasePermissionFragment() {
     }
 
     private fun showExportDataDialog() {
-
-        val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
-        if (!hasPermission(permission)) {
-            showRationaleDialog(R.string.settings_export_data_permission_title,
-                    R.string.settings_export_data_permission_content,
-                    permission,
-                    PERMISSION_FOR_EXPORT)
-            return
-        }
-
         var historyCheckbox: CheckBox? = null
         val dialog = AlertDialog.Builder(context)
                 .setTitle(R.string.settings_export_data_dialog_title)
                 .setView(R.layout.export_data_dialog_layout)
                 .setPositiveButton(R.string.settings_export_data_dialog_positive_cta) {
                     dialog, _ ->
-                    exportData(historyCheckbox?.isChecked ?: false)
+                    historyCheckboxSelected = historyCheckbox?.isChecked
+                    createFile()
                     dialog.dismiss()
                 }.setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
                 .show()
@@ -168,7 +160,13 @@ class DataSectionFragment: BasePermissionFragment() {
         historyCheckbox = dialog.findViewById(R.id.include_history_checkbox)
     }
 
-    private fun exportData(includeHistory: Boolean) {
+    private fun createFile() {
+        startActivityForResult(Intent.createChooser(
+                IntentUtils.getFileCreationIntent("flutter_data.txt"), "Save file via"),
+                REQUEST_CREATE_FILE)
+    }
+
+    private fun exportData(uri: Uri, includeHistory: Boolean) {
         val exporter = DataFileExporter(
                 DbMovieStore.getInstance(MovieRatingsApplication.database.movieDao()),
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
@@ -189,17 +187,17 @@ class DataSectionFragment: BasePermissionFragment() {
                     exporter.release()
                 }))
 
-        exporter.export(DataExporter.Config(true, true, includeHistory))
+        exporter.export(DataExporter.Config(uri,true, true, includeHistory))
     }
 
-    private fun showExportDataReady(filename: String) {
+    private fun showExportDataReady(uri: Uri) {
         AlertDialog.Builder(context)
                 .setTitle(R.string.settings_export_data_ready_dialog_title)
-                .setMessage(context.getString(R.string.settings_export_data_ready_dialog_content, filename))
+                .setMessage(context.getString(R.string.settings_export_data_ready_dialog_content))
                 .setPositiveButton(R.string.settings_export_data_ready_dialog_positive_cta) {
                     dialog, _ ->
                         dialog.dismiss()
-                        IntentUtils.openShareFileIntent(context, filename)
+                        IntentUtils.openShareFileIntent(context, uri)
                 }
                 .setNeutralButton(android.R.string.ok) {
                     dialog, _ -> dialog.dismiss()
@@ -219,7 +217,7 @@ class DataSectionFragment: BasePermissionFragment() {
     }
 
     private fun startFileSelection() {
-        startActivityForResult(Intent.createChooser(IntentUtils.getFileSelectionIntnet(), "Find file via"), REQUEST_OPEN_FILE)
+        startActivityForResult(Intent.createChooser(IntentUtils.getFileSelectionIntent(), "Find file via"), REQUEST_OPEN_FILE)
     }
 
     private fun importData(uri: Uri) {

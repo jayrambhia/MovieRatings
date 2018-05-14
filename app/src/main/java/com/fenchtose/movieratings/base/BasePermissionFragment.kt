@@ -5,6 +5,8 @@ import android.support.annotation.StringRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 
+// Not used as of now. We may use it later.
+@Suppress("unused")
 abstract class BasePermissionFragment: BaseFragment() {
 
     protected fun hasPermission(permission: String): Boolean {

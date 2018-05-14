@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.offline.export
 
+import android.net.Uri
 import io.reactivex.Observable
 
 interface DataExporter<T> {
@@ -18,5 +19,5 @@ interface DataExporter<T> {
         }
     }
 
-    data class Config(val favs: Boolean, val collections: Boolean, val recentlyBrowsed: Boolean)
+    data class Config(val uri: Uri, val favs: Boolean, val collections: Boolean, val recentlyBrowsed: Boolean)
 }

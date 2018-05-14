@@ -6,9 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
-    <!-- For import and export feature -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <!--<uses-feature android:name="android.software.leanback"
                   android:required="false" />
 
@@ -39,6 +36,7 @@
             android:label="@string/settings_header"/>
 	    <activity
 		    android:name=".features.settings.ImportActivity"
+		    android:label="@string/import_activity_label"
 		    android:screenOrientation="portrait">
 		    <intent-filter>
 			    <category android:name="android.intent.category.DEFAULT"/>
@@ -59,18 +57,6 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/serviceconfig"/>
         </service>
-        
-        <provider
-	        android:authorities="${applicationId}.provider"
-	        android:name="android.support.v4.content.FileProvider"
-            android:exported="false"
-	        android:grantUriPermissions="true">
-
-	        <meta-data
-		        android:name="android.support.FILE_PROVIDER_PATHS"
-		        android:resource="@xml/provider_paths"/>
-
-        </provider>
 
         <!--<activity android:name=".features.android_tv.TVActivity"
                   android:label="@string/app_name">

@@ -3,10 +3,7 @@ package com.fenchtose.movieratings.util
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.support.v4.content.FileProvider
-import android.util.Log
 import com.fenchtose.movieratings.BuildConfig
-import java.io.File
 
 class IntentUtils {
 
@@ -36,20 +33,26 @@ class IntentUtils {
             context.startActivity(Intent.createChooser(intent, "Share via"))
         }
 
-        fun openShareFileIntent(context: Context, filename: String) {
+        fun openShareFileIntent(context: Context, uri: Uri) {
             val intent = Intent(Intent.ACTION_SEND)
-            val uri = FileProvider.getUriForFile(context, "${context.packageName}.provider", File(filename))
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             intent.putExtra(Intent.EXTRA_STREAM, uri)
             intent.type = "text/plain"
             context.startActivity(Intent.createChooser(intent, "Share via"))
         }
 
-        fun getFileSelectionIntnet(): Intent {
+        fun getFileSelectionIntent(): Intent {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "text/plain"
             return intent
+        }
+
+        fun getFileCreationIntent(filename: String): Intent {
+            return Intent(Intent.ACTION_CREATE_DOCUMENT)
+                    .addCategory(Intent.CATEGORY_OPENABLE)
+                    .setType("text/plain")
+                    .putExtra(Intent.EXTRA_TITLE, filename)
         }
 
         fun canStartIntent(context: Context, intent: Intent): Boolean {

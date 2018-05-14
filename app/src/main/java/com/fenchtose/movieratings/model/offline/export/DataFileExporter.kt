@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.offline.export
 
-import android.util.Log
+import android.net.Uri
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.db.like.LikeStore
@@ -19,13 +19,13 @@ class DataFileExporter(
         private val movieStore: MovieStore,
         private val likeStore: LikeStore,
         private val collectionStore: MovieCollectionStore,
-        private val recentlyBrowsedStore: RecentlyBrowsedStore) : DataExporter<String> {
+        private val recentlyBrowsedStore: RecentlyBrowsedStore) : DataExporter<Uri> {
 
     private val TAG = "DataFileExported"
 
-    private var resultPublisher: PublishSubject<DataExporter.Progress<String>>? = null
+    private var resultPublisher: PublishSubject<DataExporter.Progress<Uri>>? = null
 
-    override fun observe(): Observable<DataExporter.Progress<String>> {
+    override fun observe(): Observable<DataExporter.Progress<Uri>> {
         if (resultPublisher == null || resultPublisher?.hasComplete() == true) {
             resultPublisher = PublishSubject.create()
         }
@@ -39,8 +39,6 @@ class DataFileExporter(
     }
 
     override fun export(config: DataExporter.Config) {
-        Log.d(TAG, "export called")
-
         Single.defer {
             val json = JsonObject()
             json.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
@@ -102,12 +100,12 @@ class DataFileExporter(
         }.flatMap {
             json -> Single.defer {
                 Single.fromCallable {
-                    FileUtils.export(MovieRatingsApplication.instance!!, MovieRatingsApplication.gson.toJson(json))?: ""
+                    FileUtils.export(MovieRatingsApplication.instance!!, config.uri, MovieRatingsApplication.gson.toJson(json))
                 }
             }
         }.subscribeOn(Schedulers.io())
         .subscribe ({
-            filename -> resultPublisher?.onNext(if (!filename.isEmpty()) DataExporter.Progress.Success(filename) else DataExporter.Progress.Error())
+            success -> resultPublisher?.onNext(if (success) DataExporter.Progress.Success(config.uri) else DataExporter.Progress.Error())
         }, {
             error -> resultPublisher?.onNext(DataExporter.Progress.Error())
             error.printStackTrace()
