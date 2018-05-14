@@ -9,6 +9,7 @@ import kotlin.collections.ArrayList
 @TypeConverters(value = MovieTypeConverter2::class)
 class Movie {
 
+    @SerializedName("id")
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
 
