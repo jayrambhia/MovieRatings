@@ -1,12 +1,11 @@
 package com.fenchtose.movieratings.model.db.like
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.Fav
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.dao.FavDao
-import com.google.gson.JsonArray
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 class DbLikeStore private constructor(private val likeDao: FavDao) : LikeStore {
@@ -56,12 +55,9 @@ class DbLikeStore private constructor(private val likeDao: FavDao) : LikeStore {
         }
     }
 
-    override fun export(): Observable<JsonArray> {
-        val gson = MovieRatingsApplication.gson
-        return Observable.defer {
-            Observable.fromCallable { likeDao.exportData() }
-        }.map {
-            gson.toJsonTree(it).asJsonArray
+    override fun export(): Single<List<Fav>> {
+        return Single.defer {
+            Single.fromCallable { likeDao.exportData() }
         }
     }
 

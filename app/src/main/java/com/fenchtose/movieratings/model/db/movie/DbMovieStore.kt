@@ -1,11 +1,9 @@
 package com.fenchtose.movieratings.model.db.movie
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.dao.MovieDao
-import com.google.gson.JsonArray
-import io.reactivex.Observable
+import io.reactivex.Single
 
 class DbMovieStore private constructor(private val dao: MovieDao): MovieStore {
 
@@ -21,12 +19,10 @@ class DbMovieStore private constructor(private val dao: MovieDao): MovieStore {
         }
     }
 
-    override fun export(): Observable<JsonArray> {
-        return Observable.defer {
-            Observable.fromCallable {
-                dao.getAll()
-            }.map {
-                MovieRatingsApplication.gson.toJsonTree(it).asJsonArray
+    override fun export(movies: Collection<String>): Single<List<Movie>> {
+        return Single.defer {
+            Single.fromCallable {
+                dao.exportData(movies.toList())
             }
         }
     }

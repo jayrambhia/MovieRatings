@@ -2,13 +2,13 @@ package com.fenchtose.movieratings.model.db.recentlyBrowsed
 
 import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.model.RecentlyBrowsed
-import com.google.gson.JsonArray
 import io.reactivex.Observable
+import io.reactivex.Single
 
 interface RecentlyBrowsedStore {
     fun update(data: RecentlyBrowsed)
     fun deleteAll(): Observable<Int>
-    fun export(): Observable<JsonArray>
+    fun export(): Single<List<RecentlyBrowsed>>
     @WorkerThread
     fun import(history: List<RecentlyBrowsed>): Int
 }

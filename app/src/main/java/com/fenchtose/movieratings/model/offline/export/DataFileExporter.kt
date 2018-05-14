@@ -9,10 +9,9 @@ import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FileUtils
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.reactivex.Observable
-import io.reactivex.functions.BiFunction
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
@@ -42,45 +41,77 @@ class DataFileExporter(
     override fun export(config: DataExporter.Config) {
         Log.d(TAG, "export called")
 
-        Observable.zip(likeStore.export(), collectionStore.export(),
-                BiFunction<JsonArray, JsonArray, JsonObject> { likes, collections ->
-                    val json = JsonObject()
-                    json.add(Constants.EXPORT_LIKES, likes)
-                    json.add(Constants.EXPORT_COLLECTIONS, collections)
-                    json
-                })
-                .flatMap {
-                    json ->
-                        if (config.includeHistory) {
-                            recentlyBrowsedStore.export()
-                                    .doOnNext{json.add(Constants.EXPORT_RECENTLY_BROWSED, it)}
-                                    .map { json }
-                        } else {
-                            Observable.just(json)
+        Single.defer {
+            val json = JsonObject()
+            json.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
+            json.addProperty(Constants.EXPORT_VERSION, BuildConfig.VERSION_NAME)
+            Single.just(Pair(HashSet<String>(), json))
+        }.flatMap {
+            pair ->
+            if (config.favs) {
+                likeStore.export()
+                        .map {
+                            if (it.isNotEmpty()) {
+                                pair.second.add(Constants.EXPORT_LIKES, MovieRatingsApplication.gson.toJsonTree(it))
+                                it.map { it.id }.toCollection(pair.first)
+                            }
+                            pair
                         }
-                }
-                .flatMap {
-                    json -> movieStore.export()
-                        .doOnNext { json.add(Constants.EXPORT_MOVIES, it) }.map { json }
-                }
-                .doOnNext {
-                    it.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
-                    it.addProperty(Constants.EXPORT_VERSION, BuildConfig.VERSION_NAME)
-                }
-                .flatMap {
-                    json -> Observable.defer {
-                        Observable.fromCallable {
-                            FileUtils.export(MovieRatingsApplication.instance!!, MovieRatingsApplication.gson.toJson(json))?: ""
+
+            } else {
+                Single.just(pair)
+            }
+        }.flatMap {
+            pair ->
+            if (config.collections) {
+                collectionStore.export()
+                        .map {
+                            if (it.isNotEmpty()) {
+                                pair.second.add(Constants.EXPORT_COLLECTIONS, MovieRatingsApplication.gson.toJsonTree(it))
+                                it.map { it.entries }.flatten().map { it.movieId }.toCollection(pair.first)
+                            }
+                            pair
                         }
+
+            } else {
+                Single.just(pair)
+            }
+        }.flatMap {
+            pair ->
+            if (config.recentlyBrowsed) {
+                recentlyBrowsedStore.export()
+                        .map {
+                            if (it.isNotEmpty()) {
+                                it.map { it.id }.toCollection(pair.first)
+                                pair.second.add(Constants.EXPORT_RECENTLY_BROWSED, MovieRatingsApplication.gson.toJsonTree(it))
+                            }
+                            pair
+                        }
+            } else {
+                Single.just(pair)
+            }
+        }.flatMap {
+            pair -> movieStore.export(pair.first)
+                .map {
+                    if (it.isNotEmpty()) {
+                        pair.second.add(Constants.EXPORT_MOVIES, MovieRatingsApplication.gson.toJsonTree(it))
                     }
+
+                    pair.second
                 }
-                .subscribeOn(Schedulers.io())
-                .subscribe ({
-                    filename -> resultPublisher?.onNext(if (!filename.isEmpty()) DataExporter.Progress.Success(filename) else DataExporter.Progress.Error())
-                }, {
-                    error -> resultPublisher?.onNext(DataExporter.Progress.Error())
-                    error.printStackTrace()
-                })
+        }.flatMap {
+            json -> Single.defer {
+                Single.fromCallable {
+                    FileUtils.export(MovieRatingsApplication.instance!!, MovieRatingsApplication.gson.toJson(json))?: ""
+                }
+            }
+        }.subscribeOn(Schedulers.io())
+        .subscribe ({
+            filename -> resultPublisher?.onNext(if (!filename.isEmpty()) DataExporter.Progress.Success(filename) else DataExporter.Progress.Error())
+        }, {
+            error -> resultPublisher?.onNext(DataExporter.Progress.Error())
+            error.printStackTrace()
+        })
 
         resultPublisher?.onNext(DataExporter.Progress.Started())
 

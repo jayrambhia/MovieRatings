@@ -18,5 +18,5 @@ interface DataExporter<T> {
         }
     }
 
-    data class Config(val includeHistory: Boolean)
+    data class Config(val favs: Boolean, val collections: Boolean, val recentlyBrowsed: Boolean)
 }

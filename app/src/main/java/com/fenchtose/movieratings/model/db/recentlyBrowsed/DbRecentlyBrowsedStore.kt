@@ -1,11 +1,10 @@
 package com.fenchtose.movieratings.model.db.recentlyBrowsed
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.RecentlyBrowsed
 import com.fenchtose.movieratings.model.db.dao.RecentlyBrowsedDao
-import com.google.gson.JsonArray
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 
 class DbRecentlyBrowsedStore private constructor(private val dao: RecentlyBrowsedDao): RecentlyBrowsedStore {
@@ -34,12 +33,10 @@ class DbRecentlyBrowsedStore private constructor(private val dao: RecentlyBrowse
         Observable.just(dao.deleteAll())
     }
 
-    override fun export(): Observable<JsonArray> {
-        return Observable.defer {
-            Observable.fromCallable {
+    override fun export(): Single<List<RecentlyBrowsed>> {
+        return Single.defer {
+            Single.fromCallable {
                 dao.getAll()
-            }.map {
-                MovieRatingsApplication.gson.toJsonTree(it).asJsonArray
             }
         }
     }

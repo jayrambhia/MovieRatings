@@ -5,10 +5,8 @@ import android.content.SharedPreferences
 import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.model.Fav
 import com.fenchtose.movieratings.model.Movie
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
 import io.reactivex.Observable
+import io.reactivex.Single
 
 class PreferencesLikeStore(val context: Context) : LikeStore {
 
@@ -31,7 +29,7 @@ class PreferencesLikeStore(val context: Context) : LikeStore {
         movie.liked = isLiked(movie.imdbId)
     }
 
-    override fun export(): Observable<JsonArray> {
+    override fun export(): Single<List<Fav>> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

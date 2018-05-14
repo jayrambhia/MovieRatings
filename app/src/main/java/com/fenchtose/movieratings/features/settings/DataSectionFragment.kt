@@ -189,7 +189,7 @@ class DataSectionFragment: BasePermissionFragment() {
                     exporter.release()
                 }))
 
-        exporter.export(DataExporter.Config(includeHistory))
+        exporter.export(DataExporter.Config(true, true, includeHistory))
     }
 
     private fun showExportDataReady(filename: String) {
