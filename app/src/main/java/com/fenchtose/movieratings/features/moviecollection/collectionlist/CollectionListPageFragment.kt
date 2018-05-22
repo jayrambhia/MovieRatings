@@ -21,6 +21,8 @@ import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.offline.export.DataFileExporter
+import com.fenchtose.movieratings.util.AppFileUtils
+import com.fenchtose.movieratings.util.AppRxHooks
 import com.fenchtose.movieratings.util.IntentUtils
 
 class CollectionListPageFragment : BaseFragment(), CollectionListPage {
@@ -35,6 +37,9 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = CollectionListPresenter(
+                context,
+                AppRxHooks(),
+                AppFileUtils(),
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 DataFileExporter.newInstance(MovieRatingsApplication.database))

@@ -19,6 +19,8 @@ before_script:
 
 script:
   - ./gradlew build
+  - ./gradlew testPlaystoreDebugUnitTest
+  - ./gradlew testFossDebugUnitTest
 
 after_failure:
  - if [ -f /home/travis/build/jayrambhia/MovieRatings/app/build/reports/lint-results.html ]; then lynx -dump /home/travis/build/jayrambhia/MovieRatings/app/build/reports/lint-results.html; fi

@@ -9,14 +9,6 @@ interface CollectionListPage {
     fun updateState(state: OpState)
     fun updateState(state: ShareState)
 
-    sealed class State {
-        class Default: State()
-        class Loading: State()
-        class Error: State()
-        class Success(val collections: ArrayList<MovieCollection>): State()
-        class Empty: State()
-    }
-
     sealed class OpState(val data: String) {
         class Created(data: String): OpState(data)
         class CreateError(data: String): OpState(data)
@@ -25,8 +17,17 @@ interface CollectionListPage {
     }
 
     sealed class ShareState {
-        class Started: ShareState()
-        class Error: ShareState()
+        object Started: ShareState()
+        object Error: ShareState()
         class Success(val uri: Uri): ShareState()
     }
+
+    sealed class State {
+        object Default: State()
+        object Loading: State()
+        object Error: State()
+        class Success(val collections: ArrayList<MovieCollection>): State()
+        object Empty: State()
+    }
+
 }

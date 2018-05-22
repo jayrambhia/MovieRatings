@@ -13,6 +13,7 @@ import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStor
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
+import com.fenchtose.movieratings.util.AppFileUtils
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FileUtils
 import com.google.gson.JsonObject
@@ -22,6 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
 class DataFileExporter(
+        private val fileUtils: FileUtils,
         private val movieStore: MovieStore,
         private val likeStore: LikeStore,
         private val collectionStore: MovieCollectionStore,
@@ -32,6 +34,7 @@ class DataFileExporter(
     companion object {
         fun newInstance(db: MovieDb): DataFileExporter {
             return DataFileExporter(
+                    AppFileUtils(),
                     DbMovieStore.getInstance(db.movieDao()),
                     DbLikeStore.getInstance(db.favDao()),
                     DbMovieCollectionStore.getInstance(db.movieCollectionDao()),
@@ -116,7 +119,7 @@ class DataFileExporter(
         }.flatMap {
             json -> Single.defer {
                 Single.fromCallable {
-                    FileUtils.export(MovieRatingsApplication.instance!!, output, MovieRatingsApplication.gson.toJson(json))
+                    fileUtils.export(MovieRatingsApplication.instance!!, output, MovieRatingsApplication.gson.toJson(json))
                 }
             }
         }.subscribeOn(Schedulers.io())
@@ -160,7 +163,7 @@ class DataFileExporter(
         }.flatMap {
             json -> Single.defer {
             Single.fromCallable {
-                FileUtils.export(MovieRatingsApplication.instance!!, output, MovieRatingsApplication.gson.toJson(json))
+                fileUtils.export(MovieRatingsApplication.instance!!, output, MovieRatingsApplication.gson.toJson(json))
             }
         }
         }.subscribeOn(Schedulers.io())

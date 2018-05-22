@@ -1,18 +1,19 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionlist
 
+import android.content.Context
 import android.net.Uri
-import android.util.Log
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.util.FileUtils
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.fenchtose.movieratings.util.RxHooks
 
 class CollectionListPresenter(
+        private val context: Context,
+        private val rxHooks: RxHooks,
+        private val fileUtils: FileUtils,
         private val provider: MovieCollectionProvider,
         private val collectionStore: MovieCollectionStore,
         private val exporter: DataExporter<Uri>) : Presenter<CollectionListPage>() {
@@ -21,18 +22,18 @@ class CollectionListPresenter(
         super.attachView(view)
         loadCollections()
         subscribe(exporter.observe()
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(rxHooks.mainThread())
                 .map {
                     when(it) {
-                        is DataExporter.Progress.Started -> CollectionListPage.ShareState.Started()
-                        is DataExporter.Progress.Error -> CollectionListPage.ShareState.Error()
+                        is DataExporter.Progress.Started -> CollectionListPage.ShareState.Started
+                        is DataExporter.Progress.Error -> CollectionListPage.ShareState.Error
                         is DataExporter.Progress.Success -> CollectionListPage.ShareState.Success(it.output)
                     }
                 }
                 .subscribe({
                     updateState(it)
                 }, {
-                    updateState(CollectionListPage.ShareState.Error())
+                    updateState(CollectionListPage.ShareState.Error)
                 }))
     }
 
@@ -43,17 +44,17 @@ class CollectionListPresenter(
 
     private fun loadCollections() {
         provider.getCollections()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(rxHooks.ioThread())
+                .observeOn(rxHooks.mainThread())
                 .subscribe({
                     if (it.isEmpty()) {
-                        updateState(CollectionListPage.State.Empty())
+                        updateState(CollectionListPage.State.Empty)
                     } else {
                         updateState(CollectionListPage.State.Success(ArrayList(it)))
                     }
                 }, {
                     it.printStackTrace()
-                    updateState(CollectionListPage.State.Error())
+                    updateState(CollectionListPage.State.Error)
                 })
     }
 
@@ -71,10 +72,9 @@ class CollectionListPresenter(
 
     fun createCollection(name: String) {
         collectionStore.createCollection(name)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(rxHooks.ioThread())
+                .observeOn(rxHooks.mainThread())
                 .subscribe({
-                    Log.d("create collection: ", "${it.name}, ${it.id}")
                     updateState(CollectionListPage.OpState.Created(it.name))
                     loadCollections()
                 }, {
@@ -85,11 +85,15 @@ class CollectionListPresenter(
 
     fun deleteCollection(collection: MovieCollection) {
         collectionStore.deleteCollection(collection)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(rxHooks.ioThread())
+                .observeOn(rxHooks.mainThread())
                 .subscribe({
-                    updateState(CollectionListPage.OpState.Deleted(collection.name))
-                    loadCollections()
+                    if (it) {
+                        updateState(CollectionListPage.OpState.Deleted(collection.name))
+                        loadCollections()
+                    } else {
+                        updateState(CollectionListPage.OpState.DeleteError(collection.name))
+                    }
                 }, {
                     it.printStackTrace()
                     updateState(CollectionListPage.OpState.DeleteError(collection.name))
@@ -97,7 +101,7 @@ class CollectionListPresenter(
     }
 
     fun share() {
-        val uri = FileUtils.createCacheFile(MovieRatingsApplication.instance!!, "flutter_collections.txt")
+        val uri = fileUtils.createCacheFile(context, "flutter_collections.txt")
         exporter.export(uri, DataExporter.Config(false, true, false))
     }
 }

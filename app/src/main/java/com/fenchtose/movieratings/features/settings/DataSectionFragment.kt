@@ -23,6 +23,7 @@ import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.offline.export.DataFileExporter
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.util.AppFileUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -168,6 +169,7 @@ class DataSectionFragment: BaseFragment() {
 
     private fun exportData(uri: Uri, includeHistory: Boolean) {
         val exporter = DataFileExporter(
+                AppFileUtils(),
                 DbMovieStore.getInstance(MovieRatingsApplication.database.movieDao()),
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),

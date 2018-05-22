@@ -23,6 +23,7 @@ import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStor
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.offline.export.DataFileExporter
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.util.AppFileUtils
 import com.fenchtose.movieratings.util.IntentUtils
 
 class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, CollectionPagePresenter>(), CollectionPage {
@@ -39,6 +40,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
     override fun createPresenter(): CollectionPagePresenter {
         return CollectionPagePresenter(DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
+                AppFileUtils(),
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 SettingsPreferences(context),

@@ -19,6 +19,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class CollectionPagePresenter(likeStore: LikeStore,
+                              private val fileUtils: FileUtils,
                               private val provider: MovieCollectionProvider,
                               private val collectionStore: MovieCollectionStore,
                               private val userPreferences: UserPreferences,
@@ -140,7 +141,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
 
     fun share() {
         collection?.let {
-            val uri = FileUtils.createCacheFile(MovieRatingsApplication.instance!!, "collection_${it.name}.txt")
+            val uri = fileUtils.createCacheFile(MovieRatingsApplication.instance!!, "collection_${it.name}.txt")
             exporter.exportCollection(uri, it)
         }
     }

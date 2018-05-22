@@ -19,6 +19,7 @@ import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStor
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.offline.import.DataFileImporter
 import com.fenchtose.movieratings.model.offline.import.DataImporter
+import com.fenchtose.movieratings.util.AppFileUtils
 import com.fenchtose.movieratings.util.Constants
 import io.reactivex.android.schedulers.AndroidSchedulers
 
@@ -109,6 +110,7 @@ class ImportDataFragment : BaseFragment() {
     private fun handleImport(uri: Uri) {
         this.uri = uri
         importer = DataFileImporter(context,
+                AppFileUtils(),
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()),

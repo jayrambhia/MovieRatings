@@ -26,6 +26,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
 class DataFileImporter(private val context: Context,
+                       private val fileUtils: FileUtils,
                        private val likeStore: LikeStore,
                        private val collectionStore: MovieCollectionStore,
                        private val recentlyBrowsedStore: RecentlyBrowsedStore,
@@ -64,7 +65,7 @@ class DataFileImporter(private val context: Context,
 
         Observable.defer {
             Observable.fromCallable {
-                FileUtils.readUri(context, uri)
+                fileUtils.readUri(context, uri)
             }
         }
                 .flatMap {
@@ -105,7 +106,7 @@ class DataFileImporter(private val context: Context,
     @WorkerThread
     private fun generateReport(context: Context, uri: Uri): DataImporter.Report {
 
-        val data = MovieRatingsApplication.gson.fromJson<JsonElement>(FileUtils.readUri(context, uri), JsonElement::class.java) as JsonObject
+        val data = MovieRatingsApplication.gson.fromJson<JsonElement>(fileUtils.readUri(context, uri), JsonElement::class.java) as JsonObject
 
         return DataImporter.Report(
                 data.get(Constants.EXPORT_APP)?.asString,
