@@ -7,13 +7,13 @@ import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.db.like.LikeStore
+import com.fenchtose.movieratings.util.RxHooks
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.schedulers.Schedulers
 
 abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
-        private var likeStore: LikeStore): Presenter<V>() {
+        private val rxHooks: RxHooks,
+        private val likeStore: LikeStore): Presenter<V>() {
 
     protected var data: ArrayList<Movie>? = null
 
@@ -25,8 +25,8 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
 
     open protected fun loadData() {
         val d = load()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(rxHooks.ioThread())
+                .observeOn(rxHooks.mainThread())
                 .subscribeBy(
                         onNext = {
                             updateData(ArrayList(it))

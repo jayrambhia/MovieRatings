@@ -14,18 +14,18 @@ import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.FileUtils
+import com.fenchtose.movieratings.util.RxHooks
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 
 class CollectionPagePresenter(likeStore: LikeStore,
+                              private val rxHooks: RxHooks,
                               private val fileUtils: FileUtils,
                               private val provider: MovieCollectionProvider,
                               private val collectionStore: MovieCollectionStore,
                               private val userPreferences: UserPreferences,
                               private val exporter: DataExporter<Uri>,
                               private val collection: MovieCollection?
-                              ) : BaseMovieListPresenter<CollectionPage>(likeStore) {
+                              ) : BaseMovieListPresenter<CollectionPage>(rxHooks, likeStore) {
 
     private var currentSort: Sort = userPreferences.getLatestCollectionSort(collection?.id)
         set(value) {
@@ -47,7 +47,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
                         is DataExporter.Progress.Success -> CollectionPage.ShareState.Success(it.output)
                     }
                 }
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(rxHooks.mainThread())
                 .subscribe({
                     getView()?.updateState(it)
                 },{
@@ -69,8 +69,8 @@ class CollectionPagePresenter(likeStore: LikeStore,
     fun removeMovie(movie: Movie) {
         collection?.let {
             val d = collectionStore.removeMovieFromCollection(it, movie)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(rxHooks.ioThread())
+                    .observeOn(rxHooks.mainThread())
                     .subscribe({
                         if (it) {
                             data?.let {
@@ -98,8 +98,8 @@ class CollectionPagePresenter(likeStore: LikeStore,
     fun undoRemove(movie: Movie, index: Int) {
         collection?.let {
             collectionStore.addMovieToCollection(it, movie)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(rxHooks.ioThread())
+                    .observeOn(rxHooks.mainThread())
                     .subscribe({
                         data?.let {
                             val addedIndex = when {

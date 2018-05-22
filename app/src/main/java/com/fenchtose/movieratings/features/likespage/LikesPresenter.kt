@@ -6,10 +6,14 @@ import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.FavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.util.RxHooks
 import io.reactivex.Observable
 
-class LikesPresenter(private val provider: FavoriteMovieProvider, private val likeStore: LikeStore,
-                     private val userPreferences: UserPreferences) : BaseMovieListPresenter<LikesPage>(likeStore = likeStore) {
+class LikesPresenter(
+        rxHooks: RxHooks,
+        private val provider: FavoriteMovieProvider,
+        private val likeStore: LikeStore,
+        private val userPreferences: UserPreferences) : BaseMovieListPresenter<LikesPage>(rxHooks, likeStore) {
 
     private var currentSort: Sort = userPreferences.getLatestLikeSort()
         set(value) {

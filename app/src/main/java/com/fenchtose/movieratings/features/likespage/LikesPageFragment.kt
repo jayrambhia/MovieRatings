@@ -12,6 +12,7 @@ import com.fenchtose.movieratings.model.Sort
 import com.fenchtose.movieratings.model.api.provider.DbFavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.util.AppRxHooks
 
 class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(), LikesPage {
 
@@ -30,7 +31,7 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
         val favoriteProvider = DbFavoriteMovieProvider(dao)
         val likeStore = DbLikeStore.getInstance(MovieRatingsApplication.database.favDao())
         val userPreferences = SettingsPreferences(context)
-        return LikesPresenter(favoriteProvider, likeStore, userPreferences)
+        return LikesPresenter(AppRxHooks(), favoriteProvider, likeStore, userPreferences)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

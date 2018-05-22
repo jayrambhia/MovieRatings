@@ -7,6 +7,7 @@ import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.model.api.provider.DbRecentlyBrowsedMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
+import com.fenchtose.movieratings.util.AppRxHooks
 
 class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, RecentlyBrowsedPagePresenter>() {
     override fun canGoBack() = true
@@ -18,7 +19,9 @@ class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, 
     override fun getErrorContent() = R.string.recently_browsed_page_error_content
 
     override fun createPresenter(): RecentlyBrowsedPagePresenter {
-        return RecentlyBrowsedPagePresenter(DbRecentlyBrowsedMovieProvider(MovieRatingsApplication.database.movieDao()),
+        return RecentlyBrowsedPagePresenter(
+                AppRxHooks(),
+                DbRecentlyBrowsedMovieProvider(MovieRatingsApplication.database.movieDao()),
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()))
     }
 

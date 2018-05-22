@@ -16,20 +16,14 @@ import io.reactivex.subjects.PublishSubject
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
 
 @Suppress("IllegalIdentifier")
 class CollectionListTests {
 
-    @Mock
     private val context: Context = mock()
-    @Mock
     private val view: CollectionListPage = mock()
-    @Mock
     private val provider: MovieCollectionProvider = mock()
-    @Mock
     private val store: MovieCollectionStore = mock()
-    @Mock
     private val exporter: DataExporter<Uri> = mock()
 
     private val exporterPublisher: PublishSubject<DataExporter.Progress<Uri>> = PublishSubject.create()
@@ -44,7 +38,6 @@ class CollectionListTests {
 
     @Before
     fun setupPresenter() {
-        presenter = CollectionListPresenter(context, rxHooks, fileUtils, provider, store, exporter)
         whenever(exporter.observe()).thenReturn(exporterPublisher)
         whenever(provider.getCollections()).thenReturn(Observable.just(ArrayList()))
         whenever(store.createCollection("cool collection")).thenReturn(Observable.just(MovieCollection.create("cool collection")))
@@ -77,6 +70,36 @@ class CollectionListTests {
         verifyZeroInteractions(exporter)
         verifyZeroInteractions(provider)
         verifyZeroInteractions(store)
+    }
+
+    @Test
+    fun `collections available`() {
+        val collections = ArrayList<MovieCollection>()
+        collections.add(MovieCollection.create("collection 1"))
+        collections.add(MovieCollection.create("collection 2"))
+        whenever(provider.getCollections()).thenReturn(Observable.just(collections))
+
+        presenter.attachView(view)
+        argumentCaptor<CollectionListPage.State.Success>().apply {
+            verify(view).updateState(capture())
+            assertEquals(1, allValues.size)
+            assertEquals(2, firstValue.collections.size)
+            assertEquals("collection 1", firstValue.collections[0].name)
+            assertEquals("collection 2", firstValue.collections[1].name)
+        }
+    }
+
+    @Test
+    fun `empty collections`() {
+        presenter.attachView(view)
+        verify(view).updateState(CollectionListPage.State.Empty)
+    }
+
+    @Test
+    fun `error loading collections`() {
+        whenever(provider.getCollections()).thenReturn(Observable.error(Throwable("Error loading collections")))
+        presenter.attachView(view)
+        verify(view).updateState(CollectionListPage.State.Error)
     }
 
     @Test
