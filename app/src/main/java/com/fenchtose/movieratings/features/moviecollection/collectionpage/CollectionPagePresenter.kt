@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import android.net.Uri
+import android.support.annotation.VisibleForTesting
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
@@ -155,4 +156,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
         Sort.ALPHABETICAL -> data.sortedBy { it.title }
         else -> data
     }
+
+    @VisibleForTesting
+    fun getSort() = currentSort
 }

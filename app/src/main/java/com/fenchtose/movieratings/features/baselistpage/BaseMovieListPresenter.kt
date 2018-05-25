@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.baselistpage
 
 import android.support.annotation.CallSuper
+import android.support.annotation.VisibleForTesting
 import android.view.View
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
@@ -63,4 +64,7 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
     }
 
     abstract fun load(): Observable<List<Movie>>
+
+    @VisibleForTesting
+    fun getDataForTest(): List<Movie>? = data
 }
