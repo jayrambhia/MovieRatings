@@ -19,6 +19,15 @@ class PackageUtils {
             return false
         }
 
+        fun isPackageInstalled(context: Context, packageName: String): Boolean {
+            return try {
+                context.packageManager.getPackageInfo(packageName, 0)
+                true
+            } catch (e: PackageManager.NameNotFoundException) {
+                false
+            }
+        }
+
         fun isIntentCallabale(context: Context, intent: Intent): Boolean {
             val activities = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
             return activities.size > 0

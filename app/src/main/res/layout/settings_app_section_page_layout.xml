@@ -17,58 +17,21 @@
 			android:padding="@dimen/gutter"
 			android:textSize="@dimen/settings_header_text_size"/>
 
-		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/netflix_toggle"
-			android:padding="@dimen/gutter"
-			android:textSize="@dimen/settings_text_size"
-			android:text="@string/settings_netflix"
-			android:visibility="gone"
-			tools:visibility="visible"
+		<LinearLayout
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
+			android:layout_height="wrap_content"
+			android:id="@+id/toggles_container"
+			android:orientation="vertical">
 
-		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/prime_video_toggle"
-			android:padding="@dimen/gutter"
-			android:textSize="@dimen/settings_text_size"
-			android:text="@string/settings_primevideo"
-			android:visibility="gone"
-			tools:visibility="visible"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
+		</LinearLayout>
 
-		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/play_movies_toggle"
-			android:padding="@dimen/gutter"
-			android:textSize="@dimen/settings_text_size"
-			android:text="@string/settings_playmovies"
-			android:visibility="gone"
-			tools:visibility="visible"
-			tools:checked="true"
+		<TextView
+			android:id="@+id/not_installed_apps"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
-
-		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/hotstar_toggle"
+			android:layout_height="wrap_content"
 			android:padding="@dimen/gutter"
-			android:textSize="@dimen/settings_text_size"
-			android:text="@string/settings_hotstar"
-			android:visibility="gone"
-			tools:visibility="visible"
-			tools:checked="true"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
-
-		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/bbc_iplayer_toggle"
-			android:padding="@dimen/gutter"
-			android:textSize="@dimen/settings_text_size"
-			android:text="@string/settings_bbc_iplayer"
-			android:visibility="gone"
-			tools:visibility="visible"
-			tools:checked="true"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
+			android:textSize="@dimen/settings_header_text_size"
+			tools:text="@string/settings_not_installed_apps"/>
 
 		<View
 			android:layout_width="match_parent"

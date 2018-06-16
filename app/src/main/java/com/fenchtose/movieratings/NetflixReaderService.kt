@@ -119,13 +119,13 @@ class NetflixReaderService : AccessibilityService() {
 
             val isAppEnabled = when (it.packageName) {
                 BuildConfig.APPLICATION_ID -> true
-                Constants.PACKAGE_NETFLIX -> preferences?.isAppEnabled(UserPreferences.NETFLIX)
+                /*Constants.PACKAGE_NETFLIX -> preferences?.isAppEnabled(UserPreferences.NETFLIX)
                 Constants.PACKAGE_PRIMEVIDEO -> preferences?.isAppEnabled(UserPreferences.PRIMEVIDEO)
                 Constants.PACKAGE_PLAY_MOVIES_TV -> preferences?.isAppEnabled(UserPreferences.PLAY_MOVIES)
                 Constants.PACKAGE_HOTSTAR -> preferences?.isAppEnabled(UserPreferences.HOTSTAR)
                 Constants.PACKAGE_YOUTUBE -> preferences?.isAppEnabled(UserPreferences.YOUTUBE)
-                Constants.PACKAGE_BBC_IPLAYER -> preferences?.isAppEnabled(UserPreferences.BBC_IPLAYER)
-                else -> false
+                Constants.PACKAGE_BBC_IPLAYER -> preferences?.isAppEnabled(UserPreferences.BBC_IPLAYER)*/
+                else -> preferences?.isAppEnabled(it.packageName.toString())
             }
 
             if (isAppEnabled == null || !isAppEnabled) {
