@@ -33,6 +33,7 @@
 	<string name="settings_hotstar">Hotstar</string>
 	<string name="settings_bbc_iplayer">BBC iPlayer</string>
 	<string name="settings_jio_tv">Jio TV</string>
+	<string name="settings_jio_cinema">Jio Cinema</string>
     <string name="settings_preference_update_content">Your preferences have been updated</string>
 	<string name="settings_not_installed_apps">Flutter also supports %1s - which are not installed on your device.</string>
     <string name="settings_toast_duration_info">Set the duration for movie ratings to be displayed on your screen (in seconds)</string>

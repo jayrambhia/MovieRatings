@@ -28,6 +28,10 @@ class FixTitleUtils {
             return NETFLIX_YEAR_PATTERN.find(year)?.value
         }
 
+        fun fixJioCinemaYear(year: String): String? {
+            return NETFLIX_YEAR_PATTERN.find(year)?.value
+        }
+
         fun matchesPlayMoviesYear(year: String): Boolean {
             return PLAY_MOVIES_YEAR_TIME_PATTERN.matches(year)
         }

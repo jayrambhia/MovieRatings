@@ -14,6 +14,7 @@ class Constants {
         val PACKAGE_YOUTUBE = "com.google.android.youtube"
         val PACKAGE_BBC_IPLAYER = "bbc.iplayer.android"
         val PACKAGE_JIO_TV = "com.jio.jioplay.tv"
+        val PACKAGE_JIO_CINEMA = "com.jio.media.ondemand"
         val APP_SHARE_URL = "https://goo.gl/y3HXVi"
 
         val EXPORT_MOVIES = "movies"
@@ -30,7 +31,8 @@ class Constants {
                 Pair(PACKAGE_PLAY_MOVIES_TV, R.string.settings_playmovies),
                 Pair(PACKAGE_BBC_IPLAYER, R.string.settings_bbc_iplayer),
                 Pair(PACKAGE_HOTSTAR, R.string.settings_hotstar),
-                Pair(PACKAGE_JIO_TV, R.string.settings_jio_tv)
+                Pair(PACKAGE_JIO_TV, R.string.settings_jio_tv),
+                Pair(PACKAGE_JIO_CINEMA, R.string.settings_jio_cinema)
         )
 
     }

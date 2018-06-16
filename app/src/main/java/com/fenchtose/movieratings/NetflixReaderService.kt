@@ -35,7 +35,8 @@ class NetflixReaderService : AccessibilityService() {
     private var preferences: UserPreferences? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
-    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR, Constants.PACKAGE_BBC_IPLAYER, Constants.PACKAGE_JIO_TV/*, Constants.PACKAGE_YOUTUBE*//*, BuildConfig.APPLICATION_ID*/)
+//    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR, Constants.PACKAGE_BBC_IPLAYER, Constants.PACKAGE_JIO_TV/*, Constants.PACKAGE_YOUTUBE*//*, BuildConfig.APPLICATION_ID*/)
+    private val supportedPackages = Constants.supportedApps.keys
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -174,6 +175,11 @@ class NetflixReaderService : AccessibilityService() {
                             .filter { it.text != null }
                             .map { it.text }
                 }
+                Constants.PACKAGE_JIO_CINEMA -> {
+                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_CINEMA + ":id/tvShowName")
+                            .filter { it.text != null }
+                            .map { it.text }
+                }
                 else -> {
                     checkNodeRecursively(it, 0)
                     ArrayList()
@@ -225,7 +231,15 @@ class NetflixReaderService : AccessibilityService() {
                             .filter { it.text != null }
                             .map { it.text }
                             .filter {
-                                !FixTitleUtils.fixNetflixYear(it.toString()).isNullOrEmpty()
+                                !FixTitleUtils.fixHotstarYear(it.toString()).isNullOrEmpty()
+                            }
+                }
+                Constants.PACKAGE_JIO_CINEMA -> {
+                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_CINEMA + ":id/tvMovieSubtitle")
+                            .filter { it.text != null }
+                            .map { it.text }
+                            .filter {
+                                !FixTitleUtils.fixJioCinemaYear(it.toString()).isNullOrEmpty()
                             }
                 }
                 else -> ArrayList()
@@ -337,6 +351,7 @@ class NetflixReaderService : AccessibilityService() {
                 Constants.PACKAGE_PRIMEVIDEO -> FixTitleUtils.fixPrimeVideoYear(it)
                 Constants.PACKAGE_PLAY_MOVIES_TV -> FixTitleUtils.fixPlayMoviesYear(it)
                 Constants.PACKAGE_HOTSTAR -> FixTitleUtils.fixHotstarYear(it)
+                Constants.PACKAGE_JIO_CINEMA -> FixTitleUtils.fixJioCinemaYear(it)
                 else -> ""
             }
 
