@@ -1,9 +1,13 @@
 package com.fenchtose.movieratings
 
 import android.accessibilityservice.AccessibilityService
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import androidx.text.getSpans
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
@@ -31,7 +35,7 @@ class NetflixReaderService : AccessibilityService() {
     private var preferences: UserPreferences? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
-    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR/*, BuildConfig.APPLICATION_ID*/)
+    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR/*, Constants.PACKAGE_YOUTUBE*//*, BuildConfig.APPLICATION_ID*/)
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -119,6 +123,7 @@ class NetflixReaderService : AccessibilityService() {
                 Constants.PACKAGE_PRIMEVIDEO -> preferences?.isAppEnabled(UserPreferences.PRIMEVIDEO)
                 Constants.PACKAGE_PLAY_MOVIES_TV -> preferences?.isAppEnabled(UserPreferences.PLAY_MOVIES)
                 Constants.PACKAGE_HOTSTAR -> preferences?.isAppEnabled(UserPreferences.HOTSTAR)
+                Constants.PACKAGE_YOUTUBE -> preferences?.isAppEnabled(UserPreferences.YOUTUBE)
                 else -> false
             }
 
@@ -147,11 +152,26 @@ class NetflixReaderService : AccessibilityService() {
                     }
                     nodes
                 }
+                Constants.PACKAGE_YOUTUBE -> {
+//                    checkNodeRecursively(it, 0)
+                    val nodes = ArrayList<CharSequence>()
+                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_YOUTUBE + ":id/watch_list").filter { it.childCount > 0 }
+                            .flatMap {
+                                findChildrenWithId(it, Constants.PACKAGE_YOUTUBE + ":id/title")
+                                        .filter { it.text != null && it.parent?.viewIdResourceName == null}
+                                        .map { it.text }
+                            }.toCollection(nodes)
+                    nodes
+                }
                 else -> {
                     checkNodeRecursively(it, 0)
                     ArrayList()
                 }
             }.distinctBy { it }
+
+            if (BuildConfig.DEBUG) {
+                Log.d(TAG, "scraped titles: $titles")
+            }
 
             val years: List<CharSequence> = when(it.packageName) {
                 Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_basic_info").filter { it.text != null }.map { it.text }
@@ -226,16 +246,46 @@ class NetflixReaderService : AccessibilityService() {
 
         info?.let {
 
-            Log.d(TAG, "${" ".repeat(level)}info: text: ${it.text}, id: ${it.viewIdResourceName}, class: ${it.className}, parent: ${it.parent?.viewIdResourceName}")
+            Log.d(TAG, "${" ".repeat(level)}info: text: ${it.text}, id: ${it.viewIdResourceName}, class: ${it.className}, parent id: ${it.parent?.viewIdResourceName}, desc=${it.contentDescription?.toString()}")
+            it.contentDescription?.let {
+                Log.d(TAG, "type: ${it.javaClass}")
+                Log.d(TAG, "sub: ${it.subSequence(0, 4)} + ${it.subSequence(4, it.length)}, length: ${it.length}")
+                if (it is Spanned) {
+                    val s = it as Spanned
+                    Log.d(TAG, "Spans: ${s.getSpans<Any>()}")
+                }
+            }
             if (info.childCount > 0) {
                 Log.d(TAG, "${" ".repeat(level)}--- <children> ---")
                 (0 until info.childCount)
                         .forEach { index ->
+                            Log.d(TAG, "${" ".repeat(level)} index: $index - total: ${info.childCount}")
                             checkNodeRecursively(it.getChild(index), level + 1)
                         }
 
                 Log.d(TAG, "${" ".repeat(level)}--- </children> ---")
             }
+        }
+    }
+
+    private fun findChildrenWithId(node: AccessibilityNodeInfo, id: String): ArrayList<AccessibilityNodeInfo> {
+        val children = ArrayList<AccessibilityNodeInfo>()
+        recursiveFindChildrenWithId(children, node, id)
+        return children
+    }
+
+    private fun recursiveFindChildrenWithId(result: ArrayList<AccessibilityNodeInfo>, node: AccessibilityNodeInfo, id: String) {
+        if (node.viewIdResourceName == id) {
+            result.add(node)
+        }
+
+        if (node.childCount > 0) {
+            (0 until node.childCount)
+                    .forEach {
+                        index ->
+                        val child = node.getChild(index)
+                        recursiveFindChildrenWithId(result, child, id)
+                    }
         }
     }
 
