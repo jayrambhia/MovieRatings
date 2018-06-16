@@ -10,6 +10,7 @@ interface UserPreferences {
         val PLAY_MOVIES = "play_movies"
         val HOTSTAR = "hotstar"
         val YOUTUBE = "youtube"
+        val BBC_IPLAYER = "bbc_iplayer"
         val SAVE_HISTORY = "save_history"
         val USE_TTS = "use_tts"
         val TTS_AVAILABLE = "tts_available"

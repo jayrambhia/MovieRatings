@@ -11,6 +11,7 @@ class Constants {
         val PACKAGE_PLAY_MOVIES_TV = "com.google.android.videos"
         val PACKAGE_HOTSTAR = "in.startv.hotstar"
         val PACKAGE_YOUTUBE = "com.google.android.youtube"
+        val PACKAGE_BBC_IPLAYER = "bbc.iplayer.android"
         val APP_SHARE_URL = "https://goo.gl/y3HXVi"
 
         val EXPORT_MOVIES = "movies"

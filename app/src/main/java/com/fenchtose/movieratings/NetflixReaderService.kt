@@ -35,7 +35,7 @@ class NetflixReaderService : AccessibilityService() {
     private var preferences: UserPreferences? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
-    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR/*, Constants.PACKAGE_YOUTUBE*//*, BuildConfig.APPLICATION_ID*/)
+    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR, Constants.PACKAGE_BBC_IPLAYER/*, Constants.PACKAGE_YOUTUBE*//*, BuildConfig.APPLICATION_ID*/)
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -124,6 +124,7 @@ class NetflixReaderService : AccessibilityService() {
                 Constants.PACKAGE_PLAY_MOVIES_TV -> preferences?.isAppEnabled(UserPreferences.PLAY_MOVIES)
                 Constants.PACKAGE_HOTSTAR -> preferences?.isAppEnabled(UserPreferences.HOTSTAR)
                 Constants.PACKAGE_YOUTUBE -> preferences?.isAppEnabled(UserPreferences.YOUTUBE)
+                Constants.PACKAGE_BBC_IPLAYER -> preferences?.isAppEnabled(UserPreferences.BBC_IPLAYER)
                 else -> false
             }
 
@@ -162,6 +163,11 @@ class NetflixReaderService : AccessibilityService() {
                                         .map { it.text }
                             }.toCollection(nodes)
                     nodes
+                }
+                Constants.PACKAGE_BBC_IPLAYER -> {
+                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_BBC_IPLAYER + ":id/programme_details_title")
+                            .filter { it.text != null }
+                            .map { it.text }
                 }
                 else -> {
                     checkNodeRecursively(it, 0)
@@ -217,7 +223,6 @@ class NetflixReaderService : AccessibilityService() {
                                 !FixTitleUtils.fixNetflixYear(it.toString()).isNullOrEmpty()
                             }
                 }
-
                 else -> ArrayList()
             }.distinctBy { it }
 
@@ -247,19 +252,18 @@ class NetflixReaderService : AccessibilityService() {
         info?.let {
 
             Log.d(TAG, "${" ".repeat(level)}info: text: ${it.text}, id: ${it.viewIdResourceName}, class: ${it.className}, parent id: ${it.parent?.viewIdResourceName}, desc=${it.contentDescription?.toString()}")
-            it.contentDescription?.let {
-                Log.d(TAG, "type: ${it.javaClass}")
-                Log.d(TAG, "sub: ${it.subSequence(0, 4)} + ${it.subSequence(4, it.length)}, length: ${it.length}")
+            /*it.contentDescription?.let {
+//                Log.d(TAG, "type: ${it.javaClass}")
+//                Log.d(TAG, "sub: ${it.subSequence(0, 4)} + ${it.subSequence(4, it.length)}, length: ${it.length}")
                 if (it is Spanned) {
                     val s = it as Spanned
                     Log.d(TAG, "Spans: ${s.getSpans<Any>()}")
                 }
-            }
+            }*/
             if (info.childCount > 0) {
                 Log.d(TAG, "${" ".repeat(level)}--- <children> ---")
                 (0 until info.childCount)
                         .forEach { index ->
-                            Log.d(TAG, "${" ".repeat(level)} index: $index - total: ${info.childCount}")
                             checkNodeRecursively(it.getChild(index), level + 1)
                         }
 
