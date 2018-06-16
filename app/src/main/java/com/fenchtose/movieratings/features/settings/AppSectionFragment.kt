@@ -72,15 +72,21 @@ class AppSectionFragment: BaseFragment() {
 
     private fun setupAppToggles(preferences: UserPreferences, root:ViewGroup, container: ViewGroup) {
         val notInstalledApps = ArrayList<String>()
+        val installedApps = ArrayList<Pair<String, String>>()
 
         Constants.supportedApps.forEach {
             entry ->
             if (PackageUtils.isPackageInstalled(context, entry.key)) {
-                addAppToggle(preferences, container, entry.key, context.getString(entry.value))
+                installedApps.add(Pair(context.getString(entry.value), entry.key))
             } else {
                 notInstalledApps.add(context.getString(entry.value))
             }
         }
+
+        installedApps.sortedBy { it.first }
+                .forEach {
+                    addAppToggle(preferences, container, it.second, it.first)
+                }
 
         val notInstalledAppsView = root.findViewById<TextView>(R.id.not_installed_apps)
         if (notInstalledApps.isEmpty()) {

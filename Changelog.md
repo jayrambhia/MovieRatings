@@ -1,5 +1,9 @@
 # Flutter Changelog
 
+### 0.2.8
+
+ - Support added for BBC iPlayer, Hotstar, Jio TV, Jio Cinema
+
 ### 0.2.7
 
  - Dialog added for locale not supported

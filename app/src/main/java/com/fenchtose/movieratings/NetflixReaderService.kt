@@ -1,13 +1,9 @@
 package com.fenchtose.movieratings
 
 import android.accessibilityservice.AccessibilityService
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import androidx.text.getSpans
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
