@@ -31,7 +31,7 @@ class NetflixReaderService : AccessibilityService() {
     private var preferences: UserPreferences? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
-    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV/*, BuildConfig.APPLICATION_ID*/)
+    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR/*, BuildConfig.APPLICATION_ID*/)
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -118,6 +118,7 @@ class NetflixReaderService : AccessibilityService() {
                 Constants.PACKAGE_NETFLIX -> preferences?.isAppEnabled(UserPreferences.NETFLIX)
                 Constants.PACKAGE_PRIMEVIDEO -> preferences?.isAppEnabled(UserPreferences.PRIMEVIDEO)
                 Constants.PACKAGE_PLAY_MOVIES_TV -> preferences?.isAppEnabled(UserPreferences.PLAY_MOVIES)
+                Constants.PACKAGE_HOTSTAR -> preferences?.isAppEnabled(UserPreferences.HOTSTAR)
                 else -> false
             }
 
@@ -132,6 +133,15 @@ class NetflixReaderService : AccessibilityService() {
                 Constants.PACKAGE_PLAY_MOVIES_TV ->  {
                     val nodes = ArrayList<CharSequence>()
                     if (event.className == "com.google.android.apps.play.movies.mobile.usecase.details.DetailsActivity" && event.text != null) {
+                        val text = event.text.toString().replace("[", "").replace("]", "")
+                        nodes.add(text)
+                    }
+                    nodes
+                }
+                Constants.PACKAGE_HOTSTAR -> {
+                    val nodes = ArrayList<CharSequence>()
+                    // it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_HOTSTAR + ":id/metadata_title").filter { it.text != null }.map { it.text }
+                    if (event.className == "in.startv.hotstar.rocky.detailpage.HSDetailPageActivity" && event.text != null) {
                         val text = event.text.toString().replace("[", "").replace("]", "")
                         nodes.add(text)
                     }
@@ -178,6 +188,14 @@ class NetflixReaderService : AccessibilityService() {
                             }
 
                     nodes
+                }
+                Constants.PACKAGE_HOTSTAR -> {
+                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_HOTSTAR + ":id/metadata_subtitle")
+                            .filter { it.text != null }
+                            .map { it.text }
+                            .filter {
+                                !FixTitleUtils.fixNetflixYear(it.toString()).isNullOrEmpty()
+                            }
                 }
 
                 else -> ArrayList()
@@ -259,6 +277,7 @@ class NetflixReaderService : AccessibilityService() {
                 Constants.PACKAGE_NETFLIX -> FixTitleUtils.fixNetflixYear(it)
                 Constants.PACKAGE_PRIMEVIDEO -> FixTitleUtils.fixPrimeVideoYear(it)
                 Constants.PACKAGE_PLAY_MOVIES_TV -> FixTitleUtils.fixPlayMoviesYear(it)
+                Constants.PACKAGE_HOTSTAR -> FixTitleUtils.fixHotstarYear(it)
                 else -> ""
             }
 

@@ -40,6 +40,7 @@ class AppSectionFragment: BaseFragment() {
         addAppToggle(preferences, view, R.id.netflix_toggle, UserPreferences.NETFLIX)
         addAppToggle(preferences, view, R.id.prime_video_toggle, UserPreferences.PRIMEVIDEO)
         addAppToggle(preferences, view, R.id.play_movies_toggle, UserPreferences.PLAY_MOVIES)
+        addAppToggle(preferences, view, R.id.hotstar_toggle, UserPreferences.HOTSTAR)
 
         val ratingDurationSeekbar = view.findViewById<SeekBar>(R.id.rating_duration_seekbar)
         ratingDurationView = view.findViewById(R.id.rating_duration_view)

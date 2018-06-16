@@ -48,6 +48,17 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"/>
 
+		<android.support.v7.widget.SwitchCompat
+			android:id="@+id/hotstar_toggle"
+			android:padding="@dimen/gutter"
+			android:textSize="@dimen/settings_text_size"
+			android:text="@string/settings_hotstar"
+			android:visibility="gone"
+			tools:visibility="visible"
+			tools:checked="true"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
 		<View
 			android:layout_width="match_parent"
 			android:layout_height="1dp"

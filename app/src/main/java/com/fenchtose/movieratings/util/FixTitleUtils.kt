@@ -1,7 +1,5 @@
 package com.fenchtose.movieratings.util
 
-import android.util.Log
-
 
 class FixTitleUtils {
     companion object {
@@ -23,6 +21,10 @@ class FixTitleUtils {
         }
 
         fun fixPlayMoviesYear(year: String): String? {
+            return NETFLIX_YEAR_PATTERN.find(year)?.value
+        }
+
+        fun fixHotstarYear(year: String): String? {
             return NETFLIX_YEAR_PATTERN.find(year)?.value
         }
 

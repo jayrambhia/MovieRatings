@@ -9,6 +9,7 @@ class Constants {
         val PACKAGE_NETFLIX = "com.netflix.mediaclient"
         val PACKAGE_PRIMEVIDEO = "com.amazon.avod.thirdpartyclient"
         val PACKAGE_PLAY_MOVIES_TV = "com.google.android.videos"
+        val PACKAGE_HOTSTAR = "in.startv.hotstar"
         val APP_SHARE_URL = "https://goo.gl/y3HXVi"
 
         val EXPORT_MOVIES = "movies"
