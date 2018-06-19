@@ -39,7 +39,7 @@ class CollectionListTests {
     @Before
     fun setupPresenter() {
         whenever(exporter.observe()).thenReturn(exporterPublisher)
-        whenever(provider.getCollections()).thenReturn(Observable.just(ArrayList()))
+        whenever(provider.getCollections(withMovies = true)).thenReturn(Observable.just(ArrayList()))
         whenever(store.createCollection("cool collection")).thenReturn(Observable.just(MovieCollection.create("cool collection")))
         whenever(store.createCollection("uncool collection")).thenReturn(Observable.error(Throwable("unable to create collection")))
         whenever(store.deleteCollection(collectionToBeDeleted)).thenReturn(Observable.just(true))
@@ -52,7 +52,7 @@ class CollectionListTests {
         presenter.attachView(view)
         assertNotNull(presenter.getView())
         verify(exporter).observe()
-        verify(provider).getCollections()
+        verify(provider).getCollections(withMovies = true)
         verify(view).updateState(any<CollectionListPage.State>())
     }
 
@@ -77,7 +77,7 @@ class CollectionListTests {
         val collections = ArrayList<MovieCollection>()
         collections.add(MovieCollection.create("collection 1"))
         collections.add(MovieCollection.create("collection 2"))
-        whenever(provider.getCollections()).thenReturn(Observable.just(collections))
+        whenever(provider.getCollections(withMovies = true)).thenReturn(Observable.just(collections))
 
         presenter.attachView(view)
         argumentCaptor<CollectionListPage.State.Success>().apply {
@@ -97,7 +97,7 @@ class CollectionListTests {
 
     @Test
     fun `error loading collections`() {
-        whenever(provider.getCollections()).thenReturn(Observable.error(Throwable("Error loading collections")))
+        whenever(provider.getCollections(withMovies = true)).thenReturn(Observable.error(Throwable("Error loading collections")))
         presenter.attachView(view)
         verify(view).updateState(CollectionListPage.State.Error)
     }
