@@ -6,7 +6,7 @@ import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import io.reactivex.Observable
 
 interface MovieCollectionProvider {
-    fun getCollections(): Observable<List<MovieCollection>>
+    fun getCollections(withMovies:Boolean = false): Observable<List<MovieCollection>>
     fun getMoviesForCollection(collection: MovieCollection): Observable<List<Movie>>
 
     fun addPreferenceApplier(preferenceApplier: UserPreferenceApplier)

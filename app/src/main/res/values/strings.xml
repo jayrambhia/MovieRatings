@@ -162,6 +162,7 @@
 	<string name="movie_collection_list_page_selection_title">Select a collection</string>
 	<string name="movie_collection_list_empty_content">You don\'t have any collections. Create new collections and add movies to soothe your OCD</string>
 	<string name="movie_collection_list_empty_content_cta">Create new collection</string>
+	<string name="movie_collection_list_page_delete_collection_cta">Delete</string>
 	<string name="movie_collection_list_page_create_success">New collection created: %1s</string>
 	<string name="movie_collection_list_page_create_error">Unable to create new collection: %1s</string>
 	<string name="movie_collection_list_page_delete_success">Deleted collection: %1s</string>

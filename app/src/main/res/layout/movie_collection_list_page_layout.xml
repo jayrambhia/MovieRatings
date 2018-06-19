@@ -49,6 +49,8 @@
 		android:layout_margin="16dp"
 		app:elevation="4dp"
 		app:fabSize="normal"
+		tools:visibility="visible"
+		app:backgroundTint="@color/colorPrimary"
 		android:src="@drawable/ic_playlist_add_white_24dp"/>
 
 </FrameLayout>

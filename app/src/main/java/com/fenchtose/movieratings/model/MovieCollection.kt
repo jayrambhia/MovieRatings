@@ -33,6 +33,10 @@ class MovieCollection {
     @Ignore
     var entries: List<MovieCollectionEntry> = ArrayList()
 
+    @Transient
+    @Ignore
+    var movies: List<Movie> = ArrayList()
+
     companion object {
         fun create(name: String): MovieCollection {
             val collection = MovieCollection()

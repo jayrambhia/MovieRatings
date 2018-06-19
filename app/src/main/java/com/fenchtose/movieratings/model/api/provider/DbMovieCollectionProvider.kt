@@ -10,9 +10,21 @@ class DbMovieCollectionProvider(private val dao: MovieCollectionDao) : MovieColl
 
     private val preferenceAppliers = ArrayList<UserPreferenceApplier>()
 
-    override fun getCollections(): Observable<List<MovieCollection>> {
+    override fun getCollections(withMovies: Boolean): Observable<List<MovieCollection>> {
         return Observable.defer {
             Observable.just(dao.getMovieCollections())
+                    .map {
+                        if (withMovies) {
+                            it.forEach {
+                                val movies = dao.getMoviesForCollection(it.id)
+                                @Suppress("SENSELESS_COMPARISON")
+                                if (movies != null) {
+                                    it.movies = movies
+                                }
+                            }
+                        }
+                        it
+                    }
         }
     }
 

@@ -9,6 +9,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 
 class GlideLoader(private val manager: RequestManager): ImageLoader {
+
     override fun loadImage(image: String, view: ImageView, callback: ImageLoader.Callback?) {
 
         image.takeIf { it.isNotEmpty() && it != "N/A" }?.let {
@@ -24,6 +25,30 @@ class GlideLoader(private val manager: RequestManager): ImageLoader {
 
             }).into(view)
         }
+    }
+
+    override fun loadImage(image: String, view: ImageView, callback: ImageLoader.SelfLoaderCallback) {
+        if (image.isEmpty() || image == "N/A") {
+            callback.error(image, view)
+            return
+        }
+
+        manager.load(image).listener(object : RequestListener<Drawable> {
+            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                if (resource == null) {
+                    callback.error(image, view)
+                } else {
+                    callback.imageLoaded(image, view, resource)
+                }
+                return true
+            }
+
+            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                callback.error(image, view)
+                return true
+            }
+
+        }).submit()
     }
 
     override fun loadImage(image: String, view: ImageView) {

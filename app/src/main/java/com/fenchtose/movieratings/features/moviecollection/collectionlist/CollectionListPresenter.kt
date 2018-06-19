@@ -43,7 +43,7 @@ class CollectionListPresenter(
     }
 
     private fun loadCollections() {
-        provider.getCollections()
+        provider.getCollections(withMovies = true)
                 .subscribeOn(rxHooks.ioThread())
                 .observeOn(rxHooks.mainThread())
                 .subscribe({

@@ -2,8 +2,8 @@ package com.fenchtose.movieratings.features.moviecollection.collectionlist
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
@@ -20,6 +21,7 @@ import com.fenchtose.movieratings.features.moviecollection.collectionpage.Collec
 import com.fenchtose.movieratings.model.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
+import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.offline.export.DataFileExporter
 import com.fenchtose.movieratings.util.AppFileUtils
 import com.fenchtose.movieratings.util.AppRxHooks
@@ -51,7 +53,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         emptyContent = root.findViewById(R.id.empty_state_view)
         fab = root.findViewById(R.id.fab)
         recyclerView = root.findViewById(R.id.recyclerview)
-        recyclerView?.layoutManager = LinearLayoutManager(context)
+        recyclerView?.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
         root.findViewById<View>(R.id.empty_cta)?.setOnClickListener {
             onCreateCollectionRequested()
@@ -67,6 +69,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = CollectionListPageAdapter(context,
+                GlideLoader(Glide.with(this)),
                 object: CollectionListPageAdapter.AdapterCallback {
                     override fun onDeleteRequested(collection: MovieCollection) {
                         onCollectionDeleteRequested(collection)

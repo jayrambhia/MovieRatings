@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.image.ImageLoader
 
 class CollectionListPageAdapter(context: Context,
+                                private val imageLoader: ImageLoader,
                                 private val callback: AdapterCallback,
                                 private val showDeleteOption: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -19,7 +21,7 @@ class CollectionListPageAdapter(context: Context,
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as CollectionItemViewHolder).bind(data[position])
+        (holder as CollectionItemViewHolder).bind(data[position], imageLoader)
     }
 
     override fun getItemCount(): Int {
