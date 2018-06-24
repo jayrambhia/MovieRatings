@@ -31,7 +31,7 @@ sealed class SearchPresenter(private val provider: MovieProvider,
     override fun attachView(view: SearchPage) {
         super.attachView(view)
         if (data.isEmpty()) {
-            updateState(SearchPage.State.Default())
+            updateState(SearchPage.State.Default)
         } else {
             showAlreadyLoadedData(data)
         }
@@ -52,7 +52,7 @@ sealed class SearchPresenter(private val provider: MovieProvider,
         queryDisposables.dispose()
 
         pageNum = 1
-        updateState(SearchPage.State.Loading())
+        updateState(SearchPage.State.Loading)
         currentQuery = query
         queryDisposables = CompositeDisposable()
         makeApiCall(query, pageNum, queryDisposables)
@@ -64,8 +64,18 @@ sealed class SearchPresenter(private val provider: MovieProvider,
             if (queryDisposables.isDisposed) {
                 queryDisposables = CompositeDisposable()
             }
-            updateState(SearchPage.State.LoadingMore())
+            updateState(SearchPage.State.LoadingMore)
             makeApiCall(it, pageNum, queryDisposables)
+        }
+    }
+
+    fun retrySearch() {
+        if (currentQuery.isNotEmpty()) {
+            if (pageNum == 1) {
+                onSearchRequested(currentQuery)
+            } else {
+                loadMore()
+            }
         }
     }
 
@@ -99,12 +109,16 @@ sealed class SearchPresenter(private val provider: MovieProvider,
                     SearchPage.State.Loaded.PaginationSuccess(data)
                 }
             }
+            result != null && !result.success -> {
+                SearchPage.State.NoResult
+            }
             else -> {
                 if (pageNum == 1) {
                     data.clear()
-                    SearchPage.State.Error()
+                    SearchPage.State.Error
                 } else {
-                    SearchPage.State.PaginationError()
+                    pageNum--
+                    SearchPage.State.PaginationError
                 }
             }
         }

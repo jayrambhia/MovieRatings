@@ -48,7 +48,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
 
-    private var state: SearchPage.State = SearchPage.State.Default()
+    private var state: SearchPage.State = SearchPage.State.Default
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -215,6 +215,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                 setData(state)
                 appInfoContainer?.bottomSlide(500)
             }
+            is SearchPage.State.NoResult -> showNoResultError()
             is SearchPage.State.Error -> showApiError()
             is SearchPage.State.LoadingMore -> adapterConfig?.showLoadingMore(true)
             is SearchPage.State.PaginationError -> showApiError()
@@ -242,10 +243,20 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
     }
 
+    private fun showNoResultError() {
+        showLoading(false)
+        adapterConfig?.showLoadingMore(false)
+        showSnackbar(R.string.search_page_empty_result)
+    }
+
     private fun showApiError() {
         showLoading(false)
         adapterConfig?.showLoadingMore(false)
-        showSnackbar(R.string.search_page_api_error_content)
+        showSnackbarWithAction(context.getString(R.string.search_page_api_error_content),
+                R.string.search_page_try_again_cta,
+                View.OnClickListener {
+                    presenter?.retrySearch()
+                })
     }
 
     private fun setData(state: SearchPage.State.Loaded) {

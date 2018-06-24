@@ -8,9 +8,10 @@ interface SearchPage {
     fun updateState(state: CollectionState)
 
     sealed class State {
-        class Default: State()
-        class Loading: State()
-        class Error: State()
+        object Default: State()
+        object Loading: State()
+        object Error: State()
+        object NoResult: State()
 
         sealed class Loaded(val movies: ArrayList<Movie>): State() {
             class Success(movies: ArrayList<Movie>): Loaded(movies)
@@ -18,8 +19,8 @@ interface SearchPage {
             class Restored(movies: ArrayList<Movie>): Loaded(movies)
         }
 
-        class LoadingMore: State()
-        class PaginationError: State()
+        object LoadingMore: State()
+        object PaginationError: State()
     }
 
     sealed class CollectionState(val collection: MovieCollection) {
