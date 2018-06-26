@@ -25,6 +25,10 @@ class EpisodePresenter(private val provider: MovieProvider,
         getEpisode(entry)
     }
 
+    fun reload() {
+        getEpisode(entry)
+    }
+
     private fun getEpisode(entry: Episode) {
         val d = provider
                 .getEpisode(entry)
@@ -34,11 +38,11 @@ class EpisodePresenter(private val provider: MovieProvider,
                     showEpisode(it)
                 },{
                     it.printStackTrace()
-                    updateState(EpisodePage.State.Error())
+                    updateState(EpisodePage.State.Error)
                 })
 
         subscribe(d)
-        updateState(EpisodePage.State.Loading())
+        updateState(EpisodePage.State.Loading)
     }
 
     private fun showEpisode(episode: Movie) {

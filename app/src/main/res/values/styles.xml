@@ -9,13 +9,13 @@
     </style>
 
     <style name="AppTabLayout" parent="Widget.Design.TabLayout">
-        <item name="tabIndicatorColor">@android:color/white</item>
+        <item name="tabIndicatorColor">@color/colorAccentDark</item>
         <item name="tabIndicatorHeight">4dp</item>
         <item name="tabPaddingStart">12dp</item>
         <item name="tabPaddingEnd">12dp</item>
         <item name="tabBackground">?attr/selectableItemBackground</item>
         <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
-        <item name="tabSelectedTextColor">@android:color/white</item>
+        <item name="tabSelectedTextColor">@color/colorAccentDark</item>
 	    <item name="android:background">@color/colorPrimary</item>
     </style>
 

@@ -3,14 +3,15 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
-	android:background="@color/colorAccent"
 	tools:parentTag="android.widget.FrameLayout"
+	tools:background="@color/colorAccent"
 	xmlns:tools="http://schemas.android.com/tools">
 
 	<ProgressBar
 		android:id="@+id/progressbar"
 		android:layout_width="48dp"
 		android:layout_height="48dp"
+		android:indeterminateTint="@color/colorPrimary"
 		android:layout_gravity="center_horizontal"
 		android:layout_marginTop="96dp"/>
 

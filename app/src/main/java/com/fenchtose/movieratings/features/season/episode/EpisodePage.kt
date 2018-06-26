@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.features.season.episode
 import android.annotation.SuppressLint
 import android.content.Context
 import android.support.design.widget.Snackbar
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.Episode
 import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import com.fenchtose.movieratings.widgets.pagesection.ExpandableSection
 import com.fenchtose.movieratings.widgets.pagesection.InlineTextSection
 import com.fenchtose.movieratings.widgets.pagesection.SimpleTextSection
@@ -49,6 +51,7 @@ class EpisodePage(context: Context, private val episode: Episode,
         actorSection = TextSection(findViewById(R.id.actors_header), findViewById(R.id.actors_view))
         writerSection = TextSection(findViewById(R.id.writers_header), findViewById(R.id.writers_view))
         plotSection = ExpandableSection(findViewById(R.id.plot_header), findViewById(R.id.plot_toggle), findViewById(R.id.plot_view))
+        setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
     }
 
     private var presenter: EpisodePresenter? = null
@@ -80,7 +83,14 @@ class EpisodePage(context: Context, private val episode: Episode,
 
     private fun showError() {
         progressbar.visibility = View.GONE
-        Snackbar.make(this, R.string.episode_page_loading_error, Snackbar.LENGTH_SHORT).show()
+        ThemedSnackbar.makeWithAction(this,
+                R.string.episode_page_loading_error,
+                Snackbar.LENGTH_LONG,
+                R.string.episode_page_retry_cta,
+                View.OnClickListener {
+                    presenter?.reload()
+                }
+        ).show()
     }
 
     private fun showEpisode(episode: Movie) {
@@ -103,9 +113,9 @@ class EpisodePage(context: Context, private val episode: Episode,
     }
 
     sealed class State {
-        class Loading: State()
+        object Loading: State()
         class Success(val episode: Movie): State()
-        class Error: State()
+        object Error: State()
     }
 
     interface EpisodeCallback {

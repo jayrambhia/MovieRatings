@@ -211,6 +211,7 @@
 	<string name="episode_page_released_on">Released on</string>
 	<string name="episode_page_rating">Rated %1s</string>
 	<string name="episode_page_open_imdb">See on IMDB</string>
+	<string name="episode_page_retry_cta">Retry</string>
 
 	<string name="rating_tts">%1$s is rated %2$s.</string>
 
