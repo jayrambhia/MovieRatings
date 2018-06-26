@@ -35,10 +35,8 @@
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:layout_below="@id/imageview"
-            android:background="@color/onyx_accent"
             android:layout_gravity="bottom"
-            android:textSize="14sp"
-            android:textColor="#fff"
+            android:textAppearance="@style/Text.Light.Medium"
             android:text="@string/movie_collection_search_and_add"
             android:gravity="center"/>
 

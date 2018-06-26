@@ -22,4 +22,7 @@
     <color name="divider_color">#44444444</color>
 
     <color name="colorAccentDark">#2A2D34</color>
+    <color name="textColorLight">#EEF0F2</color>
+    <color name="textColorDark">#2A2d34</color>
+    <color name="textColorGray">#6b6570</color>
 </resources>

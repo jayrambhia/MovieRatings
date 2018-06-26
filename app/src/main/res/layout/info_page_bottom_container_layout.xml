@@ -12,9 +12,8 @@
 		android:id="@+id/info_content_view"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textSize="14sp"
 		android:padding="16dp"
-		android:textColor="@android:color/white"
+		android:textAppearance="@style/Text.Light"
 		android:gravity="start"
 		android:visibility="gone"
 		tools:visibility="visible"
@@ -39,13 +38,12 @@
 			android:layout_width="match_parent"
 			android:layout_height="46dp"
 			android:text="@string/info_page_go_premium_cta"
-			android:textSize="16sp"
 			android:padding="8dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textColor="@color/yellow_primary"
+			android:textAppearance="@style/Text.Light"
 			android:drawableStart="@drawable/ic_monetization_on_yellow_24dp"/>
 
 	</LinearLayout>
@@ -68,13 +66,12 @@
 			android:layout_height="wrap_content"
 			android:minHeight="48dp"
 			android:text="@string/info_page_credit_cta"
-			android:textSize="16sp"
 			android:padding="8dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textColor="@color/yellow_primary"
+			android:textAppearance="@style/Text.Light"
 			android:drawableStart="@drawable/ic_info_outline_yellow_24dp"/>
 
 	</LinearLayout>
@@ -98,13 +95,12 @@
 			android:layout_width="match_parent"
 			android:layout_height="46dp"
 			android:text="@string/info_page_settings_cta"
-			android:textSize="16sp"
 			android:padding="8dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textColor="@color/yellow_primary"
+			android:textAppearance="@style/Text.Light"
 			android:drawableStart="@drawable/ic_settings_yellow_24dp"/>
 
 	</LinearLayout>
@@ -128,13 +124,12 @@
 			android:layout_width="match_parent"
 			android:layout_height="46dp"
 			android:text="@string/info_page_test_cta"
-			android:textSize="16sp"
 			android:padding="8dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textColor="@color/yellow_primary"
+			android:textAppearance="@style/Text.Light"
 			android:drawableStart="@drawable/ic_build_yellow_24dp"/>
 
 	</LinearLayout>
@@ -157,13 +152,12 @@
 			android:layout_height="wrap_content"
 			android:minHeight="48dp"
 			android:text="@string/info_page_rate_cta"
-			android:textSize="16sp"
 			android:padding="8dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textColor="@color/yellow_primary"
+			android:textAppearance="@style/Text.Light"
 			android:drawableStart="@drawable/google_play"/>
 
 	</LinearLayout>
@@ -186,13 +180,12 @@
 			android:layout_height="wrap_content"
 			android:minHeight="48dp"
 			android:text="@string/info_page_share_cta"
-			android:textSize="16sp"
 			android:padding="8dp"
 			android:layout_marginStart="8dp"
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textColor="@color/yellow_primary"
+			android:textAppearance="@style/Text.Light"
 			android:drawableStart="@drawable/ic_share_black_24dp"/>
 
 	</LinearLayout>

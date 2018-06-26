@@ -12,6 +12,7 @@
         android:layout_height="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:titleTextColor="@color/textColorDark"
         android:background="?attr/colorPrimary"/>
 
     <FrameLayout

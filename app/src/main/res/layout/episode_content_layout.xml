@@ -17,91 +17,76 @@
 		android:paddingBottom="8dp">
 
 		<TextView
+			android:textAppearance="@style/Text.Light.Medium.Largest"
 			android:id="@+id/title_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="24sp"
-			android:fontFamily="sans-serif-medium"
 			tools:text="Canvassing"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light.Medium.Larger"
 			android:id="@+id/series_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="18sp"
 			android:layout_marginBottom="8dp"
-			android:fontFamily="sans-serif-medium"
 			tools:text="Parks and recreation - Season 1"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light.Medium.Larger"
 			android:id="@+id/rating_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="18sp"
-			android:fontFamily="sans-serif-medium"
 			tools:text="Rated: 7.6"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light"
 			android:id="@+id/genre_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="16sp"
 			tools:text="Comedy"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light"
 			android:id="@+id/director_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="16sp"
 			tools:text="Directed by Seth Gordon"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light"
 			android:id="@+id/released_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="16sp"
 			tools:text="Released on 16 Apr 2009"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light.Medium.Larger"
 			android:id="@+id/actors_header"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="16dp"
-			android:textColor="@android:color/white"
-			android:textSize="21sp"
-			android:fontFamily="sans-serif-medium"
 			android:text="@string/movie_page_actors_title"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light"
 			android:id="@+id/actors_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="16sp"
 			tools:text="Chris Pratt, Zoe Saldana, Dave Bautista, Vin Diesel"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light.Medium.Larger"
 			android:id="@+id/writers_header"
 			android:layout_marginTop="16dp"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="21sp"
-			android:fontFamily="sans-serif-medium"
 			android:text="@string/movie_page_writers_title"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Light"
 			android:id="@+id/writers_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="16sp"
 			tools:text="James Gunn, Dan Abnett (based on the Marvel comics by)"/>
 
 		<LinearLayout
@@ -113,12 +98,10 @@
 			android:orientation="horizontal">
 
 			<TextView
+				android:textAppearance="@style/Text.Light.Medium.Larger"
 				android:layout_width="0dp"
 				android:layout_weight="1"
 				android:layout_height="wrap_content"
-				android:textColor="@android:color/white"
-				android:textSize="21sp"
-				android:fontFamily="sans-serif-medium"
 				android:text="@string/movie_page_plot_title"/>
 
 			<ImageView
@@ -131,13 +114,12 @@
 		</LinearLayout>
 
 		<TextView
+			android:textAppearance="@style/Text.Light"
 			android:visibility="gone"
 			tools:visibility="visible"
 			android:id="@+id/plot_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@android:color/white"
-			android:textSize="16sp"
 			tools:text="After saving Xandar from Ronan's wrath, the Guardians are now recognized as heroes."/>
 
 	</LinearLayout>

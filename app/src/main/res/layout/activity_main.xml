@@ -16,7 +16,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
         tools:title="Flutter"
         android:elevation="0dp"
-        app:titleTextColor="@color/colorAccent"
+        app:titleTextColor="@color/textColorDark"
         app:navigationIcon="@drawable/ic_arrow_back_accent_24dp"
         android:background="?attr/colorPrimary"/>
 
@@ -50,8 +50,7 @@
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="@string/activate_app_cta"
-            android:textColor="@color/yellow_primary"
-            android:textSize="18sp"/>
+            android:textAppearance="@style/Text.Light.Medium.Large"/>
 
     </LinearLayout>
 

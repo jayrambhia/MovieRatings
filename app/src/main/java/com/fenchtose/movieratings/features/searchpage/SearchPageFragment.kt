@@ -48,7 +48,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
 
-    private var state: SearchPage.State = SearchPage.State.Default
+//    private var state: SearchPage.State = SearchPage.State.Default
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -199,9 +199,9 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     }
 
     override fun updateState(state: SearchPage.State) {
-        if (this.state == state) {
-            return
-        }
+//        if (this.state == state) {
+//            return
+//        }
 
         when (state) {
             is SearchPage.State.Default -> {

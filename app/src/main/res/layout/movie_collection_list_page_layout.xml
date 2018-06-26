@@ -20,9 +20,8 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_margin="32dp"
-			android:textColor="@color/colorAccent"
-			android:textSize="16sp"
 			android:gravity="center"
+			android:textAppearance="@style/Text.Dark.Secondary"
 			android:text="@string/movie_collection_list_empty_content"/>
 
 		<Button

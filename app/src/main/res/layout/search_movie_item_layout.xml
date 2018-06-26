@@ -28,6 +28,7 @@
             />
 
         <TextView
+	        android:textAppearance="@style/Text.Light"
             android:id="@+id/titleview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,8 +36,6 @@
             android:layout_below="@id/imageview"
             android:background="@color/onyx_accent"
             android:layout_gravity="bottom"
-            android:textSize="14sp"
-            android:textColor="#fff"
             tools:text="The Maximum Force of the Future"
             android:gravity="center"/>
 

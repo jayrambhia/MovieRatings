@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<style name="Text">
+		<item name="android:textSize">14sp</item>
+	</style>
+
+	<style name="Text.Light">
+		<item name="android:textColor">@color/textColorLight</item>
+	</style>
+
+	<style name="Text.Light.Medium">
+		<item name="android:fontFamily">sans-serif-medium</item>
+	</style>
+
+	<style name="Text.Light.Medium.Largest">
+		<item name="android:textSize">24sp</item>
+	</style>
+
+	<style name="Text.Light.Medium.Larger">
+		<item name="android:textSize">21sp</item>
+	</style>
+
+	<style name="Text.Light.Medium.Large">
+		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Light.Medium.Small">
+		<item name="android:textSize">12sp</item>
+	</style>
+
+	<style name="Text.Light.Largest">
+		<item name="android:textSize">24sp</item>
+	</style>
+
+	<style name="Text.Light.Larger">
+		<item name="android:textSize">21sp</item>
+	</style>
+
+	<style name="Text.Light.Large">
+		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Light.Small">
+		<item name="android:textSize">12sp</item>
+	</style>
+
+	<style name="Text.Dark">
+		<item name="android:textColor">@color/textColorDark</item>
+	</style>
+
+	<style name="Text.Dark.Medium">
+		<item name="android:fontFamily">sans-serif-medium</item>
+	</style>
+
+	<style name="Text.Dark.Medium.Largest">
+		<item name="android:textSize">24sp</item>
+	</style>
+
+	<style name="Text.Dark.Medium.Larger">
+		<item name="android:textSize">21sp</item>
+	</style>
+
+	<style name="Text.Dark.Medium.Large">
+		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Dark.Medium.Small">
+		<item name="android:textSize">12sp</item>
+	</style>
+
+	<style name="Text.Dark.Largest">
+		<item name="android:textSize">24sp</item>
+	</style>
+
+	<style name="Text.Dark.Larger">
+		<item name="android:textSize">21sp</item>
+	</style>
+
+	<style name="Text.Dark.Large">
+		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Dark.Small">
+		<item name="android:textSize">12sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary">
+		<item name="android:textColor">@color/textColorGray</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Medium">
+		<item name="android:fontFamily">sans-serif-medium</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Medium.Largest">
+		<item name="android:textSize">24sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Medium.Larger">
+		<item name="android:textSize">21sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Medium.Large">
+		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Medium.Small">
+		<item name="android:textSize">12sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Largest">
+		<item name="android:textSize">24sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Larger">
+		<item name="android:textSize">21sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Large">
+		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Small">
+		<item name="android:textSize">12sp</item>
+	</style>
+</resources>

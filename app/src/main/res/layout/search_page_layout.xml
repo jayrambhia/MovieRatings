@@ -11,12 +11,14 @@
 	    android:orientation="horizontal">
 
 	    <EditText
+		    android:textAppearance="@style/Text.Dark.Large"
 		    android:id="@+id/search_view"
 		    android:layout_width="0dp"
 		    android:layout_weight="1"
 		    android:layout_height="48dp"
 		    android:layout_margin="8dp"
 		    android:padding="8dp"
+		    android:textColorHint="@color/textColorGray"
 		    android:hint="@string/search_page_query_hint"/>
 
 	    <ImageView
@@ -38,7 +40,8 @@
         android:layout_height="wrap_content"
         android:text="@string/powered_by_api"
         android:textSize="32sp"
-        android:textColor="#22444444"
+        android:textColor="@color/textColorGray"
+        android:alpha="0.4"
         android:layout_gravity="center"/>
 
     <ProgressBar

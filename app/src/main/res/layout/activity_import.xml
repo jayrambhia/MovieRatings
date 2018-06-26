@@ -14,7 +14,7 @@
 		app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
 		tools:title="Flutter - import data"
 		android:elevation="0dp"
-		app:titleTextColor="@color/colorAccent"
+		app:titleTextColor="@color/textColorDark"
 		android:background="?attr/colorPrimary"/>
 
 	<FrameLayout

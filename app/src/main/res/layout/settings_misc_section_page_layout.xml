@@ -8,41 +8,42 @@
 
 	<android.support.v7.widget.SwitchCompat
 		android:id="@+id/show_activate_toggle"
+		android:textAppearance="@style/Text.Dark"
 		android:padding="@dimen/gutter"
-		android:textSize="@dimen/settings_text_size"
 		android:text="@string/settings_activate_flutter"
 		android:visibility="gone"
 		tools:visibility="visible"
+		tools:checked="true"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"/>
 
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-		android:background="#44444444"/>
+		android:background="@color/divider_color"/>
 
 	<TextView
+		android:textAppearance="@style/Text.Dark.Secondary"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/settings_use_year_info"
 		android:paddingStart="@dimen/gutter"
 		android:paddingEnd="@dimen/gutter"
-		android:layout_marginTop="@dimen/gutter"
-		android:textSize="@dimen/settings_header_text_size"/>
+		android:layout_marginTop="@dimen/gutter"/>
 
 	<android.support.v7.widget.SwitchCompat
 		android:id="@+id/use_year_toggle"
 		android:padding="@dimen/gutter"
-		android:textSize="@dimen/settings_text_size"
 		android:text="@string/settings_use_year"
 		android:visibility="gone"
 		tools:visibility="visible"
+		android:textAppearance="@style/Text.Dark"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"/>
 
 	<View
 		android:layout_width="match_parent"
 		android:layout_height="1dp"
-		android:background="#44444444"/>
+		android:background="@color/divider_color"/>
 
 </LinearLayout>

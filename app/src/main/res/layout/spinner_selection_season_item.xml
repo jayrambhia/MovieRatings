@@ -5,9 +5,8 @@
 	android:layout_height="wrap_content"
 	xmlns:tools="http://schemas.android.com/tools"
 	tools:text="Season 1"
-	android:textColor="@android:color/white"
-	android:textSize="16sp"
 	android:padding="8dp"
+	android:textAppearance="@style/Text.Light.Large"
 	tools:background="@color/colorAccent">
 
 </TextView>

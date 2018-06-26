@@ -28,6 +28,7 @@
             />
 
         <TextView
+	        android:textAppearance="@style/Text.Light"
             android:id="@+id/titleview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,8 +36,6 @@
             android:layout_below="@id/imageview"
             android:background="@color/onyx_accent"
             android:layout_gravity="bottom"
-            android:textSize="14sp"
-            android:textColor="#fff"
             tools:text="Super awesome collection"
             android:gravity="center"/>
 
@@ -77,10 +76,8 @@
 		    android:layout_marginBottom="-16dp"
 		    android:layout_alignParentEnd="true"
 		    android:layout_above="@id/titleview"
-		    android:textColor="#fff"
 		    android:gravity="center"
-		    android:fontFamily="roboto-medium"
-		    android:textSize="12sp"
+		    android:textAppearance="@style/Text.Light.Medium.Small"
 		    tools:text="12"/>
 
     </RelativeLayout>

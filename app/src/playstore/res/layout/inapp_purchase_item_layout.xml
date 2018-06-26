@@ -22,20 +22,17 @@
 			android:id="@+id/title_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@color/colorAccent"
-			android:textSize="16sp"
+			android:textAppearance="@style/Text.Dark.Medium"
 			android:layout_marginStart="6dp"
-			android:fontFamily="sans-serif-medium"
 			tools:text="Buy me coffee!"/>
 
 		<TextView
 			android:id="@+id/subtitle_view"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:textColor="@color/colorAccent"
 			android:layout_marginTop="4dp"
 			android:layout_marginStart="6dp"
-			android:textSize="14sp"
+			android:textAppearance="@style/Text.Dark.Secondary"
 			tools:text="Buy the devs a cup of coffee."/>
 
 		<TextView
@@ -44,10 +41,9 @@
 			android:layout_height="wrap_content"
 			android:visibility="gone"
 			tools:visibility="visible"
-			android:textColor="@color/colorAccent"
+			android:textAppearance="@style/Text.Dark.Secondary"
 			android:layout_marginTop="8dp"
 			android:layout_marginStart="6dp"
-			android:textSize="14sp"
 			tools:text="@string/donate_already_purchased_text"/>
 
 		<Button

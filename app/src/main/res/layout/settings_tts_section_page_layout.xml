@@ -6,14 +6,14 @@
 	android:layout_height="match_parent">
 
 	<TextView
+		android:textAppearance="@style/Text.Dark.Secondary"
 		android:id="@+id/tts_info"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/settings_tts_info"
 		android:paddingStart="@dimen/gutter"
 		android:paddingEnd="@dimen/gutter"
-		android:layout_marginTop="@dimen/gutter"
-		android:textSize="@dimen/settings_header_text_size"/>
+		android:layout_marginTop="@dimen/gutter"/>
 
 	<android.support.v7.widget.SwitchCompat
 		android:id="@+id/tts_toggle"

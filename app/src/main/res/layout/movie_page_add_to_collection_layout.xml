@@ -4,14 +4,12 @@
 	android:layout_width="wrap_content"
 	android:layout_height="wrap_content"
 	android:background="@drawable/movie_page_add_to_collection_background"
-	android:textColor="@color/colorAccent"
-	android:textSize="14sp"
 	android:paddingStart="16dp"
 	android:paddingEnd="16dp"
 	android:paddingTop="8dp"
 	android:paddingBottom="8dp"
 	android:gravity="center_vertical"
-	android:fontFamily="sans-serif-medium"
+	android:textAppearance="@style/Text.Dark.Medium"
 	android:text="@string/movie_page_add_to_collection"
 	android:elevation="4dp">
 

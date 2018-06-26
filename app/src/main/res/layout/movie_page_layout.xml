@@ -47,14 +47,12 @@
         tools:targetApi="lollipop"/>
 
 	<TextView
+		android:textAppearance="@style/Text.Dark.Medium.Largest"
 		android:id="@+id/rating_view"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:textSize="24sp"
 		android:elevation="4dp"
-		android:fontFamily="sans-serif-medium"
 		android:layout_marginEnd="16dp"
-		android:textColor="@color/colorAccent"
 		app:layout_anchor="@id/main.appbar"
 		app:layout_anchorGravity="center_vertical|end"
 		tools:text="8.1/10"
@@ -88,37 +86,32 @@
 		    android:orientation="vertical">
 
 		    <TextView
+			    android:textAppearance="@style/Text.Light.Medium.Largest"
 			    android:id="@+id/title_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="24sp"
-			    android:fontFamily="sans-serif-medium"
 			    tools:text="Guardians of the galaxy vol. 2"/>
 
 		    <TextView
+			    android:textAppearance="@style/Text.Light"
 			    android:id="@+id/genre_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:layout_marginTop="8dp"
-			    android:textColor="@android:color/white"
-			    android:textSize="16sp"
 			    tools:text="Action, Adventure, Sci-Fi"/>
 
 		    <TextView
 			    android:id="@+id/director_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="16sp"
+			    android:textAppearance="@style/Text.Light"
 			    tools:text="Directed by James Gunn"/>
 
 		    <TextView
 			    android:id="@+id/released_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="16sp"
+			    android:textAppearance="@style/Text.Light"
 			    tools:text="Released on 05 May 2017"/>
 
 		    <TextView
@@ -126,9 +119,7 @@
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:layout_marginTop="16dp"
-			    android:textColor="@android:color/white"
-			    android:textSize="@dimen/movie_page_header_textsize"
-			    android:fontFamily="sans-serif-medium"
+			    android:textAppearance="@style/Text.Light.Medium.Larger"
 			    android:text="@string/movie_page_collections_title"/>
 
 		    <com.fenchtose.movieratings.widgets.FlexView
@@ -144,17 +135,14 @@
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    android:layout_marginTop="16dp"
-			    android:textColor="@android:color/white"
-			    android:textSize="@dimen/movie_page_header_textsize"
-			    android:fontFamily="sans-serif-medium"
+			    android:textAppearance="@style/Text.Light.Medium.Larger"
 			    android:text="@string/movie_page_actors_title"/>
 
 		    <TextView
 			    android:id="@+id/actors_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="16sp"
+			    android:textAppearance="@style/Text.Light"
 			    tools:text="Chris Pratt, Zoe Saldana, Dave Bautista, Vin Diesel"/>
 
 		    <TextView
@@ -162,17 +150,14 @@
 			    android:layout_marginTop="16dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="@dimen/movie_page_header_textsize"
-			    android:fontFamily="sans-serif-medium"
+			    android:textAppearance="@style/Text.Light.Medium.Larger"
 			    android:text="@string/movie_page_writers_title"/>
 
 		    <TextView
 			    android:id="@+id/writers_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="16sp"
+			    android:textAppearance="@style/Text.Light"
 			    tools:text="James Gunn, Dan Abnett (based on the Marvel comics by)"/>
 
 		    <LinearLayout
@@ -187,9 +172,7 @@
 				    android:layout_width="0dp"
 				    android:layout_weight="1"
 				    android:layout_height="wrap_content"
-				    android:textColor="@android:color/white"
-				    android:textSize="@dimen/movie_page_header_textsize"
-				    android:fontFamily="sans-serif-medium"
+				    android:textAppearance="@style/Text.Light.Medium.Larger"
 				    android:text="@string/movie_page_plot_title"/>
 
 			    <ImageView
@@ -207,8 +190,7 @@
 			    android:id="@+id/plot_view"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="16sp"
+			    android:textAppearance="@style/Text.Light"
 			    tools:text="After saving Xandar from Ronan's wrath, the Guardians are now recognized as heroes."/>
 
 		    <TextView
@@ -218,9 +200,7 @@
 			    android:layout_marginTop="16dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:textColor="@android:color/white"
-			    android:textSize="@dimen/movie_page_header_textsize"
-			    android:fontFamily="sans-serif-medium"
+			    android:textAppearance="@style/Text.Light.Medium.Larger"
 			    android:text="@string/movie_page_episodes_title"/>
 
 		    <android.support.v7.widget.AppCompatSpinner
