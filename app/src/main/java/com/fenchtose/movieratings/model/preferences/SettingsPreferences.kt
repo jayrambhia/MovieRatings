@@ -11,6 +11,7 @@ class SettingsPreferences(context: Context): UserPreferences {
     private val DURATION_KEY = "toast_duration"
     private val LIKES_SORT_KEY = "likes_sort"
     private val COLLECTION_SORT_KEY = "collection_sort_"
+    private val RATING_BUBBLE_COLOR_KEY = "rating_bubble_color"
 
     private val preferences: SharedPreferences = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE)
 
@@ -58,5 +59,13 @@ class SettingsPreferences(context: Context): UserPreferences {
         }
 
         return Sort.ALPHABETICAL
+    }
+
+    override fun getBubbleColor(fallback: Int): Int {
+        return preferences.getInt(RATING_BUBBLE_COLOR_KEY, fallback)
+    }
+
+    override fun setBubbleColor(color: Int) {
+        preferences.edit().putInt(RATING_BUBBLE_COLOR_KEY, color).apply()
     }
 }

@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="navy_blue">#1B4079</color>
-    <color name="grey_blue">#3A7CA5</color>
-    <color name="green_primary">#00A878</color>
-    <color name="green_secondary">#008F66</color>
-    <color name="pink_primary">#FE5F55</color>
-    <color name="pink_secondary">#FE5448</color>-->
     <color name="yellow_primary">#FFBC42</color>
     <color name="yellow_secondary">#CC9634</color>
     <color name="onyx_accent">#313638</color>
     <color name="accent_orange">#F46036</color>
-    <!--<color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>-->
+
     <color name="colorPrimary">@color/yellow_primary</color>
     <color name="colorPrimaryDark">@color/yellow_secondary</color>
     <color name="colorAccent">@color/onyx_accent</color>
@@ -25,4 +17,38 @@
     <color name="textColorLight">#EEF0F2</color>
     <color name="textColorDark">#2A2d34</color>
     <color name="textColorGray">#6b6570</color>
+
+    <!-- Bubble colors -->
+	<color name="space_cadet">#2e294e</color>
+	<color name="dogwood_rose">#d90368</color>
+	<color name="ksu_purple">#541388</color>
+	<color name="bittersweet_shimmer">#c14953</color>
+	<color name="iguana_green">#7cae7a</color>
+	<color name="persian_green">#17a398</color>
+
+	<color name="yellow_orange">#ffbc42</color>
+	<color name="eggshell">#f1e9da</color>
+	<color name="bone">#e0e0ce</color>
+	<color name="light_cobalt_blue">#94b0da</color>
+	<color name="waterspout">#9bf3f0</color>
+	<color name="pastel_green">#82d173</color>
+	
+	<array name="bubble_dark">
+		<item>@color/space_cadet</item>
+		<item>@color/dogwood_rose</item>
+		<item>@color/ksu_purple</item>
+		<item>@color/bittersweet_shimmer</item>
+		<item>@color/iguana_green</item>
+		<item>@color/persian_green</item>
+	</array>
+
+	<array name="bubble_light">
+		<item>@color/yellow_orange</item>
+		<item>@color/eggshell</item>
+		<item>@color/bone</item>
+		<item>@color/light_cobalt_blue</item>
+		<item>@color/waterspout</item>
+		<item>@color/pastel_green</item>
+	</array>
+
 </resources>

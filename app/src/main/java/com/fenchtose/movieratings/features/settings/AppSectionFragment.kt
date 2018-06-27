@@ -6,7 +6,6 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import android.widget.TextView
 import androidx.view.setPadding
 import com.fenchtose.movieratings.R
@@ -20,7 +19,6 @@ import com.fenchtose.movieratings.util.PackageUtils
 class AppSectionFragment: BaseFragment() {
 
     private var preferences: UserPreferences? = null
-    private var ratingDurationView: TextView? = null
     private var updatePublisher: PreferenceUpdater? = null
 
     override fun canGoBack(): Boolean {
@@ -42,25 +40,6 @@ class AppSectionFragment: BaseFragment() {
 
         val toggleContainer = view.findViewById<ViewGroup>(R.id.toggles_container)
         setupAppToggles(preferences, view as ViewGroup, toggleContainer)
-
-        val ratingDurationSeekbar = view.findViewById<SeekBar>(R.id.rating_duration_seekbar)
-        ratingDurationView = view.findViewById(R.id.rating_duration_view)
-
-        val progress = preferences.getRatingDisplayDuration()/1000
-        ratingDurationView?.text = (progress).toString()
-        ratingDurationSeekbar?.progress = progress - 1
-
-        ratingDurationSeekbar?.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                updateRatingDisplayDuration((progress + 1) * 1000)
-            }
-        })
 
         updatePublisher = PreferenceUpdater(view)
     }
@@ -113,14 +92,6 @@ class AppSectionFragment: BaseFragment() {
     private fun updatePreference(preferences: UserPreferences, app: String, checked: Boolean) {
         preferences.setAppEnabled(app, checked)
         updatePublisher?.show(app)
-    }
-
-    private fun updateRatingDisplayDuration(durationInMs: Int) {
-        preferences?.let {
-            it.setRatingDisplayDuration(durationInMs)
-            updatePublisher?.show("toast")
-            ratingDurationView?.text = (it.getRatingDisplayDuration()/1000).toString()
-        }
     }
 
     class SettingsAppSectionPath: RouterPath<AppSectionFragment>() {

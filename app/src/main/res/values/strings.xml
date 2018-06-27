@@ -89,10 +89,15 @@
 	<string name="settings_tts_section_subtitle">Take advantage of Flutter\'s TTS support</string>
 	<string name="settings_misc_section_title">Miscellaneous settings</string>
 	<string name="settings_misc_section_subtitle">Configure settings (include year in searches, etc)</string>
+	<string name="settings_rating_section_title">Customize rating bubble</string>
+	<string name="settings_rating_section_subtitle">Change color, duration and position of the bubble</string>
 	<string name="settings_app_section_page_header">Supported apps</string>
 	<string name="settings_data_section_page_header">Data &amp; privacy</string>
 	<string name="settings_tts_section_page_header">Text to Speech</string>
 	<string name="settings_misc_section_page_header">Miscellaneous configurations</string>
+	<string name="settings_rating_bubble_section_page_header">Rating bubble customization</string>
+
+	<string name="settings_rating_bubble_info">Customize the look of rating bubble</string>
 
     <string name="menu_action_settings">Settings</string>
 	<string name="menu_action_fav">Favorites</string>

@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.preferences
 
+import android.support.annotation.ColorInt
 import com.fenchtose.movieratings.model.Sort
 
 interface UserPreferences {
@@ -40,4 +41,7 @@ interface UserPreferences {
 
     fun setLatestCollectionSort(collectionId: Long?, type: Sort)
     fun getLatestCollectionSort(collectionId: Long?): Sort
+
+    fun getBubbleColor(@ColorInt fallback: Int): Int
+    fun setBubbleColor(@ColorInt color: Int)
 }

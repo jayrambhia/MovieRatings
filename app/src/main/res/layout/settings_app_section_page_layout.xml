@@ -40,46 +40,6 @@
 			android:layout_marginBottom="8dp"
 			android:background="@color/divider_color" />
 
-		<TextView
-			android:id="@+id/rating_duration_info"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:textAppearance="@style/Text.Dark.Secondary"
-			android:text="@string/settings_toast_duration_info"
-			android:padding="@dimen/gutter"/>
-
-		<LinearLayout
-			android:id="@+id/seekbar_container"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:padding="@dimen/gutter"
-			android:gravity="center_vertical"
-			android:orientation="horizontal">
-
-			<android.support.v7.widget.AppCompatSeekBar
-				android:id="@+id/rating_duration_seekbar"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:max="9"
-				android:layout_weight="1"/>
-
-			<TextView
-				android:id="@+id/rating_duration_view"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:paddingStart="16dp"
-				android:paddingEnd="16dp"
-				android:textAppearance="@style/Text.Dark.Medium.Large"
-				android:textColor="@color/colorAccent"
-				tools:text="3"/>
-
-		</LinearLayout>
-
-		<View
-			android:layout_width="match_parent"
-			android:layout_height="1dp"
-			android:background="@color/divider_color"/>
-
 	</LinearLayout>
 
 </ScrollView>

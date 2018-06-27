@@ -8,6 +8,7 @@
     tools:parentTag="FrameLayout">
 
     <ImageView
+        android:id="@+id/close_btn"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_margin="4dp"

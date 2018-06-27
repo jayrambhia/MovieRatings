@@ -9,6 +9,7 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.features.settings.bubble.RatingBubbleSectionFragment
 
 class SettingsFragment : BaseFragment() {
     override fun canGoBack() = true
@@ -23,6 +24,7 @@ class SettingsFragment : BaseFragment() {
         bindAction(view, R.id.settings_data_section, DataSectionFragment.DataSettingsPath())
         bindAction(view, R.id.settings_tts_section, TTSSectionFragment.TTSSettingsPath())
         bindAction(view, R.id.settings_misc_section, MiscSectionFragment.MiscSettingsPath())
+        bindAction(view, R.id.settings_rating_section, RatingBubbleSectionFragment.RatingSectionPath())
     }
 
     private fun bindAction(root: View, @IdRes id: Int, path: RouterPath<out BaseFragment>) {
