@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.settings.bubble
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.ColorInt
 import android.support.v4.content.ContextCompat
@@ -13,10 +14,10 @@ import android.widget.TextView
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.router.EventBus
 import com.fenchtose.movieratings.features.settings.PreferenceUpdater
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
-import com.fenchtose.movieratings.widgets.RatingBubble
 
 class RatingBubbleSectionFragment: BaseFragment() {
 
@@ -27,7 +28,6 @@ class RatingBubbleSectionFragment: BaseFragment() {
     private var adapter: BubbleColorAdapter? = null
     private var recyclerView: RecyclerView? = null
 
-    private var ratingBubble: RatingBubble? = null
     private var ratingDurationView: TextView? = null
     private var updatePublisher: PreferenceUpdater? = null
 
@@ -60,10 +60,6 @@ class RatingBubbleSectionFragment: BaseFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         this.recyclerView = recyclerView
 
-        ratingBubble = view.findViewById(R.id.rating_bubble)
-        ratingBubble?.setText("Flutter ratings")
-        ratingBubble?.updateColor(savedBubbleColor)
-
         val ratingDurationSeekbar = view.findViewById<SeekBar>(R.id.rating_duration_seekbar)
         ratingDurationView = view.findViewById(R.id.rating_duration_view)
 
@@ -84,16 +80,19 @@ class RatingBubbleSectionFragment: BaseFragment() {
         })
 
         updatePublisher = PreferenceUpdater(view as ViewGroup)
+
+        activity.startService(Intent(context, BubbleService::class.java))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         updatePublisher?.release()
+        activity.stopService(Intent(context, BubbleService::class.java))
     }
 
     private fun updateBubbleColor(@ColorInt color: Int) {
-        ratingBubble?.updateColor(color)
         preferences?.setBubbleColor(color)
+        EventBus.send(BubbleColorEvent(color))
 //        updatePublisher?.show("color")
     }
 

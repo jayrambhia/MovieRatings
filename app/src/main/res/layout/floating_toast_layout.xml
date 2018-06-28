@@ -9,6 +9,7 @@
     android:background="@drawable/floating_rating_toast_background">
 
     <ImageView
+        android:id="@+id/logo_view"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_margin="4dp"

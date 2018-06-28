@@ -22,10 +22,24 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:fontFamily="sans-serif-medium"
-        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        tools:layout_marginRight="28dp"
         android:textSize="14sp"
         android:textColor="@color/colorAccent"
         android:gravity="center"
-        tools:text="Flutter - 8.1/10"/>
+        tools:text="Flutter"
+        tools:ignore="RtlHardcoded"/>
+
+    <ImageView
+        android:id="@+id/close_btn_right"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_margin="4dp"
+        android:padding="3dp"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:layout_gravity="center_vertical|right"
+        android:src="@drawable/ic_cancel_accent_18dp"
+        tools:ignore="RtlHardcoded"/>
 
 </merge>

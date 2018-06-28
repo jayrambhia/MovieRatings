@@ -71,11 +71,4 @@
 
 	</LinearLayout>
 
-	<com.fenchtose.movieratings.widgets.RatingBubble
-		android:id="@+id/rating_bubble"
-		android:layout_width="@dimen/floating_rating_view_width"
-		android:layout_height="wrap_content"
-		android:layout_gravity="end|bottom"
-		android:layout_marginBottom="64dp"/>
-
 </FrameLayout>

@@ -12,6 +12,8 @@ class SettingsPreferences(context: Context): UserPreferences {
     private val LIKES_SORT_KEY = "likes_sort"
     private val COLLECTION_SORT_KEY = "collection_sort_"
     private val RATING_BUBBLE_COLOR_KEY = "rating_bubble_color"
+    private val RATING_BUBBLE_Y_POS_KEY = "rating_bubble_y_pos"
+    private val RATING_BUBBLE_X_POS_KEY = "rating_bubble_x_is_left"
 
     private val preferences: SharedPreferences = context.getSharedPreferences(PREF_NAME, MODE_PRIVATE)
 
@@ -67,5 +69,14 @@ class SettingsPreferences(context: Context): UserPreferences {
 
     override fun setBubbleColor(color: Int) {
         preferences.edit().putInt(RATING_BUBBLE_COLOR_KEY, color).apply()
+    }
+
+    override fun getBubblePosition(fallbackY: Int): Pair<Int, Boolean> {
+        return Pair(preferences.getInt(RATING_BUBBLE_Y_POS_KEY, fallbackY),
+                preferences.getBoolean(RATING_BUBBLE_X_POS_KEY, false))
+    }
+
+    override fun setBubblePosition(y: Int, left: Boolean) {
+        preferences.edit().putInt(RATING_BUBBLE_Y_POS_KEY, y).putBoolean(RATING_BUBBLE_X_POS_KEY, left).apply()
     }
 }

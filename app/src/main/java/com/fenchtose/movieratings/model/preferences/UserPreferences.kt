@@ -44,4 +44,7 @@ interface UserPreferences {
 
     fun getBubbleColor(@ColorInt fallback: Int): Int
     fun setBubbleColor(@ColorInt color: Int)
+
+    fun getBubblePosition(fallbackY: Int): Pair<Int, Boolean>
+    fun setBubblePosition(y: Int, left: Boolean)
 }

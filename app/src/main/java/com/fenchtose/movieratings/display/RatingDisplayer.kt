@@ -1,14 +1,16 @@
 package com.fenchtose.movieratings.display
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.support.annotation.ColorInt
+import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
+import android.view.Gravity
 import android.view.WindowManager
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
@@ -21,8 +23,12 @@ import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.ToastUtils
 import java.lang.ref.WeakReference
 
-class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private val preferences: UserPreferences) {
+class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
+                      private val preferences: UserPreferences,
+                      private val autoDismiss: Boolean = true) {
     private val context: Context = ctx.applicationContext
+
+    private var touchListener: BubbleTouchListener? = null
 
     private val TAG = "RatingDisplayer"
 
@@ -30,7 +36,6 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
     private var ratingView: WeakReference<FloatingRatingView?> = WeakReference(null)
     private val handler = Handler(Looper.getMainLooper())
     private val width = context.resources.getDimensionPixelOffset(R.dimen.floating_rating_view_width)
-    private val yPos = context.resources.getDimensionPixelOffset(R.dimen.floating_rating_view_y)
 
     private val dismissRunnable = Runnable {
         removeView()
@@ -49,6 +54,8 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
                             .putAttribute("where", "service_remove_view"))
                 }
             }
+
+            touchListener?.release()
         }
     }
 
@@ -58,10 +65,12 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
             return
         }
 
+        val bubbleColor = preferences.getBubbleColor(ContextCompat.getColor(context, R.color.floating_rating_color))
+
         if (!AccessibilityUtils.canDrawOverWindow(context)) {
             Log.e(TAG, "no drawing permission")
             val duration = preferences.getRatingDisplayDuration()
-            ToastUtils.showMovieRating(context, movie, duration)
+            ToastUtils.showMovieRating(context, movie, bubbleColor, duration)
             return
         }
 
@@ -71,11 +80,12 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
 
         ratingView.get()?.let {
             it.movie = movie
+            it.updateColor(bubbleColor)
             handler.removeCallbacks(dismissRunnable)
             handler.removeCallbacks(removeRunnable)
 
             val duration = preferences.getRatingDisplayDuration()
-            if (duration > 0) {
+            if (duration > 0 && autoDismiss) {
                 handler.postDelayed(dismissRunnable, duration.toLong())
             }
 
@@ -93,21 +103,32 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
 
     }
 
+    @SuppressLint("RtlHardcoded")
     private fun addViewToWindow(view: FloatingRatingView): Boolean {
         val manager = getWindowManager()
         val dm = DisplayMetrics()
         manager.defaultDisplay.getMetrics(dm)
 
+        val position = preferences.getBubblePosition(dm.heightPixels - context.resources.getDimensionPixelOffset(R.dimen.floating_rating_view_y))
+
         val layoutFlag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY else WindowManager.LayoutParams.TYPE_PHONE
 
         val params = WindowManager.LayoutParams(width, WindowManager.LayoutParams.WRAP_CONTENT ,
-                dm.widthPixels-width, yPos,
+                if (position.second) 0 else dm.widthPixels-width, position.first,
                 layoutFlag, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT)
 
+        params.gravity = Gravity.TOP or Gravity.LEFT
+
+        view.updateDirection(position.second)
+
+        if (touchListener == null) {
+            touchListener = BubbleTouchListener(manager, context, dm.widthPixels-width, bubbleCallback)
+        }
+
         return try {
             manager.addView(view, params)
-            view.setOnTouchListener(floatingWindowTouchListener)
+            touchListener?.attach(view)
             true
         } catch (e: RuntimeException) {
             e.printStackTrace()
@@ -116,6 +137,10 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
                     .putAttribute("where", "service_remove_view"))
             false
         }
+    }
+
+    fun updateColor(@ColorInt color: Int) {
+        ratingView.get()?.updateColor(color)
     }
 
     fun removeView() {
@@ -127,18 +152,20 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher, private 
         return context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     }
 
-    private val floatingWindowTouchListener = View.OnTouchListener { v, event ->
-        if (event.action == MotionEvent.ACTION_UP) {
-            if (event.x < v.context.resources.displayMetrics.density * 40) {
-                removeView()
-                analytics.sendEvent(Event("fw_close_clicked"))
-                return@OnTouchListener true
-            } else {
-                analytics.sendEvent(Event("fw_open_clicked"))
-                IntentUtils.openImdb(context, (v as FloatingRatingView).movie?.imdbId)
+    private val bubbleCallback = object: BubbleTouchListener.BubbleCallback {
+        override fun onClick(x: Int, y: Int) {
+            ratingView.get()?.let {
+                if (it.isClickForClose(x)) {
+                    removeView()
+                } else {
+                    IntentUtils.openImdb(context, it.movie?.imdbId)
+                }
             }
         }
 
-        false
+        override fun updatePosition(y: Int, left: Boolean) {
+            preferences.setBubblePosition(y, left)
+        }
+
     }
 }

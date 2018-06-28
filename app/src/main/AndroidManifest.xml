@@ -75,6 +75,10 @@
 
 	    </provider>
 
+	    <service
+		    android:name=".features.settings.bubble.BubbleService"
+		    android:exported="false"/>
+
         <!--<activity android:name=".features.android_tv.TVActivity"
                   android:label="@string/app_name">
 
