@@ -28,8 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="36sp"
-                android:textColor="@color/textColorDark"
+                android:textAppearance="@style/Text.Dark.Medium.Largest"
                 android:layout_marginTop="8dp"
                 android:text="@string/app_name_short"/>
 
@@ -46,8 +45,8 @@
                 android:id="@+id/activation_warning_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="21sp"
                 android:textAllCaps="true"
+                android:textAppearance="@style/Text.Dark.Larger"
                 android:text="@string/accessibility_warning_content"
                 android:textColor="@color/accent_orange"
                 android:layout_marginTop="8dp"/>
@@ -77,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Flutter Test"
-            android:textSize="24sp"
+            android:textAppearance="@style/Text.Dark.Secondary.Largest"
             android:layout_gravity="center"/>
 
         <TextView
@@ -85,8 +84,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/accessibility_test_title"
-            android:textSize="24sp"
-            android:textColor="@color/onyx_accent"
+            android:textAppearance="@style/Text.Dark.Medium.Larger"
             android:layout_gravity="center"/>
 
     </LinearLayout>

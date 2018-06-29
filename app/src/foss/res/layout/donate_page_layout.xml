@@ -9,9 +9,8 @@
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textSize="14sp"
+		android:textAppearance="@style/Text.Light"
 		android:padding="16dp"
-		android:textColor="@android:color/white"
 		android:text="@string/donate_page_content"/>
 
 </LinearLayout>

@@ -23,8 +23,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:layout_marginStart="22dp"
-        android:textSize="@dimen/toast_text_size"
-        android:textColor="#fff"
+        android:textAppearance="@style/Text.Dark.Medium.Large"
         android:gravity="center"
         tools:text="Flutter - 8.1/10"/>
 

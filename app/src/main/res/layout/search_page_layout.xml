@@ -39,8 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/powered_by_api"
-        android:textSize="32sp"
-        android:textColor="@color/textColorGray"
+        android:textAppearance="@style/Text.Dark.Secondary.Largest"
         android:alpha="0.4"
         android:layout_gravity="center"/>
 

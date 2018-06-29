@@ -6,7 +6,7 @@
 	xmlns:tools="http://schemas.android.com/tools"
 	android:background="@drawable/movie_page_collection_item_background"
 	android:textColor="@color/movie_page_collection_item_text_color"
-	android:textSize="14sp"
+	android:textAppearance="@style/Text.Light"
 	android:paddingStart="16dp"
 	android:paddingEnd="16dp"
 	android:paddingTop="8dp"

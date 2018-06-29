@@ -12,8 +12,7 @@
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textColor="@color/colorAccent"
-		android:textSize="14sp"
+		android:textAppearance="@style/Text.Dark"
 		android:padding="8dp"
 		android:text="@string/settings_export_data_dialog_content"/>
 
@@ -22,6 +21,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:checked="false"
+		android:textAppearance="@style/Text.Dark"
 		android:layout_marginTop="8dp"
 		android:text="@string/settings_export_data_dialog_include_browsing_history"/>
 

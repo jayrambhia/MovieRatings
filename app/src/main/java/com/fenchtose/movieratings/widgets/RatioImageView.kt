@@ -1,11 +1,11 @@
 package com.fenchtose.movieratings.widgets
 
 import android.content.Context
+import android.support.v7.widget.AppCompatImageView
 import android.util.AttributeSet
-import android.widget.ImageView
 import com.fenchtose.movieratings.R
 
-class RatioImageView: ImageView {
+class RatioImageView: AppCompatImageView {
 
     var ratio: Float = -1.0f
 

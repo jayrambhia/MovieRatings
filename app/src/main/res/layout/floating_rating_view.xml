@@ -21,11 +21,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:fontFamily="sans-serif-medium"
+        android:textAppearance="@style/Text.Dark.Medium"
         android:layout_marginLeft="28dp"
         tools:layout_marginRight="28dp"
-        android:textSize="14sp"
-        android:textColor="@color/colorAccent"
         android:gravity="center"
         tools:text="Flutter"
         tools:ignore="RtlHardcoded"/>
