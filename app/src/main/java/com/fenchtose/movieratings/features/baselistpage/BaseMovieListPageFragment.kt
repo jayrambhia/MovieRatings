@@ -39,7 +39,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         recyclerView = view.findViewById(R.id.recyclerview)
         stateContent = view.findViewById(R.id.screen_state_content)
 
-        val adapter = BaseMovieAdapter(context, createAdapterConfig(presenter))
+        val adapter = BaseMovieAdapter(requireContext(), createAdapterConfig(presenter))
         adapter.setHasStableIds(true)
 
         recyclerView?.let {

@@ -10,11 +10,11 @@ import android.support.v7.app.AlertDialog
 abstract class BasePermissionFragment: BaseFragment() {
 
     protected fun hasPermission(permission: String): Boolean {
-        return ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+        return ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
     }
 
     protected fun showRationaleDialog(@StringRes title: Int, @StringRes content: Int, permission: String, code: Int) {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(requireContext())
                 .setTitle(title)
                 .setMessage(content)
                 .setPositiveButton(android.R.string.yes) {

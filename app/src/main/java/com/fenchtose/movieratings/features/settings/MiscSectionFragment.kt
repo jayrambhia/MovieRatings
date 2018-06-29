@@ -27,7 +27,7 @@ class MiscSectionFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val preferences = SettingsPreferences(context)
+        val preferences = SettingsPreferences(requireContext())
 
         addAppToggle(preferences, view, R.id.show_activate_toggle, UserPreferences.SHOW_ACTIVATE_FLUTTER)
         addAppToggle(preferences, view, R.id.use_year_toggle, UserPreferences.USE_YEAR)

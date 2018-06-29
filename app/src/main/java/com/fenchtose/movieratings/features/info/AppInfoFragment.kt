@@ -25,7 +25,7 @@ class AppInfoFragment: BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isTV = AccessibilityUtils.isTV(context)
+        isTV = AccessibilityUtils.isTV(requireContext())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -59,7 +59,7 @@ class AppInfoFragment: BaseFragment() {
         val contentView = view.findViewById<TextView?>(R.id.info_content_view)
         contentView?.visibility = View.VISIBLE
         contentView?.setText(
-                if (AccessibilityUtils.hasAllPermissions(context))
+                if (AccessibilityUtils.hasAllPermissions(requireContext()))
                     R.string.info_screen_content_with_accessibility
                 else
                     R.string.info_screen_content_no_accessibility)
@@ -68,7 +68,7 @@ class AppInfoFragment: BaseFragment() {
     override fun onResume() {
         super.onResume()
         if (isTV) {
-            val hasAccessibility = AccessibilityUtils.isAccessibilityEnabled(context)
+            val hasAccessibility = AccessibilityUtils.isAccessibilityEnabled(requireContext())
             testView?.visibility = if (hasAccessibility) VISIBLE else GONE
             settingsView?.visibility = if (hasAccessibility) VISIBLE else GONE
             activationWarning?.visibility = if (hasAccessibility) GONE else VISIBLE

@@ -45,7 +45,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
                 AppFileUtils(),
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
-                SettingsPreferences(context),
+                SettingsPreferences(requireContext()),
                 DataFileExporter.newInstance(MovieRatingsApplication.database),
                 path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection })
     }
@@ -113,9 +113,9 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
     }
 
     private fun removeMovie(movie: Movie) {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(requireContext())
                 .setTitle(R.string.movie_collection_remove_movie_dialog_title)
-                .setMessage(context.getString(R.string.movie_collection_remove_movie_dialog_content, movie.title))
+                .setMessage(requireContext().getString(R.string.movie_collection_remove_movie_dialog_content, movie.title))
                 .setNegativeButton(R.string.movie_collection_remove_movie_negative) { _, _ -> presenter?.removeMovie(movie) }
                 .setNeutralButton(R.string.movie_collection_remove_movie_neutral) { dialog, _ -> dialog.dismiss() }
                 .show()
@@ -124,7 +124,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
     private fun showShareDialog() {
         if (presenter?.canShare() == true) {
-            android.support.v7.app.AlertDialog.Builder(context)
+            android.support.v7.app.AlertDialog.Builder(requireContext())
                     .setTitle(R.string.movie_collection_share_dialog_title)
                     .setMessage(R.string.movie_collection_share_dialog_content)
                     .setPositiveButton(R.string.movie_collection_share_dialog_positive_cta) {
@@ -162,10 +162,10 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         }
 
         if (state is CollectionPage.OpState.Removed) {
-            showSnackbarWithAction(context.getString(resId, state.movie.title), R.string.undo_action,
+            showSnackbarWithAction(requireContext().getString(resId, state.movie.title), R.string.undo_action,
                     View.OnClickListener { presenter?.undoRemove(state.movie, state.position) })
         } else {
-            showSnackbar(context.getString(resId, state.movie.title))
+            showSnackbar(requireContext().getString(resId, state.movie.title))
         }
     }
 
@@ -173,7 +173,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         when(state) {
             is CollectionPage.ShareState.Started -> {}
             is CollectionPage.ShareState.Error -> showSnackbar(R.string.movie_collection_share_error)
-            is CollectionPage.ShareState.Success -> IntentUtils.openShareFileIntent(context, state.uri)
+            is CollectionPage.ShareState.Success -> IntentUtils.openShareFileIntent(requireContext(), state.uri)
         }
     }
 

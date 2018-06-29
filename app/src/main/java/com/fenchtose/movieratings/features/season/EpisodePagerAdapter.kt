@@ -16,7 +16,7 @@ class EpisodePagerAdapter(private val context: Context,
 
     private val episodes = episodes.episodes
 
-    override fun isViewFromObject(view: View?, `object`: Any?) = view == `object`
+    override fun isViewFromObject(view: View, `object`: Any) = view == `object`
 
     override fun getCount() = episodes.size
 
@@ -27,7 +27,7 @@ class EpisodePagerAdapter(private val context: Context,
         return page
     }
 
-    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any?) {
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         container.removeView(`object` as View)
         (`object` as EpisodePage).callback = null
     }

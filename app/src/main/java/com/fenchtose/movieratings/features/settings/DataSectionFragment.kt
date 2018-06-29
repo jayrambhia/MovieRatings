@@ -46,7 +46,7 @@ class DataSectionFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val preferences = SettingsPreferences(context)
+        val preferences = SettingsPreferences(requireContext())
 
         updatePublisher = PreferenceUpdater(view as ViewGroup)
 
@@ -96,7 +96,7 @@ class DataSectionFragment: BaseFragment() {
     }
 
     private fun showClearHistoryDialog() {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(requireContext())
                 .setTitle(R.string.settings_clear_history_dialog_title)
                 .setMessage(R.string.settings_clear_history_dialog_content)
                 .setNegativeButton(R.string.settings_clear_history_dialog_cta) { _, _ -> clearHistory() }
@@ -105,7 +105,7 @@ class DataSectionFragment: BaseFragment() {
     }
 
     private fun showDeleteDataDialog() {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(requireContext())
                 .setTitle(R.string.settings_delete_data_dialog_title)
                 .setMessage(R.string.settings_delete_data_dialog_content)
                 .setNegativeButton(R.string.settings_delete_data_dialog_cta) { _, _ -> deleteData() }
@@ -147,7 +147,7 @@ class DataSectionFragment: BaseFragment() {
 
     private fun showExportDataDialog() {
         var historyCheckbox: CheckBox? = null
-        val dialog = AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(requireContext())
                 .setTitle(R.string.settings_export_data_dialog_title)
                 .setView(R.layout.export_data_dialog_layout)
                 .setPositiveButton(R.string.settings_export_data_dialog_positive_cta) {
@@ -193,13 +193,13 @@ class DataSectionFragment: BaseFragment() {
     }
 
     private fun showExportDataReady(uri: Uri) {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(requireContext())
                 .setTitle(R.string.settings_export_data_ready_dialog_title)
-                .setMessage(context.getString(R.string.settings_export_data_ready_dialog_content))
+                .setMessage(requireContext().getString(R.string.settings_export_data_ready_dialog_content))
                 .setPositiveButton(R.string.settings_export_data_ready_dialog_positive_cta) {
                     dialog, _ ->
                         dialog.dismiss()
-                        IntentUtils.openShareFileIntent(context, uri)
+                        IntentUtils.openShareFileIntent(requireContext(), uri)
                 }
                 .setNeutralButton(android.R.string.ok) {
                     dialog, _ -> dialog.dismiss()
@@ -208,7 +208,7 @@ class DataSectionFragment: BaseFragment() {
     }
 
     private fun showImportDataDialog() {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(requireContext())
                 .setTitle(R.string.settings_import_data_dialog_title)
                 .setMessage(R.string.settings_import_data_dialog_content)
                 .setPositiveButton(R.string.settings_import_data_dialog_positive_cta) {

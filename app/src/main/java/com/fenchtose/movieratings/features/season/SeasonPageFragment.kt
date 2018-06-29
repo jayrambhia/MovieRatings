@@ -53,7 +53,7 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
         path?.takeIf { it is SeasonPath }?.let {
             it as SeasonPath
         }?.let {
-            adapter = EpisodePagerAdapter(context, it.series, it.episodes, this)
+            adapter = EpisodePagerAdapter(requireContext(), it.series, it.episodes, this)
             tabLayout?.setupWithViewPager(viewPager)
             viewPager?.adapter = adapter
             viewPager?.currentItem = it.selectedEpisode - 1
@@ -65,7 +65,7 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var consumed = true
         when(item?.itemId) {
-            R.id.action_open_imdb -> IntentUtils.openImdb(context, currentEpisode?.imdbId)
+            R.id.action_open_imdb -> IntentUtils.openImdb(requireContext(), currentEpisode?.imdbId)
             else -> consumed = false
         }
 

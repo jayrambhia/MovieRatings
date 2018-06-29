@@ -20,8 +20,7 @@
 			android:layout_gravity="center"
 			android:gravity="center"
 			android:padding="16dp"
-			android:textSize="18sp"
-			android:textColor="?attr/colorAccent"
+			android:textAppearance="@style/Text.Dark.Secondary"
 			tools:text="@string/import_screen_error_info"/>
 
 		<LinearLayout
@@ -64,17 +63,17 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="16dp"
+			android:textAppearance="@style/Text.Dark.Secondary"
 			android:text="@string/import_screen_info"
-			android:textSize="18sp"
-			android:textColor="?attr/colorAccent"/>
+			/>
 
 		<android.support.v7.widget.AppCompatCheckBox
 			android:id="@+id/fav_checkbox"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="16dp"
-			android:textSize="16sp"
 			android:checked="true"
+			android:textAppearance="@style/Text.Dark"
 			android:layout_marginStart="16dp"
 			android:layout_marginEnd="16dp"
 			android:text="@string/import_screen_favorites"/>
@@ -84,7 +83,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="16dp"
-			android:textSize="16sp"
+			android:textAppearance="@style/Text.Dark"
 			android:checked="true"
 			android:layout_marginStart="16dp"
 			android:layout_marginEnd="16dp"
@@ -95,7 +94,7 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:padding="16dp"
-			android:textSize="16sp"
+			android:textAppearance="@style/Text.Dark"
 			android:checked="true"
 			android:layout_marginStart="16dp"
 			android:layout_marginEnd="16dp"

@@ -35,7 +35,7 @@ class AppSectionFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val preferences = SettingsPreferences(context)
+        val preferences = SettingsPreferences(requireContext())
         this.preferences = preferences
 
         val toggleContainer = view.findViewById<ViewGroup>(R.id.toggles_container)
@@ -55,10 +55,10 @@ class AppSectionFragment: BaseFragment() {
 
         Constants.supportedApps.forEach {
             entry ->
-            if (PackageUtils.isPackageInstalled(context, entry.key)) {
-                installedApps.add(Pair(context.getString(entry.value), entry.key))
+            if (PackageUtils.isPackageInstalled(requireContext(), entry.key)) {
+                installedApps.add(Pair(requireContext().getString(entry.value), entry.key))
             } else {
-                notInstalledApps.add(context.getString(entry.value))
+                notInstalledApps.add(requireContext().getString(entry.value))
             }
         }
 
@@ -72,14 +72,14 @@ class AppSectionFragment: BaseFragment() {
             notInstalledAppsView.visibility = View.GONE
         } else {
             notInstalledAppsView.visibility = View.VISIBLE
-            notInstalledAppsView.text = (context.getString(R.string.settings_not_installed_apps, notInstalledApps.joinToString { it }))
+            notInstalledAppsView.text = (requireContext().getString(R.string.settings_not_installed_apps, notInstalledApps.joinToString { it }))
         }
     }
 
     private fun addAppToggle(preferences: UserPreferences, container: ViewGroup, key: String, title: String) {
-        val toggle = SwitchCompat(context)
-        toggle.setPadding(context.resources.getDimensionPixelSize(R.dimen.gutter))
-        toggle.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.settings_text_size))
+        val toggle = SwitchCompat(requireContext())
+        toggle.setPadding(requireContext().resources.getDimensionPixelSize(R.dimen.gutter))
+        toggle.setTextSize(TypedValue.COMPLEX_UNIT_PX, requireContext().resources.getDimension(R.dimen.settings_text_size))
         toggle.isChecked = preferences.isAppEnabled(key)
         toggle.text = title
         toggle.setOnCheckedChangeListener {

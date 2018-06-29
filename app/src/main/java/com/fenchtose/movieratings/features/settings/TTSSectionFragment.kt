@@ -30,7 +30,7 @@ class TTSSectionFragment: BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-        val preferences = SettingsPreferences(context)
+        val preferences = SettingsPreferences(requireContext())
         this.preferences = preferences
 
         updatePublisher = PreferenceUpdater(view as ViewGroup)
@@ -65,7 +65,7 @@ class TTSSectionFragment: BaseFragment() {
 
     private fun checkForTTS() {
         val intent = Intent().setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA)
-        if (PackageUtils.isIntentCallabale(context, intent)) {
+        if (PackageUtils.isIntentCallabale(requireContext(), intent)) {
             startActivityForResult(intent, CHECK_TTS)
         } else {
             showSnackbar(R.string.settings_install_tts_unsupported)
@@ -94,7 +94,7 @@ class TTSSectionFragment: BaseFragment() {
 
     private fun installTTS() {
         val intent = Intent().setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA)
-        if (PackageUtils.isIntentCallabale(context, intent)) {
+        if (PackageUtils.isIntentCallabale(requireContext(), intent)) {
             startActivity(intent)
         } else {
             showSnackbar(R.string.settings_install_tts_unsupported)

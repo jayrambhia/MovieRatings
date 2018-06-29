@@ -4,7 +4,6 @@ import android.view.MenuItem
 import android.view.View
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.model.Movie
@@ -30,7 +29,7 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
         val dao = MovieRatingsApplication.database.movieDao()
         val favoriteProvider = DbFavoriteMovieProvider(dao)
         val likeStore = DbLikeStore.getInstance(MovieRatingsApplication.database.favDao())
-        val userPreferences = SettingsPreferences(context)
+        val userPreferences = SettingsPreferences(requireContext())
         return LikesPresenter(AppRxHooks(), favoriteProvider, likeStore, userPreferences)
     }
 

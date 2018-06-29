@@ -36,12 +36,12 @@ class RatingBubbleSectionFragment: BaseFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val preferences = SettingsPreferences(context)
+        val preferences = SettingsPreferences(requireContext())
         this.preferences = preferences
 
-        val savedBubbleColor = preferences.getBubbleColor(ContextCompat.getColor(context, R.color.floating_rating_color))
+        val savedBubbleColor = preferences.getBubbleColor(ContextCompat.getColor(requireContext(), R.color.floating_rating_color))
 
-        adapter = BubbleColorAdapter(context, context.resources.getIntArray(R.array.bubble_dark).union(context.resources.getIntArray(R.array.bubble_light).asIterable()).toList(),
+        adapter = BubbleColorAdapter(requireContext(), requireContext().resources.getIntArray(R.array.bubble_dark).union(requireContext().resources.getIntArray(R.array.bubble_light).asIterable()).toList(),
                 savedBubbleColor, object: BubbleColorAdapter.ColorSelectorCallback {
             override fun onColorSelected(color: Int, position: Int) {
                 adapter?.selected = position
@@ -81,13 +81,13 @@ class RatingBubbleSectionFragment: BaseFragment() {
 
         updatePublisher = PreferenceUpdater(view as ViewGroup)
 
-        activity.startService(Intent(context, BubbleService::class.java))
+        requireActivity().startService(Intent(context, BubbleService::class.java))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         updatePublisher?.release()
-        activity.stopService(Intent(context, BubbleService::class.java))
+        requireActivity().stopService(Intent(context, BubbleService::class.java))
     }
 
     private fun updateBubbleColor(@ColorInt color: Int) {

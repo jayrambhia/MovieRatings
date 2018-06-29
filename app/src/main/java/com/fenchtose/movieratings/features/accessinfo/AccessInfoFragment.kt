@@ -65,24 +65,24 @@ class AccessInfoFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        drawContainer?.visibility =  if (!AccessibilityUtils.isDrawPermissionEnabled(context)) VISIBLE else GONE
-        accessContainer?.visibility = if (!AccessibilityUtils.isAccessibilityEnabled(context)) VISIBLE else GONE
+        drawContainer?.visibility =  if (!AccessibilityUtils.isDrawPermissionEnabled(requireContext())) VISIBLE else GONE
+        accessContainer?.visibility = if (!AccessibilityUtils.isAccessibilityEnabled(requireContext())) VISIBLE else GONE
     }
 
     private fun openSettings() {
         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-        if (PackageUtils.isIntentCallabale(context, intent)) {
+        if (PackageUtils.isIntentCallabale(requireContext(), intent)) {
             startActivity(intent)
         } else {
             showSnackbar(R.string.accessibility_settings_launch_error)
         }
     }
 
+    @SuppressLint("InlinedApi")
     private fun openDrawSettings() {
-        @SuppressLint("InlinedApi")
         val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + activity.packageName))
-        if (PackageUtils.isIntentCallabale(context, intent)) {
+                Uri.parse("package:" + requireActivity().packageName))
+        if (PackageUtils.isIntentCallabale(requireContext(), intent)) {
             startActivity(intent)
         } else {
             showSnackbar(R.string.accessibility_draw_permission_launch_error)

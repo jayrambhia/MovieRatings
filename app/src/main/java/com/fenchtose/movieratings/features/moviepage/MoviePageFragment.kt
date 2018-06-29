@@ -33,7 +33,6 @@ import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStor
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
-import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.widgets.pagesection.*
 
 class MoviePageFragment: BaseFragment(), MoviePage {
@@ -72,7 +71,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
                 DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
-                SettingsPreferences(context),
+                SettingsPreferences(requireContext()),
                 movie?.imdbId, movie)
 
         presenter?.restoreState(path?.restoreState())
@@ -91,7 +90,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         ratingView = view.findViewById(R.id.rating_view)
         titleView = view.findViewById(R.id.title_view)
 
-        collectionsFlexView = MoviePageFlexView(context, view.findViewById(R.id.collections_flexview),
+        collectionsFlexView = MoviePageFlexView(requireContext(), view.findViewById(R.id.collections_flexview),
                 object : MoviePageFlexView.CollectionCallback {
                     override fun onItemClicked(collection: MovieCollection) {
                         MovieRatingsApplication.router?.go(CollectionPageFragment.CollectionPagePath(collection))
@@ -112,7 +111,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         writerSection = TextSection(view.findViewById(R.id.writers_header), view.findViewById(R.id.writers_view))
         plotSection = ExpandableSection(view.findViewById(R.id.plot_header), view.findViewById(R.id.plot_toggle), view.findViewById(R.id.plot_view))
 
-        episodesSection = EpisodesSection(context, view.findViewById<TextView>(R.id.episodes_header),
+        episodesSection = EpisodesSection(requireContext(), view.findViewById<TextView>(R.id.episodes_header),
                 view.findViewById(R.id.episodes_recyclerview), view.findViewById(R.id.seasons_spinner), presenter)
 
         isPosterLoaded = false
@@ -127,7 +126,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var consumed = true
         when(item?.itemId) {
-            R.id.action_open_imdb -> presenter?.openImdb(context)
+            R.id.action_open_imdb -> presenter?.openImdb(requireContext())
             else -> consumed = false
         }
 
@@ -220,7 +219,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
             is MoviePage.CollectionState.Error -> R.string.movie_collection_movie_error
         }
 
-        showSnackbar(context.getString(resId, state.collection.name))
+        showSnackbar(requireContext().getString(resId, state.collection.name))
     }
 
     override fun updateState(state: MoviePage.EpisodeState) {
@@ -247,7 +246,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         ratingView?.text = text
 
         val params = ratingView?.layoutParams as CoordinatorLayout.LayoutParams
-        params.behavior = RatingBehavior(context)
+        params.behavior = RatingBehavior(requireContext())
         ratingView?.layoutParams = params
         ratingView?.visibility = View.VISIBLE
     }

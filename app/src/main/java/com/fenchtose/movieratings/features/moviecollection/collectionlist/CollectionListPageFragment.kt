@@ -39,7 +39,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = CollectionListPresenter(
-                context,
+                requireContext(),
                 AppRxHooks(),
                 AppFileUtils(),
                 DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
@@ -66,9 +66,9 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         return root
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = CollectionListPageAdapter(context,
+        adapter = CollectionListPageAdapter(requireContext(),
                 GlideLoader(Glide.with(this)),
                 object: CollectionListPageAdapter.AdapterCallback {
                     override fun onDeleteRequested(collection: MovieCollection) {
@@ -121,14 +121,14 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
             is CollectionListPage.OpState.DeleteError -> R.string.movie_collection_list_page_delete_error
         }
 
-        showSnackbar(context.getString(resId, state.data))
+        showSnackbar(requireContext().getString(resId, state.data))
     }
 
     override fun updateState(state: CollectionListPage.ShareState) {
         when(state) {
             is CollectionListPage.ShareState.Started -> {}
             is CollectionListPage.ShareState.Error -> showSnackbar(R.string.movie_collection_list_share_error)
-            is CollectionListPage.ShareState.Success -> IntentUtils.openShareFileIntent(context, state.uri)
+            is CollectionListPage.ShareState.Success -> IntentUtils.openShareFileIntent(requireContext(), state.uri)
         }
     }
 
@@ -136,7 +136,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
         var edittext: EditText? = null
 
-        val dialog = AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(requireContext())
                 .setTitle(R.string.movie_collection_create_dialog_title)
                 .setView(R.layout.create_collection_dialog_layout)
                 .setPositiveButton(R.string.movie_collection_create_dialog_positive_cta) {
@@ -171,9 +171,9 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     }
 
     private fun onCollectionDeleteRequested(collection: MovieCollection) {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(requireContext())
                 .setTitle(R.string.movie_collection_delete_dialog_title)
-                .setMessage(context.getString(R.string.movie_collection_delete_dialog_content, collection.name))
+                .setMessage(requireContext().getString(R.string.movie_collection_delete_dialog_content, collection.name))
                 .setNegativeButton(R.string.movie_collection_delete_dialog_negative) { _, _ -> presenter?.deleteCollection(collection) }
                 .setNeutralButton(R.string.movie_collection_delete_dialog_neutral) { dialog, _ -> dialog.dismiss() }
                 .show()
@@ -189,7 +189,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     }
 
     private fun showShareDialog() {
-        AlertDialog.Builder(context)
+        AlertDialog.Builder(requireContext())
                 .setTitle(R.string.movie_collection_list_share_dialog_title)
                 .setMessage(R.string.movie_collection_list_share_dialog_content)
                 .setPositiveButton(R.string.movie_collection_list_share_dialog_positive_cta) {

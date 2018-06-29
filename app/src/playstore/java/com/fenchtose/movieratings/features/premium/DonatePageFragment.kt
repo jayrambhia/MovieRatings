@@ -33,7 +33,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
 
         skuContainer = view.findViewById(R.id.sku_container)
 
-        billingClient = BillingClient.newBuilder(context).setListener(this).build()
+        billingClient = BillingClient.newBuilder(requireContext()).setListener(this).build()
         billingClient?.startConnection(object: BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
 
@@ -107,7 +107,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
             return
         }
 
-        val margin = (context.resources.displayMetrics.density * 8).toInt()
+        val margin = (requireContext().resources.displayMetrics.density * 8).toInt()
 
         cards.clear()
         skuContainer?.removeAllViews()
@@ -115,7 +115,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
         val pSkus = purchases?.map { it.sku } ?: ArrayList()
 
         for (sku in skus.sortedBy { it.priceAmountMicros }) {
-            val view = InAppPurchaseCard(context)
+            val view = InAppPurchaseCard(requireContext())
             view.sku = sku
             view.bought = pSkus.contains(sku.sku)
             view.callback = this

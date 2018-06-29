@@ -109,7 +109,7 @@ class ImportDataFragment : BaseFragment() {
 
     private fun handleImport(uri: Uri) {
         this.uri = uri
-        importer = DataFileImporter(context,
+        importer = DataFileImporter(requireContext(),
                 AppFileUtils(),
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),

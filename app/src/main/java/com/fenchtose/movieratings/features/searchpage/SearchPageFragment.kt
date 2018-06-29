@@ -103,7 +103,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                     },
                     createExtraLayoutHelper())
 
-        val adapter = BaseMovieAdapter(context, adapterConfig)
+        val adapter = BaseMovieAdapter(requireContext(), adapterConfig)
         adapterConfig.adapter = adapter
 
         adapter.setHasStableIds(true)
@@ -229,7 +229,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             is SearchPage.CollectionState.Error -> R.string.movie_collection_movie_error
         }
 
-        showSnackbar(context.getString(resId, state.collection.name))
+        showSnackbar(requireContext().getString(resId, state.collection.name))
     }
 
     private fun showLoading(status: Boolean) {
@@ -252,7 +252,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private fun showApiError() {
         showLoading(false)
         adapterConfig?.showLoadingMore(false)
-        showSnackbarWithAction(context.getString(R.string.search_page_api_error_content),
+        showSnackbarWithAction(requireContext().getString(R.string.search_page_api_error_content),
                 R.string.search_page_try_again_cta,
                 View.OnClickListener {
                     presenter?.retrySearch()
