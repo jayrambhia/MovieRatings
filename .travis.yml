@@ -19,6 +19,7 @@ before_script:
 
 script:
   - ./gradlew build
+  - ./gradlew lint
   - ./gradlew testPlaystoreDebugUnitTest
   - ./gradlew testFossDebugUnitTest
 
