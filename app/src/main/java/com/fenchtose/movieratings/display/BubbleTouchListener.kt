@@ -50,7 +50,7 @@ class BubbleTouchListener(manager: WindowManager, context: Context, rightPositio
         }
 
         override fun onSingleTapUp(e: MotionEvent): Boolean {
-            callback.onClick(e.x.toInt(), e.y.toInt())
+            callback.onClick(bubble, e.x.toInt(), e.y.toInt())
             return super.onSingleTapUp(e)
         }
 
@@ -89,7 +89,7 @@ class BubbleTouchListener(manager: WindowManager, context: Context, rightPositio
             disposable = publisher?.let {
                 it.debounce(500, TimeUnit.MILLISECONDS)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe({ callback.updatePosition(it.first, it.second) }, {})
+                        .subscribe({ callback.updatePosition(bubble, it.first, it.second) }, {})
             }
         }
 
@@ -99,7 +99,7 @@ class BubbleTouchListener(manager: WindowManager, context: Context, rightPositio
     }
 
     interface BubbleCallback {
-        fun onClick(x: Int, y: Int)
-        fun updatePosition(y: Int, left: Boolean)
+        fun onClick(bubble: RatingBubble?, x: Int, y: Int)
+        fun updatePosition(bubble: RatingBubble?, y: Int, left: Boolean)
     }
 }

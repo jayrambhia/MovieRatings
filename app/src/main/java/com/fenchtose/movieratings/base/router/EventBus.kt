@@ -1,12 +1,12 @@
 package com.fenchtose.movieratings.base.router
 
 import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 class EventBus {
     companion object {
 
-        val publisher: BehaviorSubject<Any> = BehaviorSubject.create()
+        val publisher: PublishSubject<Any> = PublishSubject.create()
 
         inline fun <reified T> subscribe(): Observable<T> {
             return publisher.filter {

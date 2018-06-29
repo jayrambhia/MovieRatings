@@ -18,7 +18,7 @@ import android.widget.TextView
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.util.isColorDark
 
-open class RatingBubble: FrameLayout {
+class RatingBubble: FrameLayout {
 
     @ColorInt
     private var color: Int? = null
@@ -54,13 +54,17 @@ open class RatingBubble: FrameLayout {
             setBackgroundResource(R.drawable.floating_rating_view_background_left)
             closeButtonRight.visibility = View.VISIBLE
             closeButton.visibility = View.GONE
-            params.rightMargin = params.leftMargin
+            if (params.leftMargin != 0) {
+                params.rightMargin = params.leftMargin
+            }
             params.leftMargin = 0
         } else {
             setBackgroundResource(R.drawable.floating_rating_view_background)
             closeButtonRight.visibility = View.GONE
             closeButton.visibility = View.VISIBLE
-            params.leftMargin = params.rightMargin
+            if (params.rightMargin != 0) {
+                params.leftMargin = params.rightMargin
+            }
             params.rightMargin = 0
         }
     }

@@ -11,16 +11,18 @@ import android.support.v4.content.ContextCompat
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.view.WindowManager
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
-import com.fenchtose.movieratings.features.stickyview.FloatingRatingView
+import com.fenchtose.movieratings.features.stickyview.FloatingRating
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.ToastUtils
+import com.fenchtose.movieratings.widgets.RatingBubble
 import java.lang.ref.WeakReference
 
 class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
@@ -33,7 +35,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
     private val TAG = "RatingDisplayer"
 
     var isShowingView: Boolean = false
-    private var ratingView: WeakReference<FloatingRatingView?> = WeakReference(null)
+    private var rating: FloatingRating? = null
     private val handler = Handler(Looper.getMainLooper())
     private val width = context.resources.getDimensionPixelOffset(R.dimen.floating_rating_view_width)
 
@@ -42,20 +44,8 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
     }
 
     private val removeRunnable = Runnable {
-        val view = ratingView.get()
-        view?.let {
-            it.parent?.let {
-                try {
-                    getWindowManager().removeViewImmediate(view)
-                } catch(e: RuntimeException) {
-                    e.printStackTrace()
-                    analytics.sendEvent(Event("runtime_error")
-                            .putAttribute("error", if (e.message != null) e.message!! else "unknown")
-                            .putAttribute("where", "service_remove_view"))
-                }
-            }
-
-            touchListener?.release()
+        rating?.let {
+            removeViewImmediate(it.bubble)
         }
     }
 
@@ -74,29 +64,22 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
             return
         }
 
-        if (ratingView.get() == null) {
-            ratingView = WeakReference(FloatingRatingView(context))
+        if (rating == null) {
+            rating = FloatingRating(context)
         }
 
-        ratingView.get()?.let {
+        rating?.let {
             it.movie = movie
-            it.updateColor(bubbleColor)
-            handler.removeCallbacks(dismissRunnable)
-            handler.removeCallbacks(removeRunnable)
-
-            val duration = preferences.getRatingDisplayDuration()
-            if (duration > 0 && autoDismiss) {
-                handler.postDelayed(dismissRunnable, duration.toLong())
-            }
-
-            if (it.parent != null) {
+            it.bubble.updateColor(bubbleColor)
+            resetAutoDismissRunners()
+            if (it.bubble.parent != null) {
                 return
             }
 
-            isShowingView = if (addViewToWindow(it)) {
+            isShowingView = if (addViewToWindow(it.bubble)) {
                 true
             } else {
-                ratingView = WeakReference(null)
+                rating = null
                 false
             }
         }
@@ -104,7 +87,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
     }
 
     @SuppressLint("RtlHardcoded")
-    private fun addViewToWindow(view: FloatingRatingView): Boolean {
+    private fun addViewToWindow(bubble: RatingBubble): Boolean {
         val manager = getWindowManager()
         val dm = DisplayMetrics()
         manager.defaultDisplay.getMetrics(dm)
@@ -120,15 +103,16 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
 
         params.gravity = Gravity.TOP or Gravity.LEFT
 
-        view.updateDirection(position.second)
+        bubble.updateDirection(position.second)
 
         if (touchListener == null) {
-            touchListener = BubbleTouchListener(manager, context, dm.widthPixels-width, bubbleCallback)
+            touchListener = BubbleTouchListener(manager, context, dm.widthPixels-width,
+                    bubbleCallback)
         }
 
         return try {
-            manager.addView(view, params)
-            touchListener?.attach(view)
+            manager.addView(bubble, params)
+            touchListener?.attach(bubble)
             true
         } catch (e: RuntimeException) {
             e.printStackTrace()
@@ -140,7 +124,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
     }
 
     fun updateColor(@ColorInt color: Int) {
-        ratingView.get()?.updateColor(color)
+        rating?.updateColor(color)
     }
 
     fun removeView() {
@@ -148,23 +132,51 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
         handler.postDelayed(removeRunnable, 10)
     }
 
+    private fun resetAutoDismissRunners() {
+        handler.removeCallbacks(dismissRunnable)
+        handler.removeCallbacks(removeRunnable)
+
+        val duration = preferences.getRatingDisplayDuration()
+        if (duration > 0 && autoDismiss) {
+            handler.postDelayed(dismissRunnable, duration.toLong())
+        }
+    }
+
+    private fun removeViewImmediate(view: View) {
+        try {
+            Log.d(TAG, "remove view immediate: $view")
+            getWindowManager().removeViewImmediate(view)
+        } catch(e: RuntimeException) {
+            e.printStackTrace()
+            analytics.sendEvent(Event("runtime_error")
+                    .putAttribute("error", if (e.message != null) e.message!! else "unknown")
+                    .putAttribute("where", "service_remove_view"))
+        } finally {
+            isShowingView = false
+            rating = null
+        }
+
+        touchListener?.release()
+    }
+
     private fun getWindowManager() : WindowManager {
         return context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     }
 
     private val bubbleCallback = object: BubbleTouchListener.BubbleCallback {
-        override fun onClick(x: Int, y: Int) {
-            ratingView.get()?.let {
+        override fun onClick(bubble: RatingBubble?, x: Int, y: Int) {
+            bubble?.let {
                 if (it.isClickForClose(x)) {
-                    removeView()
+                    removeViewImmediate(it)
                 } else {
-                    IntentUtils.openImdb(context, it.movie?.imdbId)
+                    IntentUtils.openImdb(context, rating?.movie?.imdbId)
                 }
             }
         }
 
-        override fun updatePosition(y: Int, left: Boolean) {
+        override fun updatePosition(bubble: RatingBubble?, y: Int, left: Boolean) {
             preferences.setBubblePosition(y, left)
+            resetAutoDismissRunners()
         }
 
     }

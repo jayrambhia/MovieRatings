@@ -1,11 +1,14 @@
 package com.fenchtose.movieratings.features.stickyview
 
 import android.content.Context
+import android.support.annotation.ColorInt
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.Movie
 import com.fenchtose.movieratings.widgets.RatingBubble
 
-class FloatingRatingView(context: Context) : RatingBubble(context) {
+class FloatingRating(private val context: Context) {
+
+    val bubble: RatingBubble = RatingBubble(context)
 
     var movie: Movie? = null
     set(value) {
@@ -15,7 +18,11 @@ class FloatingRatingView(context: Context) : RatingBubble(context) {
         }
     }
 
+    fun updateColor(@ColorInt color: Int) {
+        bubble.updateColor(color)
+    }
+
     private fun setRating(rating: String) {
-        setText(resources.getString(R.string.floating_rating_content, rating))
+        bubble.setText(context.resources.getString(R.string.floating_rating_content, rating))
     }
 }
