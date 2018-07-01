@@ -3,11 +3,11 @@ package com.fenchtose.movieratings.model.api.provider
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.analytics.events.Event
-import com.fenchtose.movieratings.model.Episode
-import com.fenchtose.movieratings.model.EpisodesList
+import com.fenchtose.movieratings.model.entity.Episode
+import com.fenchtose.movieratings.model.entity.EpisodesList
 import com.fenchtose.movieratings.model.api.MovieApi
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.SearchResult
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import com.fenchtose.movieratings.util.Constants
@@ -189,7 +189,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     }
 
     private fun getEpisode(dbCall: () -> Observable<Movie>,
-                            apiCall: () -> Observable<Movie>): Observable<Movie> {
+                           apiCall: () -> Observable<Movie>): Observable<Movie> {
 
         return dbCall()
                 .flatMap {

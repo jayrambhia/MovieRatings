@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.model
+package com.fenchtose.movieratings.model.entity
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Ignore

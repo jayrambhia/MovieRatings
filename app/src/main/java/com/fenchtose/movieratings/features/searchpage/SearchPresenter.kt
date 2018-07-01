@@ -5,9 +5,9 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.MovieCollection
-import com.fenchtose.movieratings.model.SearchResult
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.entity.SearchResult
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore

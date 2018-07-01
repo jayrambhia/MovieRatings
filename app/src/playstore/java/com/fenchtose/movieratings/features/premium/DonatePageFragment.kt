@@ -8,15 +8,24 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.android.billingclient.api.*
 import com.fenchtose.movieratings.BuildConfig
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.router.Router
+import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
+import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
+import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
+import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
+import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 
 class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchaseCard.Callback {
 
     private var billingClient: BillingClient? = null
     private var skuContainer: LinearLayout? = null
     private val cards: ArrayList<InAppPurchaseCard> = ArrayList()
+
+    private var historyKeeper: HistoryKeeper? = null
 
     override fun canGoBack() = true
 
@@ -32,6 +41,11 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
         super.onViewCreated(view, savedInstanceState)
 
         skuContainer = view.findViewById(R.id.sku_container)
+        historyKeeper = DbHistoryKeeper(
+                PreferenceUserHistory(requireContext()),
+                DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
+                SettingsPreferences(requireContext())
+                )
 
         billingClient = BillingClient.newBuilder(requireContext()).setListener(this).build()
         billingClient?.startConnection(object: BillingClientStateListener {
@@ -56,6 +70,8 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
 
     override fun onPurchasesUpdated(@BillingClient.BillingResponse responseCode: Int, purchases: MutableList<Purchase>?) {
         if (responseCode == BillingClient.BillingResponse.OK && purchases != null && !purchases.isEmpty()) {
+            historyKeeper?.paidInAppPurchase()
+
             AlertDialog.Builder(context)
                     .setTitle(R.string.donate_dialog_title)
                     .setMessage(R.string.donate_dialog_message)
@@ -114,6 +130,10 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
 
         val pSkus = purchases?.map { it.sku } ?: ArrayList()
 
+        if (pSkus.isNotEmpty()) {
+            historyKeeper?.paidInAppPurchase()
+        }
+
         for (sku in skus.sortedBy { it.priceAmountMicros }) {
             val view = InAppPurchaseCard(requireContext())
             view.sku = sku
@@ -138,6 +158,14 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
     class DonatePath: RouterPath<DonatePageFragment>() {
         override fun createFragmentInstance(): DonatePageFragment {
             return DonatePageFragment()
+        }
+
+        companion object {
+            fun createExtras(): Bundle {
+                val bundle = Bundle()
+                bundle.putString(Router.ROUTE_TO_SCREEN, "DonatePath")
+                return bundle
+            }
         }
     }
 }

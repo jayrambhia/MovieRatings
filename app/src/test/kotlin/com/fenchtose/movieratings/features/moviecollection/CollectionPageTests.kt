@@ -5,10 +5,10 @@ import android.net.Uri
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPage
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPagePresenter
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.MovieCollection
-import com.fenchtose.movieratings.model.MovieCollectionEntry
-import com.fenchtose.movieratings.model.Sort
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.entity.MovieCollectionEntry
+import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseMovieAdapter
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 
 class SearchAdapterConfig(

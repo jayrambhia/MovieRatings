@@ -24,9 +24,14 @@ import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
+import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
+import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
+import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
+import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
+import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
@@ -55,9 +60,10 @@ class MainActivity : AppCompatActivity() {
     private var analytics: AnalyticsDispatcher? = null
 
     private var visibleMenuItems: IntArray? = null
-    private var userPreference: UserPreferences? = null
 
     private var preferences: UserPreferences? = null
+    private var historyKeeper: HistoryKeeper? = null
+
     private val TTS_REG_CHECK = 11
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,8 +77,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         titlebar = supportActionBar
 
-        userPreference = SettingsPreferences(this)
-
+        preferences = SettingsPreferences(this)
         setupObservables()
 
         router = Router(this)
@@ -100,14 +105,15 @@ class MainActivity : AppCompatActivity() {
         accessibilityPagePublisher?.onNext(false)
 
         analytics = MovieRatingsApplication.analyticsDispatcher
-        preferences = SettingsPreferences(this)
 
-        if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
-            showInfoPage(true)
-            preferences?.setSettingEnabled(UserPreferences.ONBOARDING_SHOWN, true)
-        } else {
-            showSearchPage()
-        }
+        historyKeeper = DbHistoryKeeper(
+                PreferenceUserHistory(this),
+                DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
+                preferences!!)
+
+        historyKeeper?.appOpened()
+
+        buildPathAndStart()
 
         checkForTTS()
         checkForLocale()
@@ -242,7 +248,7 @@ class MainActivity : AppCompatActivity() {
 
                 })
                 .map {
-                      userPreference?.let {
+                      preferences?.let {
                           if (!it.isAppEnabled(UserPreferences.SHOW_ACTIVATE_FLUTTER)) {
                               return@map 3
                           }
@@ -296,6 +302,36 @@ class MainActivity : AppCompatActivity() {
                         .show()
             }
         }
+    }
+
+    private fun buildPathAndStart() {
+        val intent = intent
+        var pathKey = ""
+        intent?.let {
+            val bundle = it.getBundleExtra("path")
+            bundle?.let {
+                pathKey = it.getString(Router.ROUTE_TO_SCREEN, "")
+            }
+        }
+
+        if (pathKey.isNotEmpty()) {
+            router?.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+
+            when(pathKey) {
+                "DonatePath" -> {
+                    router?.buildRoute(DonatePageFragment.DonatePath())
+                }
+            }
+        } else {
+            if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
+                router?.buildRoute(AppInfoFragment.AppInfoPath(true))
+                preferences?.setSettingEnabled(UserPreferences.ONBOARDING_SHOWN, true)
+            } else {
+                router?.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+            }
+        }
+
+        router?.start()
     }
 
 }

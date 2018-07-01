@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionlist
 
 import android.net.Uri
-import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.entity.MovieCollection
 
 interface CollectionListPage {
 

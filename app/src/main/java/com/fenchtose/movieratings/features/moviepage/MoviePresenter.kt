@@ -7,11 +7,11 @@ import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.ResultBus
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
 import com.fenchtose.movieratings.features.season.SeasonPageFragment
-import com.fenchtose.movieratings.model.*
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
+import com.fenchtose.movieratings.model.entity.*
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.IntentUtils

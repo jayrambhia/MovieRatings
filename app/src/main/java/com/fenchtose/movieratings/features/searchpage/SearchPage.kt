@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.searchpage
 
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
 
 interface SearchPage {
     fun updateState(state: State)

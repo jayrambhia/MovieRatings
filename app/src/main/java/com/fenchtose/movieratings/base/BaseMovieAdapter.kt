@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Movie
 
 class BaseMovieAdapter(private val context: Context, private val config: AdapterConfig): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     

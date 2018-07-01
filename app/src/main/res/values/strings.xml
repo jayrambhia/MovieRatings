@@ -67,6 +67,9 @@
 	<string name="settings_activate_flutter">Show \'Activate Flutter\'</string>
 	<string name="settings_use_year_info">Flutter can try to obtain the \'release\' year of the movie to get more accurate ratings.\n\nNote: A lot of TV shows on Netflix do not have correct release year.</string>
 	<string name="settings_use_year">Use \'release\' year</string>
+	<string name="settings_support_notification_info">Flutter may occasionally send push notifications to ask you to support the app. You may select which notifications you want to receive.</string>
+	<string name="settings_support_inapp_purchase">Support flutter via in-app purchases</string>
+	<string name="settings_support_rate_app">Rate app on Playstore</string>
 	<string name="settings_install_tts_unsupported">It seems that Text to Speech is not supported by the device.</string>
 	<string name="settings_export_data_dialog_title">Export your data</string>
 	<string name="settings_export_data_dialog_content">Flutter lets you export your data in json format. You may share it with your friends, send yourself a copy for back-up or just keep it on your device.</string>
@@ -237,5 +240,14 @@
 	<string name="import_screen_error_unsupported_file">This file is not supported by the app.</string>
 	<string name="import_screen_error_unsupported_version">This file version is not supported by the app.</string>
 	<string name="import_screen_error_no_data_file">This file does not contain any data that the app can import.</string>
+	
+	<string name="support_notification_channel_name">Rate &amp; support prompt</string>
+	<string name="support_notification_channel_description">Notification to prompt users to rate and support the app.</string>
+
+	<string name="support_app_notification_title">Finding flutter useful?</string>
+	<string name="support_app_notification_content">Support the app and show your appreciation</string>
+
+	<string name="review_app_notification_title">Do you like Flutter?</string>
+	<string name="review_app_notification_content">Leave a review on Playstore and tell others your experience about Flutter.</string>
 
 </resources>

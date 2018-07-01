@@ -15,6 +15,7 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movie.DbMovieStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
@@ -128,11 +129,15 @@ class DataSectionFragment: BaseFragment() {
 
     private fun deleteData() {
         val collectionStore = DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao())
-        Observable.concat(
+
+        val observables = arrayListOf(
                 DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()).deleteAll(),
                 DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()).deleteAll(),
+                DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()).deleteAll(),
                 collectionStore.deleteAllCollectionEntries(),
                 collectionStore.deleteAllCollections())
+
+        Observable.concat(observables)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

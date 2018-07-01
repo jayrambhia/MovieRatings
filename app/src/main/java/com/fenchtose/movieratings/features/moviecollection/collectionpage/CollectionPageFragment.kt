@@ -14,9 +14,9 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.MovieCollection
-import com.fenchtose.movieratings.model.Sort
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore

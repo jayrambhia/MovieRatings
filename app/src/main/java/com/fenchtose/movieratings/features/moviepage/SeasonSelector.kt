@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.features.moviepage
 
-import com.fenchtose.movieratings.model.Episode
+import com.fenchtose.movieratings.model.entity.Episode
 
 interface SeasonSelector {
     fun selectSeason(season: Int)

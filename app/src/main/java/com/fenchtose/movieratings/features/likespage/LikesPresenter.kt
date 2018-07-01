@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.features.likespage
 
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.Sort
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.api.provider.FavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.preferences.UserPreferences

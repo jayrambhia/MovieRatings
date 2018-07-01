@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.features.season.episode.EpisodePage
-import com.fenchtose.movieratings.model.EpisodesList
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.EpisodesList
+import com.fenchtose.movieratings.model.entity.Movie
 
 class EpisodePagerAdapter(private val context: Context,
                           private val series: Movie,

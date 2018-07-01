@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.features.season.episode
 
 import com.fenchtose.movieratings.base.Presenter
-import com.fenchtose.movieratings.model.Episode
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Episode
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers

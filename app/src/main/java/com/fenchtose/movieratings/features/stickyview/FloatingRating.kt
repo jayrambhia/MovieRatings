@@ -3,7 +3,7 @@ package com.fenchtose.movieratings.features.stickyview
 import android.content.Context
 import android.support.annotation.ColorInt
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.widgets.RatingBubble
 
 class FloatingRating(private val context: Context) {

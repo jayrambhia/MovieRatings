@@ -17,13 +17,12 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.features.stickyview.FloatingRating
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.ToastUtils
 import com.fenchtose.movieratings.widgets.RatingBubble
-import java.lang.ref.WeakReference
 
 class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
                       private val preferences: UserPreferences,

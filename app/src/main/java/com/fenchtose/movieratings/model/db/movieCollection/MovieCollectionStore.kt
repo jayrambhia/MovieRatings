@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.model.db.movieCollection
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.MovieCollection
-import com.fenchtose.movieratings.model.MovieCollectionEntry
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.entity.MovieCollectionEntry
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import io.reactivex.Observable
 import io.reactivex.Single

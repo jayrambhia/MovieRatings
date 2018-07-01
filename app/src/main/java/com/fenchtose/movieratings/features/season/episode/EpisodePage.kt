@@ -11,8 +11,8 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.Episode
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Episode
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import com.fenchtose.movieratings.widgets.pagesection.ExpandableSection
 import com.fenchtose.movieratings.widgets.pagesection.InlineTextSection

@@ -6,25 +6,30 @@ import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.migration.Migration
 import com.fenchtose.movieratings.MovieRatingsApplication
-import com.fenchtose.movieratings.model.*
-import com.fenchtose.movieratings.model.MovieCollection
-import com.fenchtose.movieratings.model.db.dao.FavDao
-import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
-import com.fenchtose.movieratings.model.db.dao.MovieDao
-import com.fenchtose.movieratings.model.db.dao.RecentlyBrowsedDao
+import com.fenchtose.movieratings.model.db.dao.*
+import com.fenchtose.movieratings.model.entity.*
 
-@Database(entities = [(Movie::class), (Fav::class), (RecentlyBrowsed::class), (MovieCollection::class), (MovieCollectionEntry::class), (Episode::class)], version = 5)
+@Database(entities = [
+    (Movie::class), (Fav::class),
+    (RecentlyBrowsed::class), (MovieCollection::class),
+    (MovieCollectionEntry::class), (Episode::class),
+    (DisplayedRating::class)],
+        version = 6)
 abstract class MovieDb : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
     abstract fun favDao(): FavDao
     abstract fun recentlyBrowsedDao(): RecentlyBrowsedDao
     abstract fun movieCollectionDao(): MovieCollectionDao
+    abstract fun displayedRatingsDao(): DisplayedRatingDao
 
     companion object {
         val instance: MovieDb by lazy {
             Room.databaseBuilder(MovieRatingsApplication.instance!!, MovieDb::class.java, "ex")
-                    .addMigrations(MIGRATION_1_to_2, MIGRATION_2_to_3, MIGRATION_3_to_4, MIGRATION_4_to_5)
+                    .addMigrations(
+                            MIGRATION_1_to_2, MIGRATION_2_to_3,
+                            MIGRATION_3_to_4, MIGRATION_4_to_5,
+                            MIGRATION_5_to_6)
                     .build()
         }
 
@@ -62,6 +67,12 @@ abstract class MovieDb : RoomDatabase() {
                 _db.execSQL("ALTER TABLE `MOVIES` ADD COLUMN `TOTALSEASONS` INTEGER DEFAULT -1 NOT NULL")
                 _db.execSQL("CREATE TABLE IF NOT EXISTS `EPISODES` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `TITLE` TEXT NOT NULL, `RELEASED` TEXT NOT NULL, `EPISODE` INTEGER NOT NULL, `IMDBRATING` TEXT NOT NULL, `IMDBID` TEXT NOT NULL, `SERIESIMDBID` TEXT NOT NULL, `SEASON` INTEGER NOT NULL)")
                 _db.execSQL("CREATE UNIQUE INDEX `index_EPISODES_IMDBID` ON `EPISODES` (`IMDBID`)")
+            }
+        }
+
+        private val MIGRATION_5_to_6 = object: Migration(5, 6) {
+            override fun migrate(_db: SupportSQLiteDatabase) {
+                _db.execSQL("CREATE TABLE IF NOT EXISTS `DISPLAYED_RATINGS` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `IMDBID` TEXT NOT NULL, `TIMESTAMP` INTEGER NOT NULL, `APP_PACKAGE` TEXT NOT NULL)");
             }
         }
     }

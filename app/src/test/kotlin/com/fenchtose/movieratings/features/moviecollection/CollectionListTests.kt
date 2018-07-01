@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPage
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPresenter
-import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.offline.export.DataExporter

@@ -3,10 +3,10 @@ package com.fenchtose.movieratings.model.api.provider
 import android.content.Context
 import android.support.annotation.RawRes
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.Episode
-import com.fenchtose.movieratings.model.EpisodesList
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.SearchResult
+import com.fenchtose.movieratings.model.entity.Episode
+import com.fenchtose.movieratings.model.entity.EpisodesList
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import com.google.gson.Gson

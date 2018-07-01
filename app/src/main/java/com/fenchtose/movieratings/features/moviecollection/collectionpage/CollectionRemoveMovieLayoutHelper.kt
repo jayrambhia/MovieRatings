@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.FrameLayout
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 
 class CollectionRemoveMovieLayoutHelper(private val callback: Callback) : SearchItemViewHolder.ExtraLayoutHelper {

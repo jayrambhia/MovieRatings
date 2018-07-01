@@ -14,8 +14,8 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.season.episode.EpisodePage
-import com.fenchtose.movieratings.model.EpisodesList
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.EpisodesList
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.util.IntentUtils

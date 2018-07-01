@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.offline.export
 
-import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.entity.MovieCollection
 import io.reactivex.Observable
 
 interface DataExporter<T> {

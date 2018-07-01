@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.model.api
 
-import com.fenchtose.movieratings.model.EpisodesList
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.SearchResult
+import com.fenchtose.movieratings.model.entity.EpisodesList
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.SearchResult
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Query

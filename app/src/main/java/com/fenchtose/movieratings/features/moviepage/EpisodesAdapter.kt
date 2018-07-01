@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.Episode
+import com.fenchtose.movieratings.model.entity.Episode
 
 class EpisodesAdapter(context: Context,
                       private val callback: Callback): RecyclerView.Adapter<EpisodesViewHolder>() {

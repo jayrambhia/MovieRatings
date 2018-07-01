@@ -35,6 +35,10 @@ class Constants {
                 Pair(PACKAGE_JIO_CINEMA, R.string.settings_jio_cinema)
         )
 
+        val SUPPORT_CHANNEL_ID = "support"
+        val SUPPORT_APP_NOTIFICATION_ID = 21
+        val REVIEW_APP_NOTIFICATION_ID = 22
+
     }
 
     enum class TitleType(val type: String) {

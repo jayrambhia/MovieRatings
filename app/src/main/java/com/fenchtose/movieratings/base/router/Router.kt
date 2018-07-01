@@ -19,6 +19,21 @@ class Router(activity: AppCompatActivity) {
 
     private val TAG = "Router"
 
+    companion object {
+        val ROUTE_TO_SCREEN = "route_to_screen"
+    }
+
+    fun buildRoute(path: RouterPath<out BaseFragment>): Router {
+        history.push(path)
+        return this
+    }
+
+    fun start() {
+        if (history.isNotEmpty()) {
+            move(history.peek())
+        }
+    }
+
     fun go(path: RouterPath<out BaseFragment>) {
         if (history.size >= 1) {
             val top = history.peek()

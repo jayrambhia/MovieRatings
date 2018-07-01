@@ -6,6 +6,7 @@ import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.model.api.provider.MovieProviderModule
 import com.fenchtose.movieratings.model.db.MovieDb
 import com.fenchtose.movieratings.model.gsonadapters.IntAdapter
+import com.fenchtose.movieratings.util.registerNotificationChannel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.leakcanary.LeakCanary
@@ -61,5 +62,6 @@ open class MovieRatingsApplication : Application() {
         }
         refWatcher = LeakCanary.install(this)*/
         flavorHelper.onAppCreated(this)
+        registerNotificationChannel(this)
     }
 }

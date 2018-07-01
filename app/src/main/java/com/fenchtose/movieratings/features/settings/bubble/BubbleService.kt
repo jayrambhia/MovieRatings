@@ -5,8 +5,8 @@ import android.content.Intent
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.router.EventBus
 import com.fenchtose.movieratings.display.RatingDisplayer
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.Rating
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.Rating
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import io.reactivex.disposables.Disposable
 

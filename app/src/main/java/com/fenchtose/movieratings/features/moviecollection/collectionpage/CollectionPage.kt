@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import android.net.Uri
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Movie
 
 interface CollectionPage: BaseMovieListPage {
 

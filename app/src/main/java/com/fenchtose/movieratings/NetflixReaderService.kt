@@ -12,11 +12,15 @@ import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.features.tts.Speaker
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
+import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
+import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
-import com.fenchtose.movieratings.util.Constants
-import com.fenchtose.movieratings.util.FixTitleUtils
+import com.fenchtose.movieratings.util.*
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -42,6 +46,8 @@ class NetflixReaderService : AccessibilityService() {
     private var displayer: RatingDisplayer? = null
     private var speaker: Speaker? = null
 
+    private var historyKeeper: HistoryKeeper? = null
+
     private val RESOURCE_THRESHOLD = 300L
 
     private var resourceRemover: PublishSubject<Boolean>? = null
@@ -53,6 +59,9 @@ class NetflixReaderService : AccessibilityService() {
         provider = MovieRatingsApplication.movieProviderModule.movieProvider
         analytics = MovieRatingsApplication.analyticsDispatcher
         displayer = RatingDisplayer(this, analytics!!, preferences!!)
+        historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance!!),
+                DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
+                preferences!!)
     }
 
     private fun initResources() {
@@ -248,7 +257,8 @@ class NetflixReaderService : AccessibilityService() {
                                     fixTitle(info.packageName, it.toString()),
                                     years.takeIf { it.isNotEmpty() }?.first()?.let {
                                         fixYear(info.packageName, it.toString())
-                                    }
+                                    },
+                                    event.packageName.toString()
                             )
                         }
 
@@ -311,7 +321,7 @@ class NetflixReaderService : AccessibilityService() {
     override fun onInterrupt() {
     }
 
-    private fun setMovieTitle(text: String, year: String?) {
+    private fun setMovieTitle(text: String, year: String?, packageName: String) {
 
         // When the third condition is added, it could work better but could also be annoying because
         // event when the user scrolls, this would be triggered. This is just for Netflix because they
@@ -326,9 +336,9 @@ class NetflixReaderService : AccessibilityService() {
             displayer?.removeView()
 
             if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) {
-                getMovieInfo(text, year ?: "")
+                getMovieInfo(text, year ?: "", packageName)
             } else {
-                getMovieInfo(text, "")
+                getMovieInfo(text, "", packageName)
             }
         }
     }
@@ -359,7 +369,7 @@ class NetflixReaderService : AccessibilityService() {
         return ""
     }
 
-    private fun getMovieInfo(title: String, year: String) {
+    private fun getMovieInfo(title: String, year: String, packageName: String) {
         initResources()
 
         analytics?.sendEvent(Event("get_movie"))
@@ -372,9 +382,64 @@ class NetflixReaderService : AccessibilityService() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeBy(onNext = {
                         showRating(it)
+                        updateHistory(it.imdbId, packageName)
                     }, onError = {
                         it.printStackTrace()
                     })
+        }
+    }
+
+    private fun updateHistory(imdbId: String, packageName: String) {
+        Observable.just(Pair(imdbId, packageName))
+                .debounce(1000, TimeUnit.MILLISECONDS)
+                .doOnNext {
+                    historyKeeper?.ratingDisplayed(imdbId, packageName)
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    checkForSupportPrompt()
+                }
+    }
+
+    private fun checkForSupportPrompt() {
+        historyKeeper?.let {
+            it.shouldShowSupportAppPrompt()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (it) {
+                            showSupportAppPrompt()
+                        } else {
+                            checkForRateAppPrompt()
+                        }
+                    }
+        }
+    }
+
+    private fun checkForRateAppPrompt() {
+        historyKeeper?.let {
+            it.shouldShowRateAppPrompt()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe {
+                        if (it) {
+                            showRateAppPrompt()
+                        }
+                    }
+        }
+    }
+
+    private fun showSupportAppPrompt() {
+        if (!isNotificationChannelBlocked(this, Constants.SUPPORT_CHANNEL_ID)) {
+            showSupportAppNotification(this)
+            historyKeeper?.inAppPurchasePromptShown()
+        }
+    }
+
+    private fun showRateAppPrompt() {
+        if (!isNotificationChannelBlocked(this, Constants.SUPPORT_CHANNEL_ID)) {
+            showReviewAppNotification(this)
+            historyKeeper?.rateAppPromptShown()
         }
     }
 

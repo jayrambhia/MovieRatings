@@ -3,7 +3,7 @@ package com.fenchtose.movieratings.model.preferences
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
-import com.fenchtose.movieratings.model.Sort
+import com.fenchtose.movieratings.model.entity.Sort
 
 class SettingsPreferences(context: Context): UserPreferences {
 

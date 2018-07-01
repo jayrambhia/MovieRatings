@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.model.preferences
 
 import android.support.annotation.ColorInt
-import com.fenchtose.movieratings.model.Sort
+import com.fenchtose.movieratings.model.entity.Sort
 
 interface UserPreferences {
 
@@ -19,6 +19,9 @@ interface UserPreferences {
         val USE_YEAR = "use_year"
         val ONBOARDING_SHOWN = "onboarding_shown"
         val LOCALE_INFO_SHOWN = "locale_info_shown"
+
+        val SHOW_SUPPORT_APP_PROMPT = "show_support_app"
+        val SHOW_RATE_APP_PROMPT = "show_rate_app"
     }
 
     /**

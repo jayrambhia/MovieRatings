@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseMovieAdapter
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.widgets.RatioImageView
 

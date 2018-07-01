@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.features.moviepage
 
-import com.fenchtose.movieratings.model.EpisodesList
-import com.fenchtose.movieratings.model.Movie
-import com.fenchtose.movieratings.model.MovieCollection
+import com.fenchtose.movieratings.model.entity.EpisodesList
+import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
 
 interface MoviePage {
     fun updateState(state: State)

@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.model.db.like
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.model.Fav
-import com.fenchtose.movieratings.model.Movie
+import com.fenchtose.movieratings.model.entity.Fav
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.db.dao.FavDao
 import io.reactivex.Observable
 import io.reactivex.Single

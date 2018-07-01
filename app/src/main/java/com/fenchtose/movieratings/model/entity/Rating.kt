@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.model
+package com.fenchtose.movieratings.model.entity
 
 import com.google.gson.annotations.SerializedName
 

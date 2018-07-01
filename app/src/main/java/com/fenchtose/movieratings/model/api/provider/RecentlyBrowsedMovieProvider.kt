@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.api.provider
 
-import com.fenchtose.movieratings.model.RecentlyBrowsedMovie
+import com.fenchtose.movieratings.model.entity.RecentlyBrowsedMovie
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import io.reactivex.Observable
 

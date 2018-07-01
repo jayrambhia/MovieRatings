@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.text.bold
 import androidx.text.scale
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.Episode
+import com.fenchtose.movieratings.model.entity.Episode
 
 class EpisodesViewHolder(itemView: View, callback: EpisodesAdapter.Callback): RecyclerView.ViewHolder(itemView) {
 
