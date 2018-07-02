@@ -16,7 +16,7 @@ class DbHistoryKeeper(private val userHistory: UserHistory,
     private val APP_OPENED_THRESHOLD = 7 * 24 * 3600 // 7 days
     private val SUPPORT_APP_THRESHOLD = 10 * 24 * 3600 // 10 days
     private val RATE_APP_THRESHOLD = 14 * 24 * 3600 // 14 days
-    private val RATINGS_SHOWN_THRESHOLD = 1/*0*/
+    private val RATINGS_SHOWN_THRESHOLD = 10
 
     companion object {
         fun newInstance(context: Context): DbHistoryKeeper {

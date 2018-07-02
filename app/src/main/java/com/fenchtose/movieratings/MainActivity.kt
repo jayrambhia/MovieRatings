@@ -321,6 +321,12 @@ class MainActivity : AppCompatActivity() {
                 "DonatePath" -> {
                     router?.buildRoute(DonatePageFragment.DonatePath())
                 }
+                "RateApp" -> {
+                    historyKeeper?.ratedAppOnPlaystore()
+                    IntentUtils.openPlaystore(this)
+                    supportFinishAfterTransition()
+                    return
+                }
             }
         } else {
             if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {

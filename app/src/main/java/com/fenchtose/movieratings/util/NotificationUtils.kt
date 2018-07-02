@@ -8,12 +8,14 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.ContextCompat
 import com.fenchtose.movieratings.MainActivity
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 
 
@@ -30,7 +32,10 @@ fun showSupportAppNotification(context: Context) {
 }
 
 fun showReviewAppNotification(context: Context) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(IntentUtils.PLAYSTORE_URL))
+    val intent = Intent(context, MainActivity::class.java)
+    val extra = Bundle()
+    extra.putString(Router.ROUTE_TO_SCREEN, "RateApp")
+    intent.putExtra("path", extra)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
     showNotification(context, R.string.review_app_notification_title,

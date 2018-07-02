@@ -13,6 +13,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
+import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.IntentUtils
 
@@ -28,6 +29,7 @@ class InfoPageBottomView: LinearLayout {
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
 
         val analytics = MovieRatingsApplication.analyticsDispatcher
+        val historyKeeper = DbHistoryKeeper.newInstance(MovieRatingsApplication.instance!!)
 
         val premiumView: View = findViewById(R.id.premium_view)
         if (BuildConfig.FLAVOR == "playstore") {
@@ -44,6 +46,7 @@ class InfoPageBottomView: LinearLayout {
 
         findViewById<View>(R.id.rate_view).setOnClickListener {
             analytics.sendEvent(Event("rate_app_clicked"))
+            historyKeeper.ratedAppOnPlaystore()
             IntentUtils.openPlaystore(context)
         }
 
