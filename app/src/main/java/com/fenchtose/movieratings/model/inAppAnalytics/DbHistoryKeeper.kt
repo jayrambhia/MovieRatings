@@ -13,10 +13,9 @@ class DbHistoryKeeper(private val userHistory: UserHistory,
                       private val ratingsStore: DisplayedRatingsStore,
                       private val preferences: UserPreferences): HistoryKeeper {
 
-    private val APP_OPENED_THRESHOLD = 7 * 24 * 3600 // 7 days
-    private val SUPPORT_APP_THRESHOLD = 10 * 24 * 3600 // 10 days
-    private val RATE_APP_THRESHOLD = 14 * 24 * 3600 // 14 days
-    private val RATINGS_SHOWN_THRESHOLD = 10
+    val SUPPORT_APP_THRESHOLD = 10 * 24 * 3600 // 10 days
+    val RATE_APP_THRESHOLD = 14 * 24 * 3600 // 14 days
+    val RATINGS_SHOWN_THRESHOLD = 10
 
     companion object {
         fun newInstance(context: Context): DbHistoryKeeper {
@@ -78,14 +77,13 @@ class DbHistoryKeeper(private val userHistory: UserHistory,
         var show = false
         if (hasReplied || blocked) {
             show = false
-        }
-
-        val firstOpened = userHistory.getAppOpenedFirst()
-        val now = System.currentTimeMillis()/1000
-
-        if (firstOpened != -1L && now - firstOpened > APP_OPENED_THRESHOLD) {
-            if (now - lastShown > threshold) {
-                show = true
+        } else {
+            val firstOpened = userHistory.getAppOpenedFirst()
+            val now = System.currentTimeMillis() / 1000
+            if (firstOpened != -1L && now - firstOpened > threshold) {
+                if (lastShown == -1L || now - lastShown > threshold) {
+                    show = true
+                }
             }
         }
 

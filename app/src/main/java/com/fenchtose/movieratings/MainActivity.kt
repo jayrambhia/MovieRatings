@@ -24,7 +24,6 @@ import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
-import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
@@ -306,26 +305,36 @@ class MainActivity : AppCompatActivity() {
 
     private fun buildPathAndStart() {
         val intent = intent
-        var pathKey = ""
-        intent?.let {
-            val bundle = it.getBundleExtra("path")
-            bundle?.let {
-                pathKey = it.getString(Router.ROUTE_TO_SCREEN, "")
+        var history: Router.History = Router.History()
+
+        if (intent != null) {
+            val historyBundle = intent.getBundleExtra(Router.HISTORY)
+            if (historyBundle != null) {
+                history = Router.History(historyBundle)
             }
         }
 
-        if (pathKey.isNotEmpty()) {
-            router?.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
-
-            when(pathKey) {
-                "DonatePath" -> {
-                    router?.buildRoute(DonatePageFragment.DonatePath())
+        if (!history.isEmpty()) {
+            router?.let {
+                it.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+                val grouped = history.history.groupBy { router!!.canHandleKey(it.first) }
+                grouped[true]?.map {
+                    router!!.buildRoute(it.second)
                 }
-                "RateApp" -> {
-                    historyKeeper?.ratedAppOnPlaystore()
-                    IntentUtils.openPlaystore(this)
-                    supportFinishAfterTransition()
-                    return
+
+                val redirects = grouped[false]
+                redirects?.let {
+                    if (it.isNotEmpty()) {
+                        // Take the first key at the moment. We don't have the logic right now
+                        when(it[0].first) {
+                            "RateApp" -> {
+                                historyKeeper?.ratedAppOnPlaystore()
+                                IntentUtils.openPlaystore(this)
+                                supportFinishAfterTransition()
+                                return
+                            }
+                        }
+                    }
                 }
             }
         } else {

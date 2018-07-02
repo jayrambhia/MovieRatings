@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.base.router
 
 import android.os.Build
+import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -8,6 +9,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.features.moviepage.DetailTransition
+import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import java.util.Stack
 
 class Router(activity: AppCompatActivity) {
@@ -17,14 +19,30 @@ class Router(activity: AppCompatActivity) {
     private val titlebar: ActionBar? = activity.supportActionBar
     var callback: RouterCallback? = null
 
+    private val keyPathMap: HashMap<String, ((Bundle) -> RouterPath<out BaseFragment>)> = HashMap()
+
     private val TAG = "Router"
 
     companion object {
         val ROUTE_TO_SCREEN = "route_to_screen"
+        val HISTORY = "history"
+    }
+
+    init {
+        keyPathMap.put(DonatePageFragment.DonatePath.KEY, DonatePageFragment.DonatePath.createPath())
+    }
+
+    fun canHandleKey(key: String): Boolean {
+        return keyPathMap.containsKey(key)
     }
 
     fun buildRoute(path: RouterPath<out BaseFragment>): Router {
         history.push(path)
+        return this
+    }
+
+    fun buildRoute(extras: Bundle): Router {
+        keyPathMap[extras.getString(ROUTE_TO_SCREEN, "")]?.invoke(extras)?.let { buildRoute(it) }
         return this
     }
 
@@ -131,5 +149,46 @@ class Router(activity: AppCompatActivity) {
     interface RouterCallback {
         fun movedTo(path: RouterPath<out BaseFragment>)
         fun removed(path: RouterPath<out BaseFragment>)
+    }
+
+    class History {
+
+        val history = ArrayList<Pair<String, Bundle>>()
+
+        constructor()
+        constructor(extras: Bundle) {
+            if (!extras.containsKey(KEY_PATHS)) {
+                return
+            }
+
+            val pathKeys = extras.getStringArrayList(KEY_PATHS) ?: return
+            pathKeys.forEach {
+                if (extras.containsKey(it)) {
+                    history.add(Pair(it, extras.getBundle(it)))
+                }
+            }
+        }
+
+        companion object {
+            private val KEY_PATHS = "paths"
+        }
+
+        fun addPath(pathKey: String, extras: Bundle): History {
+            history.add(Pair(pathKey, extras))
+            return this
+        }
+
+        fun toBundle(): Bundle {
+            val extras = Bundle()
+            extras.putStringArrayList(KEY_PATHS, ArrayList(history.map { it.first }))
+            history.forEach {
+                extras.putString(ROUTE_TO_SCREEN, it.first)
+                extras.putBundle(it.first, it.second)
+            }
+
+            return extras
+        }
+
+        fun isEmpty(): Boolean = history.isEmpty()
     }
 }

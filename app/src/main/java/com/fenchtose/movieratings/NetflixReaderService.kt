@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings
 
 import android.accessibilityservice.AccessibilityService
+import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -393,10 +394,12 @@ class NetflixReaderService : AccessibilityService() {
         Observable.just(Pair(imdbId, packageName))
                 .debounce(1000, TimeUnit.MILLISECONDS)
                 .doOnNext {
+                    Log.d(TAG, "update history")
                     historyKeeper?.ratingDisplayed(imdbId, packageName)
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
+                    Log.d(TAG, "update history on next")
                     checkForSupportPrompt()
                 }
     }
@@ -406,13 +409,13 @@ class NetflixReaderService : AccessibilityService() {
             it.shouldShowSupportAppPrompt()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
+                    .subscribe ({
                         if (it) {
                             showSupportAppPrompt()
                         } else {
                             checkForRateAppPrompt()
                         }
-                    }
+                    })
         }
     }
 
@@ -421,11 +424,11 @@ class NetflixReaderService : AccessibilityService() {
             it.shouldShowRateAppPrompt()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
+                    .subscribe ({
                         if (it) {
                             showRateAppPrompt()
                         }
-                    }
+                    })
         }
     }
 

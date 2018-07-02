@@ -18,6 +18,6 @@ interface DisplayedRatingDao {
     @Query("SELECT COUNT(id) FROM DISPLAYED_RATINGS")
     fun countAll(): Int
 
-    @Query("SELECT COUNT(id) FROM DISPLAYED_RATINGS GROUP BY IMDBID")
+    @Query("SELECT COUNT(DISTINCT IMDBID) FROM DISPLAYED_RATINGS")
     fun countUnique(): Int
 }

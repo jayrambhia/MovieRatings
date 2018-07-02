@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.StringRes
@@ -21,9 +20,14 @@ import com.fenchtose.movieratings.features.premium.DonatePageFragment
 
 fun showSupportAppNotification(context: Context) {
     val intent = Intent(context, MainActivity::class.java)
-    intent.putExtra("path", DonatePageFragment.DonatePath.createExtras())
+    intent.putExtra(Router.HISTORY,
+            Router.History()
+                    .addPath(DonatePageFragment.DonatePath.KEY, DonatePageFragment.DonatePath.createExtras())
+                    .toBundle())
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
+    // Use PendingIntent.FLAG_UPDATE_CURRENT to avoid the issue of android caching the pending intent
+    val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     showNotification(context, R.string.support_app_notification_title,
             R.string.support_app_notification_content,
             Constants.SUPPORT_APP_NOTIFICATION_ID,
@@ -33,11 +37,10 @@ fun showSupportAppNotification(context: Context) {
 
 fun showReviewAppNotification(context: Context) {
     val intent = Intent(context, MainActivity::class.java)
-    val extra = Bundle()
-    extra.putString(Router.ROUTE_TO_SCREEN, "RateApp")
-    intent.putExtra("path", extra)
+    intent.putExtra(Router.HISTORY, Router.History().addPath("RateApp", Bundle()).toBundle())
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+    // Use PendingIntent.FLAG_UPDATE_CURRENT to avoid the issue of android caching the pending intent
+    val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     showNotification(context, R.string.review_app_notification_title,
             R.string.review_app_notification_content,
             Constants.REVIEW_APP_NOTIFICATION_ID,

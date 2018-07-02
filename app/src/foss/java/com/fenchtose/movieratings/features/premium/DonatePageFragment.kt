@@ -17,5 +17,25 @@ class DonatePageFragment: BaseFragment() {
         override fun createFragmentInstance(): DonatePageFragment {
             return DonatePageFragment()
         }
+
+        companion object {
+
+            val KEY = "DonatePath"
+
+            fun createExtras(): Bundle {
+                val bundle = Bundle()
+                bundle.putString(Router.ROUTE_TO_SCREEN, KEY)
+                return bundle
+            }
+
+            fun createPath(): ((Bundle) -> RouterPath<out BaseFragment>) {
+                return ::createPath
+            }
+
+            private fun createPath(extras: Bundle): RouterPath<out BaseFragment> {
+                return DonatePath()
+            }
+
+        }
     }
 }
