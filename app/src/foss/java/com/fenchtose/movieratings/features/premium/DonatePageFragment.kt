@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.router.Router
 
 class DonatePageFragment: BaseFragment() {
     override fun canGoBack() = true

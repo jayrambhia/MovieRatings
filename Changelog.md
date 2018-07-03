@@ -1,5 +1,14 @@
 # Flutter Changelog
 
+### 0.2.9
+
+ - Updated compile and target sdk to 27
+ - Updated gradle tools to 3.1.3
+ - Configure position and color of the rating bubble
+ - text styles added and lint rules added to keep a check
+ - Retry action added if the network fails
+ - Support and rate app notification and history keeper added
+
 ### 0.2.8
 
  - Support added for BBC iPlayer, Hotstar, Jio TV, Jio Cinema
