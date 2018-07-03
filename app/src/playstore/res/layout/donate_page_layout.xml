@@ -3,13 +3,26 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	xmlns:tools="http://schemas.android.com/tools"
 	android:orientation="vertical"
-	android:background="@color/colorAccent">
+	android:background="@color/colorAccent"
+	android:paddingTop="@dimen/gutter">
+
+	<TextView
+		android:id="@+id/persuasion_message"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:paddingStart="@dimen/gutter"
+		android:paddingEnd="@dimen/gutter"
+		android:paddingBottom="@dimen/gutter"
+		android:textAppearance="@style/Text.Light.Medium"
+		tools:text="@string/donate_page_persuasion_message"/>
 
 	<TextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:padding="16dp"
+		android:paddingStart="@dimen/gutter"
+		android:paddingEnd="@dimen/gutter"
 		android:textAppearance="@style/Text.Light"
 		android:text="@string/donate_page_content"/>
 

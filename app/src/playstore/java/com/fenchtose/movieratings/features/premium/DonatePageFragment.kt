@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.android.billingclient.api.*
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
@@ -18,6 +19,8 @@ import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchaseCard.Callback {
 
@@ -40,10 +43,23 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val ratingStore = DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao())
+
+        ratingStore.getUniqueRatingsCount()
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .filter { it >= 10 }.map { it - it % 10 }.subscribe({
+                    view.findViewById<TextView>(R.id.persuasion_message).run {
+                        text = requireContext().getString(R.string.donate_page_persuasion_message, it.toString())
+                        visibility = View.VISIBLE
+                    }
+                }, {
+
+                })
+
         skuContainer = view.findViewById(R.id.sku_container)
         historyKeeper = DbHistoryKeeper(
                 PreferenceUserHistory(requireContext()),
-                DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
+                ratingStore,
                 SettingsPreferences(requireContext())
                 )
 

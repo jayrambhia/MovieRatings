@@ -28,14 +28,14 @@ class DbDisplayedRatingsStore private constructor(private val dao: DisplayedRati
     }
 
     override fun deleteAll(): Observable<Int> {
-        return Observable.just(dao.deleteAll())
+        return Observable.defer { Observable.just(dao.deleteAll()) }
     }
 
     override fun getUniqueRatingsCount(): Observable<Int> {
-        return Observable.just(dao.countUnique())
+        return Observable.defer { Observable.just(dao.countUnique()) }
     }
 
     override fun getRatingsCount(): Observable<Int> {
-        return Observable.just(dao.countAll())
+        return Observable.defer { Observable.just(dao.countAll()) }
     }
 }
