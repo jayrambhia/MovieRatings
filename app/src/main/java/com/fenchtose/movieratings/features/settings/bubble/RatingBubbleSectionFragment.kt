@@ -3,9 +3,11 @@ package com.fenchtose.movieratings.features.settings.bubble
 import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.ColorInt
+import android.support.annotation.IdRes
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SwitchCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,6 +40,8 @@ class RatingBubbleSectionFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val preferences = SettingsPreferences(requireContext())
         this.preferences = preferences
+
+        addSettingToggle(preferences, view, R.id.open_movie_toggle, UserPreferences.OPEN_MOVIE_IN_APP)
 
         val savedBubbleColor = preferences.getBubbleColor(ContextCompat.getColor(requireContext(), R.color.floating_rating_color))
 
@@ -99,7 +103,7 @@ class RatingBubbleSectionFragment: BaseFragment() {
     private fun updateRatingDisplayDuration(durationInMs: Int) {
         preferences?.let {
             it.setRatingDisplayDuration(durationInMs)
-//            updatePublisher?.show("toast")
+            updatePublisher?.show("toast")
             ratingDurationView?.text = (it.getRatingDisplayDuration()/1000).toString()
         }
     }
@@ -112,6 +116,22 @@ class RatingBubbleSectionFragment: BaseFragment() {
         } else {
             manager.scrollToPosition(Math.min(position + 2, total))
         }
+    }
+
+    private fun addSettingToggle(preferences: UserPreferences, root: View, @IdRes buttonId: Int, key: String) {
+        val toggle = root.findViewById<SwitchCompat?>(buttonId)
+        toggle?.let {
+            it.visibility = View.VISIBLE
+            it.isChecked = preferences.isSettingEnabled(key)
+            it.setOnCheckedChangeListener {
+                _, isChecked -> updatePreference(preferences, key, isChecked)
+            }
+        }
+    }
+
+    private fun updatePreference(preferences: UserPreferences, key: String, status: Boolean) {
+        preferences.setEnabled(key, status)
+        updatePublisher?.show(key)
     }
 
     class RatingSectionPath: RouterPath<RatingBubbleSectionFragment>() {

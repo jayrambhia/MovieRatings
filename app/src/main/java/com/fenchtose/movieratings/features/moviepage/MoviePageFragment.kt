@@ -22,6 +22,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
 import com.fenchtose.movieratings.model.entity.Episode
 import com.fenchtose.movieratings.model.entity.EpisodesList
@@ -227,7 +228,11 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     }
 
     private fun showError() {
-        showSnackbar(R.string.movie_page_load_error)
+        showSnackbarWithAction(requireContext().getString(R.string.movie_page_load_error),
+                R.string.movie_page_retry_cta,
+                View.OnClickListener {
+                    presenter?.reload()
+                })
     }
 
     private fun setLiked(isLiked: Boolean?) {
@@ -261,7 +266,31 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         return R.string.movie_page_title
     }
 
-    class MoviePath(private val movie: Movie, private val sharedElement: Pair<View, String>?): RouterPath<MoviePageFragment>() {
+    class MoviePath(private val movie: Movie, private val sharedElement: Pair<View, String>? = null): RouterPath<MoviePageFragment>() {
+
+        companion object {
+            val KEY = "MoviePath"
+
+            private val MOVIE_ID = "imdb_id"
+
+            fun createExtras(imdbId: String): Bundle {
+                val bundle = Bundle()
+                bundle.putString(Router.ROUTE_TO_SCREEN, KEY)
+                bundle.putString(MOVIE_ID, imdbId)
+                return bundle
+            }
+
+            fun createPath(): ((Bundle) -> MoviePath) {
+                return ::createPath
+            }
+
+            private fun createPath(extras: Bundle): MoviePath {
+                val movieId = extras.getString(MOVIE_ID, "")
+                val movie = Movie()
+                movie.imdbId = movieId
+                return MoviePath(movie)
+            }
+        }
 
         override fun createFragmentInstance(): MoviePageFragment {
             val fragment = MoviePageFragment()

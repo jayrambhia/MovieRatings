@@ -41,13 +41,13 @@ class TTSSectionFragment: BaseFragment() {
             toggle, isChecked ->
             run {
                 if (!isChecked) {
-                    preferences.setSettingEnabled(UserPreferences.USE_TTS, false)
+                    preferences.setEnabled(UserPreferences.USE_TTS, false)
                     updatePublisher?.show(UserPreferences.USE_TTS)
                     return@setOnCheckedChangeListener
                 }
 
                 if (preferences.isSettingEnabled(UserPreferences.TTS_AVAILABLE)) {
-                    preferences.setSettingEnabled(UserPreferences.USE_TTS, true)
+                    preferences.setEnabled(UserPreferences.USE_TTS, true)
                     updatePublisher?.show(UserPreferences.USE_TTS)
                     return@setOnCheckedChangeListener
                 }
@@ -76,7 +76,7 @@ class TTSSectionFragment: BaseFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == CHECK_TTS) {
             if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
-                preferences?.setSettingEnabled(UserPreferences.TTS_AVAILABLE, true)
+                preferences?.setEnabled(UserPreferences.TTS_AVAILABLE, true)
             } else {
                 showTtsInstallDialog()
             }

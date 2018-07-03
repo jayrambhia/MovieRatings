@@ -22,19 +22,21 @@ interface UserPreferences {
 
         val SHOW_SUPPORT_APP_PROMPT = "show_support_app"
         val SHOW_RATE_APP_PROMPT = "show_rate_app"
+
+        val OPEN_MOVIE_IN_APP = "open_movie_in_app"
     }
 
     /**
      * returns if particular app is enabled or not. Default is true.
      */
     fun isAppEnabled(app: String): Boolean
-    fun setAppEnabled(app: String, status: Boolean)
 
     /**
      * returns if particular setting is enabled or not. Default is false.
      */
     fun isSettingEnabled(app: String): Boolean
-    fun setSettingEnabled(app: String, status: Boolean)
+
+    fun setEnabled(app: String, status: Boolean)
 
     fun getRatingDisplayDuration():Int
     fun setRatingDisplayDuration(durationInMS: Int)

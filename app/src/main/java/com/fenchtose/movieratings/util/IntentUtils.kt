@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import com.fenchtose.movieratings.BuildConfig
+import com.fenchtose.movieratings.MainActivity
+import com.fenchtose.movieratings.base.router.Router
+import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 
 class IntentUtils {
 
@@ -60,12 +63,40 @@ class IntentUtils {
             return intent.resolveActivity(context.packageManager) != null
         }
 
-        fun openImdb(context: Context, imdb: String?) {
+        fun openImdb(context: Context, imdb: String?, newTask: Boolean = true): Boolean {
             imdb?.let {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.imdb.com/title/$imdb"))
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                if (newTask) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
                 context.startActivity(Intent.createChooser(intent, "Open IMDb page with").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+                return true
             }
+
+            return false
+        }
+
+        fun openMovie(context: Context, imdb: String?, inApp: Boolean = false, newTask: Boolean = true): Boolean {
+            imdb?.let {
+                if (!inApp) {
+                    return openImdb(context, imdb, newTask)
+                }
+
+                val intent = Intent(context, MainActivity::class.java)
+                intent.putExtra(Router.HISTORY,
+                        Router.History()
+                                .addPath(MoviePageFragment.MoviePath.KEY,
+                                        MoviePageFragment.MoviePath.createExtras(it))
+                                .toBundle())
+                if (newTask) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+
+                context.startActivity(intent)
+                return true
+            }
+
+            return false
         }
     }
 }

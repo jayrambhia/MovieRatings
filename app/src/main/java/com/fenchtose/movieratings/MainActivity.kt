@@ -270,7 +270,7 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode) {
             TTS_REG_CHECK -> {
-                preferences?.setAppEnabled(UserPreferences.TTS_AVAILABLE, resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
+                preferences?.setEnabled(UserPreferences.TTS_AVAILABLE, resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS)
             }
         }
     }
@@ -280,7 +280,7 @@ class MainActivity : AppCompatActivity() {
         if (PackageUtils.isIntentCallabale(this, intent)) {
             startActivityForResult(intent, TTS_REG_CHECK)
         } else {
-            preferences?.setSettingEnabled(UserPreferences.TTS_AVAILABLE, false)
+            preferences?.setEnabled(UserPreferences.TTS_AVAILABLE, false)
             Log.e("Flutter", "TTS is not supported")
         }
     }
@@ -294,7 +294,7 @@ class MainActivity : AppCompatActivity() {
                         .setMessage(R.string.locale_info_dialog_content)
                         .setPositiveButton(android.R.string.ok) {
                             dialog, _ ->
-                                preferences?.setSettingEnabled(UserPreferences.LOCALE_INFO_SHOWN, true)
+                                preferences?.setEnabled(UserPreferences.LOCALE_INFO_SHOWN, true)
                                 dialog.dismiss()
                         }
                         .setCancelable(false)
@@ -340,7 +340,7 @@ class MainActivity : AppCompatActivity() {
         } else {
             if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
                 router?.buildRoute(AppInfoFragment.AppInfoPath(true))
-                preferences?.setSettingEnabled(UserPreferences.ONBOARDING_SHOWN, true)
+                preferences?.setEnabled(UserPreferences.ONBOARDING_SHOWN, true)
             } else {
                 router?.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
             }

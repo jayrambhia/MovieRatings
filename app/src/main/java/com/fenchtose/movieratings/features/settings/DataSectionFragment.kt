@@ -75,7 +75,7 @@ class DataSectionFragment: BaseFragment() {
     }
 
     private fun updatePreference(preferences: UserPreferences, app: String, checked: Boolean) {
-        preferences.setAppEnabled(app, checked)
+        preferences.setEnabled(app, checked)
         updatePublisher?.show(app)
     }
 

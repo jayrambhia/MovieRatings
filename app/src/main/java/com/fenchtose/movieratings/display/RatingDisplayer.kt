@@ -168,7 +168,11 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
                 if (it.isClickForClose(x)) {
                     removeViewImmediate(it)
                 } else {
-                    IntentUtils.openImdb(context, rating?.movie?.imdbId)
+                    val opened = IntentUtils.openMovie(context, rating?.movie?.imdbId,
+                            preferences.isSettingEnabled(UserPreferences.OPEN_MOVIE_IN_APP))
+                    if (opened) {
+                        removeView()
+                    }
                 }
             }
         }

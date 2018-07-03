@@ -71,6 +71,10 @@ class MoviePresenter(private val provider: MovieProvider,
 
     }
 
+    fun reload() {
+        imdbId?.let { getMovie(it) }
+    }
+
     private fun getMovie(imdbId: String) {
         val d = provider
                 .getMovieWithImdb(imdbId)

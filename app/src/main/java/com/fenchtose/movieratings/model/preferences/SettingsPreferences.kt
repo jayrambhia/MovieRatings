@@ -21,15 +21,11 @@ class SettingsPreferences(context: Context): UserPreferences {
         return preferences.getBoolean(app, true)
     }
 
-    override fun setAppEnabled(app: String, status: Boolean) {
-        preferences.edit().putBoolean(app, status).apply()
-    }
-
     override fun isSettingEnabled(app: String): Boolean {
         return preferences.getBoolean(app, false)
     }
 
-    override fun setSettingEnabled(app: String, status: Boolean) {
+    override fun setEnabled(app: String, status: Boolean) {
         preferences.edit().putBoolean(app, status).apply()
     }
 
