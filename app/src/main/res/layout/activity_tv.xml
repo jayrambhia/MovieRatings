@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fenchtose.movieratings.features.androidtv.TVActivity">
+    tools:context="com.fenchtose.movieratings.features.androidtv.TVActivity"
+    android:background="@color/tv_background">
 
     <FrameLayout
         android:id="@+id/fragment_container"

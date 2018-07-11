@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/tv_background">
+
+    <LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="144dp"
+	    android:orientation="horizontal">
+
+	    <TextView
+		    android:id="@+id/step0"
+		    android:layout_width="0dp"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:text="Step 0"
+		    android:gravity="center"
+		    android:focusable="true"
+		    android:textAppearance="@style/Text.Light.Medium.Largest"
+		    android:background="@drawable/tv_card_background"
+		    android:nextFocusRight="@+id/step1"
+		    />
+
+	    <TextView
+		    android:id="@+id/step1"
+		    android:layout_width="0dp"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:text="Step 1"
+		    android:gravity="center"
+		    android:focusable="true"
+		    android:textAppearance="@style/Text.Light.Medium.Largest"
+		    android:background="@drawable/tv_card_background"
+		    android:nextFocusRight="@+id/step2"
+		    />
+
+	    <TextView
+		    android:id="@+id/step2"
+		    android:layout_width="0dp"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:text="Step 2"
+		    android:gravity="center"
+		    android:focusable="true"
+		    android:textAppearance="@style/Text.Light.Medium.Largest"
+		    android:background="@drawable/tv_card_background"
+		    android:nextFocusRight="@+id/step3"
+		    />
+
+	    <TextView
+		    android:id="@+id/step3"
+		    android:layout_width="0dp"
+		    android:layout_height="match_parent"
+		    android:layout_weight="1"
+		    android:text="Step 3"
+		    android:gravity="center"
+		    android:focusable="true"
+		    android:textAppearance="@style/Text.Light.Medium.Largest"
+		    android:background="@drawable/tv_card_background"
+		    />
+
+    </LinearLayout>
+
+	<TextView
+		android:layout_marginTop="16dp"
+		android:layout_marginStart="32dp"
+		android:layout_marginEnd="32dp"
+		android:id="@+id/content_view"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:textAppearance="@style/Text.Dark.Medium.Largest"
+		tools:text="@string/tv_access_info_step1"/>
+
+	<ImageView
+		android:id="@+id/imageview"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_margin="32dp"
+		tools:src="@drawable/image_step1"/>
+
+</LinearLayout>

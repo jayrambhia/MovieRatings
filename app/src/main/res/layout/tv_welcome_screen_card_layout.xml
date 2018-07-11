@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="240dp"
+    android:layout_height="144dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/tv_card_color">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		android:gravity="center_horizontal"
+		android:padding="8dp">
+
+		<Space
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1"/>
+
+		<ImageView
+			android:id="@+id/icon_view"
+			android:layout_width="48dp"
+			android:layout_height="0dp"
+			android:layout_weight="2"
+			android:tint="@color/tv_card_content_color"
+			tools:src="@drawable/ic_accessibility_yellow_24dp"/>
+
+		<Space
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="0.5"/>
+
+		<TextView
+			android:id="@+id/title_view"
+			android:textAppearance="@style/Text.Light.Medium.Largest"
+			android:textColor="@color/tv_card_content_color"
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="2"
+			android:gravity="center"
+			tools:text="Enable Flutter"
+			/>
+
+		<Space
+			android:layout_width="match_parent"
+			android:layout_height="0dp"
+			android:layout_weight="1"/>
+
+	</LinearLayout>
+
+
+</android.support.v7.widget.CardView>

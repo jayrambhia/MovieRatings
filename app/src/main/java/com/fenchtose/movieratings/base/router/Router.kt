@@ -2,6 +2,7 @@ package com.fenchtose.movieratings.base.router
 
 import android.os.Build
 import android.os.Bundle
+import android.support.v4.app.FragmentActivity
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -13,11 +14,11 @@ import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import java.util.Stack
 
-class Router(activity: AppCompatActivity) {
+class Router(activity: FragmentActivity) {
 
     private val history: Stack<RouterPath<out BaseFragment>> = Stack()
     private val manager = activity.supportFragmentManager
-    private val titlebar: ActionBar? = activity.supportActionBar
+    private val titlebar: ActionBar? = activity.takeIf { it is AppCompatActivity }?.let { (it as AppCompatActivity).supportActionBar }
     var callback: RouterCallback? = null
 
     private val keyPathMap: HashMap<String, ((Bundle) -> RouterPath<out BaseFragment>)> = HashMap()

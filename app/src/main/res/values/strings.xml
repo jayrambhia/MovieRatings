@@ -252,4 +252,13 @@
 	<string name="review_app_notification_title">Do you like Flutter?</string>
 	<string name="review_app_notification_content">Leave a review on Playstore and tell others your experience about Flutter.</string>
 
+	<string name="tv_welcome_screen_title">Flutter on Android TV</string>
+	<string name="tv_welcome_card_enable_flutter">Enable Flutter</string>
+	<string name="tv_welcome_card_configure_apps">Manage Apps</string>
+
+	<string name="tv_access_info_step0">Minimize the app and open Settings page on your Android TV.</string>
+	<string name="tv_access_info_step1">Find <b>Accessibility Settings</b> in the menu and open it.</string>
+	<string name="tv_access_info_step2">Find <b>Flutter Movie Ratings</b> in the list and open the section.</string>
+	<string name="tv_access_info_step3">Select <b>Enable</b> and make sure its ON.</string>
+
 </resources>

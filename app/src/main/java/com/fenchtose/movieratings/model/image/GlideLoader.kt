@@ -10,6 +10,10 @@ import com.bumptech.glide.request.target.Target
 
 class GlideLoader(private val manager: RequestManager): ImageLoader {
 
+    override fun loadDrawable(image: Int, view: ImageView) {
+        manager.load(image).into(view)
+    }
+
     override fun loadImage(image: String, view: ImageView, callback: ImageLoader.Callback?) {
 
         image.takeIf { it.isNotEmpty() && it != "N/A" }?.let {
