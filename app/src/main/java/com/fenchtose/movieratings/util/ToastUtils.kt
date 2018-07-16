@@ -16,7 +16,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieRating
 
 class ToastUtils {
     companion object {
@@ -67,9 +67,10 @@ class ToastUtils {
             return toast
         }
 
-        fun showMovieRating(context: Context, movie: Movie, @ColorInt bubbleColor: Int, durationInMs: Int): Toast {
+        fun showMovieRating(context: Context, rating: MovieRating, @ColorInt bubbleColor: Int, durationInMs: Int): Toast {
+            val title = rating.title + if (rating.translatedTitle.isNotEmpty()) " (${rating.translatedTitle})" else ""
             return showFlutterToast(context, context.resources.getString(R.string.floating_rating_content,
-                    "${movie.title}: ${movie.ratings[0].value}"), durationInMs, bubbleColor)
+                    "$title: ${rating.rating}"), durationInMs, bubbleColor)
         }
     }
 }

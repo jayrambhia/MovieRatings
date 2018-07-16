@@ -4,6 +4,7 @@ import android.app.Application
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.model.api.provider.MovieProviderModule
+import com.fenchtose.movieratings.model.api.provider.MovieRatingProviderModule
 import com.fenchtose.movieratings.model.db.MovieDb
 import com.fenchtose.movieratings.model.gsonadapters.IntAdapter
 import com.fenchtose.movieratings.util.registerNotificationChannel
@@ -45,6 +46,10 @@ open class MovieRatingsApplication : Application() {
 
         val movieProviderModule by lazy {
             MovieProviderModule(instance!!, gson)
+        }
+
+        val ratingProviderModule by lazy {
+            MovieRatingProviderModule(instance!!, gson)
         }
     }
 

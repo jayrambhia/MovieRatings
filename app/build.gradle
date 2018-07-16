@@ -25,6 +25,7 @@ android {
         versionName generateVersionName()
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'OMDB_API_KEY', properties['omdb_api_key']
+        buildConfigField 'String', 'RATINGS_ENDPOINT', properties['ratings_endpoint']
     }
     flavorDimensions "default"
     productFlavors {

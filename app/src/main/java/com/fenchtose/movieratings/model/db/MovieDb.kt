@@ -13,8 +13,8 @@ import com.fenchtose.movieratings.model.entity.*
     (Movie::class), (Fav::class),
     (RecentlyBrowsed::class), (MovieCollection::class),
     (MovieCollectionEntry::class), (Episode::class),
-    (DisplayedRating::class)],
-        version = 6)
+    (DisplayedRating::class), (MovieRating::class)],
+        version = 7)
 abstract class MovieDb : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
@@ -22,6 +22,7 @@ abstract class MovieDb : RoomDatabase() {
     abstract fun recentlyBrowsedDao(): RecentlyBrowsedDao
     abstract fun movieCollectionDao(): MovieCollectionDao
     abstract fun displayedRatingsDao(): DisplayedRatingDao
+    abstract fun movieRatingsDao(): MovieRatingDao
 
     companion object {
         val instance: MovieDb by lazy {
@@ -29,7 +30,7 @@ abstract class MovieDb : RoomDatabase() {
                     .addMigrations(
                             MIGRATION_1_to_2, MIGRATION_2_to_3,
                             MIGRATION_3_to_4, MIGRATION_4_to_5,
-                            MIGRATION_5_to_6)
+                            MIGRATION_5_to_6, MIGRATION_6_to_7)
                     .build()
         }
 
@@ -74,6 +75,14 @@ abstract class MovieDb : RoomDatabase() {
             override fun migrate(_db: SupportSQLiteDatabase) {
                 _db.execSQL("CREATE TABLE IF NOT EXISTS `DISPLAYED_RATINGS` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `IMDBID` TEXT NOT NULL, `TIMESTAMP` INTEGER NOT NULL, `APP_PACKAGE` TEXT NOT NULL)");
             }
+        }
+
+        private val MIGRATION_6_to_7 = object: Migration(6, 7) {
+            override fun migrate(_db: SupportSQLiteDatabase) {
+                _db.execSQL("CREATE TABLE IF NOT EXISTS `MOVIE_RATINGS` (`IMDBID` TEXT NOT NULL, `IMDB_RATING` REAL NOT NULL, `IMDB_VOTES` INTEGER NOT NULL, `TITLE` TEXT NOT NULL, `TITLE_TYPE` TEXT NOT NULL, `TRANSLATED_TITLE` TEXT NOT NULL, `START_YEAR` INTEGER NOT NULL, `END_YEAR` INTEGER NOT NULL, `TIMESTAMP` INTEGER NOT NULL, PRIMARY KEY(`IMDBID`))")
+                _db.execSQL("CREATE UNIQUE INDEX `index_MOVIE_RATINGS_IMDBID` ON `MOVIE_RATINGS` (`IMDBID`)")
+            }
+
         }
     }
 }

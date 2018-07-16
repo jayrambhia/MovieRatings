@@ -29,11 +29,14 @@ To build the project, create `local.properties` in the base directory if it does
 
 ```
 omdb_api_key=<API_KEY>
+ratings_endpoint=<RATINGS_ENDPOINT>
 ```
 
 You can get your API key here - [OMDB API Key](http://www.omdbapi.com/apikey.aspx)
 
 If you don't have an API key, you can use `omdb_api_key=""` and the project will use `PreloadedMovieProvider` in debug build. It will return search results for `thor` and `batman` only.
+
+`RATINGS_ENDPOINT` is Flutter's private server to obtain accurate ratings. You may replace it with your own server url. You may keep it as empty string and it will fallback to OMDB api.
 
 ## Playstore description
 

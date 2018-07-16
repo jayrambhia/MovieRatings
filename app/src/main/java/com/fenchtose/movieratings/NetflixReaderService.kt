@@ -1,20 +1,18 @@
 package com.fenchtose.movieratings
 
 import android.accessibilityservice.AccessibilityService
-import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.features.tts.Speaker
+import com.fenchtose.movieratings.model.api.provider.MovieRatingsProvider
 import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
-import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
@@ -31,7 +29,7 @@ class NetflixReaderService : AccessibilityService() {
     private var title: String? = null
     private val TAG: String = "NetflixReaderService"
 
-    private var provider: MovieProvider? = null
+    private var provider: MovieRatingsProvider? = null
 
     private var preferences: UserPreferences? = null
 
@@ -57,7 +55,7 @@ class NetflixReaderService : AccessibilityService() {
         super.onCreate()
 
         preferences = SettingsPreferences(this)
-        provider = MovieRatingsApplication.movieProviderModule.movieProvider
+        provider = MovieRatingsApplication.ratingProviderModule.ratingProvider
         analytics = MovieRatingsApplication.analyticsDispatcher
         displayer = RatingDisplayer(this, analytics!!, preferences!!)
         historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance!!),
@@ -337,9 +335,9 @@ class NetflixReaderService : AccessibilityService() {
             displayer?.removeView()
 
             if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) {
-                getMovieInfo(text, year ?: "", packageName)
+                getMovieInfo(text, year, packageName)
             } else {
-                getMovieInfo(text, "", packageName)
+                getMovieInfo(text, null, packageName)
             }
         }
     }
@@ -370,13 +368,25 @@ class NetflixReaderService : AccessibilityService() {
         return ""
     }
 
-    private fun getMovieInfo(title: String, year: String, packageName: String) {
+    private fun getMovieInfo(title: String, year: String?, packageName: String) {
         initResources()
 
         analytics?.sendEvent(Event("get_movie"))
 
         provider?.let {
-            it.getMovie(title, year)
+            it.getMovieRating(title, year)
+                    .debounce(30, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it.imdbId.isNotEmpty()) {
+                            showRating(it)
+                            updateHistory(it.imdbId, packageName)
+                        }
+                    }, {
+                        it.printStackTrace()
+                    })
+            /*it.getMovie(title, year)
                     .debounce(30, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())
                     .filter { it.ratings.size > 0 }
@@ -386,7 +396,7 @@ class NetflixReaderService : AccessibilityService() {
                         updateHistory(it.imdbId, packageName)
                     }, onError = {
                         it.printStackTrace()
-                    })
+                    })*/
         }
     }
 
@@ -446,10 +456,10 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 
-    private fun showRating(movie: Movie) {
-        displayer?.showRatingWindow(movie)
+    private fun showRating(rating: MovieRating) {
+        displayer?.showRatingWindow(rating)
         if (preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true) {
-            speaker?.talk(movie)
+            speaker?.talk(rating)
         }
     }
 }

@@ -17,7 +17,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.features.stickyview.FloatingRating
-import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
@@ -34,7 +34,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
     private val TAG = "RatingDisplayer"
 
     var isShowingView: Boolean = false
-    private var rating: FloatingRating? = null
+    private var floatingRating: FloatingRating? = null
     private val handler = Handler(Looper.getMainLooper())
     private val width = context.resources.getDimensionPixelOffset(R.dimen.floating_rating_view_width)
 
@@ -43,13 +43,13 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
     }
 
     private val removeRunnable = Runnable {
-        rating?.let {
+        floatingRating?.let {
             removeViewImmediate(it.bubble)
         }
     }
 
-    fun showRatingWindow(movie: Movie) {
-        if (movie.ratings.isEmpty()) {
+    fun showRatingWindow(rating: MovieRating) {
+        if (rating.imdbId.isEmpty() || rating.rating <= 0f) {
             removeView()
             return
         }
@@ -59,16 +59,16 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
         if (!AccessibilityUtils.canDrawOverWindow(context)) {
             Log.e(TAG, "no drawing permission")
             val duration = preferences.getRatingDisplayDuration()
-            ToastUtils.showMovieRating(context, movie, bubbleColor, duration)
+            ToastUtils.showMovieRating(context, rating, bubbleColor, duration)
             return
         }
 
-        if (rating == null) {
-            rating = FloatingRating(context)
+        if (floatingRating == null) {
+            floatingRating = FloatingRating(context)
         }
 
-        rating?.let {
-            it.movie = movie
+        floatingRating?.let {
+            it.rating = rating
             it.bubble.updateColor(bubbleColor)
             resetAutoDismissRunners()
             if (it.bubble.parent != null) {
@@ -78,7 +78,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
             isShowingView = if (addViewToWindow(it.bubble)) {
                 true
             } else {
-                rating = null
+                floatingRating = null
                 false
             }
         }
@@ -123,7 +123,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
     }
 
     fun updateColor(@ColorInt color: Int) {
-        rating?.updateColor(color)
+        floatingRating?.updateColor(color)
     }
 
     fun removeView() {
@@ -152,7 +152,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
                     .putAttribute("where", "service_remove_view"))
         } finally {
             isShowingView = false
-            rating = null
+            floatingRating = null
         }
 
         touchListener?.release()
@@ -168,7 +168,7 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
                 if (it.isClickForClose(x)) {
                     removeViewImmediate(it)
                 } else {
-                    val opened = IntentUtils.openMovie(context, rating?.movie?.imdbId,
+                    val opened = IntentUtils.openMovie(context, floatingRating?.rating?.imdbId,
                             preferences.isSettingEnabled(UserPreferences.OPEN_MOVIE_IN_APP))
                     if (opened) {
                         removeView()

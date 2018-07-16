@@ -6,7 +6,7 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieRating
 import java.util.Locale
 
 class Speaker(context: Context): TextToSpeech.OnInitListener {
@@ -14,7 +14,7 @@ class Speaker(context: Context): TextToSpeech.OnInitListener {
     private val context = context.applicationContext
     private var tts: TextToSpeech? = null
     private var ready = false
-    private var currentMovie: Movie? = null
+    private var currentRating: MovieRating? = null
 
     override fun onInit(status: Int) {
         ready = if (status == TextToSpeech.SUCCESS) {
@@ -25,10 +25,9 @@ class Speaker(context: Context): TextToSpeech.OnInitListener {
         }
 
         if (ready) {
-            val movie = currentMovie
-            if (movie != null) {
-                currentMovie = null
-                talk(movie)
+            currentRating?.let {
+                currentRating = null
+                talk(it)
             }
         }
     }
@@ -48,10 +47,10 @@ class Speaker(context: Context): TextToSpeech.OnInitListener {
         }
     }
 
-    fun talk(movie: Movie) {
-        movie.takeIf { it.ratings.size > 0 && movie.imdbId != currentMovie?.imdbId }?.run {
-            talk(context.getString(R.string.rating_tts, title, ratings[0].value.split("/")[0]))
-            currentMovie = this
+    fun talk(rating: MovieRating) {
+        rating.takeIf { it.imdbId.isNotEmpty() && it.rating >= 0f && rating.imdbId != currentRating?.imdbId }?.run {
+            talk(context.getString(R.string.rating_tts, title, rating))
+            currentRating = this
         }
     }
 

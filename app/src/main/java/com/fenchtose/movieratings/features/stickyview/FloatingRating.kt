@@ -3,18 +3,18 @@ package com.fenchtose.movieratings.features.stickyview
 import android.content.Context
 import android.support.annotation.ColorInt
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.widgets.RatingBubble
 
 class FloatingRating(private val context: Context) {
 
     val bubble: RatingBubble = RatingBubble(context)
 
-    var movie: Movie? = null
+    var rating: MovieRating? = null
     set(value) {
         field = value
         value?.let {
-            setRating(it.ratings[0].value)
+            setRating(it.rating.toString())
         }
     }
 
