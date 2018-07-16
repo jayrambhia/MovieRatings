@@ -31,6 +31,8 @@ class NetflixReaderService : AccessibilityService() {
     private var title: String? = null
     private val TAG: String = "NetflixReaderService"
 
+    private var isTV: Boolean = false
+
     private var provider: MovieProvider? = null
 
     private var preferences: UserPreferences? = null
@@ -38,6 +40,7 @@ class NetflixReaderService : AccessibilityService() {
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
 //    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR, Constants.PACKAGE_BBC_IPLAYER, Constants.PACKAGE_JIO_TV/*, Constants.PACKAGE_YOUTUBE*//*, BuildConfig.APPLICATION_ID*/)
     private val supportedPackages = Constants.supportedApps.keys
+    private val supportedPackagesTv = Constants.supportedAppsTv.keys
 
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
@@ -63,6 +66,8 @@ class NetflixReaderService : AccessibilityService() {
         historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance!!),
                 DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
                 preferences!!)
+
+        isTV = AccessibilityUtils.isTV(this)
     }
 
     private fun initResources() {
@@ -101,7 +106,7 @@ class NetflixReaderService : AccessibilityService() {
             Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName + ", " + event.action + " ${event.text}, ${event.className}\n$event")
         }
 
-        if (!supportedPackages.contains(event.packageName)) {
+        if (!supportedPackages.contains(event.packageName) && !supportedPackagesTv.contains(event.packageName)) {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && displayer != null && displayer!!.isShowingView
                     && event.packageName != BuildConfig.APPLICATION_ID) {
                 if (System.currentTimeMillis() - lastWindowStateChangeEventTime > WINDOW_STATE_CHANGE_THRESHOLD) {
@@ -121,21 +126,19 @@ class NetflixReaderService : AccessibilityService() {
             title = null
         }
 
+        if (isTV) {
+            checkForTV(event.source)
+        }
+
         val info = event.source
         info?.let {
 
             val isAppEnabled = when (it.packageName) {
                 BuildConfig.APPLICATION_ID -> true
-                /*Constants.PACKAGE_NETFLIX -> preferences?.isAppEnabled(UserPreferences.NETFLIX)
-                Constants.PACKAGE_PRIMEVIDEO -> preferences?.isAppEnabled(UserPreferences.PRIMEVIDEO)
-                Constants.PACKAGE_PLAY_MOVIES_TV -> preferences?.isAppEnabled(UserPreferences.PLAY_MOVIES)
-                Constants.PACKAGE_HOTSTAR -> preferences?.isAppEnabled(UserPreferences.HOTSTAR)
-                Constants.PACKAGE_YOUTUBE -> preferences?.isAppEnabled(UserPreferences.YOUTUBE)
-                Constants.PACKAGE_BBC_IPLAYER -> preferences?.isAppEnabled(UserPreferences.BBC_IPLAYER)*/
-                else -> preferences?.isAppEnabled(it.packageName.toString())
+                else -> preferences?.isAppEnabled(it.packageName.toString()) ?: false
             }
 
-            if (isAppEnabled == null || !isAppEnabled) {
+            if (isAppEnabled) {
                 return@let
             }
 
@@ -144,6 +147,7 @@ class NetflixReaderService : AccessibilityService() {
                 Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_title").filter { it.text != null }.map { it.text }
                 Constants.PACKAGE_PRIMEVIDEO -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/TitleText").filter { it.text != null }.map { it.text }
                 Constants.PACKAGE_PLAY_MOVIES_TV ->  {
+                    checkNodeRecursively(it, 0)
                     val nodes = ArrayList<CharSequence>()
                     if (event.className == "com.google.android.apps.play.movies.mobile.usecase.details.DetailsActivity" && event.text != null) {
                         val text = event.text.toString().replace("[", "").replace("]", "")
@@ -185,6 +189,11 @@ class NetflixReaderService : AccessibilityService() {
                     it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_CINEMA + ":id/tvShowName")
                             .filter { it.text != null }
                             .map { it.text }
+                }
+                Constants.PACKAGE_NETFLIX_TV -> {
+                    Log.d(TAG, "netflix tv $it")
+                    checkNodeRecursively(it, 0)
+                    ArrayList()
                 }
                 else -> {
                     checkNodeRecursively(it, 0)
@@ -269,11 +278,88 @@ class NetflixReaderService : AccessibilityService() {
 //        event.recycle()
     }
 
-    @Suppress("unused")
-    private fun checkNodeRecursively(info: AccessibilityNodeInfo?, level: Int) {
-        if (!BuildConfig.DEBUG) {
+    private fun checkForTV(info: AccessibilityNodeInfo?) {
+        if (info == null) {
             return
         }
+
+        val isAppEnabled = when (info.packageName) {
+            BuildConfig.APPLICATION_ID -> true
+            else -> preferences?.isAppEnabled(info.packageName.toString()) ?: false
+        }
+
+        if (!isAppEnabled) {
+            return
+        }
+
+        val titles = when(info.packageName) {
+            BuildConfig.APPLICATION_ID -> info.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title").filter { info.text != null }.map { info.text }
+            Constants.PACKAGE_NETFLIX_TV -> {
+                checkNodeRecursively(info, 0)
+                ArrayList()
+            }
+            Constants.PACKAGE_PRIMEVIDEO_TV -> {
+                checkNodeRecursively(info, 0)
+                ArrayList()
+            }
+            Constants.PACKAGE_PLAY_MOVIES_TV -> {
+                val titles = ArrayList<String>()
+                info.findAccessibilityNodeInfosByViewId("${Constants.PACKAGE_PLAY_MOVIES_TV}:id/details_overview_description")
+                        ?.takeIf { it.size > 0 }?.first()
+                        ?.run {
+                            findAccessibilityNodeInfosByViewId("${Constants.PACKAGE_PLAY_MOVIES_TV}:id/title")
+                                    ?.takeIf { it.size > 0 }?.first { !it.text.isNullOrBlank() }
+                                    ?.run {
+                                        titles.add(text.toString())
+                                    }
+                        }
+                checkNodeRecursively(info, 0)
+                titles
+            }
+            else -> {
+                checkNodeRecursively(info, 0)
+                ArrayList()
+            }
+        }.distinctBy { it }
+
+        val years: List<CharSequence> = when(info.packageName) {
+            Constants.PACKAGE_PLAY_MOVIES_TV -> {
+                val years = ArrayList<String>()
+                info.findAccessibilityNodeInfosByViewId("${Constants.PACKAGE_PLAY_MOVIES_TV}:id/details_overview_description")
+                        ?.takeIf { it.size > 0 }?.first()
+                        ?.run {
+                            findAccessibilityNodeInfosByViewId("${Constants.PACKAGE_PLAY_MOVIES_TV}:id/release_year")
+                                    ?.takeIf { it.size > 0 }?.first { !it.text.isNullOrBlank() }
+                                    ?.run {
+                                        years.add(text.toString())
+                                    }
+                        }
+                checkNodeRecursively(info, 0)
+                years
+            }
+            else -> {
+                ArrayList()
+            }
+        }.distinctBy { it }
+
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "scraped titles: $titles")
+        }
+
+        if (titles.isNotEmpty()) {
+            titles.first { !it.isNullOrBlank() }
+                    .let {
+                        setMovieTitle(it.toString(), years.takeIf { it.isNotEmpty() }?.first{ !it.isNullOrBlank()}?.toString(), info.packageName.toString())
+                    }
+        }
+
+    }
+
+    @Suppress("unused")
+    private fun checkNodeRecursively(info: AccessibilityNodeInfo?, level: Int) {
+        /*if (!BuildConfig.DEBUG) {
+            return
+        }*/
 
         info?.let {
 

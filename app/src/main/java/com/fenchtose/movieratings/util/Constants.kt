@@ -15,6 +15,11 @@ class Constants {
         val PACKAGE_BBC_IPLAYER = "bbc.iplayer.android"
         val PACKAGE_JIO_TV = "com.jio.jioplay.tv"
         val PACKAGE_JIO_CINEMA = "com.jio.media.ondemand"
+
+        val PACKAGE_NETFLIX_TV = "com.netflix.ninja"
+        val PACKAGE_PRIMEVIDEO_TV = "com.amazon.amazonvideo.livingroom"
+        val PACKAGE_PRIMEVIDEO_TV_NVIDIA = "com.amazon.amazonvideo.livingroom.nvidia"
+
         val APP_SHARE_URL = "https://goo.gl/y3HXVi"
 
         val EXPORT_MOVIES = "movies"
@@ -33,6 +38,13 @@ class Constants {
                 Pair(PACKAGE_HOTSTAR, R.string.settings_hotstar),
                 Pair(PACKAGE_JIO_TV, R.string.settings_jio_tv),
                 Pair(PACKAGE_JIO_CINEMA, R.string.settings_jio_cinema)
+        )
+
+        val supportedAppsTv = hashMapOf(
+                Pair(PACKAGE_NETFLIX_TV, R.string.settings_netflix),
+                Pair(PACKAGE_PLAY_MOVIES_TV, R.string.settings_playmovies),
+                Pair(PACKAGE_PRIMEVIDEO_TV, R.string.settings_primevideo),
+                Pair(PACKAGE_PRIMEVIDEO_TV_NVIDIA, R.string.settings_primevideo)
         )
 
         val SUPPORT_CHANNEL_ID = "support"
