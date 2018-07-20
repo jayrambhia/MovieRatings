@@ -22,7 +22,8 @@ class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, 
         return RecentlyBrowsedPagePresenter(
                 AppRxHooks(),
                 DbRecentlyBrowsedMovieProvider(MovieRatingsApplication.database.movieDao()),
-                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()))
+                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
+                path?.getRouter())
     }
 
     class RecentlyBrowsedPath: RouterPath<RecentlyBrowsedPageFragment>() {

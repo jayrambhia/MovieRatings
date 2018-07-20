@@ -63,6 +63,13 @@ class AppInfoFragment: BaseFragment() {
                     R.string.info_screen_content_with_accessibility
                 else
                     R.string.info_screen_content_no_accessibility)
+
+        view.findViewById<InfoPageBottomView>(R.id.bottom_container).setRouter(path?.getRouter())
+    }
+
+    override fun onDestroyView() {
+        view?.findViewById<InfoPageBottomView>(R.id.bottom_container)?.setRouter(null)
+        super.onDestroyView()
     }
 
     override fun onResume() {

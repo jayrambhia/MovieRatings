@@ -2,7 +2,6 @@ package com.fenchtose.movieratings
 
 import android.app.Application
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
-import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.model.api.provider.MovieProviderModule
 import com.fenchtose.movieratings.model.api.provider.MovieRatingProviderModule
 import com.fenchtose.movieratings.model.db.MovieDb
@@ -10,7 +9,6 @@ import com.fenchtose.movieratings.model.gsonadapters.IntAdapter
 import com.fenchtose.movieratings.util.registerNotificationChannel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.squareup.leakcanary.LeakCanary
 import com.squareup.leakcanary.RefWatcher
 import okhttp3.OkHttpClient
 
@@ -33,7 +31,6 @@ open class MovieRatingsApplication : Application() {
             AnalyticsDispatcher().attachDispatcher("answers", flavorHelper.getAnswersDispatcher())
         }
 
-        var router: Router? = null
         var refWatcher: RefWatcher? = null
 
         val gson: Gson by lazy {

@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.features.searchpage
 
 import android.view.View
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
@@ -17,7 +17,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
 sealed class SearchPresenter(private val provider: MovieProvider,
-                      private val likeStore: LikeStore) : Presenter<SearchPage>() {
+                             private val likeStore: LikeStore,
+                             private val router: Router?) : Presenter<SearchPage>() {
 
     private var currentQuery = ""
     private val data: ArrayList<Movie> = ArrayList()
@@ -145,7 +146,7 @@ sealed class SearchPresenter(private val provider: MovieProvider,
     }
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
-        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
+        router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
     }
 
     override fun saveState() = SearchState(currentQuery, data.map { it -> it } as ArrayList<Movie>, pageNum)
@@ -161,12 +162,13 @@ sealed class SearchPresenter(private val provider: MovieProvider,
         }
     }
 
-    class DefaultPresenter(provider: MovieProvider, likeStore: LikeStore): SearchPresenter(provider, likeStore)
+    class DefaultPresenter(provider: MovieProvider, likeStore: LikeStore, router: Router?): SearchPresenter(provider, likeStore, router)
 
     class AddToCollectionPresenter(provider: MovieProvider,
                                    likeStore: LikeStore,
                                    private val collectionStore: MovieCollectionStore,
-                                   private val collection: MovieCollection): SearchPresenter(provider, likeStore) {
+                                   private val collection: MovieCollection,
+                                   router: Router?): SearchPresenter(provider, likeStore, router) {
 
         fun addToCollection(movie: Movie) {
             val d = collectionStore.isMovieAddedToCollection(collection, movie)

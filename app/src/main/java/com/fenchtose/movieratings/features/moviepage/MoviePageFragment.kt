@@ -73,7 +73,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                 DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()),
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 SettingsPreferences(requireContext()),
-                movie?.imdbId, movie)
+                movie?.imdbId, movie, path?.getRouter())
 
         presenter?.restoreState(path?.restoreState())
 
@@ -94,7 +94,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         collectionsFlexView = MoviePageFlexView(requireContext(), view.findViewById(R.id.collections_flexview),
                 object : MoviePageFlexView.CollectionCallback {
                     override fun onItemClicked(collection: MovieCollection) {
-                        MovieRatingsApplication.router?.go(CollectionPageFragment.CollectionPagePath(collection))
+                        path?.getRouter()?.go(CollectionPageFragment.CollectionPagePath(collection))
                     }
 
                     override fun onAddToCollectionClicked() {
@@ -145,7 +145,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     }
 
     private fun showMovie(movie: Movie) {
-        MovieRatingsApplication.router?.updateTitle(movie.title)
+        path?.getRouter()?.updateTitle(movie.title)
         titleView?.text = movie.title
         genreSection?.setContent(movie.genre)
         if (movie.ratings.size > 0) {

@@ -19,6 +19,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.features.info.InfoPageBottomView
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
@@ -41,14 +42,12 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var recyclerView: RecyclerView? = null
     private var adapter: BaseMovieAdapter? = null
     private var adapterConfig: SearchAdapterConfig? = null
-    private var appInfoContainer: View? = null
+    private var appInfoContainer: InfoPageBottomView? = null
 
     private var presenter: SearchPresenter? = null
 
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
-
-//    private var state: SearchPage.State = SearchPage.State.Default
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,12 +56,12 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             presenter = when(it as SearchPath) {
                 is SearchPath.Default -> SearchPresenter.DefaultPresenter(
                         MovieRatingsApplication.movieProviderModule.movieProvider,
-                        likeStore)
+                        likeStore, path?.getRouter())
                 is SearchPath.AddToCollection -> SearchPresenter.AddToCollectionPresenter(
                         MovieRatingsApplication.movieProviderModule.movieProvider,
                         likeStore,
                         DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
-                        (it as SearchPath.AddToCollection).collection)
+                        (it as SearchPath.AddToCollection).collection, path?.getRouter())
             }
         }
 
@@ -83,6 +82,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
         path?.takeIf { it is SearchPath.Default }?.let {
             appInfoContainer = view.findViewById(R.id.info_page_container)
+            appInfoContainer?.setRouter(it.getRouter())
             view.findViewById<View?>(R.id.settings_view)?.visibility = View.VISIBLE
             view.findViewById<View?>(R.id.credit_view)?.visibility = View.GONE
         }
@@ -167,6 +167,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        appInfoContainer?.setRouter(null)
         presenter?.detachView(this)
         clearButton?.setOnClickListener(null)
         watcher?.let {

@@ -30,7 +30,7 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
         val favoriteProvider = DbFavoriteMovieProvider(dao)
         val likeStore = DbLikeStore.getInstance(MovieRatingsApplication.database.favDao())
         val userPreferences = SettingsPreferences(requireContext())
-        return LikesPresenter(AppRxHooks(), favoriteProvider, likeStore, userPreferences)
+        return LikesPresenter(AppRxHooks(), favoriteProvider, likeStore, userPreferences, path?.getRouter())
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

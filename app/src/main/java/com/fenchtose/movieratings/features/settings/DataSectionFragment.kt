@@ -228,7 +228,7 @@ class DataSectionFragment: BaseFragment() {
     }
 
     private fun importData(uri: Uri) {
-        MovieRatingsApplication.router?.go(ImportDataFragment.ImportDataPath(uri))
+        path?.getRouter()?.go(ImportDataFragment.ImportDataPath(uri))
     }
 
     class DataSettingsPath: RouterPath<DataSectionFragment>() {

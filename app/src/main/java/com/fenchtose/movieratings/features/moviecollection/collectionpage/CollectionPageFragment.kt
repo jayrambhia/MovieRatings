@@ -47,7 +47,8 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 SettingsPreferences(requireContext()),
                 DataFileExporter.newInstance(MovieRatingsApplication.database),
-                path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection })
+                path?.takeIf { it is CollectionPagePath }?.let { (it as CollectionPagePath).collection },
+                path?.getRouter())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -77,7 +78,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
         path?.takeIf { it is CollectionPagePath }
                 ?.let { (it as CollectionPagePath).collection }
-                ?.let { MovieRatingsApplication.router?.updateTitle(it.name) }
+                ?.let { path?.getRouter()?.updateTitle(it.name) }
     }
 
     override fun createAdapterConfig(presenter: CollectionPagePresenter?): BaseMovieAdapter.AdapterConfig {

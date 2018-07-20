@@ -1,11 +1,13 @@
 package com.fenchtose.movieratings.base
 
 import android.view.View
+import com.fenchtose.movieratings.base.router.Router
 
 abstract class RouterPath<T : BaseFragment> {
 
     var fragment: T? = null
-    var savedState: PresenterState? = null
+    private var savedState: PresenterState? = null
+    private var router: Router? = null
 
     private fun createFragment() : T {
         fragment = createFragmentInstance()
@@ -33,6 +35,18 @@ abstract class RouterPath<T : BaseFragment> {
 
     fun clearState() {
         savedState = null
+    }
+
+    fun getRouter(): Router? {
+        return router
+    }
+
+    fun attachRouter(router: Router) {
+        this.router = router
+    }
+
+    fun detach() {
+        this.router = null
     }
 
     abstract fun createFragmentInstance(): T

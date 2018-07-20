@@ -3,8 +3,8 @@ package com.fenchtose.movieratings.features.baselistpage
 import android.support.annotation.CallSuper
 import android.support.annotation.VisibleForTesting
 import android.view.View
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.db.like.LikeStore
@@ -13,8 +13,9 @@ import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
 
 abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
-        private val rxHooks: RxHooks,
-        private val likeStore: LikeStore): Presenter<V>() {
+        protected val rxHooks: RxHooks,
+        private val likeStore: LikeStore,
+        protected val router: Router?): Presenter<V>() {
 
     protected var data: ArrayList<Movie>? = null
 
@@ -60,7 +61,7 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
     }
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
-        MovieRatingsApplication.router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
+        router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
     }
 
     abstract fun load(): Observable<List<Movie>>

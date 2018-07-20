@@ -11,6 +11,7 @@ import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.events.Event
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
@@ -19,7 +20,7 @@ import com.fenchtose.movieratings.util.IntentUtils
 
 class InfoPageBottomView: LinearLayout {
 
-
+    private var router: Router? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -36,7 +37,7 @@ class InfoPageBottomView: LinearLayout {
             premiumView.visibility = View.VISIBLE
             premiumView.setOnClickListener {
                 analytics.sendEvent(Event("go_premium_clicked"))
-                MovieRatingsApplication.router?.go(DonatePageFragment.DonatePath())
+                router?.go(DonatePageFragment.DonatePath())
             }
         }
 
@@ -60,8 +61,12 @@ class InfoPageBottomView: LinearLayout {
 
         val settingsView = findViewById<View?>(R.id.settings_view)
         settingsView?.setOnClickListener {
-            MovieRatingsApplication.router?.go(SettingsFragment.SettingsPath())
+            router?.go(SettingsFragment.SettingsPath())
         }
+    }
+
+    fun setRouter(router: Router?) {
+        this.router = router
     }
 
     private fun showCreditsDialog() {

@@ -2,6 +2,7 @@ package com.fenchtose.movieratings.features.moviecollection
 
 import android.content.Context
 import android.net.Uri
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPage
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPagePresenter
@@ -50,12 +51,15 @@ class CollectionPageTests {
     private val userPreferences: UserPreferences = mock {
         on { getLatestCollectionSort(any()) }.doReturn(Sort.ALPHABETICAL)
     }
+
+    private val router: Router = mock()
+
     private val collection = MovieCollection.create("cool collection")
 
     private val rxHooks = TestRxHooks()
     private val fileUtils = TestFileUtils()
 
-    private var presenter = CollectionPagePresenter(likeStore, rxHooks, fileUtils, provider, store, userPreferences, exporter, collection)
+    private var presenter = CollectionPagePresenter(likeStore, rxHooks, fileUtils, provider, store, userPreferences, exporter, collection, router)
 
     private val m1: Movie = Movie()
     private val m2: Movie = Movie()

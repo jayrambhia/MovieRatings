@@ -5,7 +5,6 @@ import android.support.annotation.IdRes
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
@@ -29,7 +28,7 @@ class SettingsFragment : BaseFragment() {
 
     private fun bindAction(root: View, @IdRes id: Int, path: RouterPath<out BaseFragment>) {
         root.findViewById<View?>(id)?.setOnClickListener {
-            MovieRatingsApplication.router?.go(path)
+            this.path?.getRouter()?.go(path)
         }
     }
 

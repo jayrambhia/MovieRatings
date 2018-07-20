@@ -3,22 +3,23 @@ package com.fenchtose.movieratings.base.router
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.ActionBar
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.features.moviepage.DetailTransition
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import java.util.Stack
 
-class Router(activity: AppCompatActivity) {
+class Router(activity: RouterBaseActivity,
+             private val onMovedTo: (RouterPath<out BaseFragment>) -> Unit,
+             private val onRemoved: (RouterPath<out BaseFragment>) -> Unit) {
 
     private val history: Stack<RouterPath<out BaseFragment>> = Stack()
     private val manager = activity.supportFragmentManager
     private val titlebar: ActionBar? = activity.supportActionBar
-    var callback: RouterCallback? = null
 
     private val keyPathMap: HashMap<String, ((Bundle) -> RouterPath<out BaseFragment>)> = HashMap()
 
@@ -112,6 +113,7 @@ class Router(activity: AppCompatActivity) {
     }
 
     private fun move(path: RouterPath<out BaseFragment>) {
+        path.attachRouter(this)
         val fragment = path.createOrGetFragment()
         val transaction = manager.beginTransaction().replace(R.id.fragment_container, fragment)
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
@@ -129,7 +131,7 @@ class Router(activity: AppCompatActivity) {
             it.setDisplayHomeAsUpEnabled(path.showBackButton())
         }
 
-        callback?.movedTo(path)
+        onMovedTo.invoke(path)
     }
 
     fun updateTitle(title: CharSequence) {
@@ -139,18 +141,14 @@ class Router(activity: AppCompatActivity) {
     private fun moveBack() {
         val path = history.pop()
         path.clearState()
-        callback?.removed(path)
+        path.detach()
+        onRemoved.invoke(path)
         if (!history.empty()) {
             val top = history.peek()
             top?.let {
                 move(top)
             }
         }
-    }
-
-    interface RouterCallback {
-        fun movedTo(path: RouterPath<out BaseFragment>)
-        fun removed(path: RouterPath<out BaseFragment>)
     }
 
     class History {

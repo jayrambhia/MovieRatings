@@ -181,10 +181,10 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
 
     private fun onCollectionSelected(collection: MovieCollection) {
         if (shouldReturnSelection()) {
-            MovieRatingsApplication.router?.onBackRequested()
+            path?.getRouter()?.onBackRequested()
             ResultBus.setResult(CollectionListPagePath.SELECTED_COLLECTION, ResultBus.Result.create(collection))
         } else {
-            MovieRatingsApplication.router?.go(CollectionPageFragment.CollectionPagePath(collection))
+            path?.getRouter()?.go(CollectionPageFragment.CollectionPagePath(collection))
         }
     }
 

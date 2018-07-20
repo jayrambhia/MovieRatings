@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
@@ -58,7 +57,7 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
             viewPager?.adapter = adapter
             viewPager?.currentItem = it.selectedEpisode - 1
             loadImage(it.series.poster)
-            MovieRatingsApplication.router?.updateTitle(it.series.title)
+            path?.getRouter()?.updateTitle(it.series.title)
         }
     }
 

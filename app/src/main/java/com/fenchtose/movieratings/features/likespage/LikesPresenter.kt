@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.likespage
 
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.Sort
@@ -13,7 +14,8 @@ class LikesPresenter(
         rxHooks: RxHooks,
         private val provider: FavoriteMovieProvider,
         private val likeStore: LikeStore,
-        private val userPreferences: UserPreferences) : BaseMovieListPresenter<LikesPage>(rxHooks, likeStore) {
+        private val userPreferences: UserPreferences,
+        router: Router?) : BaseMovieListPresenter<LikesPage>(rxHooks, likeStore, router) {
 
     private var currentSort: Sort = userPreferences.getLatestLikeSort()
         set(value) {

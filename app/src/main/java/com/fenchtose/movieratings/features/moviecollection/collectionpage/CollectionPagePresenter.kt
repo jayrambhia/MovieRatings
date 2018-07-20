@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.features.moviecollection.collectionpage
 import android.net.Uri
 import android.support.annotation.VisibleForTesting
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
@@ -19,14 +20,15 @@ import com.fenchtose.movieratings.util.RxHooks
 import io.reactivex.Observable
 
 class CollectionPagePresenter(likeStore: LikeStore,
-                              private val rxHooks: RxHooks,
+                              rxHooks: RxHooks,
                               private val fileUtils: FileUtils,
                               private val provider: MovieCollectionProvider,
                               private val collectionStore: MovieCollectionStore,
                               private val userPreferences: UserPreferences,
                               private val exporter: DataExporter<Uri>,
-                              private val collection: MovieCollection?
-                              ) : BaseMovieListPresenter<CollectionPage>(rxHooks, likeStore) {
+                              private val collection: MovieCollection?,
+                              router: Router?
+                              ) : BaseMovieListPresenter<CollectionPage>(rxHooks, likeStore, router) {
 
     private var currentSort: Sort = userPreferences.getLatestCollectionSort(collection?.id)
         set(value) {
@@ -136,7 +138,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
 
     fun searchToAddToCollection() {
         collection?.let {
-            MovieRatingsApplication.router?.go(SearchPageFragment.SearchPath.AddToCollection(it))
+            router?.go(SearchPageFragment.SearchPath.AddToCollection(it))
         }
     }
 
