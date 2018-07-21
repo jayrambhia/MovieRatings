@@ -35,7 +35,7 @@ abstract class SimpleStore<State>(initialState: State,
         }
 
         val new = reduce(_state, dispatchToMiddleWare(action))
-        if (_state === new) {
+        if (_state == new) {
             // no updates
             if (BuildConfig.DEBUG) {
                 Log.d("Simple-Store", "no state change for action: $action")
@@ -44,7 +44,7 @@ abstract class SimpleStore<State>(initialState: State,
         }
 
         if (BuildConfig.DEBUG) {
-            Log.d("Simple-Store", "reduce action: $action\nprev state: $_state\nnew state: $new")
+            Log.d("Simple-Store", "reduce action: $action\nprev state: ${_state?.hashCode()}\nnew state: ${new?.hashCode()}")
         }
         _state = new
         subscriptions.forEach { it(_state, ::dispatch) }

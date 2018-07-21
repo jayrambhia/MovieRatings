@@ -13,7 +13,7 @@ fun navigator(state: AppState, action: Action, dispatch: Dispatch, next: Next<Ap
     return when(action) {
         is Navigation -> {
             action.router.go(action.path)
-            return action
+            return action.path.initAction()
         }
 
         else -> next(state, action, dispatch)

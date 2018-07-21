@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.base
 
 import android.view.View
+import com.fenchtose.movieratings.base.redux.Action
+import com.fenchtose.movieratings.base.redux.NoAction
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.router.Router
 
@@ -61,5 +63,7 @@ abstract class RouterPath<T : BaseFragment> {
     open fun category(): String = ""
 
     open fun toolbarElevation(): Int = R.dimen.toolbar_default_elevation
+
+    open fun initAction(): Action = NoAction
 
 }

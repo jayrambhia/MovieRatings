@@ -6,12 +6,16 @@ import android.view.Menu
 import android.view.MenuItem
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.redux.Unsubscribe
+import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
+import com.fenchtose.movieratings.features.searchpage.SearchPageFragment2
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.features.trending.TrendingPath
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
@@ -20,6 +24,9 @@ abstract class RouterBaseActivity: AppCompatActivity() {
 
     private var router: Router? = null
     private var visibleMenuItems: IntArray? = null
+
+    private var dispatch: Dispatch? = null
+    private var unsubscribe: Unsubscribe? = null
 
     protected fun initializeRouter(toolbar: Toolbar? = null,
                                    onMovedTo: (RouterPath<out BaseFragment>) -> Unit = {},
@@ -45,6 +52,16 @@ abstract class RouterBaseActivity: AppCompatActivity() {
             return
         }
         super.onBackPressed()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        unsubscribe = MovieRatingsApplication.store.subscribe { _, dispatch -> this.dispatch = dispatch }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unsubscribe?.invoke()
     }
 
     override fun onDestroy() {
@@ -88,7 +105,9 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     }
 
     private fun showSearchPage() {
-        router?.go(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+        router?.let {
+            dispatch?.invoke(Navigation(it, SearchPageFragment2.SearchPath2.Default(SettingsPreferences(this))))
+        }
     }
 
     private fun showInfoPage(showSearchOption: Boolean) {
@@ -112,8 +131,10 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     }
 
     private fun showMovieCollectionsPage() {
+        router?.let {
+            dispatch?.invoke(Navigation(it, CollectionListPageFragment.CollectionListPagePath(false)))
+        }
         GaEvents.OPEN_COLLECTIONS_PAGE.track()
-        router?.go(CollectionListPageFragment.CollectionListPagePath(false))
     }
 
     private fun showTrendingPage() {

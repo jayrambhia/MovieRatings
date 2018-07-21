@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import android.net.Uri
+import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.model.entity.Movie
 
@@ -8,6 +9,8 @@ interface CollectionPage: BaseMovieListPage {
 
     fun updateState(state: OpState)
     fun updateState(state: ShareState)
+
+    fun getDispatcher(): Dispatch?
 
     sealed class OpState(val movie: Movie) {
         class Removed(movie: Movie, val position: Int): OpState(movie)

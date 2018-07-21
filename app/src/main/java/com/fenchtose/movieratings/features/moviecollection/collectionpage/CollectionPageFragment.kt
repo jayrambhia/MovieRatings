@@ -14,6 +14,7 @@ import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
@@ -66,6 +67,10 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         emptyStateCta?.setOnClickListener {
             presenter?.searchToAddToCollection()
         }
+
+        render({
+            _, _ ->
+        })
     }
 
     override fun updateState(state: BaseMovieListPage.State) {
@@ -212,6 +217,10 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         }
 
         return if (consumed) true else super.onOptionsItemSelected(item)
+    }
+
+    override fun getDispatcher(): Dispatch? {
+        return dispatch
     }
 
     class CollectionPagePath(val collection: MovieCollection) : RouterPath<CollectionPageFragment>() {

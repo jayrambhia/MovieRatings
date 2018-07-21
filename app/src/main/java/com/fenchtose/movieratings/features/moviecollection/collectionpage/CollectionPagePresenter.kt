@@ -3,11 +3,13 @@ package com.fenchtose.movieratings.features.moviecollection.collectionpage
 import android.net.Uri
 import android.support.annotation.VisibleForTesting
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
+import com.fenchtose.movieratings.features.searchpage.SearchPageFragment2
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Sort
@@ -140,13 +142,15 @@ class CollectionPagePresenter(likeStore: LikeStore,
     fun searchToAddToCollection() {
         GaEvents.TAP_SEARCH_FOR_COLLECTION.track()
         collection?.let {
-            router?.go(SearchPageFragment.SearchPath.AddToCollection(it))
+            router?.let {
+                getView()?.getDispatcher()?.invoke(Navigation(it, SearchPageFragment2.SearchPath2.AddToCollection(collection)))
+            }
         }
     }
 
     fun share() {
         collection?.let {
-            val uri = fileUtils.createCacheFile(MovieRatingsApplication.instance!!, "collection_${it.name}.txt")
+            val uri = fileUtils.createCacheFile(MovieRatingsApplication.instance, "collection_${it.name}.txt")
             exporter.exportCollection(uri, it)
         }
     }

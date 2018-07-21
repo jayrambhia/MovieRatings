@@ -5,6 +5,7 @@ import com.fenchtose.movieratings.base.router.navigator
 import com.fenchtose.movieratings.features.searchpage.SearchMiddleWare
 import com.fenchtose.movieratings.features.searchpage.searchPageReducer
 import com.fenchtose.movieratings.model.db.like.LikeMiddleware
+import com.fenchtose.movieratings.model.db.movieCollection.CollectionMiddleware
 
 class AppStore: SimpleStore<AppState>(
         AppState(),
@@ -13,6 +14,7 @@ class AppStore: SimpleStore<AppState>(
                 ::logger,
                 ::navigator,
                 SearchMiddleWare.newInstance()::searchMiddleware,
-                LikeMiddleware.newInstance()::likeMiddleware
+                LikeMiddleware.newInstance()::likeMiddleware,
+                CollectionMiddleware.newInstance()::collectionMiddleware
         )
 )

@@ -12,17 +12,16 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
-import com.fenchtose.movieratings.base.redux.Unsubscribe
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.info.InfoPageBottomView
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.db.like.LikeMovie
+import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
@@ -47,9 +46,6 @@ class SearchPageFragment2: BaseFragment() {
 
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
-
-    private var dispatch: Dispatch? = null
-    private var unsubscribe: Unsubscribe? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.search_page_layout, container, false)
@@ -83,7 +79,7 @@ class SearchPageFragment2: BaseFragment() {
                     }
 
                     override fun onLoadMore() {
-                        dispatch?.invoke(SearchAction.LoadMore)
+                        dispatch?.invoke(SearchAction.LoadMore(path is SearchPath2.AddToCollection))
                     }
                 },
                 createExtraLayoutHelper())
@@ -135,7 +131,7 @@ class SearchPageFragment2: BaseFragment() {
                 .filter { it.length > 2 }
                 .subscribeBy(
                         onNext = {
-                            dispatch?.invoke(SearchAction.Search(it))
+                            dispatch?.invoke(SearchAction.Search(it, path is SearchPath2.AddToCollection))
                         }
                 )
 
@@ -143,17 +139,17 @@ class SearchPageFragment2: BaseFragment() {
         searchView?.addTextChangedListener(watcher)
         this.querySubject = subject
 
-        unsubscribe = MovieRatingsApplication.store.subscribe { state, dispatch ->  render(state.searchPage, dispatch)}
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        unsubscribe?.invoke()
-        this.dispatch = null
+        render({
+            state, dispatch ->
+            if (path is SearchPath2.AddToCollection) {
+                render(state.collectionSearchPage, dispatch)
+            } else {render(state.searchPage, dispatch) }
+        })
     }
 
     private fun render(state: SearchPageState, dispatch: Dispatch) {
         this.dispatch = dispatch
+        searchView?.setText(state.query)
         when(state.progress) {
             is Progress.Default -> {
                 clearData()
@@ -167,11 +163,30 @@ class SearchPageFragment2: BaseFragment() {
             is Progress.Error, is Progress.PaginationError -> showApiError()
 
             is Progress.Success -> {
-                setData(state.movies, state.progress is Progress.Success.Loaded)
+                setData(state.movies)
                 appInfoContainer?.bottomSlide(500)
+                fixScroll(state.progress is Progress.Success.Loaded)
             }
 
             is Progress.Paginating -> adapterConfig?.showLoadingMore(true)
+        }
+    }
+
+    private fun render(state: CollectionSearchPageState, dispatch: Dispatch) {
+        render(state.searchPageState, dispatch)
+        val resId = when(state.collectionProgress) {
+            is CollectionProgress.Default -> 0
+            is CollectionProgress.Exists -> R.string.movie_collection_movie_exists
+            is CollectionProgress.Error -> R.string.movie_collection_movie_error
+            is CollectionProgress.Added -> R.string.movie_collection_movie_added
+        }
+
+        if (resId != 0) {
+            showSnackbar(requireContext().getString(resId, state.collectionProgress.collection))
+            val _path = path
+            if (_path is SearchPageFragment2.SearchPath2.AddToCollection) {
+                dispatch.invoke(CollectionSearchAction.ClearCollectionOp(_path.collection))
+            }
         }
     }
 
@@ -186,11 +201,7 @@ class SearchPageFragment2: BaseFragment() {
         }
     }
 
-    private fun setData(movies: List<Movie>, isFirstPage: Boolean) {
-        showLoading(false)
-        adapter?.data = movies
-        adapter?.notifyDataSetChanged()
-        recyclerView?.visibility = View.VISIBLE
+    private fun fixScroll(isFirstPage: Boolean) {
         recyclerView?.post {
             when(isFirstPage) {
                 true -> recyclerView?.scrollToPosition(0)
@@ -199,8 +210,16 @@ class SearchPageFragment2: BaseFragment() {
         }
     }
 
+    private fun setData(movies: List<Movie>) {
+        showLoading(false)
+        adapter?.data = movies
+        adapter?.notifyDataSetChanged()
+        recyclerView?.visibility = View.VISIBLE
+
+    }
+
     private fun clearQuery() {
-        dispatch?.invoke(SearchAction.Clear)
+        dispatch?.invoke(SearchAction.ClearSearch(path is SearchPath2.AddToCollection))
     }
 
     private fun showLoading(status: Boolean) {
@@ -237,8 +256,9 @@ class SearchPageFragment2: BaseFragment() {
     private fun createAddToCollectionExtraLayout(): SearchItemViewHolder.ExtraLayoutHelper {
         return AddToCollectionMovieLayoutHelper(object : AddToCollectionMovieLayoutHelper.Callback {
             override fun onAddRequested(movie: Movie) {
-                /*presenter?.takeIf { it is SearchPresenter.AddToCollectionPresenter }
-                        ?.let { it as SearchPresenter.AddToCollectionPresenter }?.addToCollection(movie)*/
+                path?.takeIf { it is SearchPath2.AddToCollection }?.let {
+                    dispatch?.invoke(AddToCollection((it as SearchPath2.AddToCollection).collection, movie))
+                }
             }
         })
     }
@@ -248,7 +268,10 @@ class SearchPageFragment2: BaseFragment() {
     }
 
     override fun getScreenTitle(): Int {
-        return R.string.search_page_title
+        return when(path) {
+            is SearchPageFragment2.SearchPath2.AddToCollection -> R.string.search_page_add_to_collection_title
+            else -> R.string.search_page_title
+        }
     }
 
     sealed class SearchPath2: RouterPath<SearchPageFragment2>() {
@@ -276,6 +299,8 @@ class SearchPageFragment2: BaseFragment() {
             }
 
             override fun showBackButton() = true
+
+            override fun initAction() = CollectionSearchAction.InitializeCollectionSearch(collection)
         }
     }
 
