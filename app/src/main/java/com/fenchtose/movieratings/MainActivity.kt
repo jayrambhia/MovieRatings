@@ -16,6 +16,7 @@ import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
+import com.fenchtose.movieratings.features.searchpage.SearchPageFragment2
 import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
@@ -236,7 +237,7 @@ class MainActivity : RouterBaseActivity() {
                 router.buildRoute(AppInfoFragment.AppInfoPath(true))
                 preferences?.setEnabled(UserPreferences.ONBOARDING_SHOWN, true)
             } else {
-                router.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+                router.buildRoute(SearchPageFragment2.SearchPath2.Default(SettingsPreferences(this)))
             }
         }
 

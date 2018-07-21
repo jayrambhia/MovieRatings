@@ -11,4 +11,7 @@ class SearchResult {
 
     @SerializedName("Response")
     var success: Boolean = false
+
+    @SerializedName("Error")
+    var error: String = ""
 }

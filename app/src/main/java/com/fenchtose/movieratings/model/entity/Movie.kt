@@ -2,6 +2,7 @@ package com.fenchtose.movieratings.model.entity
 
 import android.arch.persistence.room.*
 import com.fenchtose.movieratings.model.db.MovieTypeConverter2
+import com.fenchtose.movieratings.util.replace
 import com.google.gson.annotations.SerializedName
 import kotlin.collections.ArrayList
 
@@ -110,7 +111,7 @@ class Movie {
     val appliedPreferences: AppliedPreferences = AppliedPreferences()
 
     override fun toString(): String {
-        return "Movie(id='$id', title='$title', poster='$poster', ratings=$ratings)"
+        return "Movie(id='$id', title='$title', liked='$liked', ratings=$ratings)"
     }
 
     private fun checkValidBase(): Boolean {
@@ -168,4 +169,21 @@ class Rating(@SerializedName("Source") val source: String, @SerializedName("Valu
             return Rating("", "")
         }
     }
+}
+
+fun List<Movie>.hasMovie(movie: Movie): Int {
+    forEachIndexed {
+        index, m -> if (m.imdbId == movie.imdbId) { return index }
+    }
+
+    return -1
+}
+
+fun List<Movie>.updateMovie(movie: Movie): List<Movie> {
+    val index = hasMovie(movie)
+    if (index != -1) {
+        return this.replace(index, movie)
+    }
+
+    return this
 }
