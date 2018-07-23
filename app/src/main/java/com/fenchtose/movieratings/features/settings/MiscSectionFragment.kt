@@ -33,6 +33,7 @@ class MiscSectionFragment: BaseFragment() {
         addAppToggle(preferences, view, R.id.use_year_toggle, UserPreferences.USE_YEAR)
         addAppToggle(preferences, view, R.id.support_review_toggle, UserPreferences.SHOW_RATE_APP_PROMPT)
         addAppToggle(preferences, view, R.id.support_inapp_toggle, UserPreferences.SHOW_SUPPORT_APP_PROMPT)
+        addAppToggle(preferences, view, R.id.api_fallback_toggle, UserPreferences.USE_FLUTTER_API)
 
         val publisher = PublishSubject.create<String>()
         subscribe(publisher

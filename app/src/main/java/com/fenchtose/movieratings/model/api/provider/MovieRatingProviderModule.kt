@@ -4,6 +4,8 @@ import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.util.Constants
 import com.google.gson.Gson
+import okhttp3.Interceptor
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -34,11 +36,21 @@ class MovieRatingProviderModule(val app: MovieRatingsApplication, val gson: Gson
 
     private fun flutterApi(): Retrofit {
         return Retrofit.Builder()
-                .client(app.getOkHttpClient())
+                .client(app.getOkHttpClient(RatingHeaderInterceptor()))
                 .baseUrl(BuildConfig.RATINGS_ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
     }
 
+    class RatingHeaderInterceptor: Interceptor {
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val request = chain.request().newBuilder().addHeader("app-version", BuildConfig.VERSION_NAME)
+                    .addHeader("api-key", BuildConfig.RATINGS_API_KEY)
+                    .build()
+
+            return chain.proceed(request)
+        }
+
+    }
 }

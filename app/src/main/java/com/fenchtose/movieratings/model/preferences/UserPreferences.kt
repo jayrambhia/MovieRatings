@@ -23,6 +23,8 @@ interface UserPreferences {
         val SHOW_SUPPORT_APP_PROMPT = "show_support_app"
         val SHOW_RATE_APP_PROMPT = "show_rate_app"
 
+        val USE_FLUTTER_API = "use_flutter_api"
+
         val OPEN_MOVIE_IN_APP = "open_movie_in_app"
     }
 

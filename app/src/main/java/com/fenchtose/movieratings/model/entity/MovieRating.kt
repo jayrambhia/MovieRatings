@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
+import com.fenchtose.movieratings.util.FixTitleUtils
 import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "MOVIE_RATINGS", indices = arrayOf(Index("IMDBID", unique = true)))
@@ -78,8 +79,17 @@ class MovieRating {
                 rating.imdbId = movie.imdbId
                 rating.title = movie.title
                 rating.type = movie.type
-                rating.startYear = movie.year.toIntOrNull() ?: -1
+
+                val years = FixTitleUtils.splitYears(movie.year)
+                if (years.isNotEmpty()) {
+                    rating.startYear = years[0].toIntOrNull() ?: -1
+                }
+                if (years.size > 1) {
+                    rating.endYear = years[1].toIntOrNull() ?: -1
+                }
+
                 rating.rating = it.value.split("/").firstOrNull()?.toFloatOrNull() ?:0f
+                rating.votes = movie.imdbVotes.replace(",","").toIntOrNull() ?: -1
             }
 
             return rating

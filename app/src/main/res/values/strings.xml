@@ -70,6 +70,8 @@
 	<string name="settings_support_notification_info">Flutter may occasionally send push notifications to ask you to support the app. You may select which notifications you want to receive.</string>
 	<string name="settings_support_inapp_purchase">Support flutter via in-app purchases</string>
 	<string name="settings_support_rate_app">Rate app on Playstore</string>
+	<string name="settings_api_fallback_info">Flutter uses OMDb to get movie ratings, search results, etc. To get accurate ratings for translated titles, we have created our private movie ratings API. It\'s still in beta. If you are facing any problems about getting movie ratings, you may switch back to using OMDb API.</string>
+	<string name="settings_api_fallback">Use Flutter\'s private APIs</string>
 	<string name="settings_install_tts_unsupported">It seems that Text to Speech is not supported by the device.</string>
 	<string name="settings_export_data_dialog_title">Export your data</string>
 	<string name="settings_export_data_dialog_content">Flutter lets you export your data in json format. You may share it with your friends, send yourself a copy for back-up or just keep it on your device.</string>

@@ -35,5 +35,10 @@ class FixTitleUtils {
         fun matchesPlayMoviesYear(year: String): Boolean {
             return PLAY_MOVIES_YEAR_TIME_PATTERN.matches(year)
         }
+
+        fun splitYears(year: String): List<String> {
+            val results = NETFLIX_YEAR_PATTERN.findAll(year)
+            return results.map { it.value }.toList()
+        }
     }
 }

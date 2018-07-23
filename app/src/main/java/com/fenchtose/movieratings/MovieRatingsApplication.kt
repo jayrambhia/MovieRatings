@@ -10,6 +10,7 @@ import com.fenchtose.movieratings.util.registerNotificationChannel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.leakcanary.RefWatcher
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 
 open class MovieRatingsApplication : Application() {
@@ -50,9 +51,15 @@ open class MovieRatingsApplication : Application() {
         }
     }
 
-    open fun getOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder()
-                .build()
+    open fun getOkHttpClient(vararg interceptors: Interceptor): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+        if (interceptors.isNotEmpty()) {
+            for (interceptor in interceptors) {
+                builder.addInterceptor(interceptor)
+            }
+        }
+
+        return builder.build()
     }
 
     override fun onCreate() {

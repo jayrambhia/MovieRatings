@@ -195,7 +195,7 @@ class NetflixReaderService : AccessibilityService() {
             }
 
             val years: List<CharSequence> = when(it.packageName) {
-                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_basic_info").filter { it.text != null }.map { it.text }
+                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_basic_info_year").filter { it.text != null }.map { it.text }
                 Constants.PACKAGE_PRIMEVIDEO -> {
                     it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/ItemMetadataView")
                             // get children of that node
@@ -374,6 +374,7 @@ class NetflixReaderService : AccessibilityService() {
         analytics?.sendEvent(Event("get_movie"))
 
         provider?.let {
+            it.useFlutterApi(preferences?.isAppEnabled(UserPreferences.USE_FLUTTER_API) != false)
             it.getMovieRating(title, year)
                     .debounce(30, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.io())

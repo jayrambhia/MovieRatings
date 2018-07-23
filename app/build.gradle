@@ -11,8 +11,8 @@ Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 ext.versionMajor = 0
-ext.versionMinor = 2
-ext.versionPatch = 9
+ext.versionMinor = 3
+ext.versionPatch = 0
 
 android {
     compileSdkVersion 27
@@ -26,6 +26,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'OMDB_API_KEY', properties['omdb_api_key']
         buildConfigField 'String', 'RATINGS_ENDPOINT', properties['ratings_endpoint']
+        buildConfigField 'String', 'RATINGS_API_KEY', properties['ratings_api_key']
     }
     flavorDimensions "default"
     productFlavors {
