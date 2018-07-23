@@ -5,7 +5,7 @@
 <img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png" width="480px"/>
 </p>
 
-You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.2.9](https://github.com/jayrambhia/MovieRatings/releases/download/v0.2.9/flutter_v0.2.9.apk)
+You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.3.0](https://github.com/jayrambhia/MovieRatings/releases/download/v0.3.0/flutter_v0.3.0.apk)
 
 ## Screenshots of master
 
@@ -30,6 +30,7 @@ To build the project, create `local.properties` in the base directory if it does
 ```
 omdb_api_key=<API_KEY>
 ratings_endpoint=<RATINGS_ENDPOINT>
+ratings_api_key=<RATINGS_API_KEY>
 ```
 
 You can get your API key here - [OMDB API Key](http://www.omdbapi.com/apikey.aspx)
@@ -37,6 +38,8 @@ You can get your API key here - [OMDB API Key](http://www.omdbapi.com/apikey.asp
 If you don't have an API key, you can use `omdb_api_key=""` and the project will use `PreloadedMovieProvider` in debug build. It will return search results for `thor` and `batman` only.
 
 `RATINGS_ENDPOINT` is Flutter's private server to obtain accurate ratings. You may replace it with your own server url. You may keep it as empty string and it will fallback to OMDB api.
+
+`ratings_api_key` should be used as `ratings_api_key=""` as we're not giving out any keys at this moment.
 
 ## Playstore description
 

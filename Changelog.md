@@ -1,5 +1,12 @@
 # Flutter Changelog
 
+### 0.3.0
+
+ - Users can open movie details page directly from Flutter
+ - Settings navigation issue fixed
+ - Flutter's private API to get accurate movie ratings
+ - Fixed Netflix year (accessibility) search
+
 ### 0.2.9
 
  - Updated compile and target sdk to 27
