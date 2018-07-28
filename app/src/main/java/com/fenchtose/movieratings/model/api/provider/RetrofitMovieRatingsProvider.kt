@@ -5,16 +5,21 @@ import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.api.MovieRatingApi
 import com.fenchtose.movieratings.model.db.dao.MovieRatingDao
+import com.fenchtose.movieratings.model.db.movieRatings.MovieRatingStore
 import com.fenchtose.movieratings.model.entity.MovieRating
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 
 class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
                                    omdbRetrofit: Retrofit?,
-                                   val dao: MovieRatingDao): MovieRatingsProvider {
+                                   private val dao: MovieRatingDao,
+                                   private val store: MovieRatingStore): MovieRatingsProvider {
 
     private val flutterApi: MovieRatingApi? = flutterRetrofit?.create(MovieRatingApi::class.java)
     private val omdbApi: MovieApi? = omdbRetrofit?.create(MovieApi::class.java)
+
+    private val threshold = 60
 
     private var useFlutterApi = true
 
@@ -29,6 +34,11 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
                 {
                     Observable.defer {
                         Observable.just(getRatingsFromDb(title, yearInt))
+                    }
+                },
+                {
+                    Observable.defer {
+                        Observable.just(store.was404(title, year, System.currentTimeMillis()/1000 - threshold))
                     }
                 },
                 {
@@ -49,19 +59,27 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
     }
 
     private fun getMovieRating(dbCall: () -> Observable<MovieRating>,
-                              apiCall: () -> Observable<MovieRating>,
-                              analyticsCall: () -> Unit): Observable<MovieRating> {
+                               check404Call: () -> Observable<Boolean>,
+                               apiCall: () -> Observable<MovieRating>,
+                               analyticsCall: () -> Unit): Observable<MovieRating> {
 
         return dbCall().flatMap {
             if (it.imdbId.isNotEmpty()) {
                 Observable.just(it)
             } else {
-                apiCall()
-                        .doOnNext {
-                            analyticsCall.invoke()
-                        }.doOnNext {
-                            dao.insert(it)
-                        }
+                check404Call().flatMap {
+                    if (it) {
+                        Observable.error(Throwable("already 404"))
+                    } else {
+                        apiCall()
+                                .doOnNext {
+                                    analyticsCall.invoke()
+                                }.doOnNext {
+                                    dao.insert(it)
+                                }
+                    }
+                }
+
             }
         }
 
@@ -100,4 +118,16 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
         return ratings.sortedWith(compareByDescending { it.votes }).first()
     }
 
+    override fun report404(title: String, year: String?) {
+        Observable.defer {
+            Observable.just(store.update404(title, year))
+        }
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+
+                }, {
+
+                })
+
+    }
 }

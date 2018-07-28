@@ -23,6 +23,7 @@ import com.fenchtose.movieratings.util.*
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.subjects.PublishSubject
+import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 
 
@@ -418,6 +419,11 @@ class NetflixReaderService : AccessibilityService() {
                             historyPublisher.onNext(request)
                         }
                     }, {
+                        if (it is HttpException) {
+                            if (it.code() == 404) {
+                                update404(request.title, request.year)
+                            }
+                        }
                         it.printStackTrace()
                     })
             /*it.getMovie(title, year)
@@ -446,6 +452,10 @@ class NetflixReaderService : AccessibilityService() {
                     Log.d(TAG, "update history on next")
                     checkForSupportPrompt()
                 }
+    }
+
+    private fun update404(title: String, year: String?) {
+        provider?.report404(title, year)
     }
 
     private fun checkForSupportPrompt() {

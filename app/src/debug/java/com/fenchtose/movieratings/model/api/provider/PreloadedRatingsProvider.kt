@@ -10,6 +10,7 @@ import java.io.ByteArrayOutputStream
 import java.io.IOException
 
 class PreloadedRatingsProvider(private val context: Context): MovieRatingsProvider {
+
     override fun getMovieRating(title: String, year: String?): Observable<MovieRating> {
         val observable = when(title.toLowerCase()) {
             "friends" -> Observable.just(convertToRating(R.raw.friends_rating))
@@ -51,6 +52,10 @@ class PreloadedRatingsProvider(private val context: Context): MovieRatingsProvid
 
 
     override fun useFlutterApi(status: Boolean) {
+        // TODO nothing
+    }
+
+    override fun report404(title: String, year: String?) {
         // TODO nothing
     }
 

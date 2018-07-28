@@ -96,3 +96,18 @@ class MovieRating {
         }
     }
 }
+
+@Entity(tableName = "RATING_NOT_FOUND", indices = arrayOf(Index("TITLE")))
+data class RatingNotFound(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
+
+    @ColumnInfo(name = "TITLE")
+    val title: String,
+
+    @ColumnInfo(name = "YEAR")
+    val year: String = "",
+
+    @ColumnInfo(name = "TIMESTAMP")
+    val timestamp: Long
+)

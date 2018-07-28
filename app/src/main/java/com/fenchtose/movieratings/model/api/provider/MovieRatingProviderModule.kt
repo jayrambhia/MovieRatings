@@ -2,6 +2,7 @@ package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.model.db.movieRatings.DbMovieRatingStore
 import com.fenchtose.movieratings.util.Constants
 import com.google.gson.Gson
 import okhttp3.Interceptor
@@ -19,7 +20,8 @@ class MovieRatingProviderModule(val app: MovieRatingsApplication, val gson: Gson
         val omdbApi: Retrofit? = if (BuildConfig.OMDB_API_KEY.isNotEmpty()) omdbApi() else null
 
         if (flutterApi != null || omdbApi == null) {
-            RetrofitMovieRatingsProvider(flutterApi, omdbApi, dao)
+            RetrofitMovieRatingsProvider(flutterApi, omdbApi, dao,
+                    DbMovieRatingStore.getInstance(dao))
         } else {
             PreloadedRatingsProvider(app)
         }

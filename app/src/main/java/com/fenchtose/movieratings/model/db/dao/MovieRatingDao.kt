@@ -5,6 +5,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import com.fenchtose.movieratings.model.entity.MovieRating
+import com.fenchtose.movieratings.model.entity.RatingNotFound
 
 @Dao
 interface MovieRatingDao {
@@ -16,4 +17,13 @@ interface MovieRatingDao {
 
     @Query("SELECT * FROM MOVIE_RATINGS WHERE TRANSLATED_TITLE like :title")
     fun getRatingsForTranslatedTitle(title: String): List<MovieRating>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(rating: RatingNotFound)
+
+    @Query("SELECT COUNT(id) FROM RATING_NOT_FOUND WHERE TITLE like :title AND TIMESTAMP > :timestamp")
+    fun get404ForTitle(title: String, timestamp: Long): Int
+
+    @Query("SELECT COUNT(id) FROM RATING_NOT_FOUND WHERE TITLE like :title AND TIMESTAMP > :timestamp AND year like :year")
+    fun get404ForTitle(title: String, timestamp: Long, year: String): Int
 }
