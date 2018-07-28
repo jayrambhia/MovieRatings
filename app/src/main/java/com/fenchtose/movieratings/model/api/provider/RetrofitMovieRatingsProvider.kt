@@ -19,6 +19,8 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
     private val flutterApi: MovieRatingApi? = flutterRetrofit?.create(MovieRatingApi::class.java)
     private val omdbApi: MovieApi? = omdbRetrofit?.create(MovieApi::class.java)
 
+    private var lastRequest: RatingRequest? = null
+
     private val threshold = 60
 
     private var useFlutterApi = true
@@ -27,31 +29,37 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
         useFlutterApi = status
     }
 
-    override fun getMovieRating(title: String, year: String?): Observable<MovieRating> {
-        val yearInt = convertYear(year)
+    override fun getMovieRating(request: RatingRequest): Observable<MovieRating> {
+        val yearInt = convertYear(request.year)
 
         return getMovieRating(
                 {
                     Observable.defer {
-                        Observable.just(getRatingsFromDb(title, yearInt))
+                        Observable.just(getRatingsFromDb(request.title, yearInt))
                     }
                 },
                 {
                     Observable.defer {
-                        Observable.just(store.was404(title, year, System.currentTimeMillis()/1000 - threshold))
+                        Observable.just(store.was404(request.title, request.year, System.currentTimeMillis()/1000 - threshold))
                     }
                 },
                 {
-                    if (useFlutterApi && flutterApi != null) {
-                        flutterApi.getMovieRating(title, year)
-                    } else if (omdbApi != null) {
-
-                        omdbApi.getMovieInfo(BuildConfig.OMDB_API_KEY, title, year ?: "")
-                                .map {
-                                    MovieRating.fromMovie(it)
-                                }
+                    if (request == lastRequest) {
+                        Observable.error(Throwable("Same request. ignoring $request"))
                     } else {
-                        Observable.error(Throwable("No API attached"))
+                        lastRequest = request
+                        if (useFlutterApi && flutterApi != null) {
+                            flutterApi.getMovieRating(request.title, request.year)
+                        } else if (omdbApi != null) {
+
+                            omdbApi.getMovieInfo(BuildConfig.OMDB_API_KEY, request.title, request.year
+                                    ?: "")
+                                    .map {
+                                        MovieRating.fromMovie(it)
+                                    }
+                        } else {
+                            Observable.error(Throwable("No API attached"))
+                        }
                     }
                 },
                 {}

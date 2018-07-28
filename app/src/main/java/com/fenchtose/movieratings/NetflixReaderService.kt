@@ -12,6 +12,7 @@ import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.features.tts.Speaker
 import com.fenchtose.movieratings.model.api.provider.MovieRatingsProvider
+import com.fenchtose.movieratings.model.api.provider.RatingRequest
 import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
 import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
@@ -72,7 +73,18 @@ class NetflixReaderService : AccessibilityService() {
         myScheduler = AndroidSchedulers.from(Looper.myLooper())
 
         requestPublisher = PublishSubject.create()
-        requestPublisher.debounce(60, TimeUnit.MILLISECONDS)
+        requestPublisher
+                .doOnNext {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "get movie info: $it, ${System.currentTimeMillis()}")
+                    }
+                }
+                .debounce(60, TimeUnit.MILLISECONDS)
+                .doOnNext {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "get movie info after debounce: $it, ${System.currentTimeMillis()}")
+                    }
+                }
                 .observeOn(myScheduler)
                 .subscribe({
                     getMovieInfo(it)
@@ -410,7 +422,7 @@ class NetflixReaderService : AccessibilityService() {
 
         provider?.let {
             it.useFlutterApi(preferences?.isAppEnabled(UserPreferences.USE_FLUTTER_API) != false)
-            it.getMovieRating(request.title, request.year)
+            it.getMovieRating(request)
                     .subscribeOn(Schedulers.io())
                     .observeOn(myScheduler)
                     .subscribe({
@@ -507,5 +519,3 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 }
-
-data class RatingRequest(val title: String, val year: String?, val appName: String)

@@ -21,7 +21,7 @@ interface MovieRatingDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(rating: RatingNotFound)
 
-    @Query("SELECT COUNT(id) FROM RATING_NOT_FOUND WHERE TITLE like :title AND TIMESTAMP > :timestamp")
+    @Query("SELECT COUNT(id) FROM RATING_NOT_FOUND WHERE TITLE like :title AND TIMESTAMP > :timestamp AND year = ''")
     fun get404ForTitle(title: String, timestamp: Long): Int
 
     @Query("SELECT COUNT(id) FROM RATING_NOT_FOUND WHERE TITLE like :title AND TIMESTAMP > :timestamp AND year like :year")

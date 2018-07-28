@@ -11,12 +11,12 @@ import java.io.IOException
 
 class PreloadedRatingsProvider(private val context: Context): MovieRatingsProvider {
 
-    override fun getMovieRating(title: String, year: String?): Observable<MovieRating> {
-        val observable = when(title.toLowerCase()) {
+    override fun getMovieRating(request: RatingRequest): Observable<MovieRating> {
+        val observable = when(request.title.toLowerCase()) {
             "friends" -> Observable.just(convertToRating(R.raw.friends_rating))
             "thor" -> Observable.just(convertToRating(R.raw.thor_rating))
             "batman begins" -> Observable.just(convertToRating(R.raw.batman_begins_rating))
-            else -> Observable.error(Throwable("PreloadedRatingProvider does not support this search: $title"))
+            else -> Observable.error(Throwable("PreloadedRatingProvider does not support this search: $request.title"))
         }
 
         return Observable.defer {
