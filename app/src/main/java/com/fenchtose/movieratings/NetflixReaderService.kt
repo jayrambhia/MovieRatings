@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings
 
 import android.accessibilityservice.AccessibilityService
+import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
@@ -20,6 +21,7 @@ import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.*
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -51,6 +53,10 @@ class NetflixReaderService : AccessibilityService() {
 
     private var resourceRemover: PublishSubject<Boolean>? = null
 
+    private lateinit var requestPublisher: PublishSubject<RatingRequest>
+    private lateinit var historyPublisher: PublishSubject<RatingRequest>
+    private lateinit var myScheduler: Scheduler
+
     override fun onCreate() {
         super.onCreate()
 
@@ -61,6 +67,32 @@ class NetflixReaderService : AccessibilityService() {
         historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance!!),
                 DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
                 preferences!!)
+
+        myScheduler = AndroidSchedulers.from(Looper.myLooper())
+
+        requestPublisher = PublishSubject.create()
+        requestPublisher.debounce(60, TimeUnit.MILLISECONDS)
+                .observeOn(myScheduler)
+                .subscribe({
+                    getMovieInfo(it)
+                },{
+                    it.printStackTrace()
+                })
+
+        historyPublisher = PublishSubject.create()
+        historyPublisher.debounce(1000, TimeUnit.MILLISECONDS)
+                .observeOn(myScheduler)
+                .subscribe({
+                    updateHistory(it.title, it.appName)
+                }, {
+                    it.printStackTrace()
+                })
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        requestPublisher.onComplete()
+        historyPublisher.onComplete()
     }
 
     private fun initResources() {
@@ -90,6 +122,7 @@ class NetflixReaderService : AccessibilityService() {
             speaker = null
             resourceRemover?.onComplete()
             resourceRemover = null
+            System.gc()
         }
     }
 
@@ -320,7 +353,7 @@ class NetflixReaderService : AccessibilityService() {
     override fun onInterrupt() {
     }
 
-    private fun setMovieTitle(text: String, year: String?, packageName: String) {
+    private fun setMovieTitle(text: String, year: String?, appName: String) {
 
         // When the third condition is added, it could work better but could also be annoying because
         // event when the user scrolls, this would be triggered. This is just for Netflix because they
@@ -334,11 +367,12 @@ class NetflixReaderService : AccessibilityService() {
 
             displayer?.removeView()
 
-            if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) {
-                getMovieInfo(text, year, packageName)
-            } else {
-                getMovieInfo(text, null, packageName)
-            }
+            val request = RatingRequest(
+                    title = text,
+                    appName = appName,
+                    year = if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) year else null)
+
+            requestPublisher.onNext(request)
         }
     }
 
@@ -368,21 +402,20 @@ class NetflixReaderService : AccessibilityService() {
         return ""
     }
 
-    private fun getMovieInfo(title: String, year: String?, packageName: String) {
+    private fun getMovieInfo(request: RatingRequest) {
         initResources()
 
         analytics?.sendEvent(Event("get_movie"))
 
         provider?.let {
             it.useFlutterApi(preferences?.isAppEnabled(UserPreferences.USE_FLUTTER_API) != false)
-            it.getMovieRating(title, year)
-                    .debounce(30, TimeUnit.MILLISECONDS)
+            it.getMovieRating(request.title, request.year)
                     .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(myScheduler)
                     .subscribe({
                         if (it.imdbId.isNotEmpty()) {
                             showRating(it)
-                            updateHistory(it.imdbId, packageName)
+                            historyPublisher.onNext(request)
                         }
                     }, {
                         it.printStackTrace()
@@ -401,14 +434,14 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 
-    private fun updateHistory(imdbId: String, packageName: String) {
-        Observable.just(Pair(imdbId, packageName))
-                .debounce(1000, TimeUnit.MILLISECONDS)
+    private fun updateHistory(imdbId: String, appName: String) {
+        Observable.just(Pair(imdbId, appName))
+                .subscribeOn(Schedulers.io())
                 .doOnNext {
                     Log.d(TAG, "update history")
-                    historyKeeper?.ratingDisplayed(imdbId, packageName)
+                    historyKeeper?.ratingDisplayed(imdbId, appName)
                 }
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(myScheduler)
                 .subscribe {
                     Log.d(TAG, "update history on next")
                     checkForSupportPrompt()
@@ -464,3 +497,5 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 }
+
+data class RatingRequest(val title: String, val year: String?, val appName: String)
