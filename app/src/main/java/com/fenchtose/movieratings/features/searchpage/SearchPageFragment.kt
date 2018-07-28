@@ -3,7 +3,6 @@ package com.fenchtose.movieratings.features.searchpage
 import android.os.Bundle
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager.VERTICAL
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -13,20 +12,21 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
-import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.info.InfoPageBottomView
+import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
+import com.fenchtose.movieratings.model.db.like.LikeMovie
+import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
-import com.fenchtose.movieratings.model.db.like.DbLikeStore
-import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.bottomSlide
@@ -36,7 +36,7 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
-class SearchPageFragment : BaseFragment(), SearchPage {
+class SearchPageFragment: BaseFragment() {
 
     private var progressbar: ProgressBar? = null
     private var attributeView: TextView? = null
@@ -47,29 +47,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private var adapterConfig: SearchAdapterConfig? = null
     private var appInfoContainer: InfoPageBottomView? = null
 
-    private var presenter: SearchPresenter? = null
-
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val likeStore = DbLikeStore.getInstance(MovieRatingsApplication.database.favDao())
-        path?.let {
-            presenter = when(it as SearchPath) {
-                is SearchPath.Default -> SearchPresenter.DefaultPresenter(
-                        MovieRatingsApplication.movieProviderModule.movieProvider,
-                        likeStore, path?.getRouter())
-                is SearchPath.AddToCollection -> SearchPresenter.AddToCollectionPresenter(
-                        MovieRatingsApplication.movieProviderModule.movieProvider,
-                        likeStore,
-                        DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
-                        (it as SearchPath.AddToCollection).collection, path?.getRouter())
-            }
-        }
-
-        presenter?.restoreState(path?.restoreState())
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.search_page_layout, container, false)
@@ -83,7 +62,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         searchView = view.findViewById(R.id.search_view)
         clearButton = view.findViewById(R.id.clear_button)
 
-        path?.takeIf { it is SearchPath.Default }?.let {
+        path?.takeIf { it is SearchPageFragment.SearchPath.Default }?.let {
             appInfoContainer = view.findViewById(R.id.info_page_container)
             appInfoContainer?.setRouter(it.getRouter(), it.category())
             view.findViewById<View?>(R.id.settings_view)?.visibility = View.VISIBLE
@@ -92,21 +71,23 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
         val adapterConfig = SearchAdapterConfig(GlideLoader(Glide.with(this)),
                 object: SearchAdapterConfig.SearchCallback {
-                        override fun onLiked(movie: Movie) {
-                            presenter?.setLiked(movie)
-                            GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
-                        }
+                    override fun onLiked(movie: Movie) {
+                        GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
+                        dispatch?.invoke(LikeMovie(movie, !movie.liked))
+                    }
 
-                        override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                            presenter?.openMovie(movie, sharedElement)
-                            GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
+                    override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
+                        GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
+                        path?.getRouter()?.let {
+                            dispatch?.invoke(Navigation(it, MoviePageFragment.MoviePath(movie, sharedElement)))
                         }
+                    }
 
-                        override fun onLoadMore() {
-                            presenter?.loadMore()
-                        }
-                    },
-                    createExtraLayoutHelper())
+                    override fun onLoadMore() {
+                        dispatch?.invoke(SearchAction.LoadMore(path is SearchPath.AddToCollection))
+                    }
+                },
+                createExtraLayoutHelper())
 
         val adapter = BaseMovieAdapter(requireContext(), adapterConfig)
         adapterConfig.adapter = adapter
@@ -115,14 +96,12 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
         recyclerView?.let {
             it.adapter = adapter
-            it.layoutManager = StaggeredGridLayoutManager(2, VERTICAL)
+            it.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             it.visibility = View.GONE
         }
 
         this.adapter = adapter
         this.adapterConfig = adapterConfig
-
-        presenter?.attachView(this)
 
         clearButton?.setOnClickListener {
             clearQuery()
@@ -158,96 +137,98 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                 .filter { it.length > 2 }
                 .subscribeBy(
                         onNext = {
-                            presenter?.onSearchRequested(it)
+                            dispatch?.invoke(SearchAction.Search(it, path is SearchPath.AddToCollection))
                         }
                 )
 
         subscribe(d)
         searchView?.addTextChangedListener(watcher)
         this.querySubject = subject
+
+        render({
+            state, dispatch ->
+            if (path is SearchPath.AddToCollection) {
+                render(state.collectionSearchPage, dispatch)
+            } else {render(state.searchPage, dispatch) }
+        })
     }
 
-    override fun saveState(): PresenterState? {
-        return presenter?.saveState()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        appInfoContainer?.setRouter(null, null)
-        presenter?.detachView(this)
-        clearButton?.setOnClickListener(null)
-        watcher?.let {
-            searchView?.removeTextChangedListener(it)
-            watcher = null
-        }
-        querySubject?.onComplete()
-        recyclerView?.adapter = null
-        adapter = null
-        adapterConfig = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        MovieRatingsApplication.refWatcher?.watch(this)
-    }
-
-    override fun canGoBack(): Boolean {
-        return true
-    }
-
-    override fun getScreenTitle(): Int {
-        path?.takeIf { it is SearchPath }?.let {
-            return when(it as SearchPath) {
-                is SearchPath.Default -> R.string.search_page_title
-                is SearchPath.AddToCollection -> R.string.search_page_add_to_collection_title
-            }
-        }
-        return R.string.search_page_title
-    }
-
-    override fun screenName(): String {
-        path?.takeIf { it is SearchPath }?.let {
-            return when(it as SearchPath) {
-                is SearchPath.Default -> GaScreens.SEARCH
-                is SearchPath.AddToCollection -> GaScreens.COLLECTION_SEARCH
-            }
+    private fun render(state: SearchPageState, dispatch: Dispatch) {
+        this.dispatch = dispatch
+        if (state.query != searchView?.text?.toString()) {
+            searchView?.setText(state.query)
         }
 
-        return GaScreens.SEARCH
-    }
-
-    override fun updateState(state: SearchPage.State) {
-//        if (this.state == state) {
-//            return
-//        }
-
-        when (state) {
-            is SearchPage.State.Default -> {
-                clearQuery()
+        when(state.progress) {
+            is Progress.Default -> {
+                clearData()
             }
-            is SearchPage.State.Loading -> {
+
+            is Progress.Loading -> {
                 showLoading(true)
                 appInfoContainer?.bottomSlide(500)
             }
-            is SearchPage.State.Loaded -> {
-                setData(state)
+
+            is Progress.Error, is Progress.PaginationError -> showApiError()
+
+            is Progress.Success -> {
+                setData(state.movies)
                 appInfoContainer?.bottomSlide(500)
+                fixScroll(state.progress is Progress.Success.Loaded)
             }
-            is SearchPage.State.NoResult -> showNoResultError()
-            is SearchPage.State.Error -> showApiError()
-            is SearchPage.State.LoadingMore -> adapterConfig?.showLoadingMore(true)
-            is SearchPage.State.PaginationError -> showApiError()
+
+            is Progress.Paginating -> adapterConfig?.showLoadingMore(true)
         }
     }
 
-    override fun updateState(state: SearchPage.CollectionState) {
-        val resId = when(state) {
-            is SearchPage.CollectionState.Exists -> R.string.movie_collection_movie_exists
-            is SearchPage.CollectionState.Added -> R.string.movie_collection_movie_added
-            is SearchPage.CollectionState.Error -> R.string.movie_collection_movie_error
+    private fun render(state: CollectionSearchPageState, dispatch: Dispatch) {
+        render(state.searchPageState, dispatch)
+        val resId = when(state.collectionProgress) {
+            is CollectionProgress.Default -> 0
+            is CollectionProgress.Exists -> R.string.movie_collection_movie_exists
+            is CollectionProgress.Error -> R.string.movie_collection_movie_error
+            is CollectionProgress.Added -> R.string.movie_collection_movie_added
         }
 
-        showSnackbar(requireContext().getString(resId, state.collection.name))
+        if (resId != 0) {
+            showSnackbar(requireContext().getString(resId, state.collectionProgress.collection))
+            val _path = path
+            if (_path is SearchPageFragment.SearchPath.AddToCollection) {
+                dispatch.invoke(CollectionSearchAction.ClearCollectionOp(_path.collection))
+            }
+        }
+    }
+
+    private fun clearData() {
+        showLoading(false)
+        appInfoContainer?.slideUp(500)
+        clearButton?.visibility = View.GONE
+        adapter?.data = ArrayList()
+        adapter?.notifyDataSetChanged()
+        recyclerView?.post {
+            recyclerView?.visibility = View.GONE
+        }
+    }
+
+    private fun fixScroll(isFirstPage: Boolean) {
+        recyclerView?.post {
+            when(isFirstPage) {
+                true -> recyclerView?.scrollToPosition(0)
+                false -> adapterConfig?.showLoadingMore(false)
+            }
+        }
+    }
+
+    private fun setData(movies: List<Movie>) {
+        showLoading(false)
+        adapter?.data = movies
+        adapter?.notifyDataSetChanged()
+        recyclerView?.visibility = View.VISIBLE
+
+    }
+
+    private fun clearQuery() {
+        dispatch?.invoke(SearchAction.ClearSearch(path is SearchPath.AddToCollection))
     }
 
     private fun showLoading(status: Boolean) {
@@ -261,77 +242,61 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         }
     }
 
-    private fun showNoResultError() {
-        showLoading(false)
-        adapterConfig?.showLoadingMore(false)
-        showSnackbar(R.string.search_page_empty_result)
-    }
-
     private fun showApiError() {
         showLoading(false)
         adapterConfig?.showLoadingMore(false)
         showSnackbarWithAction(requireContext().getString(R.string.search_page_api_error_content),
                 R.string.search_page_try_again_cta,
                 View.OnClickListener {
-                    presenter?.retrySearch()
+                    dispatch?.invoke(SearchAction.Reload(searchView?.text?.toString()?: "", path is SearchPath.AddToCollection))
                 })
     }
 
-    private fun setData(state: SearchPage.State.Loaded) {
-        showLoading(false)
-        adapter?.data?.clear()
-        adapter?.data?.addAll(state.movies)
-        adapter?.notifyDataSetChanged()
-        recyclerView?.post {
-            when(state) {
-                is SearchPage.State.Loaded.PaginationSuccess -> adapterConfig?.showLoadingMore(false)
-                is SearchPage.State.Loaded.Restored -> {}
-                is SearchPage.State.Loaded.Success -> recyclerView?.scrollToPosition(0)
-            }
-        }
-        recyclerView?.visibility = View.VISIBLE
-    }
-
-    private fun clearQuery() {
-        clearData()
-        showLoading(false)
-        appInfoContainer?.slideUp(500)
-        presenter?.onQueryCleared()
-        clearButton?.visibility = View.GONE
-    }
-
-    private fun clearData() {
-        adapter?.data?.clear()
-        adapter?.notifyDataSetChanged()
-        recyclerView?.post {
-            recyclerView?.visibility = View.GONE
-        }
-    }
-
     private fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? {
-        presenter?.let {
-            return when(it) {
-                is SearchPresenter.DefaultPresenter -> null
-                is SearchPresenter.AddToCollectionPresenter -> {
-                    return ::createAddToCollectionExtraLayout
-                }
+        return when(path) {
+            is SearchPath.AddToCollection -> {
+                return ::createAddToCollectionExtraLayout
             }
+
+            else -> null
         }
-        return null
     }
 
     private fun createAddToCollectionExtraLayout(): SearchItemViewHolder.ExtraLayoutHelper {
         return AddToCollectionMovieLayoutHelper(object : AddToCollectionMovieLayoutHelper.Callback {
             override fun onAddRequested(movie: Movie) {
-                GaEvents.ADD_TO_COLLECTION.withCategory(path?.category()).track()
-                presenter?.takeIf { it is SearchPresenter.AddToCollectionPresenter }
-                                ?.let { it as SearchPresenter.AddToCollectionPresenter }?.addToCollection(movie)
+                path?.takeIf { it is SearchPath.AddToCollection }?.let {
+                    dispatch?.invoke(AddToCollection((it as SearchPath.AddToCollection).collection, movie))
+                }
             }
         })
     }
 
+    override fun canGoBack(): Boolean {
+        return true
+    }
+
+    override fun getScreenTitle(): Int {
+        return when(path) {
+            is SearchPageFragment.SearchPath.AddToCollection -> R.string.search_page_add_to_collection_title
+            else -> R.string.search_page_title
+        }
+    }
+
+    override fun screenName(): String {
+        path?.takeIf { it is SearchPath }?.let {
+            return when(it as SearchPath) {
+                is SearchPath.Default -> GaScreens.SEARCH
+                is SearchPath.AddToCollection -> GaScreens.COLLECTION_SEARCH
+            }
+        }
+
+        return GaScreens.SEARCH
+    }
+
     sealed class SearchPath: RouterPath<SearchPageFragment>() {
-        class Default(private val preferences: UserPreferences): SearchPath() {
+
+        class Default(private val preferences: UserPreferences): SearchPageFragment.SearchPath() {
             override fun createFragmentInstance(): SearchPageFragment {
                 return SearchPageFragment()
             }
@@ -350,7 +315,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             override fun category() = GaCategory.SEARCH
         }
 
-        class AddToCollection(val collection: MovieCollection): SearchPath() {
+        class AddToCollection(val collection: MovieCollection): SearchPageFragment.SearchPath() {
             override fun createFragmentInstance(): SearchPageFragment {
                 return SearchPageFragment()
             }
@@ -358,6 +323,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             override fun showBackButton() = true
 
             override fun category() = GaCategory.COLLECTION_SEARCH
+
+            override fun initAction() = CollectionSearchAction.InitializeCollectionSearch(collection)
         }
     }
 

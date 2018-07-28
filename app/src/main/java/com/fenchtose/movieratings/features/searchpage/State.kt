@@ -60,6 +60,7 @@ sealed class SearchAction(val addToCollection: Boolean): Action {
     class Search(val query: String, addToCollection: Boolean): SearchAction(addToCollection)
     class LoadMore(addToCollection: Boolean): SearchAction(addToCollection)
     class Result(val progress: Progress, addToCollection: Boolean): SearchAction(addToCollection)
+    class Reload(val query: String, addToCollection: Boolean): SearchAction(addToCollection)
 }
 
 sealed class CollectionSearchAction(val collection: MovieCollection): Action {
@@ -96,6 +97,7 @@ private fun reduce(state: SearchPageState, action: Action): SearchPageState {
                 }
                 is SearchAction.ClearSearch -> SearchPageState()
                 is SearchAction.LoadMore -> state // NO-OP
+                is SearchAction.Reload -> state // NO-OP
             }
         }
         is MovieLiked -> {
@@ -172,6 +174,15 @@ class SearchMiddleWare(private val provider: MovieProvider,
             is SearchAction.LoadMore -> {
                 makeApiCall(state.searchPage.query, state.searchPage.page + 1, action.addToCollection, dispatch)
                 SearchAction.Result(Progress.Paginating, action.addToCollection)
+            }
+
+            is SearchAction.Reload -> {
+                if (action.query.isBlank()) {
+                    NoAction
+                } else {
+                    makeApiCall(action.query, 1, action.addToCollection, dispatch)
+                    SearchAction.Result(Progress.Loading(action.query), action.addToCollection)
+                }
             }
 
             else -> next(state, action, dispatch)

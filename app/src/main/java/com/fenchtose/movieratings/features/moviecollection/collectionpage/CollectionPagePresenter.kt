@@ -9,7 +9,6 @@ import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
-import com.fenchtose.movieratings.features.searchpage.SearchPageFragment2
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Sort
@@ -143,7 +142,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
         GaEvents.TAP_SEARCH_FOR_COLLECTION.track()
         collection?.let {
             router?.let {
-                getView()?.getDispatcher()?.invoke(Navigation(it, SearchPageFragment2.SearchPath2.AddToCollection(collection)))
+                getView()?.getDispatcher()?.invoke(Navigation(it, SearchPageFragment.SearchPath.AddToCollection(collection)))
             }
         }
     }

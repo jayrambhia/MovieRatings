@@ -15,7 +15,6 @@ import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
-import com.fenchtose.movieratings.features.searchpage.SearchPageFragment2
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.features.trending.TrendingPath
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
@@ -106,7 +105,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
 
     private fun showSearchPage() {
         router?.let {
-            dispatch?.invoke(Navigation(it, SearchPageFragment2.SearchPath2.Default(SettingsPreferences(this))))
+            dispatch?.invoke(Navigation(it, SearchPageFragment.SearchPath.Default(SettingsPreferences(this))))
         }
     }
 
