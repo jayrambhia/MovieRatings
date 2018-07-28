@@ -21,7 +21,7 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
 
     private var lastRequest: RatingRequest? = null
 
-    private val threshold = 60
+    private val threshold = 7 * 24 * 3600 // 7 days
 
     private var useFlutterApi = true
 
