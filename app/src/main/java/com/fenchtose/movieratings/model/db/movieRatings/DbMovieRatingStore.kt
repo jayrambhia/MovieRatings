@@ -26,7 +26,7 @@ class DbMovieRatingStore private constructor(private val dao: MovieRatingDao): M
     }
 
     override fun was404(title: String, year: String?, timestamp: Long): Boolean {
-        val count = if (year == null || year.isNotEmpty()) {
+        val count = if (year == null || year.isEmpty()) {
             dao.get404ForTitle(title, timestamp)
         } else {
             dao.get404ForTitle(title, timestamp, year)

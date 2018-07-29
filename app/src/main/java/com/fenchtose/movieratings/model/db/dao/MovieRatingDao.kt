@@ -22,8 +22,8 @@ interface MovieRatingDao {
     fun insert(rating: RatingNotFound)
 
     @Query("SELECT COUNT(id) FROM RATING_NOT_FOUND WHERE TITLE like :title AND TIMESTAMP > :timestamp AND year = ''")
-    fun get404ForTitle(title: String, timestamp: Long): Int
+    fun get404ForTitle(title: String, timestamp: Long): Long
 
-    @Query("SELECT COUNT(id) FROM RATING_NOT_FOUND WHERE TITLE like :title AND TIMESTAMP > :timestamp AND year like :year")
-    fun get404ForTitle(title: String, timestamp: Long, year: String): Int
+    @Query("SELECT COUNT(id) FROM RATING_NOT_FOUND WHERE TITLE like :title AND TIMESTAMP > :timestamp AND year = :year")
+    fun get404ForTitle(title: String, timestamp: Long, year: String): Long
 }
