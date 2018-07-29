@@ -1,5 +1,12 @@
 # Flutter Changelog
 
+### 0.3.1
+
+ - Make less API calls
+ - Handle and store 404 errors
+ - Catch IllegalStateException error
+ - Recycle nodes after the usage
+
 ### 0.3.0
 
  - Users can open movie details page directly from Flutter
