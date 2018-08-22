@@ -309,7 +309,7 @@ class NetflixReaderService : AccessibilityService() {
                     val nodes = ArrayList<CharSequence>()
                     it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PLAY_MOVIES_TV + ":id/play_header_listview")
                             .takeIf { it.size > 0 }
-                            ?.first()
+                            ?.firstOrNull()
                             ?.run {
                                 (0 until childCount).map {
                                     i -> getChild(i)
@@ -352,19 +352,17 @@ class NetflixReaderService : AccessibilityService() {
                 else -> ArrayList()
             }.distinctBy { it }
 
-            if (titles.isNotEmpty()) {
-                titles.first { it != null && it.isNotBlank() }
-                        .let {
-                            setMovieTitle(
-                                    fixTitle(info.packageName, it.toString()),
-                                    years.takeIf { it.isNotEmpty() }?.first()?.let {
-                                        fixYear(info.packageName, it.toString())
-                                    },
-                                    event.packageName.toString()
-                            )
-                        }
+            titles.firstOrNull { it != null && it.isNotBlank() }
+                    ?.let {
+                        setMovieTitle(
+                                fixTitle(info.packageName, it.toString()),
+                                years.takeIf { it.isNotEmpty() }?.firstOrNull()?.let {
+                                    fixYear(info.packageName, it.toString())
+                                },
+                                event.packageName.toString()
+                        )
+                    }
 
-            }
         }
 
 //        event.recycle()
