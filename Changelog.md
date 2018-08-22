@@ -1,5 +1,9 @@
 # Flutter Changelog
 
+# 0.3.2
+
+ - Fix `NoSuchElement` crash
+
 ### 0.3.1
 
  - Make less API calls
