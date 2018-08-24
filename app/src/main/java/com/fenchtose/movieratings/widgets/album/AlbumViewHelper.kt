@@ -25,11 +25,23 @@ class AlbumViewHelper(private val view: ImageView, private val strategy: AlbumSt
     private var height = 0
     private var disposable: Disposable? = null
 
+    private val currentImages = HashSet<String>()
+
     fun loadImages(images: List<String>, imageLoader: ImageLoader) {
+        // check if images are different.
+        if (currentImages == images.filter { it != null && it.isNotEmpty() && it != "N/A" }.toHashSet()) {
+            // same images.
+            return
+        }
+
         clear()
 
-        for (image in images.filter { it != null && it.isNotEmpty() && it != "N/A" }) {
-            imageSet.add(image)
+        images.filter { it != null && it.isNotEmpty() && it != "N/A" }
+                .toCollection(imageSet)
+
+        currentImages.addAll(imageSet)
+
+        for (image in currentImages) {
             imageLoader.loadImage(image, view, object: ImageLoader.SelfLoaderCallback {
                 override fun imageLoaded(image: String, view: ImageView, resource: Drawable) {
                     imageSet.remove(image)
@@ -46,6 +58,7 @@ class AlbumViewHelper(private val view: ImageView, private val strategy: AlbumSt
     }
 
     private fun clear() {
+        currentImages.clear()
         imageSet.clear()
         resources.clear()
         isReady = false

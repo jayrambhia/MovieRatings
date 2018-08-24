@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.ResultBus
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
@@ -46,6 +47,7 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
                 DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
                 DataFileExporter.newInstance(MovieRatingsApplication.database))
         setHasOptionsMenu(true)
+        presenter?.restoreState(path?.restoreState())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,14 +96,18 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         presenter?.detachView(this)
     }
 
+    override fun saveState(): PresenterState? {
+        return presenter?.saveState()
+    }
+
     override fun updateState(state: CollectionListPage.State) {
         when(state) {
             is CollectionListPage.State.Success -> {
                 fab?.visibility = View.VISIBLE
                 emptyContent?.visibility = View.GONE
-                recyclerView?.visibility = View.VISIBLE
                 adapter?.updateData(state.collections)
                 adapter?.notifyDataSetChanged()
+                recyclerView?.visibility = View.VISIBLE
             }
             is CollectionListPage.State.Empty-> {
                 fab?.visibility = View.GONE

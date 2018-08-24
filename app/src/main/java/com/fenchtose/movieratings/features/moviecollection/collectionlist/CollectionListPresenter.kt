@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.features.moviecollection.collectionlist
 import android.content.Context
 import android.net.Uri
 import com.fenchtose.movieratings.base.Presenter
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
@@ -17,6 +18,8 @@ class CollectionListPresenter(
         private val provider: MovieCollectionProvider,
         private val collectionStore: MovieCollectionStore,
         private val exporter: DataExporter<Uri>) : Presenter<CollectionListPage>() {
+
+    private val collections: ArrayList<MovieCollection> = ArrayList()
 
     override fun attachView(view: CollectionListPage) {
         super.attachView(view)
@@ -43,17 +46,24 @@ class CollectionListPresenter(
     }
 
     private fun loadCollections() {
+        if (collections.isNotEmpty()) {
+            updateState(CollectionListPage.State.Success(collections))
+        }
+
         provider.getCollections(withMovies = true)
                 .subscribeOn(rxHooks.ioThread())
                 .observeOn(rxHooks.mainThread())
                 .subscribe({
+                    collections.clear()
+                    collections.addAll(it)
                     if (it.isEmpty()) {
                         updateState(CollectionListPage.State.Empty)
                     } else {
-                        updateState(CollectionListPage.State.Success(ArrayList(it)))
+                        updateState(CollectionListPage.State.Success(collections))
                     }
                 }, {
                     it.printStackTrace()
+                    collections.clear()
                     updateState(CollectionListPage.State.Error)
                 })
     }
@@ -104,4 +114,17 @@ class CollectionListPresenter(
         val uri = fileUtils.createCacheFile(context, "flutter_collections.txt")
         exporter.export(uri, DataExporter.Config(false, true, false))
     }
+
+    override fun saveState(): PresenterState? {
+        return if (collections.isNotEmpty()) CollectionListState(collections) else null
+    }
+
+    override fun restoreState(state: PresenterState?) {
+        if (state != null && state is CollectionListState) {
+            collections.clear()
+            collections.addAll(state.collections)
+        }
+    }
 }
+
+data class CollectionListState(val collections: List<MovieCollection>): PresenterState
