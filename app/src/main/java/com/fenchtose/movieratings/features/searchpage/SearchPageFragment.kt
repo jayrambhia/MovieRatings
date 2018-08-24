@@ -318,7 +318,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             }
 
             override fun showMenuIcons(): IntArray {
-                val icons = arrayListOf(R.id.action_info, R.id.action_fav, R.id.action_collection)
+                val icons = arrayListOf(R.id.action_info, R.id.action_fav, R.id.action_collection, R.id.action_trending)
                 if (preferences.isAppEnabled(UserPreferences.SAVE_HISTORY)) {
                     icons.add(R.id.action_history)
                 }

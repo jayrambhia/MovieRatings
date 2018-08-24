@@ -9,6 +9,12 @@
 		app:showAsAction="always"/>
 
 	<item
+		android:id="@+id/action_trending"
+		android:title="@string/menu_action_trending"
+		android:icon="@drawable/ic_trending_up_onyx_24dp"
+		app:showAsAction="always" />
+
+	<item
 		android:id="@+id/action_history"
 		android:title="@string/menu_action_history"
 		android:icon="@drawable/ic_history_accent_24dp"

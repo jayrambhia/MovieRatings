@@ -6,11 +6,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
@@ -23,10 +25,12 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     protected var adapter: BaseMovieAdapter? = null
 
     private var stateContent: TextView? = null
+    private var progressBar: ProgressBar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = createPresenter()
+        presenter?.restoreState(path?.restoreState())
         onCreated()
     }
 
@@ -38,6 +42,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recyclerview)
         stateContent = view.findViewById(R.id.screen_state_content)
+        progressBar = view.findViewById(R.id.progressbar)
 
         val adapter = BaseMovieAdapter(requireContext(), createAdapterConfig(presenter))
         adapter.setHasStableIds(true)
@@ -53,6 +58,10 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         presenter?.attachView(this as V)
     }
 
+    override fun saveState(): PresenterState? {
+        return presenter?.saveState()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.detachView(this as V)
@@ -66,8 +75,12 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     }
 
     override fun updateState(state: BaseMovieListPage.State) {
+        progressBar?.visibility = View.GONE
         when(state) {
-            is BaseMovieListPage.State.Loading -> return
+            is BaseMovieListPage.State.Loading -> {
+                progressBar?.visibility = View.VISIBLE
+                recyclerView?.visibility = View.GONE
+            }
             is BaseMovieListPage.State.Success -> setData(state.movies)
             is BaseMovieListPage.State.Empty -> showContentState(getEmptyContent())
             is BaseMovieListPage.State.Error -> showContentState(getErrorContent())
@@ -81,10 +94,10 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     }
 
     private fun setData(movies: List<Movie>) {
-        stateContent?.visibility = View.GONE
-        recyclerView?.visibility = View.VISIBLE
         adapter?.data = movies
         adapter?.notifyDataSetChanged()
+        stateContent?.visibility = View.GONE
+        recyclerView?.visibility = View.VISIBLE
     }
 
     abstract fun createPresenter(): P

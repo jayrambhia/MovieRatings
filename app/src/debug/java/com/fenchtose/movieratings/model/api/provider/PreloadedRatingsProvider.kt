@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.annotation.RawRes
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.entity.MovieRating
+import com.fenchtose.movieratings.model.entity.Trending
 import com.google.gson.Gson
 import io.reactivex.Observable
 import java.io.ByteArrayOutputStream
@@ -28,6 +29,12 @@ class PreloadedRatingsProvider(private val context: Context): MovieRatingsProvid
         val data = readRawFile(resId)
         val gson = Gson()
         return gson.fromJson(data, MovieRating::class.java)
+    }
+
+    private fun convertToTrending(@RawRes resId: Int): Trending {
+        val data = readRawFile(resId)
+        val gson = Gson()
+        return gson.fromJson(data,  Trending::class.java)
     }
 
     private fun readRawFile(@RawRes resId: Int): String {
@@ -59,4 +66,9 @@ class PreloadedRatingsProvider(private val context: Context): MovieRatingsProvid
         // TODO nothing
     }
 
+    override fun getTrending(): Observable<Trending> {
+        return Observable.defer {
+            Observable.just(convertToTrending(R.raw.trending))
+        }
+    }
 }

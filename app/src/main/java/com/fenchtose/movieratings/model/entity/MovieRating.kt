@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
+import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.util.FixTitleUtils
 import com.google.gson.annotations.SerializedName
 
@@ -95,6 +96,31 @@ class MovieRating {
             return rating
         }
     }
+
+    fun toMovie(): Movie {
+        val movie = Movie()
+        movie.imdbId = imdbId
+        movie.title = title
+        movie.type = type
+
+        if (startYear != -1 && endYear != -1) {
+            movie.year = "$startYear - $endYear"
+        } else if (startYear != -1) {
+            movie.year = startYear.toString()
+        }
+
+        if (votes > 0) {
+            movie.imdbVotes = votes.toString()
+        }
+
+        if (rating > 0) {
+            movie.ratings = arrayListOf(Rating("Internet Movie Database", "$rating/10"))
+        }
+
+        movie.poster = "http://img.omdbapi.com/?i=$imdbId&h=600&apikey=${BuildConfig.OMDB_API_KEY}"
+
+        return movie
+    }
 }
 
 @Entity(tableName = "RATING_NOT_FOUND", indices = arrayOf(Index("TITLE")))
@@ -111,3 +137,8 @@ data class RatingNotFound(
     @ColumnInfo(name = "TIMESTAMP")
     val timestamp: Long
 )
+
+class Trending {
+    @SerializedName("trending")
+    var movies: List<MovieRating> = listOf()
+}

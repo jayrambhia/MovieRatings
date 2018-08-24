@@ -12,6 +12,7 @@ import com.fenchtose.movieratings.features.moviecollection.collectionlist.Collec
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
+import com.fenchtose.movieratings.features.trending.TrendingPath
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 
 abstract class RouterBaseActivity: AppCompatActivity() {
@@ -78,6 +79,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
             R.id.action_info -> showInfoPage(false)
             R.id.action_history -> showRecentlyBrowsedPage()
             R.id.action_collection -> showMovieCollectionsPage()
+            R.id.action_trending -> showTrendingPage()
             else -> consumed = false
         }
 
@@ -106,6 +108,10 @@ abstract class RouterBaseActivity: AppCompatActivity() {
 
     private fun showMovieCollectionsPage() {
         router?.go(CollectionListPageFragment.CollectionListPagePath(false))
+    }
+
+    private fun showTrendingPage() {
+        router?.go(TrendingPath())
     }
 
     protected fun getRouter(): Router? = router

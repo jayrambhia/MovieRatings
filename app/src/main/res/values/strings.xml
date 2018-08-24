@@ -118,6 +118,7 @@
 	<string name="menu_action_open_imdb">Open Imdb</string>
 	<string name="menu_action_add_to_collection">Add to collection</string>
 	<string name="menu_action_share">Share</string>
+	<string name="menu_action_trending">Trending</string>
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
@@ -253,5 +254,9 @@
 
 	<string name="review_app_notification_title">Do you like Flutter?</string>
 	<string name="review_app_notification_content">Leave a review on Playstore and tell others your experience about Flutter.</string>
+
+	<string name="trending_screen_title">Trending</string>
+	<string name="trending_page_empty_content">We don\'t have list of trending movies for today. Please try again later.</string>
+	<string name="trending_page_error_content">We could not load trending movies. Please try again later.</string>
 
 </resources>

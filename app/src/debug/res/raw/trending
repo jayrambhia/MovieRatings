@@ -1,0 +1,124 @@
+{
+    "trending": [
+        {
+            "title": "Death Note",
+            "start_year": 2017,
+            "votes": 59423,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt1241317",
+            "rating": 4.6,
+            "type": "movie"
+        },
+        {
+            "title": "Grand Designs",
+            "start_year": 1999,
+            "votes": 1681,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt0421099",
+            "rating": 8.5,
+            "type": "tvSeries"
+        },
+        {
+            "title": "Atlantis: The Lost Empire",
+            "start_year": 2001,
+            "votes": 86782,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt0230011",
+            "rating": 6.8,
+            "type": "movie"
+        },
+        {
+            "title": "Rick and Morty",
+            "start_year": 2013,
+            "votes": 221144,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt2861424",
+            "rating": 9.3,
+            "type": "tvSeries"
+        },
+        {
+            "title": "Happy!",
+            "start_year": 2017,
+            "votes": 13723,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt2452242",
+            "rating": 8.4,
+            "type": "tvSeries"
+        },
+        {
+            "title": "Nitro Circus: The Movie",
+            "start_year": 2012,
+            "votes": 5378,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt1815852",
+            "rating": 6.7,
+            "type": "movie"
+        },
+        {
+            "title": "The Shallows",
+            "start_year": 2016,
+            "votes": 97505,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt4052882",
+            "rating": 6.3,
+            "type": "movie"
+        },
+        {
+            "title": "Pocahontas",
+            "start_year": 1995,
+            "votes": 142058,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt0114148",
+            "rating": 6.7,
+            "type": "movie"
+        },
+        {
+            "title": "Megamind",
+            "start_year": 2010,
+            "votes": 197206,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt1001526",
+            "rating": 7.3,
+            "type": "movie"
+        },
+        {
+            "title": "No Strings Attached",
+            "start_year": 2011,
+            "votes": 189424,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt1411238",
+            "rating": 6.2,
+            "type": "movie"
+        },
+        {
+            "title": "Contratiempo",
+            "start_year": 2011,
+            "votes": 1037,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt1869345",
+            "rating": 7.7,
+            "type": "movie"
+        },
+        {
+            "title": "Australien skies",
+            "start_year": 2015,
+            "votes": 186,
+            "end_year": null,
+            "translated_title": "",
+            "id": "tt6321270",
+            "rating": 5,
+            "type": "movie"
+        }
+    ]
+}

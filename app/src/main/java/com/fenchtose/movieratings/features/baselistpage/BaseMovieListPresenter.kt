@@ -4,6 +4,7 @@ import android.support.annotation.CallSuper
 import android.support.annotation.VisibleForTesting
 import android.view.View
 import com.fenchtose.movieratings.base.Presenter
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.entity.Movie
@@ -15,14 +16,25 @@ import io.reactivex.rxkotlin.subscribeBy
 abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         protected val rxHooks: RxHooks,
         private val likeStore: LikeStore,
-        protected val router: Router?): Presenter<V>() {
+        protected val router: Router?,
+        private val reload: Boolean = true): Presenter<V>() {
 
     protected var data: ArrayList<Movie>? = null
 
     @CallSuper
     override fun attachView(view: V) {
         super.attachView(view)
-        loadData()
+        val temp = data
+        var load = true
+
+        if (temp != null) {
+            updateData(temp)
+            load = reload
+        }
+
+        if (load) {
+            loadData()
+        }
     }
 
     open protected fun loadData() {
@@ -68,4 +80,20 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
 
     @VisibleForTesting
     fun getDataForTest(): List<Movie>? = data
+
+    override fun saveState(): PresenterState? {
+        data?.let {
+            return BaseMovieListState(it)
+        }
+
+        return null
+    }
+
+    override fun restoreState(state: PresenterState?) {
+        if (state != null && state is BaseMovieListState) {
+            data = ArrayList(state.movies)
+        }
+    }
 }
+
+data class BaseMovieListState(val movies: List<Movie>): PresenterState
