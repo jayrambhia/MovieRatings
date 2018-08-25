@@ -10,8 +10,10 @@ import com.fenchtose.movieratings.util.registerNotificationChannel
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.squareup.leakcanary.RefWatcher
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.internal.cache.CacheInterceptor
 
 open class MovieRatingsApplication : Application() {
 
@@ -51,14 +53,12 @@ open class MovieRatingsApplication : Application() {
         }
     }
 
-    open fun getOkHttpClient(vararg interceptors: Interceptor): OkHttpClient {
+    open fun getOkHttpClient(cache: Cache? = null, interceptors: List<Interceptor> = listOf(),
+                             networkInterceptors: List<Interceptor> = listOf()): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        if (interceptors.isNotEmpty()) {
-            for (interceptor in interceptors) {
-                builder.addInterceptor(interceptor)
-            }
-        }
-
+        interceptors.forEach { builder.addInterceptor(it) }
+        networkInterceptors.forEach { builder.addNetworkInterceptor(it) }
+        cache?.apply { builder.cache(this) }
         return builder.build()
     }
 

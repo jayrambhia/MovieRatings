@@ -5,11 +5,13 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.db.movieRatings.DbMovieRatingStore
 import com.fenchtose.movieratings.util.Constants
 import com.google.gson.Gson
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 
 class MovieRatingProviderModule(val app: MovieRatingsApplication, val gson: Gson) {
     private val dao = MovieRatingsApplication.database.movieRatingsDao()
@@ -37,8 +39,9 @@ class MovieRatingProviderModule(val app: MovieRatingsApplication, val gson: Gson
     }
 
     private fun flutterApi(): Retrofit {
+        val cache = Cache(File(app.cacheDir, "http-cache"), 10 * 1024 * 1024)
         return Retrofit.Builder()
-                .client(app.getOkHttpClient(RatingHeaderInterceptor()))
+                .client(app.getOkHttpClient(cache, listOf(RatingHeaderInterceptor())))
                 .baseUrl(BuildConfig.RATINGS_ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

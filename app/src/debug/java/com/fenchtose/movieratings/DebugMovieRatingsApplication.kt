@@ -2,8 +2,11 @@ package com.fenchtose.movieratings
 
 import com.facebook.stetho.Stetho
 import com.facebook.stetho.okhttp3.StethoInterceptor
+import com.fenchtose.movieratings.util.add
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 
 class DebugMovieRatingsApplication: MovieRatingsApplication() {
     override fun onCreate() {
@@ -11,14 +14,10 @@ class DebugMovieRatingsApplication: MovieRatingsApplication() {
         Stetho.initializeWithDefaults(this)
     }
 
-    override fun getOkHttpClient(vararg interceptors: Interceptor): OkHttpClient {
-        val builder = OkHttpClient.Builder().addNetworkInterceptor(StethoInterceptor())
-        if (interceptors.isNotEmpty()) {
-            for (interceptor in interceptors) {
-                builder.addInterceptor(interceptor)
-            }
-        }
-
-        return builder.build()
+    override fun getOkHttpClient(cache: Cache?, interceptors: List<Interceptor>,
+                                 networkInterceptors: List<Interceptor>): OkHttpClient {
+        return super.getOkHttpClient(cache,
+                interceptors.add(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)),
+                networkInterceptors.add(StethoInterceptor()))
     }
 }
