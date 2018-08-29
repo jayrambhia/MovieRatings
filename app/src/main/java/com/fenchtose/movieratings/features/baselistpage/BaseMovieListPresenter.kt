@@ -12,6 +12,7 @@ import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.util.RxHooks
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
+import java.util.concurrent.TimeUnit
 
 abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         protected val rxHooks: RxHooks,
@@ -37,8 +38,8 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         }
     }
 
-    open protected fun loadData() {
-        val d = load()
+    open protected fun loadData(reload: Boolean = false) {
+        val d = load(reload)
                 .subscribeOn(rxHooks.ioThread())
                 .observeOn(rxHooks.mainThread())
                 .subscribeBy(
@@ -67,6 +68,11 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         getView()?.updateState(state)
     }
 
+    open protected fun clearData() {
+        data = null
+        getView()?.updateState(BaseMovieListPage.State.Cleared())
+    }
+
     open fun toggleLike(movie: Movie) {
         likeStore.setLiked(movie.imdbId, !movie.liked)
         movie.liked = !movie.liked
@@ -76,7 +82,7 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
     }
 
-    abstract fun load(): Observable<List<Movie>>
+    abstract fun load(reload: Boolean = false): Observable<List<Movie>>
 
     @VisibleForTesting
     fun getDataForTest(): List<Movie>? = data
@@ -93,6 +99,16 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
         if (state != null && state is BaseMovieListState) {
             data = ArrayList(state.movies)
         }
+    }
+
+
+    fun callWithDelay(fn: () -> Unit, delay: Long) {
+        Observable.just(fn)
+                .delay(delay, TimeUnit.MILLISECONDS)
+                .observeOn(rxHooks.mainThread())
+                .subscribe({
+                    it()
+                })
     }
 }
 

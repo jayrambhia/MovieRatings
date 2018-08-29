@@ -9,7 +9,7 @@ import com.fenchtose.movieratings.model.entity.Movie
 
 class BaseMovieAdapter(private val context: Context, private val config: AdapterConfig): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     
-    var data: List<Movie> = ArrayList()
+    val data: ArrayList<Movie> = ArrayList()
     private val inflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun getItemCount() = config.getItemCount(data)

@@ -140,11 +140,11 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
 
     }
 
-    override fun getTrending(): Observable<Trending> {
+    override fun getTrending(period: String): Observable<Trending> {
         if (flutterApi == null) {
             return Observable.error(Throwable("No API attached"))
         }
 
-        return flutterApi.getTrending()
+        return flutterApi.getTrending(period)
     }
 }

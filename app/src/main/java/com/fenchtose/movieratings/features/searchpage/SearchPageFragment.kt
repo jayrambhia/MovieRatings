@@ -262,7 +262,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     private fun setData(state: SearchPage.State.Loaded) {
         showLoading(false)
-        adapter?.data = state.movies
+        adapter?.data?.clear()
+        adapter?.data?.addAll(state.movies)
         adapter?.notifyDataSetChanged()
         recyclerView?.post {
             when(state) {
@@ -283,7 +284,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     }
 
     private fun clearData() {
-        adapter?.data = ArrayList()
+        adapter?.data?.clear()
         adapter?.notifyDataSetChanged()
         recyclerView?.post {
             recyclerView?.visibility = View.GONE

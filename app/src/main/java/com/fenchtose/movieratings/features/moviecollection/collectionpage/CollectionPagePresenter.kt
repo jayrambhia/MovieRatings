@@ -58,7 +58,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
                 }))
     }
 
-    override fun load(): Observable<List<Movie>> {
+    override fun load(reload: Boolean): Observable<List<Movie>> {
         collection?.let {
             return provider.getMoviesForCollection(it)
                     .map {

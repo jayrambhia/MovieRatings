@@ -66,7 +66,7 @@ class PreloadedRatingsProvider(private val context: Context): MovieRatingsProvid
         // TODO nothing
     }
 
-    override fun getTrending(): Observable<Trending> {
+    override fun getTrending(period: String): Observable<Trending> {
         return Observable.defer {
             Observable.just(convertToTrending(R.raw.trending))
         }

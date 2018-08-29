@@ -23,7 +23,7 @@ class LikesPresenter(
         userPreferences.setLatestLikeSort(value)
     }
 
-    override fun load(): Observable<List<Movie>> {
+    override fun load(reload: Boolean): Observable<List<Movie>> {
         return provider.getMovies()
                 .map {
                     getSorted(currentSort, it)

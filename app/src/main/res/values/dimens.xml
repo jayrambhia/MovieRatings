@@ -20,4 +20,8 @@
 
 	<dimen name="floating_rating_view_width">156dp</dimen>
 	<dimen name="floating_rating_view_y">180dp</dimen>
+
+	<dimen name="indicator_height">3dp</dimen>
+	<dimen name="indicator_width">36dp</dimen>
+	<dimen name="indicator_bottom_margin">1dp</dimen>
 </resources>

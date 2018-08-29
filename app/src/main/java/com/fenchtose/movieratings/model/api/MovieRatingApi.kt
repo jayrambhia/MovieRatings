@@ -13,5 +13,5 @@ interface MovieRatingApi {
                        @Query("type") type: String? = null): Observable<MovieRating>
 
     @GET("/trending")
-    fun getTrending(): Observable<Trending>
+    fun getTrending(@Query("period") period: String): Observable<Trending>
 }

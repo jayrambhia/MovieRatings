@@ -7,6 +7,7 @@ interface BaseMovieListPage {
     fun updateState(state: State)
 
     sealed class State {
+        class Cleared: State()
         class Loading: State()
         class Success(val movies: List<Movie>): State()
         class Empty: State()

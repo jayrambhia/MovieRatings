@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.baselistpage
 
 import android.os.Bundle
+import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
@@ -35,7 +36,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.base_movies_list_page_layout, container, false) as ViewGroup
+        return inflater.inflate(getLayout(), container, false) as ViewGroup
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,6 +85,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
             is BaseMovieListPage.State.Success -> setData(state.movies)
             is BaseMovieListPage.State.Empty -> showContentState(getEmptyContent())
             is BaseMovieListPage.State.Error -> showContentState(getErrorContent())
+            is BaseMovieListPage.State.Cleared -> setData(listOf())
         }
     }
 
@@ -94,10 +96,15 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
     }
 
     private fun setData(movies: List<Movie>) {
-        adapter?.data = movies
+        adapter?.data?.clear()
+        adapter?.data?.addAll(movies)
         adapter?.notifyDataSetChanged()
         stateContent?.visibility = View.GONE
         recyclerView?.visibility = View.VISIBLE
+    }
+
+    open fun getLayout(): Int {
+        return R.layout.base_movies_list_page_layout
     }
 
     abstract fun createPresenter(): P

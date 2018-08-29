@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.features.trending
 
+import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
@@ -18,14 +19,19 @@ class TrendingPresenter(rxHooks: RxHooks,
                         private val preferenceAppliers: Set<UserPreferenceApplier>,
                         router: Router?): BaseMovieListPresenter<TrendingFragment>(rxHooks, likeStore, router, false) {
 
-    override fun load(): Observable<List<Movie>> {
-        data?.let {
-            return Observable.just(it)
+    private var current: String = "day"
+
+    override fun load(reload: Boolean): Observable<List<Movie>> {
+
+        if (!reload) {
+            data?.let {
+                return Observable.just(it)
+            }
         }
 
-        getView()?.updateState(BaseMovieListPage.State.Loading())
+        callWithDelay(::showProgress, 200)
 
-        return provider.getTrending()
+        return provider.getTrending(current)
                 .map { it.movies }
                 .flatMapIterable { movies -> movies }
                 .map {
@@ -45,5 +51,37 @@ class TrendingPresenter(rxHooks: RxHooks,
                 }.toList().toObservable()
     }
 
+    private fun showProgress() {
+        if (data == null) {
+            getView()?.updateState(BaseMovieListPage.State.Loading())
+        }
+    }
+
+    fun updatePeriod(period: String) {
+        if (current != period) {
+            current = period
+            loadData(true)
+        }
+    }
+
+    fun currentPeriod(): String {
+        return current
+    }
+
+    override fun saveState(): PresenterState? {
+        data?.let {
+            return TrendingState(current, it)
+        }
+
+        return null
+    }
+
+    override fun restoreState(state: PresenterState?) {
+        if (state != null && state is TrendingState) {
+            current = state.period
+            data = ArrayList(state.movies)
+        }
+    }
 }
 
+data class TrendingState(val period: String, val movies: List<Movie>): PresenterState

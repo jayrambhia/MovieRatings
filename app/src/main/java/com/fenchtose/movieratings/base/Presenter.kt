@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.base
 
 import android.support.annotation.CallSuper
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
@@ -34,4 +35,5 @@ abstract class Presenter<VIEW> {
     open fun restoreState(state: PresenterState?) {
 
     }
+
 }

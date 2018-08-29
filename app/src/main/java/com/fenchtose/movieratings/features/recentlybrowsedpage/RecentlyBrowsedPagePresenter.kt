@@ -19,7 +19,7 @@ class RecentlyBrowsedPagePresenter(
         movieProvider.addPreferenceApplier(likeStore)
     }
 
-    override fun load(): Observable<List<Movie>> {
+    override fun load(reload: Boolean): Observable<List<Movie>> {
         return movieProvider.getMovies()
                 .map {
                     it.map {

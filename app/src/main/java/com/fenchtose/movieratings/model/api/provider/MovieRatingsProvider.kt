@@ -8,7 +8,7 @@ interface MovieRatingsProvider {
     fun useFlutterApi(status: Boolean)
     fun getMovieRating(request: RatingRequest): Observable<MovieRating>
     fun report404(title: String, year: String?)
-    fun getTrending(): Observable<Trending>
+    fun getTrending(period: String): Observable<Trending>
 }
 
 data class RatingRequest(val title: String, val year: String?, val appName: String)
