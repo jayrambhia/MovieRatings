@@ -16,6 +16,7 @@ addons:
 
 before_script:
     - sh travis_local_properties.sh
+    - sh travis_ga_properties.sh
 
 script:
   - ./gradlew build
