@@ -11,14 +11,14 @@ import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
@@ -94,10 +94,12 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         collectionsFlexView = MoviePageFlexView(requireContext(), view.findViewById(R.id.collections_flexview),
                 object : MoviePageFlexView.CollectionCallback {
                     override fun onItemClicked(collection: MovieCollection) {
+                        GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
                         path?.getRouter()?.go(CollectionPageFragment.CollectionPagePath(collection))
                     }
 
                     override fun onAddToCollectionClicked() {
+                        GaEvents.TAP_ADD_TO_COLLECTION.withCategory(path?.category()).track()
                         presenter?.addToCollection()
                     }
         })
@@ -110,7 +112,11 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         releaseSection = InlineTextSection(view.findViewById(R.id.released_view), R.string.movie_page_released_on)
         actorSection = TextSection(view.findViewById(R.id.actors_header), view.findViewById(R.id.actors_view))
         writerSection = TextSection(view.findViewById(R.id.writers_header), view.findViewById(R.id.writers_view))
-        plotSection = ExpandableSection(view.findViewById(R.id.plot_header), view.findViewById(R.id.plot_toggle), view.findViewById(R.id.plot_view))
+        plotSection = ExpandableSection(view.findViewById(R.id.plot_header),
+                view.findViewById(R.id.plot_toggle),
+                view.findViewById(R.id.plot_view),
+                GaEvents.EXPAND_PLOT.withCategory(path?.category()),
+                GaEvents.COLLAPSE_PLOT.withCategory(path?.category()))
 
         episodesSection = EpisodesSection(requireContext(), view.findViewById<TextView>(R.id.episodes_header),
                 view.findViewById(R.id.episodes_recyclerview), view.findViewById(R.id.seasons_spinner), presenter)
@@ -127,7 +133,10 @@ class MoviePageFragment: BaseFragment(), MoviePage {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var consumed = true
         when(item?.itemId) {
-            R.id.action_open_imdb -> presenter?.openImdb(requireContext())
+            R.id.action_open_imdb -> {
+                GaEvents.OPEN_IMDB.withCategory(path?.category()).track()
+                presenter?.openImdb(requireContext())
+            }
             else -> consumed = false
         }
 
@@ -169,6 +178,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         setLiked(movie.liked)
 
         fab?.setOnClickListener {
+            GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
             val isLiked = presenter?.likeToggle()
             setLiked(isLiked)
         }
@@ -258,13 +268,9 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
 
 
-    override fun canGoBack(): Boolean {
-        return true
-    }
-
-    override fun getScreenTitle(): Int {
-        return R.string.movie_page_title
-    }
+    override fun canGoBack() = true
+    override fun getScreenTitle() = R.string.movie_page_title
+    override fun screenName() = GaScreens.MOVIE
 
     class MoviePath(private val movie: Movie, private val sharedElement: Pair<View, String>? = null): RouterPath<MoviePageFragment>() {
 
@@ -306,6 +312,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
             return intArrayOf(R.id.action_open_imdb)
         }
 
+        override fun category() = GaCategory.MOVIE
+
     }
 
     class EpisodesSection(private val context: Context, private val header: View, private val recyclerView: RecyclerView,
@@ -343,6 +351,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
             if (this.adapter == null) {
                 val adapter = EpisodesAdapter(context, object : EpisodesAdapter.Callback {
                     override fun onSelected(episode: Episode) {
+                        GaEvents.OPEN_EPISODE.track()
                         seasonSelector?.openEpisode(episode)
                     }
                 })
@@ -368,12 +377,20 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                 spinner.adapter = adapter
                 spinner.setSelection(current - 1)
                 this.spinnerAdapter = adapter
+
+                spinner.setOnTouchListener { _, event ->
+                    if (event.action == MotionEvent.ACTION_UP) {
+                        GaEvents.TAP_SEASON_SELECTOR.track()
+                    }
+                    false
+                }
                 spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onNothingSelected(parent: AdapterView<*>?) {
 
                     }
 
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        GaEvents.SELECT_SEASON.track()
                         seasonSelector?.selectSeason(position + 1)
                     }
                 }

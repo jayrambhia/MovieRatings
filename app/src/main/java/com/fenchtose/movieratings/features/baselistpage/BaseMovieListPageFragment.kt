@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.features.baselistpage
 
 import android.os.Bundle
-import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
@@ -11,6 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.PresenterState
@@ -117,10 +117,12 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
 
         val callback = object: BaseMovieAdapter.AdapterCallback {
             override fun onLiked(movie: Movie) {
+                GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
                 presenter?.toggleLike(movie)
             }
 
             override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
+                GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
                 presenter?.openMovie(movie, sharedElement)
             }
         }
@@ -132,7 +134,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
 
     open fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
 
-    open protected fun onCreated() {
+    protected open fun onCreated() {
 
     }
 }

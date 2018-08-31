@@ -7,4 +7,6 @@ interface FragmentNavigation {
 
     @StringRes
     fun getScreenTitle(): Int
+
+    fun screenName(): String
 }

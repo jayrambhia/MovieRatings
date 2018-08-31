@@ -40,4 +40,10 @@ class GaEvent(val category: String, val action: String, val label: String): Even
     fun withCategory(category: String?): GaEvent {
         return GaEvent(category?: "", action, label)
     }
+
+    fun withAction(action: String): GaEvent {
+        return GaEvent(category, action, label)
+    }
 }
+
+class ScreenView(name: String): Event(name)

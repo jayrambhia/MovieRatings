@@ -4,6 +4,6 @@ import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.model.entity.Movie
 
 interface LikesPage: BaseMovieListPage {
-    fun showRemoved(movie: Movie, index: Int)
-    fun showAdded(movie: Movie, index: Int)
+    fun showRemoved(movies: List<Movie>, movie: Movie, index: Int)
+    fun showAdded(movies: List<Movie>, movie: Movie, index: Int)
 }

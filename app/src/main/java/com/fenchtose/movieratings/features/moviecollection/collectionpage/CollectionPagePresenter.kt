@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.features.moviecollection.collectionpage
 import android.net.Uri
 import android.support.annotation.VisibleForTesting
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
@@ -137,6 +138,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
     }
 
     fun searchToAddToCollection() {
+        GaEvents.TAP_SEARCH_FOR_COLLECTION.track()
         collection?.let {
             router?.go(SearchPageFragment.SearchPath.AddToCollection(it))
         }

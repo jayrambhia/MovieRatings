@@ -11,6 +11,8 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.model.entity.Episode
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.widgets.ThemedSnackbar
@@ -50,7 +52,11 @@ class EpisodePage(context: Context, private val episode: Episode,
         releaseSection = InlineTextSection(findViewById(R.id.released_view), R.string.episode_page_released_on)
         actorSection = TextSection(findViewById(R.id.actors_header), findViewById(R.id.actors_view))
         writerSection = TextSection(findViewById(R.id.writers_header), findViewById(R.id.writers_view))
-        plotSection = ExpandableSection(findViewById(R.id.plot_header), findViewById(R.id.plot_toggle), findViewById(R.id.plot_view))
+        plotSection = ExpandableSection(findViewById(R.id.plot_header),
+                findViewById(R.id.plot_toggle),
+                findViewById(R.id.plot_view),
+                GaEvents.EXPAND_PLOT.withCategory(category()),
+                GaEvents.COLLAPSE_PLOT.withCategory(category()))
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
     }
 
@@ -111,6 +117,8 @@ class EpisodePage(context: Context, private val episode: Episode,
         plotSection.setContent(episode.plot)
 
     }
+
+    private fun category() = GaCategory.EPISODE
 
     sealed class State {
         object Loading: State()

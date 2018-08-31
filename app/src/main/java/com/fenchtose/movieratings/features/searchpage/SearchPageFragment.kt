@@ -17,6 +17,7 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.PresenterState
@@ -84,7 +85,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
         path?.takeIf { it is SearchPath.Default }?.let {
             appInfoContainer = view.findViewById(R.id.info_page_container)
-            appInfoContainer?.setRouter(it.getRouter())
+            appInfoContainer?.setRouter(it.getRouter(), it.category())
             view.findViewById<View?>(R.id.settings_view)?.visibility = View.VISIBLE
             view.findViewById<View?>(R.id.credit_view)?.visibility = View.GONE
         }
@@ -93,12 +94,12 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                 object: SearchAdapterConfig.SearchCallback {
                         override fun onLiked(movie: Movie) {
                             presenter?.setLiked(movie)
-                            GaEvents.LIKE_MOVIE.withCategory(path?.category()).withLabelArg(movie.title).track()
+                            GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
                         }
 
                         override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
                             presenter?.openMovie(movie, sharedElement)
-                            GaEvents.OPEN_MOVIE.withCategory(path?.category()).withLabelArg(movie.title).track()
+                            GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
                         }
 
                         override fun onLoadMore() {
@@ -172,7 +173,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        appInfoContainer?.setRouter(null)
+        appInfoContainer?.setRouter(null, null)
         presenter?.detachView(this)
         clearButton?.setOnClickListener(null)
         watcher?.let {
@@ -202,6 +203,17 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             }
         }
         return R.string.search_page_title
+    }
+
+    override fun screenName(): String {
+        path?.takeIf { it is SearchPath }?.let {
+            return when(it as SearchPath) {
+                is SearchPath.Default -> GaScreens.SEARCH
+                is SearchPath.AddToCollection -> GaScreens.COLLECTION_SEARCH
+            }
+        }
+
+        return GaScreens.SEARCH
     }
 
     override fun updateState(state: SearchPage.State) {
@@ -311,6 +323,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
     private fun createAddToCollectionExtraLayout(): SearchItemViewHolder.ExtraLayoutHelper {
         return AddToCollectionMovieLayoutHelper(object : AddToCollectionMovieLayoutHelper.Callback {
             override fun onAddRequested(movie: Movie) {
+                GaEvents.ADD_TO_COLLECTION.withCategory(path?.category()).track()
                 presenter?.takeIf { it is SearchPresenter.AddToCollectionPresenter }
                                 ?.let { it as SearchPresenter.AddToCollectionPresenter }?.addToCollection(movie)
             }

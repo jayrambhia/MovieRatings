@@ -9,6 +9,9 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
@@ -32,6 +35,8 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
     private var emptyStateCta: View? = null
 
     override fun canGoBack() = true
+
+    override fun screenName() = GaScreens.COLLECTION
 
     override fun getScreenTitle() = R.string.movie_collection_page_title
 
@@ -86,10 +91,12 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
         val callback = object: CollectionPageAdapterConfig.Callback {
             override fun onLiked(movie: Movie) {
+                GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
                 presenter?.toggleLike(movie)
             }
 
             override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
+                GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
                 presenter?.openMovie(movie, sharedElement)
             }
 
@@ -108,6 +115,7 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
     private fun createExtraLayoutHelperMethod(): SearchItemViewHolder.ExtraLayoutHelper {
         return CollectionRemoveMovieLayoutHelper(object : CollectionRemoveMovieLayoutHelper.Callback {
             override fun onRemoveRequested(movie: Movie) {
+                GaEvents.TAP_REMOVE_MOVIE.track()
                 removeMovie(movie)
             }
         })
@@ -117,7 +125,10 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         AlertDialog.Builder(requireContext())
                 .setTitle(R.string.movie_collection_remove_movie_dialog_title)
                 .setMessage(requireContext().getString(R.string.movie_collection_remove_movie_dialog_content, movie.title))
-                .setNegativeButton(R.string.movie_collection_remove_movie_negative) { _, _ -> presenter?.removeMovie(movie) }
+                .setNegativeButton(R.string.movie_collection_remove_movie_negative) { _, _ ->
+                    GaEvents.REMOVE_MOVIE.track()
+                    presenter?.removeMovie(movie)
+                }
                 .setNeutralButton(R.string.movie_collection_remove_movie_neutral) { dialog, _ -> dialog.dismiss() }
                 .show()
 
@@ -128,9 +139,9 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
             android.support.v7.app.AlertDialog.Builder(requireContext())
                     .setTitle(R.string.movie_collection_share_dialog_title)
                     .setMessage(R.string.movie_collection_share_dialog_content)
-                    .setPositiveButton(R.string.movie_collection_share_dialog_positive_cta) {
-                        dialog, _ ->
+                    .setPositiveButton(R.string.movie_collection_share_dialog_positive_cta) { dialog, _ ->
                         dialog.dismiss()
+                        GaEvents.SHARE_COLLECTION.track()
                         presenter?.share()
                     }
                     .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }
@@ -181,11 +192,22 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var consumed = true
         when(item?.itemId) {
-            R.id.action_sort_alphabetically -> presenter?.sort(Sort.ALPHABETICAL)
+            R.id.action_sort_alphabetically -> {
+                GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.ALPHABETICAL.name.toLowerCase()).track()
+                presenter?.sort(Sort.ALPHABETICAL)
+            }
 //            R.id.action_sort_genre -> presenter?.sort(Sort.GENRE)
-            R.id.action_sort_year -> presenter?.sort(Sort.YEAR)
-            R.id.action_add_to_collection -> presenter?.searchToAddToCollection()
-            R.id.action_share -> showShareDialog()
+            R.id.action_sort_year -> {
+                GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.YEAR.name.toLowerCase()).track()
+                presenter?.sort(Sort.YEAR)
+            }
+            R.id.action_add_to_collection -> {
+                presenter?.searchToAddToCollection()
+            }
+            R.id.action_share -> {
+                GaEvents.TAP_SHARE_COLLECTION.track()
+                showShareDialog()
+            }
             else -> consumed = false
         }
 
@@ -194,12 +216,8 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
 
     class CollectionPagePath(val collection: MovieCollection) : RouterPath<CollectionPageFragment>() {
 
-        override fun createFragmentInstance(): CollectionPageFragment {
-            return CollectionPageFragment()
-        }
-
-        override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_sort, R.id.action_add_to_collection, R.id.action_share)
-        }
+        override fun createFragmentInstance() = CollectionPageFragment()
+        override fun category() = GaCategory.COLLECTION
+        override fun showMenuIcons() = intArrayOf(R.id.action_sort, R.id.action_add_to_collection, R.id.action_share)
     }
 }

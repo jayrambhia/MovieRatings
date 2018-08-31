@@ -107,7 +107,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     }
 
     private fun showRecentlyBrowsedPage() {
-        GaEvents.OPEN_HISTORY_PAGE.track()
+        GaEvents.OPEN_RECENTLY_BROWSED_PAGE.track()
         router?.go(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
     }
 

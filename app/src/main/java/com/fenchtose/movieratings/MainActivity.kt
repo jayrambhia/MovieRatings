@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
@@ -60,6 +61,7 @@ class MainActivity : RouterBaseActivity() {
         setupObservables()
 
         activateButton?.setOnClickListener {
+            GaEvents.TAP_ACTIVATE_FLUTTER.track()
             showAccessibilityInfo()
         }
 

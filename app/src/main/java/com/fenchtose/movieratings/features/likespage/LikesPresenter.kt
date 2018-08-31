@@ -36,7 +36,7 @@ class LikesPresenter(
             if (index >= 0) {
                 it.removeAt(index)
                 likeStore.setLiked(movie.imdbId, false)
-                getView()?.showRemoved(movie, index)
+                getView()?.showRemoved(it, movie, index)
             }
         }
     }
@@ -54,7 +54,7 @@ class LikesPresenter(
                     it.size - 1
                 }
             }
-            getView()?.showAdded(movie, addedIndex)
+            getView()?.showAdded(it, movie, addedIndex)
         }
     }
 

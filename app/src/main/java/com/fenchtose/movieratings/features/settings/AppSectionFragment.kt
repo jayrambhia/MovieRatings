@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.view.setPadding
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
@@ -21,13 +22,9 @@ class AppSectionFragment: BaseFragment() {
     private var preferences: UserPreferences? = null
     private var updatePublisher: PreferenceUpdater? = null
 
-    override fun canGoBack(): Boolean {
-        return true
-    }
-
-    override fun getScreenTitle(): Int {
-        return R.string.settings_app_section_page_header
-    }
+    override fun canGoBack() = true
+    override fun getScreenTitle() = R.string.settings_app_section_page_header
+    override fun screenName() = GaScreens.SETTINGS_APPS_SECTION
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.settings_app_section_page_layout, container, false) as ViewGroup

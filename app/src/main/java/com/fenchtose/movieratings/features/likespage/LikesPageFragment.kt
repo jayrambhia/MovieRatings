@@ -4,6 +4,9 @@ import android.view.MenuItem
 import android.view.View
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.model.entity.Movie
@@ -36,21 +39,32 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var consumed = true
         when(item?.itemId) {
-            R.id.action_sort_alphabetically -> presenter?.sort(Sort.ALPHABETICAL)
+            R.id.action_sort_alphabetically -> {
+                GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.ALPHABETICAL.name.toLowerCase()).track()
+                presenter?.sort(Sort.ALPHABETICAL)
+            }
 //            R.id.action_sort_genre -> presenter?.sort(Sort.GENRE)
-            R.id.action_sort_year -> presenter?.sort(Sort.YEAR)
+            R.id.action_sort_year -> {
+                GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.YEAR.name.toLowerCase()).track()
+                presenter?.sort(Sort.YEAR)
+            }
+
             else -> consumed = false
         }
 
         return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
-    override fun showRemoved(movie: Movie, index: Int) {
+    override fun showRemoved(movies: List<Movie>, movie: Movie, index: Int) {
+        adapter?.data?.clear()
+        adapter?.data?.addAll(movies)
         adapter?.notifyItemRemoved(index)
         showMovieRemoved(movie, index)
     }
 
-    override fun showAdded(movie: Movie, index: Int) {
+    override fun showAdded(movies: List<Movie>, movie: Movie, index: Int) {
+        adapter?.data?.clear()
+        adapter?.data?.addAll(movies)
         adapter?.notifyItemInserted(index)
         recyclerView?.post {
             recyclerView?.scrollToPosition(index)
@@ -62,6 +76,7 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
                 getString(R.string.movie_unliked_snackbar_content, movie.title),
                 R.string.undo_action,
                 View.OnClickListener {
+                    GaEvents.UNDO_UNLIKE_MOVIE.withLabelArg(movie.title).track()
                     presenter?.undoUnlike(movie, index)
                 }
         )
@@ -69,13 +84,11 @@ class LikesPageFragment: BaseMovieListPageFragment<LikesPage, LikesPresenter>(),
 
     override fun canGoBack() = true
 
-    class LikesPath : RouterPath<LikesPageFragment>() {
-        override fun createFragmentInstance(): LikesPageFragment {
-            return LikesPageFragment()
-        }
+    override fun screenName() = GaScreens.LIKES
 
-        override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_sort)
-        }
+    class LikesPath : RouterPath<LikesPageFragment>() {
+        override fun createFragmentInstance() = LikesPageFragment()
+        override fun showMenuIcons() = intArrayOf(R.id.action_sort)
+        override fun category() = GaCategory.LIKES
     }
 }

@@ -11,6 +11,8 @@ import com.android.billingclient.api.*
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
@@ -33,6 +35,8 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
     override fun canGoBack() = true
 
     override fun getScreenTitle() = R.string.donate_page_title
+
+    override fun screenName() = GaScreens.SUPPORT_APP
 
     private var isBillingAvailable = false
 
@@ -172,9 +176,8 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
     }
 
     class DonatePath: RouterPath<DonatePageFragment>() {
-        override fun createFragmentInstance(): DonatePageFragment {
-            return DonatePageFragment()
-        }
+        override fun createFragmentInstance() = DonatePageFragment()
+        override fun category() = GaCategory.SUPPORT_APP
 
         companion object {
 

@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.analytics
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.analytics.events.GaEvent
+import com.fenchtose.movieratings.analytics.events.ScreenView
 import com.google.android.gms.analytics.HitBuilders
 import com.google.android.gms.analytics.Tracker
 import java.util.*
@@ -22,6 +23,9 @@ class GaEventDispatcher(private val tracker: Tracker): EventDispatcher {
                         .setLabel(event.label)
                         .build())
             }
+        } else if (event is ScreenView) {
+            tracker.setScreenName(event.name)
+            tracker.send(HitBuilders.ScreenViewBuilder().build())
         }
     }
 

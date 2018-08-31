@@ -10,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.util.AccessibilityUtils
@@ -64,11 +66,11 @@ class AppInfoFragment: BaseFragment() {
                 else
                     R.string.info_screen_content_no_accessibility)
 
-        view.findViewById<InfoPageBottomView>(R.id.bottom_container).setRouter(path?.getRouter())
+        view.findViewById<InfoPageBottomView>(R.id.bottom_container).setRouter(path?.getRouter(), path?.category())
     }
 
     override fun onDestroyView() {
-        view?.findViewById<InfoPageBottomView>(R.id.bottom_container)?.setRouter(null)
+        view?.findViewById<InfoPageBottomView>(R.id.bottom_container)?.setRouter(null, null)
         super.onDestroyView()
     }
 
@@ -82,21 +84,15 @@ class AppInfoFragment: BaseFragment() {
         }
     }
 
-    override fun canGoBack(): Boolean {
-        return true
-    }
-
-    override fun getScreenTitle(): Int {
-        return R.string.search_page_title
-    }
+    override fun canGoBack() = true
+    override fun getScreenTitle() = R.string.search_page_title
+    override fun screenName() = GaScreens.APP_INFO
 
     class AppInfoPath(private val showSearchOption: Boolean): RouterPath<AppInfoFragment>() {
-        override fun createFragmentInstance(): AppInfoFragment {
-            return AppInfoFragment()
-        }
-
+        override fun createFragmentInstance() =AppInfoFragment()
         override fun showMenuIcons(): IntArray {
             return if (showSearchOption) intArrayOf(R.id.action_search, R.id.action_settings) else intArrayOf(R.id.action_settings)
         }
+        override fun category() = GaCategory.APP_INFO
     }
 }

@@ -2,6 +2,8 @@ package com.fenchtose.movieratings.features.recentlybrowsedpage
 
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
@@ -13,6 +15,8 @@ class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, 
     override fun canGoBack() = true
 
     override fun getScreenTitle() = R.string.recently_browsed_page_title
+
+    override fun screenName() = GaScreens.RECENTLY_BROWSED
 
     override fun getEmptyContent() = R.string.recently_browsed_page_empty_content
 
@@ -27,8 +31,7 @@ class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, 
     }
 
     class RecentlyBrowsedPath: RouterPath<RecentlyBrowsedPageFragment>() {
-        override fun createFragmentInstance(): RecentlyBrowsedPageFragment {
-            return RecentlyBrowsedPageFragment()
-        }
+        override fun createFragmentInstance() = RecentlyBrowsedPageFragment()
+        override fun category() = GaCategory.RECENTLY_BROWSED
     }
 }

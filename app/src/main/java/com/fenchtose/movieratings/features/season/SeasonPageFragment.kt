@@ -10,6 +10,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.season.episode.EpisodePage
@@ -30,6 +33,7 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.season_page_title
+    override fun screenName() = GaScreens.SEASON
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +59,16 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
             adapter = EpisodePagerAdapter(requireContext(), it.series, it.episodes, this)
             tabLayout?.setupWithViewPager(viewPager)
             viewPager?.adapter = adapter
+
+            tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    GaEvents.SELECT_EPISODE.track()
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            })
+
             viewPager?.currentItem = it.selectedEpisode - 1
             loadImage(it.series.poster)
             path?.getRouter()?.updateTitle(it.series.title)
@@ -64,7 +78,10 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         var consumed = true
         when(item?.itemId) {
-            R.id.action_open_imdb -> IntentUtils.openImdb(requireContext(), currentEpisode?.imdbId)
+            R.id.action_open_imdb -> {
+                GaEvents.OPEN_IMDB.withCategory(GaCategory.EPISODE).track()
+                IntentUtils.openImdb(requireContext(), currentEpisode?.imdbId)
+            }
             else -> consumed = false
         }
 
@@ -85,13 +102,9 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
     }
 
     class SeasonPath(val series: Movie, val episodes: EpisodesList, val selectedEpisode: Int): RouterPath<SeasonPageFragment>() {
-        override fun createFragmentInstance(): SeasonPageFragment {
-            return SeasonPageFragment()
-        }
-
-        override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_open_imdb)
-        }
+        override fun createFragmentInstance() = SeasonPageFragment()
+        override fun showMenuIcons() = intArrayOf(R.id.action_open_imdb)
+        override fun category() = GaCategory.SEASON
     }
 
 }

@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.events.Event
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
@@ -21,6 +21,7 @@ import com.fenchtose.movieratings.util.IntentUtils
 class InfoPageBottomView: LinearLayout {
 
     private var router: Router? = null
+    private var category: String? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -29,14 +30,13 @@ class InfoPageBottomView: LinearLayout {
         orientation = LinearLayout.VERTICAL
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
 
-        val analytics = MovieRatingsApplication.analyticsDispatcher
         val historyKeeper = DbHistoryKeeper.newInstance(MovieRatingsApplication.instance!!)
 
         val premiumView: View = findViewById(R.id.premium_view)
         if (BuildConfig.FLAVOR == "playstore") {
             premiumView.visibility = View.VISIBLE
             premiumView.setOnClickListener {
-                analytics.sendEvent(Event("go_premium_clicked"))
+                GaEvents.OPEN_SUPPORT_APP.withCategory(category).track()
                 router?.go(DonatePageFragment.DonatePath())
             }
         }
@@ -46,7 +46,7 @@ class InfoPageBottomView: LinearLayout {
         }
 
         findViewById<View>(R.id.rate_view).setOnClickListener {
-            analytics.sendEvent(Event("rate_app_clicked"))
+            GaEvents.TAP_RATE_APP.withCategory(category).track()
             historyKeeper.ratedAppOnPlaystore()
             IntentUtils.openPlaystore(context)
         }
@@ -54,19 +54,21 @@ class InfoPageBottomView: LinearLayout {
         val share = findViewById<View>(R.id.share_view)
         share?.let {
             share.setOnClickListener {
-                analytics.sendEvent(Event("share_app_clicked"))
+                GaEvents.TAP_SHARE_APP.withCategory(category).track()
                 IntentUtils.openShareIntent(context, context.getString(R.string.info_page_share_content, Constants.APP_SHARE_URL))
             }
         }
 
         val settingsView = findViewById<View?>(R.id.settings_view)
         settingsView?.setOnClickListener {
+            GaEvents.OPEN_SETTINGS.withCategory(category).track()
             router?.go(SettingsFragment.SettingsPath())
         }
     }
 
-    fun setRouter(router: Router?) {
+    fun setRouter(router: Router?, category: String?) {
         this.router = router
+        this.category = category
     }
 
     private fun showCreditsDialog() {

@@ -15,6 +15,8 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.events.Event
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.util.AccessibilityUtils
@@ -89,21 +91,13 @@ class AccessInfoFragment : BaseFragment() {
         }
     }
 
-    override fun canGoBack(): Boolean {
-        return true
-    }
-
-    override fun getScreenTitle(): Int {
-        return R.string.accessibility_info_page_header
-    }
+    override fun canGoBack() = true
+    override fun getScreenTitle() = R.string.accessibility_info_page_header
+    override fun screenName() = GaScreens.ACCESS_INFO
 
     class AccessibilityPath : RouterPath<AccessInfoFragment>() {
-        override fun createFragmentInstance(): AccessInfoFragment {
-            return AccessInfoFragment()
-        }
-
-        override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_settings)
-        }
+        override fun createFragmentInstance() = AccessInfoFragment()
+        override fun showMenuIcons() = intArrayOf(R.id.action_settings)
+        override fun category() = GaCategory.ACCESSIBILITY
     }
 }

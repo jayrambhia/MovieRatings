@@ -5,6 +5,7 @@ import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.View
+import com.fenchtose.movieratings.analytics.events.ScreenView
 import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -17,6 +18,11 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         disposables = CompositeDisposable()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        ScreenView(screenName()).track()
     }
 
     override fun onDestroy() {
