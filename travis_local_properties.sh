@@ -1,13 +1,8 @@
-touch local.properties
-echo "omdb_api_key=\"\"" > local.properties
-echo "ratings_endpoint=\"\"" >> local.properties
-echo "ratings_api_key=\"\"" >> local.properties
-
-mkdir -p app/src/playstore/res/xml && touch app/src/playstore/res/xml/global_tracker.xml
-echo "<?xml version="1.0" encoding="utf-8"?>" > app/src/playstore/res/xml/global_tracker.xml
-echo "<resources>" >> app/src/playstore/res/xml/global_tracker.xml
-echo "	<string name=\"ga_trackingId\" translatable=\"false\">nothing</string>" >> app/src/playstore/res/xml/global_tracker.xml
-echo "</resources>" >> app/src/playstore/res/xml/global_tracker.xml
+FILE="local.properties"
+touch $FILE
+echo "omdb_api_key=\"\"" > $FILE
+echo "ratings_endpoint=\"\"" >> $FILE
+echo "ratings_api_key=\"\"" >> $FILE
 
 
 
