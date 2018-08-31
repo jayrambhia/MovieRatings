@@ -60,6 +60,10 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
             tabLayout?.setupWithViewPager(viewPager)
             viewPager?.adapter = adapter
 
+            viewPager?.currentItem = it.selectedEpisode - 1
+            loadImage(it.series.poster)
+            path?.getRouter()?.updateTitle(it.series.title)
+
             tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     GaEvents.SELECT_EPISODE.track()
@@ -68,10 +72,6 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
             })
-
-            viewPager?.currentItem = it.selectedEpisode - 1
-            loadImage(it.series.poster)
-            path?.getRouter()?.updateTitle(it.series.title)
         }
     }
 
