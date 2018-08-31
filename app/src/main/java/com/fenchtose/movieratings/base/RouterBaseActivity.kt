@@ -5,6 +5,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
@@ -91,22 +92,27 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     }
 
     private fun showInfoPage(showSearchOption: Boolean) {
+        GaEvents.OPEN_INFO_PAGE.track()
         router?.go(AppInfoFragment.AppInfoPath(showSearchOption))
     }
 
     private fun showSettingsPage() {
+        GaEvents.OPEN_SETTINGS.withCategory("menu").track()
         router?.go(SettingsFragment.SettingsPath())
     }
 
     private fun showFavoritesPage() {
+        GaEvents.OPEN_LIKED_PAGE.track()
         router?.go(LikesPageFragment.LikesPath())
     }
 
     private fun showRecentlyBrowsedPage() {
+        GaEvents.OPEN_HISTORY_PAGE.track()
         router?.go(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
     }
 
     private fun showMovieCollectionsPage() {
+        GaEvents.OPEN_COLLECTIONS_PAGE.track()
         router?.go(CollectionListPageFragment.CollectionListPagePath(false))
     }
 

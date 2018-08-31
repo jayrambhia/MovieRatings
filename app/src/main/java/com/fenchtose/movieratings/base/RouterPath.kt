@@ -57,4 +57,6 @@ abstract class RouterPath<T : BaseFragment> {
 
     open fun getSharedTransitionElement(): Pair<View, String>? = null
 
+    open fun category(): String = ""
+
 }

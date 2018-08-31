@@ -31,7 +31,9 @@ open class MovieRatingsApplication : Application() {
         }
 
         val analyticsDispatcher: AnalyticsDispatcher by lazy {
-            AnalyticsDispatcher().attachDispatcher("answers", flavorHelper.getAnswersDispatcher())
+            AnalyticsDispatcher()
+                    .attachDispatcher("answers", flavorHelper.getAnswersDispatcher())
+                    .attachDispatcher("ga", flavorHelper.getGaDispatcher())
         }
 
         var refWatcher: RefWatcher? = null

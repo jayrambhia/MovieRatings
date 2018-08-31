@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.features.searchpage
 
 import android.view.View
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.Router
@@ -18,7 +20,8 @@ import io.reactivex.schedulers.Schedulers
 
 sealed class SearchPresenter(private val provider: MovieProvider,
                              private val likeStore: LikeStore,
-                             private val router: Router?) : Presenter<SearchPage>() {
+                             private val router: Router?,
+                             private val category: String) : Presenter<SearchPage>() {
 
     private var currentQuery = ""
     private val data: ArrayList<Movie> = ArrayList()
@@ -57,6 +60,7 @@ sealed class SearchPresenter(private val provider: MovieProvider,
         currentQuery = query
         queryDisposables = CompositeDisposable()
         makeApiCall(query, pageNum, queryDisposables)
+        GaEvents.SEARCH.withCategory(category).withLabel(query).track()
     }
 
     fun loadMore() {
@@ -65,6 +69,7 @@ sealed class SearchPresenter(private val provider: MovieProvider,
             if (queryDisposables.isDisposed) {
                 queryDisposables = CompositeDisposable()
             }
+            GaEvents.SEARCH_MORE.withCategory(category).withLabelArg(pageNum).track()
             updateState(SearchPage.State.LoadingMore)
             makeApiCall(it, pageNum, queryDisposables)
         }
@@ -162,13 +167,13 @@ sealed class SearchPresenter(private val provider: MovieProvider,
         }
     }
 
-    class DefaultPresenter(provider: MovieProvider, likeStore: LikeStore, router: Router?): SearchPresenter(provider, likeStore, router)
+    class DefaultPresenter(provider: MovieProvider, likeStore: LikeStore, router: Router?): SearchPresenter(provider, likeStore, router, GaCategory.SEARCH)
 
     class AddToCollectionPresenter(provider: MovieProvider,
                                    likeStore: LikeStore,
                                    private val collectionStore: MovieCollectionStore,
                                    private val collection: MovieCollection,
-                                   router: Router?): SearchPresenter(provider, likeStore, router) {
+                                   router: Router?): SearchPresenter(provider, likeStore, router, GaCategory.COLLECTION_SEARCH) {
 
         fun addToCollection(movie: Movie) {
             val d = collectionStore.isMovieAddedToCollection(collection, movie)

@@ -15,6 +15,8 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.PresenterState
@@ -91,10 +93,12 @@ class SearchPageFragment : BaseFragment(), SearchPage {
                 object: SearchAdapterConfig.SearchCallback {
                         override fun onLiked(movie: Movie) {
                             presenter?.setLiked(movie)
+                            GaEvents.LIKE_MOVIE.withCategory(path?.category()).withLabelArg(movie.title).track()
                         }
 
                         override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
                             presenter?.openMovie(movie, sharedElement)
+                            GaEvents.OPEN_MOVIE.withCategory(path?.category()).withLabelArg(movie.title).track()
                         }
 
                         override fun onLoadMore() {
@@ -122,6 +126,7 @@ class SearchPageFragment : BaseFragment(), SearchPage {
         clearButton?.setOnClickListener {
             clearQuery()
             searchView?.setText("")
+            GaEvents.CLEAR_SEARCH.withCategory(path?.category()).track()
         }
 
         watcher = object: TextWatcher {
@@ -328,6 +333,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             }
 
             override fun showBackButton() = false
+
+            override fun category() = GaCategory.SEARCH
         }
 
         class AddToCollection(val collection: MovieCollection): SearchPath() {
@@ -336,6 +343,8 @@ class SearchPageFragment : BaseFragment(), SearchPage {
             }
 
             override fun showBackButton() = true
+
+            override fun category() = GaCategory.COLLECTION_SEARCH
         }
     }
 

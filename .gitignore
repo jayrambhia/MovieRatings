@@ -12,4 +12,4 @@ private.xml
 fabric.properties
 *.apk
 *.jks
-
+global_tracker.xml
