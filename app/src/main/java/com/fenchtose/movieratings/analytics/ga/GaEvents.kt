@@ -50,6 +50,9 @@ class GaEvents {
         val OPEN_EPISODE = GaEvent(GaCategory.MOVIE, "open", "episode")
         val SELECT_EPISODE = GaEvent(GaCategory.SEASON, "select", "episode")
         val OPEN_IMDB = GaEvent("%s", "open", "imdb")
+
+        val TAP_PURCHASE = GaEvent(GaCategory.SUPPORT_APP, "tap", "purchase: %s")
+        val PURCHASED = GaEvent(GaCategory.SUPPORT_APP, "purchase", "sku: %s")
     }
 }
 

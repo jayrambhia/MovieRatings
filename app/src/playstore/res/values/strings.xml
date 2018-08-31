@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="donate_page_title">Support Flutter</string>
-	<string name="donate_page_persuasion_message">Flutter has shown you ratings of over %1s titles.</string>
+	<string name="donate_page_persuasion_message">Flutter has shown you ratings of over %d titles.</string>
 	<string name="donate_page_content">Flutter is free for all and contains no ads. If you liked the app and wish to appreciate the developers\' efforts and support the app, you may choose to buy any of the following in-app purchases.\n\nThese packages do not unlock any features and you\'ll have all the features in the free version also.</string>
 	<string name="donate_already_purchased_text">You have already purchased this for %1s. Thanks for your support!</string>
 	<string name="donate_dialog_title">You\'re the best!</string>
-	<string name="donate_dialog_message">Thanks for buying an in-app package and supporting the developer and the app.</string>
+	<string name="donate_dialog_message">Thanks for buying an in-app package and supporting the developers and the app.</string>
 </resources>

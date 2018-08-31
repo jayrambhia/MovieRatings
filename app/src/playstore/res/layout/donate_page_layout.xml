@@ -15,6 +15,8 @@
 		android:paddingStart="@dimen/gutter"
 		android:paddingEnd="@dimen/gutter"
 		android:paddingBottom="@dimen/gutter"
+		android:visibility="gone"
+		tools:visibility="visible"
 		android:textAppearance="@style/Text.Light.Medium"
 		tools:text="@string/donate_page_persuasion_message"/>
 
@@ -25,6 +27,20 @@
 		android:paddingEnd="@dimen/gutter"
 		android:textAppearance="@style/Text.Light"
 		android:text="@string/donate_page_content"/>
+
+	<FrameLayout
+		android:id="@+id/progress_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+		<ProgressBar
+			android:id="@+id/progressbar"
+			android:layout_width="48dp"
+			android:layout_height="48dp"
+			android:indeterminateTint="@color/textColorLight"
+			android:layout_gravity="center"/>
+
+	</FrameLayout>
 
 	<ScrollView
 		android:layout_width="match_parent"
