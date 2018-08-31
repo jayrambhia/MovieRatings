@@ -207,6 +207,12 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
     }
 
     private fun showShareDialog() {
+        presenter?.let {
+            if (it.getCollectionCount() == 0) {
+                showSnackbar(R.string.movie_collection_list_share_empty)
+                return
+            }
+        }
         AlertDialog.Builder(requireContext())
                 .setTitle(R.string.movie_collection_list_share_dialog_title)
                 .setMessage(R.string.movie_collection_list_share_dialog_content)

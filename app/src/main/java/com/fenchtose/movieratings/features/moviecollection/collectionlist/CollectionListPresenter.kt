@@ -125,6 +125,10 @@ class CollectionListPresenter(
             collections.addAll(state.collections)
         }
     }
+
+    fun getCollectionCount(): Int {
+        return collections.size
+    }
 }
 
 data class CollectionListState(val collections: List<MovieCollection>): PresenterState

@@ -193,6 +193,7 @@
 	<string name="movie_collection_list_share_dialog_content">Do you want to share all your collections? The app will generate a text file which you can send to your friends and they can import it to the app.</string>
 	<string name="movie_collection_list_share_dialog_positive_cta">Yes, Share</string>
 	<string name="movie_collection_list_share_error">Unable to share your collections.</string>
+	<string name="movie_collection_list_share_empty">There are no collections to share</string>
 
 	<string name="movie_collection_page_title">Movie collection</string>
 	<string name="movie_collection_page_empty_content">There are no movies in this collection!</string>
