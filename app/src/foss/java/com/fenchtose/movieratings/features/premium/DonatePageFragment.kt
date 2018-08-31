@@ -12,6 +12,7 @@ import com.fenchtose.movieratings.base.router.Router
 class DonatePageFragment: BaseFragment() {
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.donate_page_title
+    override fun screenName() = "support app"
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.donate_page_layout, container, false)
     class DonatePath: RouterPath<DonatePageFragment>() {

@@ -23,4 +23,8 @@ class PreloadedRatingsProvider(context: Context): MovieRatingsProvider {
         throw RuntimeException("PreloadedRatingProvider should not be used in release")
     }
 
+    override fun getTrending(period: String): Observable<Trending> {
+        throw RuntimeException("PreloadedRatingProvider should not be used in release")
+    }
+
 }
