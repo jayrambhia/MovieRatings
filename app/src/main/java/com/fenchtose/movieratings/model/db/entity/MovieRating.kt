@@ -1,51 +1,55 @@
-package com.fenchtose.movieratings.model.entity
+package com.fenchtose.movieratings.model.db.entity
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
 import com.fenchtose.movieratings.BuildConfig
+import com.fenchtose.movieratings.model.entity.OmdbMovie
 import com.fenchtose.movieratings.util.FixTitleUtils
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 @Entity(tableName = "MOVIE_RATINGS", indices = arrayOf(Index("IMDBID", unique = true)))
-class MovieRating {
+data class MovieRating(
+        @PrimaryKey
+        @ColumnInfo(name = "IMDBID")
+        @Json(name="id")
+        val imdbId: String,
 
-    @PrimaryKey
-    @ColumnInfo(name = "IMDBID")
-    @SerializedName("id")
-    var imdbId: String = ""
+        @ColumnInfo(name = "IMDB_RATING")
+        @Json(name="rating")
+        val rating: Float,
 
-    @ColumnInfo(name = "IMDB_RATING")
-    @SerializedName("rating")
-    var rating: Float = 0f
+        @ColumnInfo(name = "IMDB_VOTES")
+        @Json(name="votes")
+        val votes: Int,
 
-    @ColumnInfo(name = "IMDB_VOTES")
-    @SerializedName("votes")
-    var votes: Int = 0
+        @ColumnInfo(name = "TITLE")
+        @Json(name="title")
+        val title: String,
 
-    @ColumnInfo(name = "TITLE")
-    @SerializedName("title")
-    var title: String = ""
+        @ColumnInfo(name = "TITLE_TYPE")
+        @Json(name="type")
+        val type: String,
 
-    @ColumnInfo(name = "TITLE_TYPE")
-    @SerializedName("type")
-    var type: String = ""
+        @ColumnInfo(name = "TRANSLATED_TITLE")
+        @Json(name = "translated_title")
+        val translatedTitle: String,
 
-    @ColumnInfo(name = "TRANSLATED_TITLE")
-    @SerializedName("translated_title")
-    var translatedTitle: String = ""
+        @ColumnInfo(name = "START_YEAR")
+        @Json(name="start_year")
+        val startYear: Int,
 
-    @ColumnInfo(name = "START_YEAR")
-    @SerializedName("start_year")
-    var startYear: Int = -1
+        @ColumnInfo(name = "END_YEAR")
+        @Json(name="end_year")
+        val endYear: Int = -1,
 
-    @ColumnInfo(name = "END_YEAR")
-    @SerializedName("end_year")
-    var endYear: Int = -1
-
-    @ColumnInfo(name = "TIMESTAMP")
-    var timestamp: Int = -1
+        @Transient
+        @ColumnInfo(name = "TIMESTAMP")
+        val timestamp: Int = -1
+) {
 
     fun fitsYear(year: Int): Boolean {
         if (year != -1) {
@@ -74,31 +78,40 @@ class MovieRating {
 
     companion object {
         fun empty(): MovieRating {
-            return MovieRating()
+            return MovieRating("", -1f, -1, "", "", "", -1, -1, -1)
         }
 
-        fun fromMovie(movie: Movie): MovieRating {
-            val rating = MovieRating()
+        fun fromMovie(movie: OmdbMovie): MovieRating {
+
             movie.ratings.firstOrNull {
                 it.source == "Internet Movie Database"
             }?.let {
-                rating.imdbId = movie.imdbId
-                rating.title = movie.title
-                rating.type = movie.type
+                var startYear = -1
+                var endYear = -1
 
                 val years = FixTitleUtils.splitYears(movie.year)
                 if (years.isNotEmpty()) {
-                    rating.startYear = years[0].toIntOrNull() ?: -1
+                    startYear = years[0].toIntOrNull() ?: -1
                 }
                 if (years.size > 1) {
-                    rating.endYear = years[1].toIntOrNull() ?: -1
+                    endYear = years[1].toIntOrNull() ?: -1
                 }
 
-                rating.rating = it.value.split("/").firstOrNull()?.toFloatOrNull() ?:0f
-                rating.votes = movie.imdbVotes.replace(",","").toIntOrNull() ?: -1
+                val rating = MovieRating(
+                        imdbId = movie.imdbId,
+                        type = movie.type,
+                        title = movie.title,
+                        rating = it.rating.split("/").firstOrNull()?.toFloatOrNull() ?:0f,
+                        votes = movie.imdbVotes.replace(",","").toIntOrNull() ?: -1,
+                        startYear = startYear,
+                        endYear = endYear,
+                        translatedTitle = ""
+                )
+
+                return rating
             }
 
-            return rating
+            return empty()
         }
     }
 
@@ -142,8 +155,3 @@ data class RatingNotFound(
     @ColumnInfo(name = "TIMESTAMP")
     val timestamp: Long
 )
-
-class Trending {
-    @SerializedName("trending")
-    var movies: List<MovieRating> = listOf()
-}

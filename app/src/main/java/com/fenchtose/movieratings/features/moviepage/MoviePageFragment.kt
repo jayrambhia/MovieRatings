@@ -24,13 +24,13 @@ import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
-import com.fenchtose.movieratings.model.entity.Episode
-import com.fenchtose.movieratings.model.entity.EpisodesList
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.entity.Season
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
+import com.fenchtose.movieratings.model.entity.Episode
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
@@ -158,7 +158,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         titleView?.text = movie.title
         genreSection?.setContent(movie.genre)
         if (movie.ratings.size > 0) {
-            setRating(movie.ratings[0].value)
+            setRating(movie.ratings[0].rating)
         } else {
             ratingView?.visibility = View.GONE
         }
@@ -292,9 +292,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
             private fun createPath(extras: Bundle): MoviePath {
                 val movieId = extras.getString(MOVIE_ID, "")
-                val movie = Movie()
-                movie.imdbId = movieId
-                return MoviePath(movie)
+                return MoviePath(Movie.withId(movieId))
             }
         }
 
@@ -334,7 +332,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
             }
         }
 
-        private fun showEpisodes(season: EpisodesList) {
+        private fun showEpisodes(season: Season) {
             setupSpinner(season.totalSeasons, season.season)
             setVisibility(View.VISIBLE)
             val adapter = getAdapter()

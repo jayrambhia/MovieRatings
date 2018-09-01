@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.model.db.dao
 
 import android.arch.persistence.room.*
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
-import com.fenchtose.movieratings.model.entity.MovieCollectionEntry
+import com.fenchtose.movieratings.model.db.entity.Movie
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
+import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
 
 @Dao
 interface MovieCollectionDao {

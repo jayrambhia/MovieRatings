@@ -6,7 +6,7 @@ import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Next
-import com.fenchtose.movieratings.model.entity.Fav
+import com.fenchtose.movieratings.model.db.entity.Fav
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.entity.Movie
 import io.reactivex.Observable
@@ -43,9 +43,7 @@ class LikeMiddleware(private val likeStore: LikeStore) {
                     likeStore.setLiked(it.movie.imdbId, it.liked)
                 }.observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    // TODO create a new copy!!
-                    it.movie.liked = it.liked
-                    dispatch(MovieLiked(it.movie))
+                    dispatch(MovieLiked(it.movie.copy(liked = it.liked)))
                 })
     }
 

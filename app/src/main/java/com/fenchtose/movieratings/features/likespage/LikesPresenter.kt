@@ -2,10 +2,10 @@ package com.fenchtose.movieratings.features.likespage
 
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
-import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.api.provider.FavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.RxHooks
 import io.reactivex.Observable
@@ -70,7 +70,7 @@ class LikesPresenter(
         }
     }
 
-    private fun getSorted(type: Sort, data: ArrayList<Movie>): List<Movie> = when(type) {
+    private fun getSorted(type: Sort, data: List<Movie>): List<Movie> = when(type) {
         Sort.YEAR -> data.sortedWith(compareByDescending { it.year })
         Sort.ALPHABETICAL -> data.sortedBy { it.title }
         else -> data

@@ -25,8 +25,8 @@ import com.fenchtose.movieratings.features.info.InfoPageBottomView
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.bottomSlide

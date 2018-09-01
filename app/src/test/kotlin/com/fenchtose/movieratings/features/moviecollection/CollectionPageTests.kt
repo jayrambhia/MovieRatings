@@ -6,9 +6,9 @@ import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPage
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPagePresenter
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
-import com.fenchtose.movieratings.model.entity.MovieCollectionEntry
+import com.fenchtose.movieratings.model.db.entity.Movie
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
+import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore

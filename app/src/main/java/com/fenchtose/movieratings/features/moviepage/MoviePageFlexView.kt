@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.widget.TextView
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.widgets.FlexView
 
 class MoviePageFlexView(context: Context, private val flexView: FlexView, private val callback: CollectionCallback) {

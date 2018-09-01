@@ -7,8 +7,8 @@ import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
-import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.db.like.LikeStore
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.util.RxHooks
 import io.reactivex.Observable
 import io.reactivex.rxkotlin.subscribeBy
@@ -75,7 +75,8 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
 
     open fun toggleLike(movie: Movie) {
         likeStore.setLiked(movie.imdbId, !movie.liked)
-        movie.liked = !movie.liked
+        // TODO like movie
+//        movie.liked = !movie.liked
     }
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {

@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.features.moviepage
 
-import com.fenchtose.movieratings.model.entity.EpisodesList
+import com.fenchtose.movieratings.model.entity.Season
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
 
 interface MoviePage {
     fun updateState(state: State)
@@ -24,7 +24,7 @@ interface MoviePage {
 
     sealed class EpisodeState {
         class Loading: EpisodeState()
-        class Success(val season: EpisodesList): EpisodeState()
+        class Success(val season: Season): EpisodeState()
         class Error: EpisodeState()
         class Invalid: EpisodeState()
     }

@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.features.moviepage
 
 import android.content.Context
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.ResultBus
@@ -9,10 +8,14 @@ import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
 import com.fenchtose.movieratings.features.season.SeasonPageFragment
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
+import com.fenchtose.movieratings.model.entity.Season
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
+import com.fenchtose.movieratings.model.db.entity.RecentlyBrowsed
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
-import com.fenchtose.movieratings.model.entity.*
+import com.fenchtose.movieratings.model.entity.Episode
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.IntentUtils
@@ -31,7 +34,7 @@ class MoviePresenter(private val provider: MovieProvider,
     private var loadedMovie: Movie? = null
     private var selectedCollection: MovieCollection? = null
     private var currentSeason: Int = -1
-    private var episodes: EpisodesList? = null
+    private var episodes: Season? = null
 
     init {
         provider.addPreferenceApplier(likeStore)
@@ -114,7 +117,7 @@ class MoviePresenter(private val provider: MovieProvider,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if (it.success) {
+                    if (it.episodes.isNotEmpty()) {
                         currentSeason = it.season
                         episodes = it
                         updateState(MoviePage.EpisodeState.Success(it))
@@ -193,9 +196,10 @@ class MoviePresenter(private val provider: MovieProvider,
 
     fun likeToggle(): Boolean {
         loadedMovie?.let {
-            it.liked = !it.liked
+            // TODO immutable movie!
+//            it.liked = !it.liked
             likeStore.setLiked(it.imdbId, it.liked)
-            return it.liked
+            return !it.liked
         }
 
         return false

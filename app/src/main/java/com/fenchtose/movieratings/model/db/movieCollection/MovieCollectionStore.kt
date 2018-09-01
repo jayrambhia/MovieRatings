@@ -6,10 +6,10 @@ import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Next
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
-import com.fenchtose.movieratings.model.entity.MovieCollectionEntry
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
+import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
+import com.fenchtose.movieratings.model.entity.Movie
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.model.db.recentlyBrowsed
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.model.entity.RecentlyBrowsed
+import com.fenchtose.movieratings.model.db.entity.RecentlyBrowsed
 import io.reactivex.Observable
 import io.reactivex.Single
 

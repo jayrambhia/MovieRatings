@@ -9,10 +9,10 @@ import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
-import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.api.provider.DbFavoriteMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.util.AppRxHooks
 

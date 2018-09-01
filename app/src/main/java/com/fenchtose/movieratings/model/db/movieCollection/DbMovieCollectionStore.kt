@@ -1,10 +1,10 @@
 package com.fenchtose.movieratings.model.db.movieCollection
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
-import com.fenchtose.movieratings.model.entity.MovieCollectionEntry
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
+import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
 import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
+import com.fenchtose.movieratings.model.entity.Movie
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -46,7 +46,7 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
 
     override fun addMovieToCollection(collection: MovieCollection, movie: Movie): Observable<MovieCollectionEntry> {
         return Observable.defer {
-            Observable.just(MovieCollectionEntry.create(collection, movie))
+            Observable.just(MovieCollectionEntry.create(collection, movie.imdbId))
                     .doOnNext {
                         dao.insert(it)
                     }
@@ -75,9 +75,9 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
     }
 
     @WorkerThread
-    override fun apply(movie: Movie) {
-        movie.collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name }
-        movie.appliedPreferences.collections = true
+    override fun apply(movie: Movie): Movie {
+        return movie.copy(collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name },
+                preferences = movie.preferences.copy(collections = true))
     }
 
     override fun export(): Single<List<MovieCollection>> {

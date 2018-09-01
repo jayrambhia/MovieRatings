@@ -12,8 +12,8 @@ import com.fenchtose.movieratings.model.image.ImageLoader
 
 class CollectionPageAdapterConfig(val callback: Callback, val glide: ImageLoader,
                                   private val extraLayoutCreator: (() -> SearchItemViewHolder.ExtraLayoutHelper)): BaseMovieAdapter.AdapterConfig {
-    val MOVIE = 1
-    val ADD = 2
+    private val MOVIE = 1
+    private val ADD = 2
 
     override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         return when(viewType) {

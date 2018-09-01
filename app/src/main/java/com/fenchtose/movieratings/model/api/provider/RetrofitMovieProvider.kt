@@ -1,13 +1,11 @@
 package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.BuildConfig
-import com.fenchtose.movieratings.model.entity.Episode
-import com.fenchtose.movieratings.model.entity.EpisodesList
 import com.fenchtose.movieratings.model.api.MovieApi
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
+import com.fenchtose.movieratings.model.db.apply
 import com.fenchtose.movieratings.model.db.dao.MovieDao
+import com.fenchtose.movieratings.model.entity.*
 import com.fenchtose.movieratings.util.Constants
 import io.reactivex.Observable
 import retrofit2.Retrofit
@@ -20,7 +18,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     override fun getMovieWithImdb(imdbId: String): Observable<Movie> {
         return getMovie(
                 { this.getMovieFromDbWithImdb(imdbId) },
-                { api.getMovieInfoWithImdb(BuildConfig.OMDB_API_KEY, imdbId) },
+                { api.getMovieInfoWithImdb(BuildConfig.OMDB_API_KEY, imdbId).map { it.convert() } },
                 {  }
         )
     }
@@ -28,9 +26,9 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
     override fun getMovie(title: String, year: String): Observable<Movie> {
         return getMovie(
                 { this.getMovieFromDb(title, year) },
-                { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title, year) },
+                { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title, year).map { it.convert() } },
                 {  },
-                { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title)}
+                { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title).map { it.convert() }}
         )
     }
 
@@ -41,7 +39,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
         return dbCall()
                 .flatMap {
-                    if (it.id != -1) {
+                    if (it.imdbId.isNotEmpty()) {
                         Observable.just(it)
                     } else {
                         Observable.just(true)
@@ -50,7 +48,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                                 }.flatMap {
                                     apiCall()
                                     .flatMap {
-                                        if (it.imdbId.isNullOrEmpty() && fallbackApiCall != null) {
+                                        if (it.imdbId.isEmpty() && fallbackApiCall != null) {
                                             fallbackApiCall.invoke()
                                         } else {
                                             Observable.just(it)
@@ -58,17 +56,15 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                                     }
                                     .filter { it.isComplete(Movie.Check.BASE) }
                                     .doOnNext {
-                                        dao.insert(it)
+                                        dao.insert(it.convert())
                                     }
                                 }
 
                         }
                 }
                 .filter { it.isComplete(Movie.Check.BASE) }
-                .doOnNext {
-                    for (preferenceApplier in preferenceAppliers) {
-                        preferenceApplier.apply(it)
-                    }
+                .map {
+                    preferenceAppliers.apply(it)
                 }
 
     }
@@ -78,43 +74,44 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
      */
     private fun getMovieFromDb(title: String, year: String): Observable<Movie> {
         return Observable.defer {
-            val movie = if (year.isNotEmpty()) dao.getMovie(title, year) else dao.getMovie(title)
-            if (movie != null && movie.isComplete(Movie.Check.BASE) && movie.ratings.size > 0) {
-                Observable.just(movie)
-            } else {
-                Observable.just(Movie.empty())
+            val dbMovie = if (year.isNotEmpty()) dao.getMovie(title, year) else dao.getMovie(title)
+            dbMovie?.let {
+                val movie = dbMovie.convert()
+                if (movie.isComplete(Movie.Check.BASE) && movie.imdbRating.isNotBlank()) {
+                    return@defer Observable.just(movie)
+                }
             }
+
+            Observable.just(Movie.invalid())
         }
     }
 
     private fun getMovieFromDbWithImdb(imdbId: String): Observable<Movie> {
         return Observable.defer {
-            val movie = dao.getMovieWithImdbId(imdbId)
-            if (movie != null && movie.isComplete(Movie.Check.EXTRA)) {
-                Observable.just(movie)
-            } else {
-                Observable.just(Movie.empty())
+            val dbMovie = dao.getMovieWithImdbId(imdbId)
+            dbMovie?.let {
+                val movie = dbMovie.convert()
+                if (movie.isComplete(Movie.Check.EXTRA)) {
+                    return@defer Observable.just(movie)
+                }
             }
+
+            Observable.just(Movie.invalid())
         }
     }
 
     override fun search(title: String, page: Int): Observable<SearchResult> {
         return api.search(BuildConfig.OMDB_API_KEY, title, page)
-                .doOnNext {
-                    it.results.map {
-                        for (preferenceApplier in preferenceAppliers) {
-                            preferenceApplier.apply(it)
-                        }
-                    }
-                }
-                .doOnNext {
-                    it.results.map {
-                        dao.insertSearch(it)
-                    }
+                .map {
+                    it.convert()
+                }.map {
+                    it.copy(movies = it.movies.map { preferenceAppliers.apply(it) })
+                }.doOnNext {
+                    it.movies.map { dao.insertSearch(it.convert()) }
                 }
     }
 
-    override fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList> {
+    override fun getEpisodes(series: Movie, season: Int): Observable<Season> {
         if (series.type != Constants.TitleType.SERIES.type) {
             return Observable.error(Throwable("invalid title type ${series.type}"))
         }
@@ -122,31 +119,18 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         return getEpisodes(
                 {
                     Observable.defer {
-                        val episodes = EpisodesList()
-                        episodes.success = false
-
-                        if (series.totalSeasons > 0) {
-                            episodes.episodes.addAll(dao.getEpisodesForSeason(series.imdbId, season))
-                            episodes.success = episodes.episodes.size > 0
-                            episodes.title = series.title
-                            episodes.season = season
-                            episodes.totalSeasons = series.totalSeasons
-                        }
-
-                        Observable.just(episodes)
+                        val dbEpisodes = dao.getEpisodesForSeason(series.imdbId, season)
+                        Observable.just(dbEpisodes.convert(series, season))
                     }
 
                 },
                 {
                     api.getEpisodesList(BuildConfig.OMDB_API_KEY, series.imdbId, season)
+                            .map { it.copy(episodes = it.episodes.map { it.update(series.imdbId, season) }) }
                             .doOnNext {
                                 it.episodes.map {
-                                    ep -> run {
-                                    ep.seriesId = series.imdbId
-                                    ep.season = it.season
-                                    dao.insert(ep)
-                                }
-                                }
+                                    it.convert()
+                                }.forEach { dao.insert(it) }
                             }
                 }
         )
@@ -154,29 +138,25 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
     override fun getEpisode(episode: Episode): Observable<Movie> {
         return getEpisode(
-                {
-                    getMovieFromDbWithImdb(episode.imdbId)
-                },
+                { getMovieFromDbWithImdb(episode.imdbId) },
                 {
                     api.getEpisode(BuildConfig.OMDB_API_KEY, episode.seriesId, episode.season, episode.episode)
+                            .map { it.convert() }
                             .doOnNext {
-                                dao.insert(it)
+                                dao.insert(it.convert())
                             }
                 }
         ).map {
-            for (preferenceApplier in preferenceAppliers) {
-                preferenceApplier.apply(it)
-            }
-            it
+            preferenceAppliers.apply(it)
         }
     }
 
-    private fun getEpisodes(dbCall: () -> Observable<EpisodesList>,
-                            apiCall: () -> Observable<EpisodesList>): Observable<EpisodesList> {
+    private fun getEpisodes(dbCall: () -> Observable<Season>,
+                            apiCall: () -> Observable<Season>): Observable<Season> {
 
         return dbCall()
                 .flatMap {
-                    if (it.success) {
+                    if (it.episodes.isNotEmpty()) {
                         Observable.just(it)
                     } else {
                         apiCall()
@@ -190,7 +170,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
 
         return dbCall()
                 .flatMap {
-                    if (it.id != -1) {
+                    if (it.imdbId.isNotEmpty()) {
                         Observable.just(it)
                     } else {
                         apiCall()

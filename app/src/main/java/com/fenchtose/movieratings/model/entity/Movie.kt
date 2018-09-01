@@ -1,117 +1,52 @@
 package com.fenchtose.movieratings.model.entity
 
-import android.arch.persistence.room.*
-import com.fenchtose.movieratings.model.db.MovieTypeConverter2
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.util.replace
-import com.google.gson.annotations.SerializedName
-import kotlin.collections.ArrayList
 
-@Entity(tableName = "MOVIES", indices = arrayOf(Index("IMDBID", unique = true)))
-@TypeConverters(value = MovieTypeConverter2::class)
-class Movie {
+data class Movie(
+    // essentials
 
-    @SerializedName("id")
-    @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
+    val imdbId: String,
+    val title: String,
+    val year: String,
+    val type: String,
+    val poster: String,
 
-    @ColumnInfo(name = "TITLE")
-    @SerializedName("Title")
-    var title: String = ""
+    // misc
+    val genre: String = "",
+    val director: String = "",
+    val released: String = "",
+    val actors: String = "",
+    val writers: String = "",
+    val plot: String = "",
+    val imdbRating: String = "",
+    val seasons: Int = -1,
+    val ratings: List<OmdbRating> = listOf(),
 
-    @ColumnInfo(name = "POSTER")
-    @SerializedName("Poster")
-    var poster: String = ""
+    // unused
+    val rated: String = "",
+    val runtime: String = "",
+    val language: String = "",
+    val website: String = "",
+    val imdbVotes: String = "",
+    val country: String = "",
+    val production: String = "",
+    val awards: String = "",
 
-    @ColumnInfo(name = "RATINGS")
-    @SerializedName("Ratings")
-    var ratings: ArrayList<Rating> = ArrayList()
+    // user pref
+    val liked: Boolean = false,
+    val collections: List<MovieCollection> = listOf(),
+    val preferences: AppliedPreferences = AppliedPreferences()
+) {
 
-    @ColumnInfo(name = "TYPE")
-    @SerializedName("Type")
-    var type: String = ""
+    data class AppliedPreferences(val liked: Boolean = false, val collections: Boolean = false) {
+        fun checkValid(): Boolean {
+            return liked && collections
+        }
+    }
 
-    @ColumnInfo(name = "IMDBID")
-    @SerializedName("imdbID")
-    var imdbId: String = ""
-
-    @ColumnInfo(name = "YEAR")
-    @SerializedName("Year")
-    var year: String = ""
-
-    @ColumnInfo(name = "RATED")
-    @SerializedName("Rated")
-    var rated: String = ""
-
-    @ColumnInfo(name = "RELEASED")
-    @SerializedName("Released")
-    var released: String = ""
-
-    @ColumnInfo(name = "RUNTIME")
-    @SerializedName("Runtime")
-    var runtime: String = ""
-
-    @ColumnInfo(name = "GENRE")
-    @SerializedName("Genre")
-    var genre: String = ""
-
-    @ColumnInfo(name = "DIRECTOR")
-    @SerializedName("Director")
-    var director: String = ""
-
-    @ColumnInfo(name = "WRITERS")
-    @SerializedName("Writer", alternate = ["Writers"])
-    var writers: String = ""
-
-    @ColumnInfo(name = "ACTORS")
-    @SerializedName("Actors")
-    var actors: String = ""
-
-    @ColumnInfo(name = "PLOT")
-    @SerializedName("Plot")
-    var plot: String = ""
-
-    @ColumnInfo(name = "LANGUAGE")
-    @SerializedName("Language")
-    var language: String = ""
-
-    @ColumnInfo(name = "COUNTRY")
-    @SerializedName("Country")
-    var country: String = ""
-
-    @ColumnInfo(name = "AWARDS")
-    @SerializedName("Awards")
-    var awards: String = ""
-
-    @ColumnInfo(name = "IMDBVOTES")
-    @SerializedName("imdbVotes")
-    var imdbVotes: String = ""
-
-    @ColumnInfo(name = "PRODUCTION")
-    @SerializedName("Production")
-    var production: String = ""
-
-    @ColumnInfo(name = "WEBSITE")
-    @SerializedName("Website")
-    var website: String = ""
-
-    @ColumnInfo(name = "TOTALSEASONS")
-    @SerializedName("totalSeasons")
-    var totalSeasons: Int = -1
-
-    @Ignore
-    @Transient
-    var liked: Boolean = false
-
-    @Ignore
-    @Transient
-    var collections: List<MovieCollection>? = null
-
-    @Ignore
-    @Transient
-    val appliedPreferences: AppliedPreferences = AppliedPreferences()
-
-    override fun toString(): String {
-        return "Movie(id='$id', title='$title', liked='$liked', ratings=$ratings)"
+    fun like(liked: Boolean): Movie {
+        return copy(liked = liked, preferences = preferences.copy(liked = true))
     }
 
     private fun checkValidBase(): Boolean {
@@ -126,8 +61,8 @@ class Movie {
         return when(check) {
             Check.BASE -> checkValidBase()
             Check.EXTRA -> checkValidBase() && checkValidExtras()
-            Check.LIKED -> checkValidBase() && checkValidExtras() && appliedPreferences.liked
-            Check.USER_PREFERENCES -> checkValidBase() && checkValidExtras() && appliedPreferences.checkValid()
+//            Check.LIKED -> checkValidBase() && checkValidExtras() && appliedPreferences.liked
+            Check.USER_PREFERENCES -> checkValidBase() && checkValidExtras() && preferences.checkValid()
         }
     }
 
@@ -137,37 +72,48 @@ class Movie {
         }.size > fields.size/2
     }
 
-    companion object {
-        fun empty() : Movie {
-            val movie = Movie()
-            movie.id = -1
-            return movie
-        }
-    }
-
-    data class AppliedPreferences(var liked: Boolean = false, var collections: Boolean = false) {
-        fun checkValid(): Boolean {
-            return liked && collections
-        }
-    }
-
     enum class Check {
         BASE,
         EXTRA,
-        LIKED,
+//        LIKED,
         USER_PREFERENCES
-    }
-}
-
-class Rating(@SerializedName("Source") val source: String, @SerializedName("Value") val value: String) {
-    override fun toString(): String {
-        return "Rating(source='$source', value='$value')"
     }
 
     companion object {
-        fun empty(): Rating {
-            return Rating("", "")
+        fun invalid(): Movie {
+            return Movie("", "", "", "", "")
         }
+
+        fun withId(imdbId: String): Movie {
+            return Movie(imdbId, "", "", "", "")
+        }
+    }
+
+    fun convert(): com.fenchtose.movieratings.model.db.entity.Movie {
+        val dbMovie = com.fenchtose.movieratings.model.db.entity.Movie()
+        dbMovie.imdbId = imdbId
+        dbMovie.title = title
+        dbMovie.poster = poster
+        dbMovie.ratings = ArrayList(ratings.map { it.convert() })
+        dbMovie.type = type
+        dbMovie.year = year
+        dbMovie.rated = rated
+        dbMovie.released = released
+        dbMovie.runtime = runtime
+        dbMovie.genre = genre
+        dbMovie.director = director
+        dbMovie.writers = writers
+        dbMovie.actors = actors
+        dbMovie.plot = plot
+        dbMovie.language = language
+        dbMovie.country = country
+        dbMovie.awards = awards
+        dbMovie.imdbVotes = imdbVotes
+        dbMovie.production = production
+        dbMovie.website = website
+        dbMovie.totalSeasons = seasons
+
+        return dbMovie
     }
 }
 
@@ -186,4 +132,34 @@ fun List<Movie>.updateMovie(movie: Movie): List<Movie> {
     }
 
     return this
+}
+
+fun com.fenchtose.movieratings.model.db.entity.Movie.convert(): Movie {
+    return Movie(
+            title = title,
+            poster = poster,
+            ratings = ratings.map { OmdbRating(it.source, it.value) },
+            type = type,
+            imdbId = imdbId,
+            year = year,
+            rated = rated,
+            released = released,
+            runtime = runtime,
+            genre = genre,
+            director = director,
+            writers = writers,
+            actors = actors,
+            plot = plot,
+            language = language,
+            country = country,
+            awards = awards,
+            imdbVotes = imdbVotes,
+            production = production,
+            website = website,
+            seasons = totalSeasons
+    )
+}
+
+fun List<com.fenchtose.movieratings.model.db.entity.Movie>.convert(): List<Movie> {
+    return map {it.convert()}
 }

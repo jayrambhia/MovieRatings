@@ -4,5 +4,5 @@ import com.fenchtose.movieratings.model.entity.Movie
 import io.reactivex.Observable
 
 interface FavoriteMovieProvider {
-    fun getMovies(): Observable<ArrayList<Movie>>
+    fun getMovies(): Observable<List<Movie>>
 }

@@ -1,18 +1,18 @@
-package com.fenchtose.movieratings.model.entity
+package com.fenchtose.movieratings.model.db.entity
 
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "FAVS")
-class Fav {
+@Entity(tableName = "RECENTLY_BROWSED")
+class RecentlyBrowsed {
     @PrimaryKey
     @SerializedName("id")
     @ColumnInfo(name = "IMDBID")
     var id: String = ""
 
-    @SerializedName("liked")
-    @ColumnInfo(name = "IS_FAV")
-    var liked: Boolean = false
+    @SerializedName("timestamp")
+    @ColumnInfo(name = "TIMESTAMP")
+    var timestamp: Long = 0
 }

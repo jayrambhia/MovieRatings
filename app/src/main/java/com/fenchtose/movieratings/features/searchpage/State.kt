@@ -8,8 +8,8 @@ import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.like.MovieLiked
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionResponse
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.hasMovie
 import com.fenchtose.movieratings.model.entity.updateMovie
 import com.fenchtose.movieratings.util.addAll
@@ -194,10 +194,10 @@ class SearchMiddleWare(private val provider: MovieProvider,
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe( {
-                    if (it.error.isNotEmpty()) {
+                    if (it.error != null) {
                         dispatch(SearchAction.Result(if (page == 1) Progress.Error else Progress.PaginationError, addToCollection))
                     } else {
-                        dispatch(SearchAction.Result(if (page == 1) Progress.Success.Loaded(it.results, page) else Progress.Success.Pagination(it.results, page), addToCollection))
+                        dispatch(SearchAction.Result(if (page == 1) Progress.Success.Loaded(it.movies, page) else Progress.Success.Pagination(it.movies, page), addToCollection))
                     }
                 }, {
                     it.printStackTrace()

@@ -3,7 +3,7 @@ package com.fenchtose.movieratings.model.offline.export
 import android.net.Uri
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
-import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.db.MovieDb
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.LikeStore

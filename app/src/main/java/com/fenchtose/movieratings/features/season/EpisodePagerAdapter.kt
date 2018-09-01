@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.features.season.episode.EpisodePage
-import com.fenchtose.movieratings.model.entity.EpisodesList
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.Season
 
 class EpisodePagerAdapter(private val context: Context,
                           private val series: Movie,
-                          episodes: EpisodesList,
+                          episodes: Season,
                           private val callback: EpisodePage.EpisodeCallback): PagerAdapter() {
 
     private val episodes = episodes.episodes

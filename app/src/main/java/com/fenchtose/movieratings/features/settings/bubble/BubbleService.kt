@@ -4,7 +4,7 @@ import android.app.Service
 import android.content.Intent
 import com.fenchtose.movieratings.base.router.EventBus
 import com.fenchtose.movieratings.display.RatingDisplayer
-import com.fenchtose.movieratings.model.entity.MovieRating
+import com.fenchtose.movieratings.model.db.entity.MovieRating
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import io.reactivex.disposables.Disposable
 
@@ -24,9 +24,7 @@ class BubbleService: Service() {
     override fun onBind(intent: Intent?) = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val rating = MovieRating()
-        rating.imdbId = "test"
-        rating.rating = 8.2f
+        val rating = MovieRating("test", 8.2f, 0, "", "", "", -1, -1)
         displayer?.showRatingWindow(rating)
 
         disposable = EventBus.subscribe<BubbleColorEvent>()

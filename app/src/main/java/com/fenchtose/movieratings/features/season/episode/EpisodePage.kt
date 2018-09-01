@@ -108,7 +108,7 @@ class EpisodePage(context: Context, private val episode: Episode,
 
         titleSection.setContent(episode.title)
         seriesTitleSection.setContent(context.getString(R.string.episode_page_series_title, series.title, this.episode.season))
-        ratingSection.setContent(episode.ratings.firstOrNull()?.value)
+        ratingSection.setContent(episode.ratings.firstOrNull()?.rating)
         genreSection.setContent(episode.genre)
         directorSection.setContent(" ${episode.director}")
         releaseSection.setContent(" ${episode.released}")

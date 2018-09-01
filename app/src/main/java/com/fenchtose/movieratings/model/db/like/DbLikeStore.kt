@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.model.db.like
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.model.entity.Fav
-import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.db.entity.Fav
 import com.fenchtose.movieratings.model.db.dao.FavDao
+import com.fenchtose.movieratings.model.entity.Movie
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -23,9 +23,8 @@ class DbLikeStore private constructor(private val likeDao: FavDao) : LikeStore {
     }
 
     @WorkerThread
-    override fun apply(movie: Movie) {
-        movie.liked = isLiked(movie.imdbId)
-        movie.appliedPreferences.liked = true
+    override fun apply(movie: Movie): Movie {
+        return movie.like(isLiked(movie.imdbId))
     }
 
     @WorkerThread

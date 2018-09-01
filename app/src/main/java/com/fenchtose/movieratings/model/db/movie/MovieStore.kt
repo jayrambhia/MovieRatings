@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.model.db.movie
 
 import android.support.annotation.WorkerThread
-import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.db.entity.Movie
 import io.reactivex.Single
 
 interface MovieStore {

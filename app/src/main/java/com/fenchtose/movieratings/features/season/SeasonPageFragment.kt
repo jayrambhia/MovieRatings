@@ -16,8 +16,8 @@ import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.season.episode.EpisodePage
-import com.fenchtose.movieratings.model.entity.EpisodesList
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.Season
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.util.IntentUtils
@@ -101,7 +101,7 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
         }
     }
 
-    class SeasonPath(val series: Movie, val episodes: EpisodesList, val selectedEpisode: Int): RouterPath<SeasonPageFragment>() {
+    class SeasonPath(val series: Movie, val episodes: Season, val selectedEpisode: Int): RouterPath<SeasonPageFragment>() {
         override fun createFragmentInstance() = SeasonPageFragment()
         override fun showMenuIcons() = intArrayOf(R.id.action_open_imdb)
         override fun category() = GaCategory.SEASON

@@ -3,12 +3,10 @@ package com.fenchtose.movieratings.model.api.provider
 import android.content.Context
 import android.support.annotation.RawRes
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.entity.Episode
-import com.fenchtose.movieratings.model.entity.EpisodesList
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
+import com.fenchtose.movieratings.model.db.apply
 import com.fenchtose.movieratings.model.db.dao.MovieDao
+import com.fenchtose.movieratings.model.entity.*
 import com.google.gson.Gson
 import io.reactivex.Observable
 import java.io.ByteArrayOutputStream
@@ -26,14 +24,14 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
     override fun getMovie(title: String, year: String): Observable<Movie> {
         return getMovieFromDb(title)
                 .flatMap {
-                    if (it.id != -1) {
+                    if (it.imdbId.isNotEmpty()) {
                         Observable.just(it)
                     } else {
                         Observable.just(true)
                                 .flatMap {
                                         getMovieInfo(title)
                                         .doOnNext {
-                                            dao.insert(it)
+                                            dao.insert(it.convert())
                                         }
                                 }
 
@@ -49,30 +47,29 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
             else -> Observable.error(Throwable("PreloadedMovieProvider does not support this search: $title"))
         }
         return observable
-                .doOnNext {
-                    it.results.map {
-                        for (preferenceApplier in preferenceAppliers) {
-                            preferenceApplier.apply(it)
-                        }
-                    }
+                .map {
+                    it.copy(movies = it.results.map { it.convert() })
+                }
+                .map {
+                    it.copy(movies = it.movies.map { preferenceAppliers.apply(it) })
                 }
                 .doOnNext {
-                    it.results.map {
-                        dao.insertSearch(it)
+                    it.movies.map {
+                        dao.insertSearch(it.convert())
                     }
                 }
     }
 
-    override fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList> {
+    override fun getEpisodes(series: Movie, season: Int): Observable<Season> {
         return Observable.defer {
             val data = readRawFile(if (season == 1) R.raw.parks_n_rec_season_1 else R.raw.parks_n_rec_season_2)
             val gson = Gson()
-            Observable.just(gson.fromJson(data, EpisodesList::class.java))
+            Observable.just(gson.fromJson(data, Season::class.java))
         }
     }
 
     override fun getEpisode(episode: Episode): Observable<Movie> {
-        return Observable.just(Movie.empty())
+        return Observable.just(Movie.invalid())
     }
 
     override fun addPreferenceApplier(applier: UserPreferenceApplier) {
@@ -81,12 +78,12 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
 
     private fun getMovieFromDb(title: String): Observable<Movie> {
         return Observable.defer {
-            val movie = dao.getMovie(title)
-            if (movie != null) {
-                Observable.just(movie)
-            } else {
-                Observable.just(Movie.empty())
+            val dbMovie = dao.getMovie(title)
+            dbMovie?.let {
+                return@defer Observable.just(dbMovie.convert())
             }
+
+            Observable.just(Movie.invalid())
         }
     }
 

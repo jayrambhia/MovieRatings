@@ -1,17 +1,51 @@
 package com.fenchtose.movieratings.model.entity
 
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-class SearchResult {
-    @SerializedName("Search")
-    var results: ArrayList<Movie> = ArrayList()
+@JsonClass(generateAdapter = true)
+data class SearchResult(
+    @Json(name="Search")
+    val results: List<SearchMovie> = listOf(),
 
-    @SerializedName("totalResults")
-    var total: Int = 0
+    @Transient
+    val movies: List<Movie> = listOf(),
 
-    @SerializedName("Response")
-    var success: Boolean = false
+    @Json(name="totalResults")
+    val total: Int = 0,
 
-    @SerializedName("Error")
-    var error: String = ""
+    @Json(name="Response")
+    val success: String = "",
+
+    @Json(name = "Error")
+    var error: String?) {
+
+    fun convert(): SearchResult {
+        return copy(movies = results.map { it.convert() })
+    }
+}
+
+
+@JsonClass(generateAdapter = true)
+data class SearchMovie(
+    @Json(name="Title")
+    val title: String,
+    @Json(name="Year")
+    val year: String,
+    @Json(name="imdbID")
+    val imdbId: String,
+    @Json(name="Poster")
+    val poster: String,
+    @Json(name="Type")
+    val type: String
+) {
+    fun convert(): Movie {
+        return Movie(
+                imdbId = imdbId,
+                title = title,
+                year = year,
+                type = type,
+                poster = poster
+        )
+    }
 }

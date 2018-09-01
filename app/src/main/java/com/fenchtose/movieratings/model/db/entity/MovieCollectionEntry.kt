@@ -1,4 +1,4 @@
-package com.fenchtose.movieratings.model.entity
+package com.fenchtose.movieratings.model.db.entity
 
 import android.arch.persistence.room.*
 import com.google.gson.annotations.SerializedName
@@ -31,8 +31,8 @@ class MovieCollectionEntry {
     var deleted: Int = 0
 
     companion object {
-        fun create(collection: MovieCollection, movie: Movie): MovieCollectionEntry {
-            return create(collection.id, movie.imdbId)
+        fun create(collection: MovieCollection, imdbId: String): MovieCollectionEntry {
+            return create(collection.id, imdbId)
         }
 
         fun create(collectionId: Long, movieId: String): MovieCollectionEntry {

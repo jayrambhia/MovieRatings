@@ -15,7 +15,7 @@ import android.view.View
 import android.view.WindowManager
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.features.stickyview.FloatingRating
-import com.fenchtose.movieratings.model.entity.MovieRating
+import com.fenchtose.movieratings.model.db.entity.MovieRating
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils

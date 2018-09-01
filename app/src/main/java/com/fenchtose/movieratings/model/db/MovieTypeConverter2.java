@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.model.db;
 
 import android.arch.persistence.room.TypeConverter;
 
-import com.fenchtose.movieratings.model.entity.Rating;
+import com.fenchtose.movieratings.model.db.entity.Rating;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
