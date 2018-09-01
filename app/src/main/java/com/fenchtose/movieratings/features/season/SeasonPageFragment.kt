@@ -105,6 +105,7 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
         override fun createFragmentInstance() = SeasonPageFragment()
         override fun showMenuIcons() = intArrayOf(R.id.action_open_imdb)
         override fun category() = GaCategory.SEASON
+        override fun toolbarElevation() = R.dimen.toolbar_no_elevation
     }
 
 }

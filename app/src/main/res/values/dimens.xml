@@ -24,4 +24,7 @@
 	<dimen name="indicator_height">3dp</dimen>
 	<dimen name="indicator_width">36dp</dimen>
 	<dimen name="indicator_bottom_margin">1dp</dimen>
+
+	<dimen name="toolbar_default_elevation">2dp</dimen>
+	<dimen name="toolbar_no_elevation">0dp</dimen>
 </resources>

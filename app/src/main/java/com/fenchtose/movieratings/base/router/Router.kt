@@ -129,6 +129,7 @@ class Router(activity: RouterBaseActivity,
             it.setTitle(fragment.getScreenTitle())
             it.setDisplayShowHomeEnabled(path.showBackButton())
             it.setDisplayHomeAsUpEnabled(path.showBackButton())
+            it.elevation = it.themedContext.resources.getDimension(path.toolbarElevation())
         }
 
         onMovedTo.invoke(path)

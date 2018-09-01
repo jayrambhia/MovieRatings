@@ -78,4 +78,5 @@ class TrendingFragment: BaseMovieListPageFragment<TrendingFragment, TrendingPres
 class TrendingPath: RouterPath<TrendingFragment>() {
     override fun createFragmentInstance() = TrendingFragment()
     override fun category() = GaCategory.TRENDING
+    override fun toolbarElevation() = R.dimen.toolbar_no_elevation
 }

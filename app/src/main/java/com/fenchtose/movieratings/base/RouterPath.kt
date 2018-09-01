@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.base
 
 import android.view.View
+import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.router.Router
 
 abstract class RouterPath<T : BaseFragment> {
@@ -58,5 +59,7 @@ abstract class RouterPath<T : BaseFragment> {
     open fun getSharedTransitionElement(): Pair<View, String>? = null
 
     open fun category(): String = ""
+
+    open fun toolbarElevation(): Int = R.dimen.toolbar_default_elevation
 
 }

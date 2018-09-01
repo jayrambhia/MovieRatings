@@ -314,6 +314,8 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
         override fun category() = GaCategory.MOVIE
 
+        override fun toolbarElevation() = R.dimen.toolbar_no_elevation
+
     }
 
     class EpisodesSection(private val context: Context, private val header: View, private val recyclerView: RecyclerView,
