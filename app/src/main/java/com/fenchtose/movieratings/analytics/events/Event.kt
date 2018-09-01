@@ -1,29 +1,14 @@
 package com.fenchtose.movieratings.analytics.events
 
 import com.fenchtose.movieratings.MovieRatingsApplication
-import com.google.gson.JsonObject
 
-open class Event(val name: String) {
-
-    val data: JsonObject = JsonObject()
-
-    fun putAttribute(key: String, value: String): Event {
-        data.addProperty(key, value)
-        return this
-    }
-
-    fun putAttriubte(key: String, value: Number): Event {
-        data.addProperty(key, value)
-        return this
-    }
-
+interface Event {
     fun track() {
         MovieRatingsApplication.analyticsDispatcher.sendEvent(this)
     }
-
 }
 
-class GaEvent(val category: String, val action: String, val label: String): Event(label) {
+class GaEvent(val category: String, val action: String, val label: String): Event {
 
     fun withLabel(label: String): GaEvent {
         return GaEvent(category, action, label)
@@ -46,4 +31,4 @@ class GaEvent(val category: String, val action: String, val label: String): Even
     }
 }
 
-class ScreenView(name: String): Event(name)
+class ScreenView(val name: String): Event

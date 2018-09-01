@@ -1,8 +1,6 @@
 package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.BuildConfig
-import com.fenchtose.movieratings.MovieRatingsApplication
-import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.model.entity.Episode
 import com.fenchtose.movieratings.model.entity.EpisodesList
 import com.fenchtose.movieratings.model.api.MovieApi
@@ -17,14 +15,13 @@ import retrofit2.Retrofit
 class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvider {
 
     val api: MovieApi = retrofit.create(MovieApi::class.java)
-    val analytics = MovieRatingsApplication.analyticsDispatcher
     private val preferenceAppliers = HashSet<UserPreferenceApplier>()
 
     override fun getMovieWithImdb(imdbId: String): Observable<Movie> {
         return getMovie(
                 { this.getMovieFromDbWithImdb(imdbId) },
                 { api.getMovieInfoWithImdb(BuildConfig.OMDB_API_KEY, imdbId) },
-                { analytics.sendEvent(Event("get_movie_online")) }
+                {  }
         )
     }
 
@@ -32,7 +29,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
         return getMovie(
                 { this.getMovieFromDb(title, year) },
                 { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title, year) },
-                { analytics.sendEvent(Event("get_movie_online")) },
+                {  },
                 { api.getMovieInfo(BuildConfig.OMDB_API_KEY, title)}
         )
     }

@@ -14,8 +14,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
-import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.features.stickyview.FloatingRating
 import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.preferences.UserPreferences
@@ -24,7 +22,7 @@ import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.ToastUtils
 import com.fenchtose.movieratings.widgets.RatingBubble
 
-class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
+class RatingDisplayer(ctx: Context,
                       private val preferences: UserPreferences,
                       private val autoDismiss: Boolean = true) {
     private val context: Context = ctx.applicationContext
@@ -115,9 +113,6 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
             true
         } catch (e: RuntimeException) {
             e.printStackTrace()
-            analytics.sendEvent(Event("runtime_error")
-                    .putAttribute("error", if (e.message != null) e.message!! else "unknown")
-                    .putAttribute("where", "service_remove_view"))
             false
         }
     }
@@ -147,9 +142,6 @@ class RatingDisplayer(ctx: Context, val analytics: AnalyticsDispatcher,
             getWindowManager().removeViewImmediate(view)
         } catch(e: RuntimeException) {
             e.printStackTrace()
-            analytics.sendEvent(Event("runtime_error")
-                    .putAttribute("error", if (e.message != null) e.message!! else "unknown")
-                    .putAttribute("where", "service_remove_view"))
         } finally {
             isShowingView = false
             floatingRating = null

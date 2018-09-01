@@ -7,7 +7,6 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.features.tts.Speaker
@@ -45,8 +44,6 @@ class NetflixReaderService : AccessibilityService() {
     private var lastWindowStateChangeEventTime: Long = 0
     private val WINDOW_STATE_CHANGE_THRESHOLD = 2000
 
-    private var analytics: AnalyticsDispatcher? = null
-
     private var displayer: RatingDisplayer? = null
     private var speaker: Speaker? = null
 
@@ -65,8 +62,7 @@ class NetflixReaderService : AccessibilityService() {
 
         preferences = SettingsPreferences(this)
         provider = MovieRatingsApplication.ratingProviderModule.ratingProvider
-        analytics = MovieRatingsApplication.analyticsDispatcher
-        displayer = RatingDisplayer(this, analytics!!, preferences!!)
+        displayer = RatingDisplayer(this, preferences!!)
         historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance!!),
                 DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
                 preferences!!)

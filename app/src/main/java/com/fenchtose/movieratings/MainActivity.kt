@@ -10,8 +10,6 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
-import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.router.Router
@@ -43,8 +41,6 @@ class MainActivity : RouterBaseActivity() {
     private var accessibilityPagePublisher: PublishSubject<Boolean>? = null
     private var disposable: Disposable? = null
 
-    private var analytics: AnalyticsDispatcher? = null
-
     private var preferences: UserPreferences? = null
     private var historyKeeper: HistoryKeeper? = null
 
@@ -66,8 +62,6 @@ class MainActivity : RouterBaseActivity() {
         }
 
         accessibilityPagePublisher?.onNext(false)
-
-        analytics = MovieRatingsApplication.analyticsDispatcher
 
         historyKeeper = DbHistoryKeeper(
                 PreferenceUserHistory(this),
@@ -112,7 +106,6 @@ class MainActivity : RouterBaseActivity() {
     }
 
     private fun showAccessibilityInfo() {
-        analytics?.sendEvent(Event("activate_button_clicked"))
         getRouter()?.go(AccessInfoFragment.AccessibilityPath())
     }
 
