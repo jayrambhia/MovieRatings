@@ -1,5 +1,14 @@
 # Flutter Changelog
 
+# 0.3.3
+
+ - `Trending` page added
+ - Events cleaned up
+ - Movie list jitters fixed
+ - GA integrated
+ - Progress loader added to support page
+ - Empty collection list page share issue fixed
+
 # 0.3.2
 
  - Fix `NoSuchElement` crash

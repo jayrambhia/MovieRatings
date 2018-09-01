@@ -5,7 +5,7 @@
 <img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png" width="480px"/>
 </p>
 
-You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.3.2](https://github.com/jayrambhia/MovieRatings/releases/download/v0.3.2/flutter_v0.3.2.apk)
+You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.3.3](https://github.com/jayrambhia/MovieRatings/releases/download/v0.3.3/flutter_v0.3.3.apk)
 
 ## Screenshots of master
 
@@ -66,7 +66,7 @@ That is the primary functionality of the app. But it has much more to offer. Flu
 
 Flutter is smart and lightweight (just over 2MB in size). It uses Android's accessibility feature  to get movie names from streaming apps like Netflix, BBC iPlayer, Jio TV, etc. It looks up the movie on the internet, gets basic details and accurate ratings from Open Movie Database, and shows you the ratings on your phone instantly without any hassles. Whenever you open a page of a movie or a TV show, you'll see the ratings on the bottom-right side of your screen.
 
-This movie rating app doesn't ask for your contacts or personal details, bother you with push notifications. It’s active only when you're browsing the content on video streaming apps and it will sleep peacefully the rest of the time to save as much battery as possible. We care about your privacy and do not send your personal information or what you browse to the cloud.
+This movie rating app doesn't ask for your contacts or personal details, bother you with push notifications. It’s active only when you're browsing the content on video streaming apps and it will sleep peacefully the rest of the time to save as much battery as possible. We care about your privacy and do not send your personal information to the cloud.
 
 <b>How to make it work?</b>
 
