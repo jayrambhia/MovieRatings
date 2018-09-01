@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.trending
 
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -34,8 +35,8 @@ class TrendingFragment: BaseMovieListPageFragment<TrendingFragment, TrendingPres
         super.onViewCreated(view, savedInstanceState)
         val tabLayout: IndicatorTabLayout? = view.findViewById(R.id.tabs)
         tabLayout?.let {
-            it.addTab(createTab("Today"))
-            it.addTab(createTab("This week"))
+            it.addTab(createTab(R.string.trending_tab_today))
+            it.addTab(createTab(R.string.trending_tab_week))
 
             it.selectTab(
                     when(presenter?.currentPeriod()) {
@@ -57,8 +58,8 @@ class TrendingFragment: BaseMovieListPageFragment<TrendingFragment, TrendingPres
         }
     }
 
-    private fun createTab(text: String): IndicatorTabLayout.Tab {
-        val view = LayoutInflater.from(context).inflate(R.layout.tab_item_layout, null).apply { (this as TextView).text = text }
+    private fun createTab(@StringRes resId: Int): IndicatorTabLayout.Tab {
+        val view = LayoutInflater.from(context).inflate(R.layout.tab_item_layout, null).apply { (this as TextView).setText(resId) }
         return IndicatorTabLayout.Tab(view)
     }
 

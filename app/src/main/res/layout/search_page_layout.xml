@@ -17,7 +17,10 @@
 		    android:layout_weight="1"
 		    android:layout_height="48dp"
 		    android:layout_margin="8dp"
-		    android:padding="8dp"
+		    android:paddingStart="8dp"
+		    android:paddingEnd="8dp"
+		    android:paddingTop="8dp"
+		    android:paddingBottom="16dp"
 		    android:textColorHint="@color/textColorGray"
 		    android:hint="@string/search_page_query_hint"/>
 

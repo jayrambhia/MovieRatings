@@ -31,7 +31,7 @@
 		android:layout_margin="16dp"
 		android:layout_gravity="center"
 		android:gravity="center"
-		android:textAppearance="@style/Text.Dark.Secondary"
+		android:textAppearance="@style/Text.Dark.Secondary.Large"
 		tools:text="Unable to load titles :("/>
 
 </FrameLayout>

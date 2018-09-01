@@ -124,7 +124,7 @@
 
 		    <com.fenchtose.movieratings.widgets.FlexView
 			    android:id="@+id/collections_flexview"
-			    android:layout_marginTop="2dp"
+			    android:layout_marginTop="4dp"
 			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
 			    app:flex__horizontal_spacing="8dp"

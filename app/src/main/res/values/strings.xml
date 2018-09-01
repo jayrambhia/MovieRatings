@@ -11,9 +11,9 @@
     <string name="activate_app_cta">Activate Flutter</string>
 
     <string name="search_page_title">Flutter</string>
-	<string name="search_page_query_hint">Search for Movies, Series, etc</string>
+	<string name="search_page_query_hint">Search for movies and tv shows</string>
 	<string name="search_page_api_error_content">Unable to search</string>
-	<string name="search_page_add_to_collection_title">Search and add to collection</string>
+	<string name="search_page_add_to_collection_title">Search to add to collection</string>
 	<string name="search_page_add_to_collection_cta">Add to collection</string>
 	<string name="search_page_try_again_cta">Retry</string>
 	<string name="search_page_empty_result">No titles found</string>
@@ -28,7 +28,7 @@
     <string name="accessibility_label">Flutter Movie Ratings</string>
 
     <string name="settings_header">Settings</string>
-    <string name="settings_info">Activate Flutter for following apps</string>
+    <string name="settings_info">Enable Flutter for following apps</string>
     <string name="settings_netflix">Netflix</string>
 	<string name="settings_primevideo">Amazon Prime Video</string>
 	<string name="settings_playmovies">Google Play Movies &amp; TV</string>
@@ -48,12 +48,12 @@
 	<string name="settings_delete_data_info">Delete all your data including likes, collections and history</string>
 	<string name="settings_delete_data">Delete</string>
 	<string name="settings_clear_history_dialog_title">Clear browsing history</string>
-	<string name="settings_clear_history_dialog_content">Do you want to clear your recently browsed movies? The app can not retrieve data once it is deleted.</string>
+	<string name="settings_clear_history_dialog_content">Do you want to clear your recently browsed history? The app can not retrieve data once it is deleted.</string>
 	<string name="settings_clear_history_dialog_cta">Yes, clear history</string>
 	<string name="settings_history_cleared">Your browsing history is cleared.</string>
 	<string name="settings_clear_history_error">Unable to clear your browsing history.</string>
 	<string name="settings_delete_data_dialog_title">Delete all your data</string>
-	<string name="settings_delete_data_dialog_content">Do you want to delete all your data including your collections, movies you liked, recently browsed titles? Once deleted the app can not retrieve the data.</string>
+	<string name="settings_delete_data_dialog_content">Do you want to delete all your data including your collections, titles you liked and browsed recently? Once deleted the app can not retrieve the data.</string>
 	<string name="settings_delete_data_dialog_cta">Yes, delete everything</string>
 	<string name="settings_data_deleted">Your collections, favorites, recent history has been deleted.</string>
 	<string name="settings_data_delete_error">Unable to delete your data.</string>
@@ -101,8 +101,8 @@
 	<string name="settings_tts_section_page_header">Text to Speech</string>
 	<string name="settings_misc_section_page_header">Miscellaneous configurations</string>
 	<string name="settings_rating_bubble_section_page_header">Rating bubble customization</string>
-	<string name="settings_rating_bubble_info">Customize the look of rating bubble. You may change the position of the bubble by dragging it across the screen.</string>
-	<string name="settings_rating_bubble_cta_info">Configure if you want to open the movie details in Flutter app or on Imdb website when you click on the rating bubble.</string>
+	<string name="settings_rating_bubble_info">Customize the look of rating bubble. You may change the position of the bubble by dragging it across the screen. The changes you make here will be reflected when the ratings are displayed.</string>
+	<string name="settings_rating_bubble_cta_info">You can choose to open the movie details in Flutter app or on Imdb website when you click on the rating bubble.</string>
 	<string name="settings_rating_bubble_cta_title">Open movie details in Flutter</string>
 
     <string name="menu_action_settings">Settings</string>
@@ -143,13 +143,13 @@
     <string name="accessibility_test_title">Fight Club</string>
     <string name="accessibility_warning_content">Accessibility Permission Required</string>
 
-    <string name="likes_page_title">Movies you like</string>
-	<string name="likes_page_empty_content">It seems that you have not liked any movies yet!</string>
-	<string name="likes_page_error_content">Unable to load your liked movies.\nTry again later.</string>
+    <string name="likes_page_title">Titles you like</string>
+	<string name="likes_page_empty_content">It seems that you have not liked any movies or tv shows in this app</string>
+	<string name="likes_page_error_content">Unable to load your liked titles.\nTry again later.</string>
 	<string name="movie_unliked_snackbar_content">Unliked: %1s</string>
 	<string name="undo_action">Undo</string>
 
-	<string name="movie_page_title">Movie</string>
+	<string name="movie_page_title">Title</string>
 	<string name="movie_page_direct_by">Directed by </string>
 	<string name="movie_page_released_on">Released on </string>
     <string name="movie_page_actors_title">Actors</string>
@@ -160,7 +160,6 @@
 	<string name="movie_page_episodes_rated">Rated </string>
 	<string name="movie_page_seasons_title">Season %1d</string>
 	<string name="movie_page_collections_title">In your collections</string>
-	<string name="movie_page_empty_collections">You haven\'t added this title in any collection</string>
 	<string name="movie_page_add_to_collection">ADD TO COLLECTION</string>
 	<string name="movie_collection_movie_exists">Title already exists in %1s collection</string>
 	<string name="movie_collection_movie_added">Title added to %1s collection</string>
@@ -170,23 +169,23 @@
 	<string name="movie_page_retry_cta">Retry</string>
 
 	<string name="recently_browsed_page_title">Recently browsed</string>
-	<string name="recently_browsed_page_empty_content">Your browsing history is empty!</string>
+	<string name="recently_browsed_page_empty_content">Your browsing history is empty</string>
 	<string name="recently_browsed_page_error_content">Unable to load your browsing history.\nTry again later.</string>
 
 	<string name="movie_collection_list_page_title">Your collections</string>
 	<string name="movie_collection_list_page_selection_title">Select a collection</string>
-	<string name="movie_collection_list_empty_content">You don\'t have any collections. Create new collections and add movies to soothe your OCD</string>
+	<string name="movie_collection_list_empty_content">You don\'t have any collections\nCreate new collections and add titles</string>
 	<string name="movie_collection_list_empty_content_cta">Create new collection</string>
 	<string name="movie_collection_list_page_delete_collection_cta">Delete</string>
 	<string name="movie_collection_list_page_create_success">New collection created: %1s</string>
 	<string name="movie_collection_list_page_create_error">Unable to create new collection: %1s</string>
 	<string name="movie_collection_list_page_delete_success">Deleted collection: %1s</string>
 	<string name="movie_collection_list_page_delete_error">Unable to delete collection: %1s</string>
-	<string name="movie_collection_create_dialog_title">Create a new movie collection</string>
+	<string name="movie_collection_create_dialog_title">Create a new collection</string>
 	<string name="movie_collection_create_dialog_hint">Collection name</string>
 	<string name="movie_collection_create_dialog_positive_cta">Create</string>
 	<string name="movie_collection_delete_dialog_title">Delete collection</string>
-	<string name="movie_collection_delete_dialog_content">Do you want to delete the collection: %1s?\nYou can not retrieve it once deleted.</string>
+	<string name="movie_collection_delete_dialog_content">Do you want to delete the collection: %1s? It can\'t be retrieved once deleted.</string>
 	<string name="movie_collection_delete_dialog_negative">Yes, delete</string>
 	<string name="movie_collection_delete_dialog_neutral">No, keep</string>
 	<string name="movie_collection_list_share_dialog_title">Share all your collections</string>
@@ -195,9 +194,9 @@
 	<string name="movie_collection_list_share_error">Unable to share your collections.</string>
 	<string name="movie_collection_list_share_empty">There are no collections to share</string>
 
-	<string name="movie_collection_page_title">Movie collection</string>
-	<string name="movie_collection_page_empty_content">There are no movies in this collection!</string>
-	<string name="movie_collection_page_empty_content_cta">Search and add movies</string>
+	<string name="movie_collection_page_title">Collection</string>
+	<string name="movie_collection_page_empty_content">This collection is empty\nAdd movies, tv shows to your collection</string>
+	<string name="movie_collection_page_empty_content_cta">Search and add titles</string>
 	<string name="movie_collection_page_error_content">Unable to load this collection.\nTry again later.</string>
 	<string name="movie_collection_page_remove_cta">Remove</string>
 	<string name="movie_collection_remove_movie_dialog_title">Remove title</string>
@@ -213,7 +212,7 @@
 	<string name="movie_collection_share_dialog_content">Do you want to share this collection? The app will generate a text file which you can send to your friends and they can import it to the app.</string>
 	<string name="movie_collection_share_dialog_positive_cta">Yes, Share</string>
 	<string name="movie_collection_share_error">Unable to share this collection.</string>
-	<string name="movie_collection_share_empty">Can not share empty collection.</string>
+	<string name="movie_collection_share_empty">There are no titles to be shared in this collection.</string>
 
 	<string name="show_more">Show more</string>
 
@@ -235,9 +234,9 @@
 	<string name="import_activity_label">Import data to Flutter</string>
 	<string name="import_screen_title">Flutter - import data</string>
 	<string name="import_screen_info">Flutter lets you import data from the exported files. Please go over the following options and select what you would like to import.</string>
-	<string name="import_screen_recently_browsed_movies">Recently browsed movies</string>
-	<string name="import_screen_favorites">Liked movies</string>
-	<string name="import_screen_collections">Movie collections</string>
+	<string name="import_screen_recently_browsed_movies">Recently browsed</string>
+	<string name="import_screen_favorites">Liked titles</string>
+	<string name="import_screen_collections">Collections</string>
 	<string name="import_screen_import_cta">Import</string>
 	<string name="import_screen_error_info">Unable to import data from this file</string>
 	<string name="import_screen_success_info">Data successfully imported.</string>
@@ -257,7 +256,9 @@
 	<string name="review_app_notification_content">Leave a review on Playstore and tell others your experience about Flutter.</string>
 
 	<string name="trending_screen_title">Trending</string>
-	<string name="trending_page_empty_content">We don\'t have list of trending movies for today. Please try again later.</string>
-	<string name="trending_page_error_content">We could not load trending movies. Please try again later.</string>
+	<string name="trending_page_empty_content">We don\'t have list of trending titles. Please try again later.</string>
+	<string name="trending_page_error_content">We could not load trending movies and tv shows. Please try again later.</string>
+	<string name="trending_tab_today">Today</string>
+	<string name="trending_tab_week">This week</string>
 
 </resources>

@@ -21,7 +21,7 @@
 			android:layout_height="wrap_content"
 			android:layout_margin="32dp"
 			android:gravity="center"
-			android:textAppearance="@style/Text.Dark.Secondary"
+			android:textAppearance="@style/Text.Dark.Secondary.Large"
 			android:text="@string/movie_collection_list_empty_content"/>
 
 		<Button
