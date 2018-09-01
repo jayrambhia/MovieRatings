@@ -203,7 +203,7 @@ class SearchPageFragment: BaseFragment() {
         showLoading(false)
         appInfoContainer?.slideUp(500)
         clearButton?.visibility = View.GONE
-        adapter?.data = ArrayList()
+        adapter?.data?.clear()
         adapter?.notifyDataSetChanged()
         recyclerView?.post {
             recyclerView?.visibility = View.GONE
@@ -221,7 +221,8 @@ class SearchPageFragment: BaseFragment() {
 
     private fun setData(movies: List<Movie>) {
         showLoading(false)
-        adapter?.data = movies
+        adapter?.data?.clear()
+        adapter?.data?.addAll(movies)
         adapter?.notifyDataSetChanged()
         recyclerView?.visibility = View.VISIBLE
 
