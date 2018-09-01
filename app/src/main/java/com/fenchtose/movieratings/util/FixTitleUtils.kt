@@ -40,5 +40,9 @@ class FixTitleUtils {
             val results = NETFLIX_YEAR_PATTERN.findAll(year)
             return results.map { it.value }.toList()
         }
+
+        fun clean(title: String): String {
+            return title.replace("\u2019", "'").replace("\u2018", "'")
+        }
     }
 }

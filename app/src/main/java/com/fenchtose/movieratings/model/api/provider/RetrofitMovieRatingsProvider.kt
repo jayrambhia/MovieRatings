@@ -2,6 +2,7 @@ package com.fenchtose.movieratings.model.api.provider
 
 import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.BuildConfig
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.api.MovieRatingApi
 import com.fenchtose.movieratings.model.db.dao.MovieRatingDao
@@ -63,7 +64,9 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
                         }
                     }
                 },
-                {}
+                {
+                    GaEvents.GET_RATINGS_ONLINE.withLabelArg(if (useFlutterApi) "flutter" else "omdb").track()
+                }
         )
     }
 

@@ -53,6 +53,9 @@ class GaEvents {
 
         val TAP_PURCHASE = GaEvent(GaCategory.SUPPORT_APP, "tap", "purchase: %s")
         val PURCHASED = GaEvent(GaCategory.SUPPORT_APP, "purchase", "sku: %s")
+
+        val GET_RATINGS = GaEvent(GaCategory.SERVICE, "get rating", "app: %s")
+        val GET_RATINGS_ONLINE = GaEvent(GaCategory.SERVICE, "get rating online", "server: %s")
     }
 }
 
@@ -69,6 +72,7 @@ class GaCategory {
         const val RECENTLY_BROWSED = "recently browsed"
         const val SEARCH = "search"
         const val SEASON = "season"
+        const val SERVICE = "service"
         const val SETTINGS = "settings"
         const val SUPPORT_APP = "support app"
         const val TRENDING = "trending"

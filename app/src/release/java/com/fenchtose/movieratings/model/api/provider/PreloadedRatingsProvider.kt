@@ -7,10 +7,6 @@ import io.reactivex.Observable
 
 class PreloadedRatingsProvider(context: Context): MovieRatingsProvider {
 
-    override fun getTrending(): Observable<Trending> {
-        throw RuntimeException("PreloadedRatingProvider should not be used in release")
-    }
-
     override fun report404(title: String, year: String?) {
         throw RuntimeException("PreloadedRatingProvider should not be used in release")
     }

@@ -8,7 +8,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
-import com.fenchtose.movieratings.analytics.events.Event
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.features.tts.Speaker
 import com.fenchtose.movieratings.model.api.provider.MovieRatingsProvider
@@ -450,11 +450,8 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 
-    private fun fixTitle(packageName: CharSequence, text: String): String {
-        return when(packageName) {
-//            Constants.PACKAGE_PRIMEVIDEO -> FixTitleUtils.fixPrimeVideoTitle(text)
-            else -> text
-        }
+    private fun fixTitle(@Suppress("UNUSED_PARAMETER") packageName: CharSequence, text: String): String {
+        return FixTitleUtils.clean(text)
     }
 
     private fun fixYear(packageName: CharSequence, text: String?): String {
@@ -479,7 +476,7 @@ class NetflixReaderService : AccessibilityService() {
     private fun getMovieInfo(request: RatingRequest) {
         initResources()
 
-        analytics?.sendEvent(Event("get_movie"))
+        GaEvents.GET_RATINGS.withLabelArg(request.appName).track()
 
         provider?.let {
             it.useFlutterApi(preferences?.isAppEnabled(UserPreferences.USE_FLUTTER_API) != false)
@@ -499,17 +496,6 @@ class NetflixReaderService : AccessibilityService() {
                         }
                         it.printStackTrace()
                     })
-            /*it.getMovie(title, year)
-                    .debounce(30, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .filter { it.ratings.size > 0 }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeBy(onNext = {
-                        showRating(it)
-                        updateHistory(it.imdbId, packageName)
-                    }, onError = {
-                        it.printStackTrace()
-                    })*/
         }
     }
 

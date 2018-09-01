@@ -58,6 +58,11 @@ class MovieRating {
             }
 
             if (endYear == -1) {
+                if (type == "tvSeries") {
+                    // might be still running
+                    return startYear <= year
+                }
+
                 return startYear == year
             }
 
