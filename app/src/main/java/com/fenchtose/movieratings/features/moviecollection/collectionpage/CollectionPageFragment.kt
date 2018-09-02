@@ -67,10 +67,6 @@ class CollectionPageFragment: BaseMovieListPageFragment<CollectionPage, Collecti
         emptyStateCta?.setOnClickListener {
             presenter?.searchToAddToCollection()
         }
-
-        render({
-            _, _ ->
-        })
     }
 
     override fun updateState(state: BaseMovieListPage.State) {

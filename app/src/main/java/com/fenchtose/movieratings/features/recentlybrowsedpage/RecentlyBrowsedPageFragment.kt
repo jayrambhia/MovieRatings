@@ -1,17 +1,15 @@
 package com.fenchtose.movieratings.features.recentlybrowsedpage
 
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
-import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
-import com.fenchtose.movieratings.model.api.provider.DbRecentlyBrowsedMovieProvider
-import com.fenchtose.movieratings.model.db.like.DbLikeStore
-import com.fenchtose.movieratings.util.AppRxHooks
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragmentRedux
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
 
-class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, RecentlyBrowsedPagePresenter>() {
+class RecentlyBrowsedPageFragment: BaseMovieListPageFragmentRedux() {
+
     override fun canGoBack() = true
 
     override fun getScreenTitle() = R.string.recently_browsed_page_title
@@ -22,16 +20,15 @@ class RecentlyBrowsedPageFragment: BaseMovieListPageFragment<BaseMovieListPage, 
 
     override fun getErrorContent() = R.string.recently_browsed_page_error_content
 
-    override fun createPresenter(): RecentlyBrowsedPagePresenter {
-        return RecentlyBrowsedPagePresenter(
-                AppRxHooks(),
-                DbRecentlyBrowsedMovieProvider(MovieRatingsApplication.database.movieDao()),
-                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
-                path?.getRouter())
+    override fun reduceState(appState: AppState): BaseMovieListPageState {
+        return BaseMovieListPageState(appState.recentlyBrowsedPage.movies, appState.recentlyBrowsedPage.progress)
     }
+
+    override fun loadingAction() = LoadRecentlyBrowsedMovies
 
     class RecentlyBrowsedPath: RouterPath<RecentlyBrowsedPageFragment>() {
         override fun createFragmentInstance() = RecentlyBrowsedPageFragment()
         override fun category() = GaCategory.RECENTLY_BROWSED
+        override fun clearAction() = ClearRecentlyBrowsedState
     }
 }

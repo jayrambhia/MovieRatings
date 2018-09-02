@@ -8,6 +8,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.RouterBaseActivity
+import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.features.moviepage.DetailTransition
 import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
@@ -22,6 +23,8 @@ class Router(activity: RouterBaseActivity,
     private val titlebar: ActionBar? = activity.supportActionBar
 
     private val keyPathMap: HashMap<String, ((Bundle) -> RouterPath<out BaseFragment>)> = HashMap()
+
+    var dispatch: Dispatch? = null
 
     private val TAG = "Router"
 
@@ -150,6 +153,8 @@ class Router(activity: RouterBaseActivity,
                 move(top)
             }
         }
+
+        dispatch?.invoke(path.clearAction())
     }
 
     class History {

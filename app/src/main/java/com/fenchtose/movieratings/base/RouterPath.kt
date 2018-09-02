@@ -66,4 +66,6 @@ abstract class RouterPath<T : BaseFragment> {
 
     open fun initAction(): Action = NoAction
 
+    open fun clearAction(): Action = NoAction
+
 }

@@ -70,10 +70,10 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
         }
     }
 
-    protected fun render(render: (AppState, Dispatch) -> Unit) {
+    protected fun render(_render: (AppState, Dispatch) -> Unit) {
         unsubscribe = MovieRatingsApplication.store.subscribe { state, dispatch ->
             this.dispatch = dispatch
-            render(state, dispatch)
+            _render(state, dispatch)
         }
     }
 

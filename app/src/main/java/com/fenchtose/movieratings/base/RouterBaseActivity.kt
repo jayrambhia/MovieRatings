@@ -26,6 +26,10 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     private var visibleMenuItems: IntArray? = null
 
     private var dispatch: Dispatch? = null
+    set(value) {
+        field = value
+        router?.dispatch = value
+    }
     private var unsubscribe: Unsubscribe? = null
 
     protected fun initializeRouter(toolbar: Toolbar? = null,
@@ -62,6 +66,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         unsubscribe?.invoke()
+        this.dispatch = null
     }
 
     override fun onDestroy() {
