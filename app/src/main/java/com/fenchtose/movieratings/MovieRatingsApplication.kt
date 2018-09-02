@@ -50,7 +50,7 @@ open class MovieRatingsApplication : Application() {
             MovieRatingProviderModule(instance, gson)
         }
 
-        val store by lazy { AppStore() }
+        val store by lazy { AppStore(instance) }
     }
 
     open fun getOkHttpClient(cache: Cache? = null, interceptors: List<Interceptor> = listOf(),

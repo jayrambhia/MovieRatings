@@ -134,6 +134,17 @@ fun List<Movie>.updateMovie(movie: Movie): List<Movie> {
     return this
 }
 
+fun List<Movie>.remove(movie: Movie): List<Movie> {
+    val index = hasMovie(movie)
+    if (index != -1) {
+        val updated = toMutableList()
+        updated.removeAt(index)
+        return updated
+    }
+
+    return this
+}
+
 fun com.fenchtose.movieratings.model.db.entity.Movie.convert(): Movie {
     return Movie(
             title = title,

@@ -21,3 +21,15 @@ fun <T> List<T>.replace(index: Int, t: T): List<T> {
 fun <T> List<T>.add(t: T): List<T> {
     return toMutableList().apply { add(t) }
 }
+
+fun <T> List<T>.add(t: T, index: Int, strict: Boolean = true): List<T> {
+    if (index < 0 || index >= size) {
+        if (index > size && strict) {
+            throw IndexOutOfBoundsException("Invalid index: $index provided. list size is $size")
+        }
+
+        return toMutableList().apply { add(t) }
+    }
+
+    return toMutableList().apply { add(index, t) }
+}

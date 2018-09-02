@@ -13,7 +13,7 @@ sealed class Progress {
     object Loading: Progress()
     object Error: Progress()
     object Empty: Progress()
-    data class Success(val movies: List<Movie>): Progress()
+    object Success: Progress()
 }
 
 sealed class BaseMovieListPageAction(val page: String): Action {

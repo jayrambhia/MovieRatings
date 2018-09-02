@@ -24,8 +24,17 @@ object LoadRecentlyBrowsedMovies: Action
 const val RECENTLY_BROWSED_PAGE = "rbp"
 
 fun AppState.recentlyBrowsedPageReducer(action: Action): AppState {
+//    lens { recentlyBrowsedPage }.reduce(action).focus { copy(recentlyBrowsedPage = it) }
     return reduceChild(recentlyBrowsedPage, action, {reduce(action)}, {copy(recentlyBrowsedPage = it)})
 }
+
+/*fun <State, Child> State.lens(lens: (State) -> Child): Child {
+    return lens(this)
+}
+
+fun <State, Child> Child.focus(focus: (Child) -> State): State {
+    return focus(this)
+}*/
 
 private fun RecentlyBrowsedState.reduce(action: Action): RecentlyBrowsedState {
     return when(action) {
@@ -34,7 +43,7 @@ private fun RecentlyBrowsedState.reduce(action: Action): RecentlyBrowsedState {
             if (action.page == RECENTLY_BROWSED_PAGE) {
                 when(action) {
                     is BaseMovieListPageAction.Loading -> copy(progress = Progress.Loading)
-                    is BaseMovieListPageAction.Loaded -> copy(progress = Progress.Success(action.movies), movies = action.movies)
+                    is BaseMovieListPageAction.Loaded -> copy(progress = Progress.Success, movies = action.movies)
                     is BaseMovieListPageAction.Error -> copy(progress = Progress.Error)
                 }
             } else {

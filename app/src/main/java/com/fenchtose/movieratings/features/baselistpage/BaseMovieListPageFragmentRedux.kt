@@ -56,7 +56,10 @@ abstract class BaseMovieListPageFragmentRedux: BaseFragment() {
         }
 
         this.adapter = adapter
-        render { appState, dispatch -> render(reduceState(appState), dispatch) }
+        render { appState, dispatch ->
+            render(reduceState(appState), dispatch)
+            render(appState, dispatch)
+        }
     }
 
     override fun onResume() {
@@ -128,6 +131,10 @@ abstract class BaseMovieListPageFragmentRedux: BaseFragment() {
     open fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
 
     protected open fun onCreated() {
+
+    }
+
+    protected open fun render(appState: AppState, dispatch: Dispatch) {
 
     }
 }
