@@ -17,7 +17,7 @@ import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
-import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
+import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
@@ -56,14 +56,15 @@ abstract class BaseMovieListPageFragmentRedux: BaseFragment() {
         }
 
         this.adapter = adapter
-        render { appState, dispatch ->
-            render(reduceState(appState), dispatch)
-            render(appState, dispatch)
-        }
+
     }
 
     override fun onResume() {
         super.onResume()
+        render { appState, dispatch ->
+            render(reduceState(appState), dispatch)
+            render(appState, dispatch)
+        }
         dispatch?.invoke(loadingAction())
     }
 
@@ -118,7 +119,7 @@ abstract class BaseMovieListPageFragmentRedux: BaseFragment() {
             override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
                 GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
                 path?.getRouter()?.let {
-                    dispatch?.invoke(Navigation(it, MoviePageFragment.MoviePath(movie, sharedElement)))
+                    dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
                 }
             }
         }
