@@ -126,7 +126,7 @@ class RetrofitMovieProvider(retrofit: Retrofit, val dao: MovieDao) : MovieProvid
                 },
                 {
                     api.getEpisodesList(BuildConfig.OMDB_API_KEY, series.imdbId, season)
-                            .map { it.copy(episodes = it.episodes.map { it.update(series.imdbId, season) }) }
+                            .map { it.copy(seriesId = series.imdbId, episodes = it.episodes.map { it.update(series.imdbId, season) }) }
                             .doOnNext {
                                 it.episodes.map {
                                     it.convert()

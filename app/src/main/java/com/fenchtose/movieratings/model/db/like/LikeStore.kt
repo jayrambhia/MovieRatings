@@ -9,6 +9,7 @@ import com.fenchtose.movieratings.base.redux.Next
 import com.fenchtose.movieratings.model.db.entity.Fav
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.hasMovie
 import com.fenchtose.movieratings.model.entity.updateMovie
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -32,11 +33,22 @@ fun AppState.reduceLiked(action: Action): AppState {
 
     val movie = action.movie
 
-    return copy(
-            searchPage = searchPage.copy(movies = searchPage.movies.updateMovie(movie)),
-            recentlyBrowsedPage = recentlyBrowsedPage.copy(movies = recentlyBrowsedPage.movies.updateMovie(movie)),
-            trendingPage = trendingPage.copy(movies = trendingPage.movies.updateMovie(movie))
-    )
+    // Don't make unnecessary copies
+    var updated = this
+    if (searchPage.movies.hasMovie(movie) != -1) {
+        updated = updated.copy(searchPage = searchPage.copy(movies = searchPage.movies.updateMovie(movie)))
+    }
+    if (recentlyBrowsedPage.movies.hasMovie(movie) != -1) {
+        updated = updated.copy(recentlyBrowsedPage = recentlyBrowsedPage.copy(movies = recentlyBrowsedPage.movies.updateMovie(movie)))
+    }
+    if (trendingPage.movies.hasMovie(movie) != -1) {
+        updated = updated.copy(trendingPage = trendingPage.copy(movies = trendingPage.movies.updateMovie(movie)))
+    }
+    if (moviePage.movie.imdbId == action.movie.imdbId) {
+        updated = updated.copy(moviePage = moviePage.copy(movie = moviePage.movie.like(action.movie.liked)))
+    }
+
+    return updated
 }
 
 data class LikeMovie(val movie: Movie, val liked: Boolean): Action

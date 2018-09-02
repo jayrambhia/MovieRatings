@@ -6,7 +6,7 @@ import android.net.Uri
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MainActivity
 import com.fenchtose.movieratings.base.router.Router
-import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
+import com.fenchtose.movieratings.features.moviepage.MoviePath
 
 class IntentUtils {
 
@@ -85,8 +85,7 @@ class IntentUtils {
                 val intent = Intent(context, MainActivity::class.java)
                 intent.putExtra(Router.HISTORY,
                         Router.History()
-                                .addPath(MoviePageFragment.MoviePath.KEY,
-                                        MoviePageFragment.MoviePath.createExtras(it))
+                                .addPath(MoviePath.KEY, MoviePath.createExtras(it))
                                 .toBundle())
                 if (newTask) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

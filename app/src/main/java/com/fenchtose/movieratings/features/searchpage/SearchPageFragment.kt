@@ -22,7 +22,7 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.info.InfoPageBottomView
-import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
+import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
 import com.fenchtose.movieratings.model.db.entity.MovieCollection
@@ -79,7 +79,7 @@ class SearchPageFragment: BaseFragment() {
                     override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
                         GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
                         path?.getRouter()?.let {
-                            dispatch?.invoke(Navigation(it, MoviePageFragment.MoviePath(movie, sharedElement)))
+                            dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
                         }
                     }
 

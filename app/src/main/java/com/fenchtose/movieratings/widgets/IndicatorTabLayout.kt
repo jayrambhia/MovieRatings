@@ -158,6 +158,7 @@ class IndicatorTabLayout: HorizontalScrollView {
             val targetRight = getIndicatorRight(child)
 
             if (targetLeft <= 0 || targetRight <= 0) {
+                invalidate()
                 return
             }
 

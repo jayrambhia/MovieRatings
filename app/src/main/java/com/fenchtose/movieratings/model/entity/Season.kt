@@ -12,7 +12,9 @@ data class Season(
     @Json(name = "totalSeasons")
     val totalSeasons: Int,
     @Json(name="Episodes")
-    val episodes: List<Episode>)
+    val episodes: List<Episode>,
+    @Transient
+    val seriesId: String = "")
 
 @JsonClass(generateAdapter = true)
 data class Episode(
@@ -69,6 +71,7 @@ fun List<com.fenchtose.movieratings.model.db.entity.Episode>.convert(series: Mov
             title = series.title,
             season = season,
             totalSeasons = series.seasons,
-            episodes = map { it.convert() }
+            episodes = map { it.convert() },
+            seriesId = series.imdbId
     )
 }

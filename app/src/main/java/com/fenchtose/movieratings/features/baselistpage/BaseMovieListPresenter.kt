@@ -6,7 +6,7 @@ import android.view.View
 import com.fenchtose.movieratings.base.Presenter
 import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.router.Router
-import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
+import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.util.RxHooks
@@ -80,7 +80,7 @@ abstract class BaseMovieListPresenter<V :BaseMovieListPage>(
     }
 
     fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
-        router?.go(MoviePageFragment.MoviePath(movie, sharedElement))
+        router?.go(MoviePath(movie, sharedElement))
     }
 
     abstract fun load(reload: Boolean = false): Observable<List<Movie>>

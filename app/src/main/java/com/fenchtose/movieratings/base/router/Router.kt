@@ -10,7 +10,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.features.moviepage.DetailTransition
-import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
+import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import java.util.Stack
 
@@ -34,8 +34,8 @@ class Router(activity: RouterBaseActivity,
     }
 
     init {
-        keyPathMap.put(DonatePageFragment.DonatePath.KEY, DonatePageFragment.DonatePath.createPath())
-        keyPathMap.put(MoviePageFragment.MoviePath.KEY, MoviePageFragment.MoviePath.createPath())
+        keyPathMap[DonatePageFragment.DonatePath.KEY] = DonatePageFragment.DonatePath.createPath()
+        keyPathMap[MoviePath.KEY] = MoviePath.createPath()
     }
 
     fun canHandleKey(key: String): Boolean {

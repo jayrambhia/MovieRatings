@@ -9,14 +9,19 @@ import com.fenchtose.movieratings.model.api.provider.DbRecentlyBrowsedMovieProvi
 import com.fenchtose.movieratings.model.api.provider.RecentlyBrowsedMovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.LikeStore
+import com.fenchtose.movieratings.model.db.recentlyBrowsed.MovieRegsitered
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.remove
 import com.fenchtose.movieratings.util.AppRxHooks
 import com.fenchtose.movieratings.util.RxHooks
+import com.fenchtose.movieratings.util.add
 
 data class RecentlyBrowsedState(
     val movies: List<Movie> = listOf(),
     val progress: Progress = Progress.Default
-)
+) {
+    val active: Boolean = progress != Progress.Default
+}
 
 object ClearRecentlyBrowsedState: Action
 object LoadRecentlyBrowsedMovies: Action
@@ -24,17 +29,8 @@ object LoadRecentlyBrowsedMovies: Action
 const val RECENTLY_BROWSED_PAGE = "rbp"
 
 fun AppState.recentlyBrowsedPageReducer(action: Action): AppState {
-//    lens { recentlyBrowsedPage }.reduce(action).focus { copy(recentlyBrowsedPage = it) }
     return reduceChild(recentlyBrowsedPage, action, {reduce(action)}, {copy(recentlyBrowsedPage = it)})
 }
-
-/*fun <State, Child> State.lens(lens: (State) -> Child): Child {
-    return lens(this)
-}
-
-fun <State, Child> Child.focus(focus: (Child) -> State): State {
-    return focus(this)
-}*/
 
 private fun RecentlyBrowsedState.reduce(action: Action): RecentlyBrowsedState {
     return when(action) {
@@ -50,14 +46,22 @@ private fun RecentlyBrowsedState.reduce(action: Action): RecentlyBrowsedState {
                 this
             }
         }
+        is MovieRegsitered -> {
+            if (active) {
+                val movies = movies.remove(action.movie).add(action.movie, 0)
+                copy(movies = movies.remove(action.movie).add(action.movie, 0))
+            } else {
+                this
+            }
+        }
 
         else -> this
     }
 }
 
-class RecentlyBrowsedMiddleware(private val provider: RecentlyBrowsedMovieProvider,
-                                private val rxHooks: RxHooks,
-                                likeStore: LikeStore) {
+class RecentlyBrowsedPageMiddleware(private val provider: RecentlyBrowsedMovieProvider,
+                                    private val rxHooks: RxHooks,
+                                    likeStore: LikeStore) {
     init {
         provider.addPreferenceApplier(likeStore)
     }
@@ -84,8 +88,8 @@ class RecentlyBrowsedMiddleware(private val provider: RecentlyBrowsedMovieProvid
     }
 
     companion object {
-        fun newInstance(): RecentlyBrowsedMiddleware {
-            return RecentlyBrowsedMiddleware(
+        fun newInstance(): RecentlyBrowsedPageMiddleware {
+            return RecentlyBrowsedPageMiddleware(
                     DbRecentlyBrowsedMovieProvider(MovieRatingsApplication.database.movieDao()),
                     AppRxHooks(),
                     DbLikeStore.getInstance(MovieRatingsApplication.database.favDao())
