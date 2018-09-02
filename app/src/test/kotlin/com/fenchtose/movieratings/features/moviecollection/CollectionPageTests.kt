@@ -6,13 +6,13 @@ import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPage
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPagePresenter
-import com.fenchtose.movieratings.model.db.entity.Movie
 import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.TestFileUtils
@@ -61,25 +61,14 @@ class CollectionPageTests {
 
     private var presenter = CollectionPagePresenter(likeStore, rxHooks, fileUtils, provider, store, userPreferences, exporter, collection, router)
 
-    private val m1: Movie = Movie()
-    private val m2: Movie = Movie()
-    private val m3: Movie = Movie()
-    private val m4: Movie = Movie()
+    private val m1: Movie = Movie("tt1", "movie 1", "1999", "", "")
+    private val m2: Movie = Movie("tt2", "movie 2", "2001", "", "")
+    private val m3: Movie = Movie("tt3", "movie 3", "", "", "")
+    private val m4: Movie = Movie.invalid()
 
-    private val collectionEntry = MovieCollectionEntry.create(collection, m1)
+    private val collectionEntry = MovieCollectionEntry.create(collection, m1.imdbId)
 
     init {
-        m1.imdbId = "tt1"
-        m1.title = "movie 1"
-        m2.year = "2001"
-
-        m2.imdbId = "tt2"
-        m2.title = "movie 2"
-        m2.year = "1999"
-
-        m3.imdbId = "tt3"
-        m3.title = "movie 3"
-
         movies.add(m1)
         movies.add(m2)
 
@@ -305,10 +294,10 @@ class CollectionPageTests {
     @Test
     fun `repeat sort type after setting different sort`() {
         presenter.attachView(view)
-        presenter.sort(Sort.YEAR)
-        assertEquals(Sort.YEAR, presenter.getSort())
+        presenter.sort(Sort.ALPHABETICAL)
+        assertEquals(Sort.ALPHABETICAL, presenter.getSort())
         assertEquals(movies.size, presenter.getDataForTest()?.size)
-        assertEquals(movies.reversed(), presenter.getDataForTest())
+        assertEquals(movies, presenter.getDataForTest())
 
         presenter.sort(Sort.YEAR)
         assertEquals(Sort.YEAR, presenter.getSort())

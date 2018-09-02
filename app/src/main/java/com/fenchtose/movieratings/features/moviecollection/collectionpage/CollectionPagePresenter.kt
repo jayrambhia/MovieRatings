@@ -132,8 +132,8 @@ class CollectionPagePresenter(likeStore: LikeStore,
             return
         }
 
-        if (data != null) {
-            updateData(ArrayList(getSorted(type, data!!)))
+        data?.let {
+            updateData(ArrayList(getSorted(type, it)))
             currentSort = type
         }
     }
