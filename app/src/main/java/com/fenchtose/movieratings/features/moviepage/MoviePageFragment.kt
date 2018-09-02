@@ -36,7 +36,7 @@ import com.fenchtose.movieratings.widgets.pagesection.SimpleTextSection
 import com.fenchtose.movieratings.widgets.pagesection.TextSection
 import java.lang.ref.WeakReference
 
-class MoviePageFragmentRedux: BaseFragment() {
+class MoviePageFragment: BaseFragment() {
 
     private var posterView: ImageView? = null
     private var ratingView: TextView? = null
@@ -227,8 +227,8 @@ class MoviePageFragmentRedux: BaseFragment() {
     }
 }
 
-class MoviePath(val movie: Movie, private val sharedElement: Pair<View, String>? = null): RouterPath<MoviePageFragmentRedux>() {
-    override fun createFragmentInstance() = MoviePageFragmentRedux()
+class MoviePath(val movie: Movie, private val sharedElement: Pair<View, String>? = null): RouterPath<MoviePageFragment>() {
+    override fun createFragmentInstance() = MoviePageFragment()
     override fun showMenuIcons() = intArrayOf(R.id.action_open_imdb)
     override fun getSharedTransitionElement() = sharedElement
     override fun category() = GaCategory.MOVIE
