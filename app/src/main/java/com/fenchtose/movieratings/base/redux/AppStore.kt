@@ -12,11 +12,13 @@ import com.fenchtose.movieratings.features.searchpage.searchPageReducer
 import com.fenchtose.movieratings.features.trending.TrendingMoviesMiddleware
 import com.fenchtose.movieratings.features.trending.reduceTrendingPage
 import com.fenchtose.movieratings.model.db.like.LikeMiddleware
+import com.fenchtose.movieratings.model.db.like.reduceLiked
 import com.fenchtose.movieratings.model.db.movieCollection.CollectionMiddleware
 
 class AppStore(context: Context): SimpleStore<AppState>(
         AppState(),
         listOf(
+                AppState::reduceLiked,
                 ::searchPageReducer,
                 AppState::recentlyBrowsedPageReducer,
                 AppState::reduceLikesPage,

@@ -9,6 +9,7 @@ import com.fenchtose.movieratings.base.redux.Next
 import com.fenchtose.movieratings.model.db.entity.Fav
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.updateMovie
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,6 +23,20 @@ interface LikeStore: UserPreferenceApplier {
     fun export(): Single<List<Fav>>
     @WorkerThread
     fun import(favs: List<Fav>): Int
+}
+
+fun AppState.reduceLiked(action: Action): AppState {
+    if (action !is MovieLiked) {
+        return this
+    }
+
+    val movie = action.movie
+
+    return copy(
+            searchPage = searchPage.copy(movies = searchPage.movies.updateMovie(movie)),
+            recentlyBrowsedPage = recentlyBrowsedPage.copy(movies = recentlyBrowsedPage.movies.updateMovie(movie)),
+            trendingPage = trendingPage.copy(movies = trendingPage.movies.updateMovie(movie))
+    )
 }
 
 data class LikeMovie(val movie: Movie, val liked: Boolean): Action
