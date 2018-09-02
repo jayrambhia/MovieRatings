@@ -19,7 +19,9 @@ data class TrendingMovie(
     val votes: Int,
     val title: String,
     val type: String,
+    @Json(name="start_year")
     val startYear: Int,
+    @Json(name="end_year")
     val endYear: Int?
 ) {
     fun convert(): Movie {

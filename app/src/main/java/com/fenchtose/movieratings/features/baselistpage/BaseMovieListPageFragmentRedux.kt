@@ -75,8 +75,8 @@ abstract class BaseMovieListPageFragmentRedux: BaseFragment() {
                 recyclerView?.visibility = View.GONE
             }
 
-            is Progress.Error -> showContentState(getEmptyContent())
-            is Progress.Empty -> showContentState(getErrorContent())
+            is Progress.Error -> showContentState(getErrorContent())
+            is Progress.Empty -> showContentState(getEmptyContent())
             is Progress.Success -> setData(state.movies)
         }
     }

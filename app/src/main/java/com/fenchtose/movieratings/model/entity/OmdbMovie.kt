@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class OmdbMovie(
-    @Json(name = "ImdbID")
+    @Json(name = "imdbID")
     val imdbId: String,
     @Json(name = "Type")
     val type: String,
