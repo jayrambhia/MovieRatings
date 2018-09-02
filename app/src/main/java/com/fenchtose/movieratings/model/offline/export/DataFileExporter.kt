@@ -134,7 +134,7 @@ class DataFileExporter(
 
     }
 
-    override fun exportCollection(output: Uri, collection: MovieCollection) {
+    override fun exportCollection(output: Uri, collectionId: Long) {
         Single.defer {
             val json = JsonObject()
             json.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
@@ -142,7 +142,7 @@ class DataFileExporter(
             Single.just(Pair(HashSet<String>(), json))
         }.flatMap {
             pair ->
-                collectionStore.export(collection.id)
+                collectionStore.export(collectionId)
                         .map {
                             if (it.isNotEmpty()) {
                                 pair.second.add(Constants.EXPORT_COLLECTIONS, MovieRatingsApplication.gson.toJsonTree(it))

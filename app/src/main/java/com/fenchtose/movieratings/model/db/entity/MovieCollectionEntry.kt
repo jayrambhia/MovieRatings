@@ -31,9 +31,6 @@ class MovieCollectionEntry {
     var deleted: Int = 0
 
     companion object {
-        fun create(collection: MovieCollection, imdbId: String): MovieCollectionEntry {
-            return create(collection.id, imdbId)
-        }
 
         fun create(collectionId: Long, movieId: String): MovieCollectionEntry {
             val entry = MovieCollectionEntry()

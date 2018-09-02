@@ -8,8 +8,8 @@ import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.like.MovieLiked
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionResponse
-import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.hasMovie
 import com.fenchtose.movieratings.model.entity.updateMovie
 import com.fenchtose.movieratings.util.addAll

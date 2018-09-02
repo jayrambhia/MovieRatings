@@ -6,10 +6,10 @@ import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Next
-import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,10 +23,10 @@ interface MovieCollectionStore : UserPreferenceApplier {
     fun removeMovieFromCollection(collection: MovieCollection, movie: Movie): Observable<Boolean>
     fun deleteAllCollectionEntries(): Observable<Int>
     fun deleteAllCollections(): Observable<Int>
-    fun export(): Single<List<MovieCollection>>
-    fun export(collectionId: Long): Single<List<MovieCollection>>
+    fun export(): Single<List<com.fenchtose.movieratings.model.db.entity.MovieCollection>>
+    fun export(collectionId: Long): Single<List<com.fenchtose.movieratings.model.db.entity.MovieCollection>>
     @WorkerThread
-    fun import(collections: List<MovieCollection>): Int
+    fun import(collections: List<com.fenchtose.movieratings.model.db.entity.MovieCollection>): Int
 }
 
 data class AddToCollection(val collection: MovieCollection, val movie: Movie): Action

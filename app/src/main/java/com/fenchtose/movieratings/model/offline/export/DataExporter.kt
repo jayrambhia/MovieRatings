@@ -1,6 +1,5 @@
 package com.fenchtose.movieratings.model.offline.export
 
-import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import io.reactivex.Observable
 
 interface DataExporter<T> {
@@ -8,7 +7,7 @@ interface DataExporter<T> {
     fun observe(): Observable<Progress<T>>
     fun export(output: T, config: Config)
     fun release()
-    fun exportCollection(output: T, collection: MovieCollection)
+    fun exportCollection(output: T, collectionId: Long)
 
     sealed class Progress<T> {
         class Started<T>: Progress<T>()

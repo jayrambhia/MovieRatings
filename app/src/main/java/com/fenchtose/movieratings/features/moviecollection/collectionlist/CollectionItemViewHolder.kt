@@ -5,7 +5,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.db.entity.MovieCollection
+import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.widgets.album.AlbumViewHelper
 import com.fenchtose.movieratings.widgets.album.BasicAlbumStrategy

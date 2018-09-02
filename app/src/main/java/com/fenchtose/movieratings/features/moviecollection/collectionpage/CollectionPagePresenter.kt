@@ -9,12 +9,12 @@ import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPage
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPresenter
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
-import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.FileUtils
@@ -150,7 +150,7 @@ class CollectionPagePresenter(likeStore: LikeStore,
     fun share() {
         collection?.let {
             val uri = fileUtils.createCacheFile(MovieRatingsApplication.instance, "collection_${it.name}.txt")
-            exporter.exportCollection(uri, it)
+            exporter.exportCollection(uri, it.id)
         }
     }
 

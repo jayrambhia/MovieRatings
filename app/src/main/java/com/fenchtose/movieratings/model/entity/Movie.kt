@@ -1,6 +1,5 @@
 package com.fenchtose.movieratings.model.entity
 
-import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.util.replace
 
 data class Movie(

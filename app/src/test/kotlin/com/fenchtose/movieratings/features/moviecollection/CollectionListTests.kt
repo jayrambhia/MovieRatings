@@ -4,9 +4,9 @@ import android.content.Context
 import android.net.Uri
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPage
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPresenter
-import com.fenchtose.movieratings.model.db.entity.MovieCollection
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
+import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.offline.export.DataExporter
 import com.fenchtose.movieratings.util.TestFileUtils
 import com.fenchtose.movieratings.util.TestRxHooks
@@ -32,15 +32,19 @@ class CollectionListTests {
 
     private var presenter = CollectionListPresenter(context, rxHooks, fileUtils, provider, store, exporter)
 
-    private val collectionToBeDeleted = MovieCollection.create("collection to be deleted")
-    private val collectionToBeDeletedError = MovieCollection.create("collection to be deleted error")
-    private val collectionToBeDeletedButUnableToDelete = MovieCollection.create("collection to be deleted but unable to delete")
+    private val collectionToBeDeleted = createTestCollection("collection to be deleted")
+    private val collectionToBeDeletedError = createTestCollection("collection to be deleted error")
+    private val collectionToBeDeletedButUnableToDelete = createTestCollection("collection to be deleted but unable to delete")
+
+    private fun createTestCollection(name: String): MovieCollection {
+        return MovieCollection(-1, name, listOf())
+    }
 
     @Before
     fun setupPresenter() {
         whenever(exporter.observe()).thenReturn(exporterPublisher)
         whenever(provider.getCollections(withMovies = true)).thenReturn(Observable.just(ArrayList()))
-        whenever(store.createCollection("cool collection")).thenReturn(Observable.just(MovieCollection.create("cool collection")))
+        whenever(store.createCollection("cool collection")).thenReturn(Observable.just(createTestCollection("cool collection")))
         whenever(store.createCollection("uncool collection")).thenReturn(Observable.error(Throwable("unable to create collection")))
         whenever(store.deleteCollection(collectionToBeDeleted)).thenReturn(Observable.just(true))
         whenever(store.deleteCollection(collectionToBeDeletedError)).thenReturn(Observable.error(Throwable("unable to delete this collection")))
@@ -75,8 +79,8 @@ class CollectionListTests {
     @Test
     fun `collections available`() {
         val collections = ArrayList<MovieCollection>()
-        collections.add(MovieCollection.create("collection 1"))
-        collections.add(MovieCollection.create("collection 2"))
+        collections.add(createTestCollection("collection 1"))
+        collections.add(createTestCollection("collection 2"))
         whenever(provider.getCollections(withMovies = true)).thenReturn(Observable.just(collections))
 
         presenter.attachView(view)
