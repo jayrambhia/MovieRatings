@@ -5,20 +5,15 @@ import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
-import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragmentRedux
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
-import com.fenchtose.movieratings.model.db.like.DbLikeStore
-import com.fenchtose.movieratings.util.AppRxHooks
 import com.fenchtose.movieratings.widgets.IndicatorTabLayout
 
 class TrendingFragment: BaseMovieListPageFragmentRedux() {

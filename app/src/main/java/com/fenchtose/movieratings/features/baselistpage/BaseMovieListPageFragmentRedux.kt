@@ -109,24 +109,8 @@ abstract class BaseMovieListPageFragmentRedux: BaseFragment() {
     abstract fun loadingAction(): Action
 
     open fun createAdapterConfig(): BaseMovieAdapter.AdapterConfig {
-
-        val callback = object: BaseMovieAdapter.AdapterCallback {
-            override fun onLiked(movie: Movie) {
-                GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
-                dispatch?.invoke(LikeMovie(movie, !movie.liked))
-            }
-
-            override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
-                path?.getRouter()?.let {
-                    dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
-                }
-            }
-        }
-
         val glide = GlideLoader(Glide.with(this))
-
-        return BaseMovieListAdapterConfig(callback, glide, createExtraLayoutHelper())
+        return BaseMovieListAdapterConfig(::toggleLike, ::openMovie, glide, createExtraLayoutHelper())
     }
 
     open fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
@@ -137,5 +121,17 @@ abstract class BaseMovieListPageFragmentRedux: BaseFragment() {
 
     protected open fun render(appState: AppState, dispatch: Dispatch) {
 
+    }
+
+    protected open fun toggleLike(movie: Movie) {
+        GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
+        dispatch?.invoke(LikeMovie(movie, !movie.liked))
+    }
+
+    protected open fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
+        GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
+        path?.getRouter()?.let {
+            dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
+        }
     }
 }

@@ -13,8 +13,11 @@ import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.entity.hasMovie
+import com.fenchtose.movieratings.model.entity.remove
 import com.fenchtose.movieratings.util.AppRxHooks
 import com.fenchtose.movieratings.util.RxHooks
+import com.fenchtose.movieratings.util.add
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -35,6 +38,7 @@ interface MovieCollectionStore : UserPreferenceApplier {
 }
 
 data class AddToCollection(val collection: MovieCollection, val movie: Movie): Action
+data class RemoveFromCollection(val collection: MovieCollection, val movie: Movie): Action
 
 data class CreateCollection(val name: String): Action
 data class DeleteCollection(val collection: MovieCollection): Action
@@ -45,11 +49,14 @@ sealed class MovieCollectionResponse(val collection: MovieCollection, val movie:
     class MovieExists(collection: MovieCollection, movie: Movie): MovieCollectionResponse(collection, movie)
     class MovieAdded(collection: MovieCollection, movie: Movie): MovieCollectionResponse(collection, movie)
     class AddError(collection: MovieCollection, movie: Movie): MovieCollectionResponse(collection, movie)
+    class MovieRemoved(collection: MovieCollection, movie: Movie): MovieCollectionResponse(collection, movie)
+    class RemoveError(collection: MovieCollection, movie: Movie): MovieCollectionResponse(collection, movie)
 }
 
 fun AppState.reduceCollections(action: Action): AppState {
     if (action is MovieCollectionResponse) {
         return updateCollectionListPage(action)
+                .updateCollectionPage(action)
                 .updateMoviePage(action)
     }
 
@@ -62,15 +69,33 @@ private fun AppState.updateMoviePage(action: MovieCollectionResponse): AppState 
                 && moviePage.movie.collections.hasCollection(action.collection.name) == -1) {
             return copy(moviePage = moviePage.copy(movie = moviePage.movie.addCollection(action.collection)))
         }
+    } else if (action is MovieCollectionResponse.MovieRemoved) {
+        if (moviePage.movie.imdbId == action.movie.imdbId
+                && moviePage.movie.collections.hasCollection(action.collection.name) != -1) {
+            return copy(moviePage = moviePage.copy(movie = moviePage.movie.removeCollection(action.collection)))
+        }
     }
 
     return this
 }
 
 private fun AppState.updateCollectionListPage(action: MovieCollectionResponse): AppState {
-    if (action is MovieCollectionResponse.MovieAdded) {
+    if (action is MovieCollectionResponse.MovieAdded || action is MovieCollectionResponse.MovieRemoved) {
         if (collectionListPage.active && collectionListPage.collections.hasCollection(action.collection.name) != -1) {
             return copy(collectionListPage = collectionListPage.copy(collections = collectionListPage.collections.update(action.collection)))
+        }
+    }
+    return this
+}
+
+private fun AppState.updateCollectionPage(action: MovieCollectionResponse): AppState {
+    if (action is MovieCollectionResponse.MovieAdded) {
+        if (collectionPage.active && collectionPage.collection.id == action.collection.id && collectionPage.movies.hasMovie(action.movie) == -1) {
+            return copy(collectionPage = collectionPage.copy(movies = collectionPage.movies.add(action.movie)))
+        }
+    } else if (action is MovieCollectionResponse.MovieRemoved) {
+        if (collectionPage.active && collectionPage.collection.id == action.collection.id && collectionPage.movies.hasMovie(action.movie) != -1) {
+            return copy(collectionPage = collectionPage.copy(movies = collectionPage.movies.remove(action.movie)))
         }
     }
 
@@ -82,6 +107,7 @@ class CollectionMiddleware(private val collectionStore: MovieCollectionStore,
     fun collectionMiddleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
         when(action) {
             is AddToCollection -> addToCollection(action, dispatch)
+            is RemoveFromCollection -> removeFromCollection(action.collection, action.movie, dispatch)
             is CreateCollection -> createCollection(action.name, dispatch)
             is DeleteCollection -> deleteCollection(action.collection, dispatch)
         }
@@ -107,6 +133,22 @@ class CollectionMiddleware(private val collectionStore: MovieCollectionStore,
                     dispatch(MovieCollectionResponse.MovieAdded(action.collection.addMovie(action.movie), action.movie))
                 }, {
                     dispatch(MovieCollectionResponse.AddError(action.collection, action.movie))
+                })
+    }
+
+    private fun removeFromCollection(collection: MovieCollection, movie: Movie, dispatch: Dispatch) {
+        collectionStore.removeMovieFromCollection(collection, movie)
+                .subscribeOn(rxHooks.ioThread())
+                .observeOn(rxHooks.mainThread())
+                .subscribe({
+                    if (it) {
+                        dispatch(MovieCollectionResponse.MovieRemoved(collection.removeMovie(movie), movie))
+                    } else {
+                        dispatch(MovieCollectionResponse.RemoveError(collection, movie))
+                    }
+                }, {
+                    it.printStackTrace()
+                    dispatch(MovieCollectionResponse.RemoveError(collection, movie))
                 })
     }
 

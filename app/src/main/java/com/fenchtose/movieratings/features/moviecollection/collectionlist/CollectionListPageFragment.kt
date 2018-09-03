@@ -20,7 +20,7 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
-import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPagePath
 import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
 import com.fenchtose.movieratings.model.db.movieCollection.CreateCollection
 import com.fenchtose.movieratings.model.db.movieCollection.DeleteCollection
@@ -202,7 +202,7 @@ class CollectionListPageFragment: BaseFragment() {
         } else {
             GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
             path?.getRouter()?.let {
-                dispatch?.invoke(Navigation(it, CollectionPageFragment.CollectionPagePath(collection)))
+                dispatch?.invoke(Navigation(it, CollectionPagePath(collection)))
             }
         }
     }

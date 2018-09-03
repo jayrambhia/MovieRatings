@@ -32,9 +32,4 @@ class BaseMovieAdapter(private val context: Context, private val config: Adapter
         fun getItemViewType(data: List<Movie>, position: Int): Int
     }
 
-    interface AdapterCallback {
-        fun onLiked(movie: Movie)
-        fun onClicked(movie: Movie, sharedElement: Pair<View, String>?)
-    }
-
 }

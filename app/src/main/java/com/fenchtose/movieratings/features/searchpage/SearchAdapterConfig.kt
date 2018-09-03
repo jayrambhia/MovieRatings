@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.features.searchpage
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.BaseMovieAdapter
@@ -11,7 +12,9 @@ import com.fenchtose.movieratings.model.image.ImageLoader
 
 class SearchAdapterConfig(
         private val imageLoader: ImageLoader,
-        private val callback: SearchCallback?,
+        private val toggleLike: (Movie) -> Unit,
+        private val openMovie: (Movie, Pair<View, String>?) -> Unit,
+        private val loadMore: () -> Unit,
         private val extraLayoutCreator: (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
     ): BaseMovieAdapter.AdapterConfig {
 
@@ -24,8 +27,9 @@ class SearchAdapterConfig(
 
     override fun createViewHolder(inflater: LayoutInflater, parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder? {
         return when(viewType) {
-            TYPE_MOVIE -> SearchItemViewHolder(inflater.inflate(R.layout.search_movie_item_layout, parent, false), callback, extraLayoutCreator)
-            TYPE_LOADER -> LoaderMoreViewHolder(inflater.inflate(R.layout.load_more_item_view_layout, parent, false), callback)
+            TYPE_MOVIE -> SearchItemViewHolder(inflater.inflate(R.layout.search_movie_item_layout, parent, false),
+                    toggleLike, openMovie, extraLayoutCreator)
+            TYPE_LOADER -> LoaderMoreViewHolder(inflater.inflate(R.layout.load_more_item_view_layout, parent, false), loadMore)
             else -> null
         }
     }
@@ -59,11 +63,4 @@ class SearchAdapterConfig(
         }
 
     }
-
-    interface SearchCallback: BaseMovieAdapter.AdapterCallback, LoadMoreCallback
-
-    interface LoadMoreCallback {
-        fun onLoadMore()
-    }
-
 }

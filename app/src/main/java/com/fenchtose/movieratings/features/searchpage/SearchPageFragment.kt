@@ -25,6 +25,7 @@ import com.fenchtose.movieratings.features.info.InfoPageBottomView
 import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
+import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionResponse
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
@@ -70,23 +71,18 @@ class SearchPageFragment: BaseFragment() {
         }
 
         val adapterConfig = SearchAdapterConfig(GlideLoader(Glide.with(this)),
-                object: SearchAdapterConfig.SearchCallback {
-                    override fun onLiked(movie: Movie) {
-                        GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
-                        dispatch?.invoke(LikeMovie(movie, !movie.liked))
-                    }
-
-                    override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                        GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
-                        path?.getRouter()?.let {
-                            dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
-                        }
-                    }
-
-                    override fun onLoadMore() {
-                        dispatch?.invoke(SearchAction.LoadMore(path is SearchPath.AddToCollection))
+                {
+                    GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
+                    dispatch?.invoke(LikeMovie(it, !it.liked))
+                },
+                {
+                    movie, sharedElement ->
+                    GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
+                    path?.getRouter()?.let {
+                        dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
                     }
                 },
+                {dispatch?.invoke(SearchAction.LoadMore(path is SearchPath.AddToCollection))},
                 createExtraLayoutHelper())
 
         val adapter = BaseMovieAdapter(requireContext(), adapterConfig)
@@ -183,18 +179,20 @@ class SearchPageFragment: BaseFragment() {
 
     private fun render(state: CollectionSearchPageState, dispatch: Dispatch) {
         render(state.searchPageState, dispatch)
-        val resId = when(state.collectionProgress) {
-            is CollectionProgress.Default -> 0
-            is CollectionProgress.Exists -> R.string.movie_collection_movie_exists
-            is CollectionProgress.Error -> R.string.movie_collection_movie_error
-            is CollectionProgress.Added -> R.string.movie_collection_movie_added
-        }
+        state.collectionOp?.let {
+            val resId = when(it) {
+                is MovieCollectionResponse.MovieExists -> R.string.movie_collection_movie_exists
+                is MovieCollectionResponse.AddError -> R.string.movie_collection_movie_error
+                is MovieCollectionResponse.MovieAdded -> R.string.movie_collection_movie_added
+                else -> 0
+            }
 
-        if (resId != 0) {
-            showSnackbar(requireContext().getString(resId, state.collectionProgress.collection))
-            val _path = path
-            if (_path is SearchPageFragment.SearchPath.AddToCollection) {
-                dispatch.invoke(CollectionSearchAction.ClearCollectionOp(_path.collection))
+            if (resId != 0) {
+                showSnackbar(requireContext().getString(resId, state.collectionOp.collection.name))
+                val _path = path
+                if (_path is SearchPageFragment.SearchPath.AddToCollection) {
+                    dispatch.invoke(CollectionSearchAction.ClearCollectionOp(_path.collection))
+                }
             }
         }
     }

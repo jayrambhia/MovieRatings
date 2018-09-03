@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.entity
 
+import com.fenchtose.movieratings.features.moviecollection.collectionlist.remove
 import com.fenchtose.movieratings.util.add
 import com.fenchtose.movieratings.util.replace
 
@@ -51,6 +52,10 @@ data class Movie(
 
     fun addCollection(collection: MovieCollection): Movie {
         return copy(collections = collections.add(collection))
+    }
+
+    fun removeCollection(collection: MovieCollection): Movie {
+        return copy(collections = collections.remove(collection.name))
     }
 
     private fun checkValidBase(): Boolean {

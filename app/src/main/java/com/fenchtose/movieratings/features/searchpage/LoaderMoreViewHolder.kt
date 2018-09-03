@@ -5,12 +5,12 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.fenchtose.movieratings.R
 
-class LoaderMoreViewHolder(itemView: View, val callback: SearchAdapterConfig.LoadMoreCallback?): RecyclerView.ViewHolder(itemView) {
+class LoaderMoreViewHolder(itemView: View, private val loadMore: () -> Unit): RecyclerView.ViewHolder(itemView) {
     val button = itemView.findViewById<View>(R.id.load_more_button)
     val progress = itemView.findViewById<View>(R.id.load_more_progressbar)
 
     init {
-        button.setOnClickListener { callback?.onLoadMore() }
+        button.setOnClickListener { loadMore() }
         val params = itemView.layoutParams
         if (params is StaggeredGridLayoutManager.LayoutParams) {
             params.isFullSpan = true

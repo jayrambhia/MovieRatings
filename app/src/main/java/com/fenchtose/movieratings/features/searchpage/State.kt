@@ -30,7 +30,7 @@ data class SearchPageState(
 data class CollectionSearchPageState(
         val searchPageState: SearchPageState = SearchPageState(),
         val collection: MovieCollection = MovieCollection.invalid(),
-        val collectionProgress: CollectionProgress = CollectionProgress.Default()
+        val collectionOp: MovieCollectionResponse? = null
         )
 
 sealed class Progress {
@@ -46,13 +46,6 @@ sealed class Progress {
 
     object Paginating: Progress()
     object PaginationError: Progress()
-}
-
-sealed class CollectionProgress(val collection: String) {
-    class Default: CollectionProgress("")
-    class Exists(collection: String): CollectionProgress(collection)
-    class Added(collection: String): CollectionProgress(collection)
-    class Error(collection: String): CollectionProgress(collection)
 }
 
 sealed class SearchAction(val addToCollection: Boolean): Action {
@@ -114,26 +107,27 @@ private fun reduce(state: SearchPageState, action: Action): SearchPageState {
 private fun reduce(state: CollectionSearchPageState, action: Action): CollectionSearchPageState {
     return when(action) {
         is SearchAction -> reduceChildState(state, state.searchPageState, action, ::reduce, {s, c -> s.copy(searchPageState = c)})
-        is CollectionSearchAction.InitializeCollectionSearch -> state.copy(searchPageState = SearchPageState(), collection = action.collection, collectionProgress = CollectionProgress.Default())
+        is CollectionSearchAction.InitializeCollectionSearch -> state.copy(searchPageState = SearchPageState(), collection = action.collection, collectionOp = null)
         is CollectionSearchAction.ClearCollectionOp -> {
-            if (action.collection == state.collection) {
-                state.copy(collectionProgress = CollectionProgress.Default())
+            if (action.collection.id == state.collection.id) {
+                state.copy(collectionOp = null)
             } else {
                 state
             }
         }
         is MovieCollectionResponse -> {
-            if (action.collection == state.collection && state.searchPageState.movies.hasMovie(action.movie) != -1) {
-                val progress: CollectionProgress = when(action) {
-                    is MovieCollectionResponse.MovieAdded -> CollectionProgress.Added(action.collection.name)
-                    is MovieCollectionResponse.AddError -> CollectionProgress.Error(action.collection.name)
-                    is MovieCollectionResponse.MovieExists -> CollectionProgress.Exists(action.collection.name)
+            if (action.collection.id == state.collection.id && state.searchPageState.movies.hasMovie(action.movie) != -1) {
+                val collectionOp = when(action) {
+                    is MovieCollectionResponse.MovieAdded -> action
+                    is MovieCollectionResponse.AddError -> action
+                    is MovieCollectionResponse.MovieExists -> action
+                    else -> null
                 }
 
                 if (state.searchPageState.progress != Progress.NoOp) {
-                    state.copy(searchPageState = state.searchPageState.copy(progress = Progress.NoOp), collectionProgress = progress)
+                    state.copy(searchPageState = state.searchPageState.copy(progress = Progress.NoOp), collectionOp = collectionOp)
                 } else {
-                    state.copy(collectionProgress = progress)
+                    state.copy(collectionOp = collectionOp)
                 }
 
             } else {

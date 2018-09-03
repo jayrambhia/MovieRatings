@@ -7,6 +7,8 @@ import com.fenchtose.movieratings.features.likespage.LikesPageMiddleware
 import com.fenchtose.movieratings.features.likespage.reduceLikesPage
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageMiddleware
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.reduceCollectionListPage
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageMiddleware
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.reduceCollectionPage
 import com.fenchtose.movieratings.features.moviepage.MoviePageMiddleware
 import com.fenchtose.movieratings.features.moviepage.reduceMoviePage
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageMiddleware
@@ -31,7 +33,9 @@ class AppStore(context: Context): SimpleStore<AppState>(
                 AppState::reduceLikesPage,
                 AppState::reduceTrendingPage,
                 AppState::reduceMoviePage,
-                AppState::reduceCollectionListPage),
+                AppState::reduceCollectionListPage,
+                AppState::reduceCollectionPage
+                ),
         listOf<Middleware<AppState>>(
                 ::logger,
                 ::navigator,
@@ -43,6 +47,7 @@ class AppStore(context: Context): SimpleStore<AppState>(
                 LikesPageMiddleware.newInstance(context)::middleware,
                 TrendingMoviesMiddleware.newInstance()::middleware,
                 MoviePageMiddleware.newInstance()::middleware,
-                CollectionListPageMiddleware.newInstance()::middleware
+                CollectionListPageMiddleware.newInstance()::middleware,
+                CollectionPageMiddleware.newInstance(context)::middleware
         )
 )

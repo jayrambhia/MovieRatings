@@ -25,7 +25,7 @@ import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPath
-import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPagePath
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
@@ -152,7 +152,7 @@ class MoviePageFragment: BaseFragment() {
 
         collectionsFlexView?.render(movie.collections, { collection ->
             GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
-            path?.getRouter()?.let { dispatch.invoke(Navigation(it, CollectionPageFragment.CollectionPagePath(collection))) }
+            path?.getRouter()?.let { dispatch.invoke(Navigation(it, CollectionPagePath(collection))) }
         }, {
             GaEvents.TAP_ADD_TO_COLLECTION.withCategory(path?.category()).track()
             path?.getRouter()?.let {
