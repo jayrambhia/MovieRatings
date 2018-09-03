@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.entity
 
+import com.fenchtose.movieratings.util.add
 import com.fenchtose.movieratings.util.replace
 
 data class Movie(
@@ -46,6 +47,10 @@ data class Movie(
 
     fun like(liked: Boolean): Movie {
         return copy(liked = liked, preferences = preferences.copy(liked = true))
+    }
+
+    fun addCollection(collection: MovieCollection): Movie {
+        return copy(collections = collections.add(collection))
     }
 
     private fun checkValidBase(): Boolean {

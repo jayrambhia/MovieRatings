@@ -1,5 +1,7 @@
 package com.fenchtose.movieratings.model.entity
 
+import com.fenchtose.movieratings.util.add
+
 
 data class MovieCollection(
     val id: Long,
@@ -10,6 +12,22 @@ data class MovieCollection(
         fun invalid(): MovieCollection {
             return MovieCollection(-1, "", listOf())
         }
+    }
+
+    fun addMovie(movie: Movie): MovieCollection {
+        if (movies.hasMovie(movie) == -1) {
+            return copy(movies = movies.add(movie))
+        }
+
+        return this
+    }
+
+    fun removeMovie(movie: Movie): MovieCollection {
+        if (movies.hasMovie(movie) != -1) {
+            return copy(movies = movies.remove(movie))
+        }
+
+        return this
     }
 }
 

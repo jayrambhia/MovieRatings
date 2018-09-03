@@ -12,44 +12,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import com.bumptech.glide.Glide
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
-import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.base.router.ResultBus
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
-import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
-import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
+import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
+import com.fenchtose.movieratings.model.db.movieCollection.CreateCollection
+import com.fenchtose.movieratings.model.db.movieCollection.DeleteCollection
+import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
-import com.fenchtose.movieratings.model.offline.export.DataFileExporter
-import com.fenchtose.movieratings.util.AppFileUtils
-import com.fenchtose.movieratings.util.AppRxHooks
-import com.fenchtose.movieratings.util.IntentUtils
+import com.fenchtose.movieratings.util.show
 
-class CollectionListPageFragment : BaseFragment(), CollectionListPage {
+class CollectionListPageFragment: BaseFragment() {
 
     private var emptyContent: View? = null
     private var recyclerView: RecyclerView? = null
     private var adapter: CollectionListPageAdapter? = null
     private var fab: View? = null
-    private var presenter: CollectionListPresenter? = null
+    private var isEmpty: Boolean = true
+
+    override fun canGoBack() = true
+    override fun getScreenTitle(): Int {
+        return if (shouldReturnSelection())
+            R.string.movie_collection_list_page_selection_title
+        else
+            R.string.movie_collection_list_page_title
+    }
+    override fun screenName() = GaScreens.COLLECTION_LIST
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = CollectionListPresenter(
-                requireContext(),
-                AppRxHooks(),
-                AppFileUtils(),
-                DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
-                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
-                DataFileExporter.newInstance(MovieRatingsApplication.database))
         setHasOptionsMenu(true)
-        presenter?.restoreState(path?.restoreState())
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,148 +92,12 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
             recyclerView?.adapter = adapter
         }
 
-        presenter?.attachView(this)
+        render { appState, dispatch -> render(appState.collectionListPage, dispatch)}
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.detachView(this)
-    }
-
-    override fun saveState(): PresenterState? {
-        return presenter?.saveState()
-    }
-
-    override fun updateState(state: CollectionListPage.State) {
-        when(state) {
-            is CollectionListPage.State.Success -> {
-                fab?.visibility = View.VISIBLE
-                emptyContent?.visibility = View.GONE
-                adapter?.updateData(state.collections)
-                adapter?.notifyDataSetChanged()
-                recyclerView?.visibility = View.VISIBLE
-            }
-            is CollectionListPage.State.Empty-> {
-                fab?.visibility = View.GONE
-                emptyContent?.visibility = View.VISIBLE
-                recyclerView?.visibility = View.GONE
-            }
-
-        }
-
-    }
-
-    override fun updateState(state: CollectionListPage.OpState) {
-        val resId = when(state) {
-            is CollectionListPage.OpState.Created -> R.string.movie_collection_list_page_create_success
-            is CollectionListPage.OpState.Deleted -> R.string.movie_collection_list_page_delete_success
-            is CollectionListPage.OpState.CreateError -> R.string.movie_collection_list_page_create_error
-            is CollectionListPage.OpState.DeleteError -> R.string.movie_collection_list_page_delete_error
-        }
-
-        showSnackbar(requireContext().getString(resId, state.data))
-    }
-
-    override fun updateState(state: CollectionListPage.ShareState) {
-        when(state) {
-            is CollectionListPage.ShareState.Started -> {}
-            is CollectionListPage.ShareState.Error -> showSnackbar(R.string.movie_collection_list_share_error)
-            is CollectionListPage.ShareState.Success -> IntentUtils.openShareFileIntent(requireContext(), state.uri)
-        }
-    }
-
-    private fun onCreateCollectionRequested() {
-
-        var edittext: EditText? = null
-
-        val dialog = AlertDialog.Builder(requireContext())
-                .setTitle(R.string.movie_collection_create_dialog_title)
-                .setView(R.layout.create_collection_dialog_layout)
-                .setPositiveButton(R.string.movie_collection_create_dialog_positive_cta) {
-                    dialog, _ ->
-                    val name = edittext?.text.toString().trim()
-                    name.takeIf { it.isNotEmpty() }?.let {
-                        GaEvents.CREATE_COLLECTION.track()
-                        presenter?.createCollection(it)
-                        dialog.dismiss()
-                    }
-                }.setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
-                .show()
-
-        val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-        button.isEnabled = false
-
-        edittext = dialog.findViewById(R.id.edit_collection_name)
-
-        edittext?.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable) {
-                button.isEnabled = s.isNotEmpty()
-            }
-
-        })
-
-    }
-
-    private fun onCollectionDeleteRequested(collection: MovieCollection) {
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.movie_collection_delete_dialog_title)
-                .setMessage(requireContext().getString(R.string.movie_collection_delete_dialog_content, collection.name))
-                .setNegativeButton(R.string.movie_collection_delete_dialog_negative) { _, _ ->
-                    GaEvents.DELETE_COLLECTION.track()
-                    presenter?.deleteCollection(collection)
-                }
-                .setNeutralButton(R.string.movie_collection_delete_dialog_neutral) { dialog, _ -> dialog.dismiss() }
-                .show()
-    }
-
-    private fun onCollectionSelected(collection: MovieCollection) {
-        if (shouldReturnSelection()) {
-            GaEvents.SELECT_COLLECTION.track()
-            path?.getRouter()?.onBackRequested()
-            ResultBus.setResult(CollectionListPagePath.SELECTED_COLLECTION, ResultBus.Result.create(collection))
-        } else {
-            GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
-            path?.getRouter()?.go(CollectionPageFragment.CollectionPagePath(collection))
-        }
-    }
-
-    private fun showShareDialog() {
-        presenter?.let {
-            if (it.getCollectionCount() == 0) {
-                showSnackbar(R.string.movie_collection_list_share_empty)
-                return
-            }
-        }
-        AlertDialog.Builder(requireContext())
-                .setTitle(R.string.movie_collection_list_share_dialog_title)
-                .setMessage(R.string.movie_collection_list_share_dialog_content)
-                .setPositiveButton(R.string.movie_collection_list_share_dialog_positive_cta) {
-                    dialog, _ ->
-                    dialog.dismiss()
-                    GaEvents.SHARE_COLLECTIONS.track()
-                    presenter?.share()
-                }
-                .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }
-                .show()
-    }
-
-    override fun canGoBack(): Boolean {
-        return true
-    }
-
-    private fun shouldReturnSelection(): Boolean {
-        path?.let {
-            return (it as CollectionListPagePath).returnSelection
-        }
-
-        return false
+    override fun onResume() {
+        super.onResume()
+        dispatch?.invoke(LoadCollections)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -250,25 +113,135 @@ class CollectionListPageFragment : BaseFragment(), CollectionListPage {
         return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
-    override fun getScreenTitle(): Int {
-        return if (shouldReturnSelection())
-            R.string.movie_collection_list_page_selection_title
-        else
-            R.string.movie_collection_list_page_title
-    }
+    private fun render(state: CollectionListPageState, dispatch: Dispatch) {
+        isEmpty = state.collections.isEmpty()
 
-    override fun screenName() = GaScreens.COLLECTION_LIST
+        when(state.progress) {
+            is Error -> {}// TODO
+            is Progress.Loaded -> {
+                if (state.collections.isEmpty()) {
+                    fab?.show(false)
+                    emptyContent?.show(true)
+                    recyclerView?.show(false)
+                } else {
+                    fab?.show(true)
+                    emptyContent?.show(false)
+                    recyclerView?.show(true)
+                }
 
-    class CollectionListPagePath(val returnSelection: Boolean) : RouterPath<CollectionListPageFragment>() {
-
-        companion object {
-            const val SELECTED_COLLECTION = "selected_collection"
+                adapter?.updateData(state.collections)
+                adapter?.notifyDataSetChanged()
+            }
         }
 
-        override fun createFragmentInstance() =CollectionListPageFragment()
-        override fun category() = GaCategory.COLLECTION_LIST
-        override fun showMenuIcons(): IntArray {
-            return if (returnSelection) super.showMenuIcons() else intArrayOf(R.id.action_share)
+        state.collectionOp?.let {
+            val resId = when(it) {
+                is CollectionOp.Created -> R.string.movie_collection_list_page_create_success
+                is CollectionOp.Deleted -> R.string.movie_collection_list_page_delete_success
+                is CollectionOp.CreateError -> R.string.movie_collection_list_page_create_error
+                is CollectionOp.DeleteError -> R.string.movie_collection_list_page_delete_error
+            }
+            showSnackbar(requireContext().getString(resId, it.name))
+            dispatch(ClearCollectionOp)
         }
     }
+
+    private fun onCreateCollectionRequested() {
+
+        var edittext: EditText? = null
+
+        val dialog = AlertDialog.Builder(requireContext())
+                .setTitle(R.string.movie_collection_create_dialog_title)
+                .setView(R.layout.create_collection_dialog_layout)
+                .setPositiveButton(R.string.movie_collection_create_dialog_positive_cta) {
+                    dialog, _ ->
+                    val name = edittext?.text.toString().trim()
+                    name.takeIf { it.isNotEmpty() }?.let {
+                        GaEvents.CREATE_COLLECTION.track()
+                        dispatch?.invoke(CreateCollection(it))
+                        dialog.dismiss()
+                    }
+                }.setNegativeButton(android.R.string.cancel) { dialog, _ -> dialog.dismiss() }
+                .show()
+
+        val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        button.isEnabled = false
+
+        edittext = dialog.findViewById(R.id.edit_collection_name)
+
+        edittext?.addTextChangedListener(object: TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable) { button.isEnabled = s.isNotEmpty() }
+
+        })
+
+    }
+
+    private fun onCollectionDeleteRequested(collection: MovieCollection) {
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.movie_collection_delete_dialog_title)
+                .setMessage(requireContext().getString(R.string.movie_collection_delete_dialog_content, collection.name))
+                .setNegativeButton(R.string.movie_collection_delete_dialog_negative) { _, _ ->
+                    GaEvents.DELETE_COLLECTION.track()
+                    dispatch?.invoke(DeleteCollection(collection))
+                }
+                .setNeutralButton(R.string.movie_collection_delete_dialog_neutral) { dialog, _ -> dialog.dismiss() }
+                .show()
+    }
+
+    private fun onCollectionSelected(collection: MovieCollection) {
+        if (shouldReturnSelection()) {
+            GaEvents.SELECT_COLLECTION.track()
+            path?.let {
+                (it as CollectionListPath).movieToBeAdded?.let {
+                    dispatch?.invoke(AddToCollection(collection, it))
+                }
+            }
+            path?.getRouter()?.onBackRequested()
+        } else {
+            GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
+            path?.getRouter()?.let {
+                dispatch?.invoke(Navigation(it, CollectionPageFragment.CollectionPagePath(collection)))
+            }
+        }
+    }
+
+    private fun showShareDialog() {
+        if (isEmpty) {
+            showSnackbar(R.string.movie_collection_list_share_empty)
+            return
+        }
+
+        AlertDialog.Builder(requireContext())
+                .setTitle(R.string.movie_collection_list_share_dialog_title)
+                .setMessage(R.string.movie_collection_list_share_dialog_content)
+                .setPositiveButton(R.string.movie_collection_list_share_dialog_positive_cta) {
+                    dialog, _ ->
+                    dialog.dismiss()
+                    GaEvents.SHARE_COLLECTIONS.track()
+                    TODO("Add share to redux")
+                }
+                .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }
+                .show()
+    }
+
+    private fun shouldReturnSelection(): Boolean {
+        path?.let {
+            return (it as CollectionListPath).returnSelection
+        }
+
+        return false
+    }
+}
+
+class CollectionListPath(val returnSelection: Boolean = false, val movieToBeAdded: Movie? = null): RouterPath<CollectionListPageFragment>() {
+    override fun createFragmentInstance() = CollectionListPageFragment()
+    override fun category() = GaCategory.COLLECTION_LIST
+    override fun showMenuIcons(): IntArray {
+        return if (returnSelection) super.showMenuIcons() else intArrayOf(R.id.action_share)
+    }
+
+    override fun initAction() = InitAction
+    override fun clearAction() = ClearAction
 }

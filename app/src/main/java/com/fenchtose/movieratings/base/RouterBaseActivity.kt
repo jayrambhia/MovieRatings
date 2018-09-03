@@ -13,7 +13,7 @@ import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
-import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
+import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPath
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
@@ -110,9 +110,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     }
 
     private fun showSearchPage() {
-        router?.let {
-            dispatch?.invoke(Navigation(it, SearchPageFragment.SearchPath.Default(SettingsPreferences(this))))
-        }
+        navigate(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
     }
 
     private fun showInfoPage(showSearchOption: Boolean) {
@@ -127,19 +125,23 @@ abstract class RouterBaseActivity: AppCompatActivity() {
 
     private fun showFavoritesPage() {
         GaEvents.OPEN_LIKED_PAGE.track()
-        router?.go(LikesPageFragment.LikesPath())
+        navigate(LikesPageFragment.LikesPath())
     }
 
     private fun showRecentlyBrowsedPage() {
         GaEvents.OPEN_RECENTLY_BROWSED_PAGE.track()
-        router?.go(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
+        navigate(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
     }
 
     private fun showMovieCollectionsPage() {
-        router?.let {
-            dispatch?.invoke(Navigation(it, CollectionListPageFragment.CollectionListPagePath(false)))
-        }
         GaEvents.OPEN_COLLECTIONS_PAGE.track()
+        navigate(CollectionListPath())
+    }
+
+    private fun navigate(path: RouterPath<*>) {
+        router?.let {
+            dispatch?.invoke(Navigation(it, path))
+        }
     }
 
     private fun showTrendingPage() {

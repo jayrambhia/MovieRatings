@@ -79,7 +79,7 @@ class MoviePageMiddleware(private val provider: MovieProvider,
     fun middleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
         if (action is LoadMovie) {
             if (state.moviePage.movieId == action.imdbId) {
-                if (!state.moviePage.movie.isComplete(Movie.Check.USER_PREFERENCES)) {
+                if (state.moviePage.progress == Progress.Default) {
                     getMovie(action.imdbId, state.moviePage.currentSeason, dispatch)
                     return UpdateProgress(Progress.Loading)
                 }

@@ -22,12 +22,12 @@ import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
-import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
+import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPath
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.widgets.pagesection.ExpandableSection
@@ -79,20 +79,7 @@ class MoviePageFragment: BaseFragment() {
         posterView = view.findViewById(R.id.poster_view)
         ratingView = view.findViewById(R.id.rating_view)
         titleView = view.findViewById(R.id.title_view)
-
-        collectionsFlexView = MoviePageFlexView(requireContext(), view.findViewById(R.id.collections_flexview),
-                object : MoviePageFlexView.CollectionCallback {
-                    override fun onItemClicked(collection: MovieCollection) {
-                        GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
-                        path?.getRouter()?.go(CollectionPageFragment.CollectionPagePath(collection))
-                    }
-
-                    override fun onAddToCollectionClicked() {
-                        GaEvents.TAP_ADD_TO_COLLECTION.withCategory(path?.category()).track()
-                        path?.getRouter()?.go(CollectionListPageFragment.CollectionListPagePath(true))
-                    }
-                })
-
+        collectionsFlexView = MoviePageFlexView(requireContext(), view.findViewById(R.id.collections_flexview))
 
         fab = view.findViewById(R.id.fab)
 
@@ -163,7 +150,15 @@ class MoviePageFragment: BaseFragment() {
         writerSection?.setContent(movie.writers)
         plotSection?.setContent(movie.plot)
 
-        collectionsFlexView?.setCollections(movie.collections)
+        collectionsFlexView?.render(movie.collections, { collection ->
+            GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
+            path?.getRouter()?.let { dispatch.invoke(Navigation(it, CollectionPageFragment.CollectionPagePath(collection))) }
+        }, {
+            GaEvents.TAP_ADD_TO_COLLECTION.withCategory(path?.category()).track()
+            path?.getRouter()?.let {
+                dispatch.invoke(Navigation(it, CollectionListPath(true, movie)))
+            }
+        })
 
         setLiked(movie.liked)
 

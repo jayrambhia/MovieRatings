@@ -32,23 +32,42 @@ fun AppState.reduceLiked(action: Action): AppState {
     }
 
     val movie = action.movie
+    return updateSearchPage(movie)
+            .updateRecentlyBrowsedPage(movie)
+            .updateTrendingPage(movie)
+            .updateMoviePage(movie)
+}
 
-    // Don't make unnecessary copies
-    var updated = this
-    if (searchPage.movies.hasMovie(movie) != -1) {
-        updated = updated.copy(searchPage = searchPage.copy(movies = searchPage.movies.updateMovie(movie)))
+private fun AppState.updateSearchPage(movie: Movie): AppState {
+    return if (searchPage.movies.hasMovie(movie) != -1) {
+        copy(searchPage = searchPage.copy(movies = searchPage.movies.updateMovie(movie)))
+    } else {
+        this
     }
-    if (recentlyBrowsedPage.movies.hasMovie(movie) != -1) {
-        updated = updated.copy(recentlyBrowsedPage = recentlyBrowsedPage.copy(movies = recentlyBrowsedPage.movies.updateMovie(movie)))
-    }
-    if (trendingPage.movies.hasMovie(movie) != -1) {
-        updated = updated.copy(trendingPage = trendingPage.copy(movies = trendingPage.movies.updateMovie(movie)))
-    }
-    if (moviePage.movie.imdbId == action.movie.imdbId) {
-        updated = updated.copy(moviePage = moviePage.copy(movie = moviePage.movie.like(action.movie.liked)))
-    }
+}
 
-    return updated
+private fun AppState.updateRecentlyBrowsedPage(movie: Movie): AppState {
+    return if (recentlyBrowsedPage.movies.hasMovie(movie) != -1) {
+        copy(recentlyBrowsedPage = recentlyBrowsedPage.copy(movies = recentlyBrowsedPage.movies.updateMovie(movie)))
+    } else {
+        this
+    }
+}
+
+private fun AppState.updateTrendingPage(movie: Movie): AppState {
+    return if (trendingPage.movies.hasMovie(movie) != -1) {
+        copy(trendingPage = trendingPage.copy(movies = trendingPage.movies.updateMovie(movie)))
+    } else {
+        this
+    }
+}
+
+private fun AppState.updateMoviePage(movie: Movie): AppState {
+    return if (moviePage.movie.imdbId == movie.imdbId) {
+        copy(moviePage = moviePage.copy(movie = moviePage.movie.like(movie.liked)))
+    } else {
+        this
+    }
 }
 
 data class LikeMovie(val movie: Movie, val liked: Boolean): Action
