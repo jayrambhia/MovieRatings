@@ -93,14 +93,22 @@ class CollectionPageFragment: BaseMovieListPageFragmentRedux() {
     }
 
     override fun reduceState(appState: AppState): BaseMovieListPageState {
+        if (appState.collectionPages.isEmpty()) {
+            return BaseMovieListPageState()
+        }
+
         return BaseMovieListPageState(
-                movies = appState.collectionPage.movies,
-                progress = appState.collectionPage.progress
+                movies = appState.collectionPages.last().movies,
+                progress = appState.collectionPages.last().progress
         )
     }
 
     override fun render(appState: AppState, dispatch: Dispatch) {
-        val state = appState.collectionPage
+        if (appState.collectionPages.isEmpty()) {
+            return
+        }
+
+        val state = appState.collectionPages.last()
         collection = state.collection
         when(state.progress) {
             is Progress.Empty -> emptyStateCta?.show()

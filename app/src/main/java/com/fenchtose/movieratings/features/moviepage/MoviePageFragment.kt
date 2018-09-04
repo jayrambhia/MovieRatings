@@ -99,7 +99,11 @@ class MoviePageFragment: BaseFragment() {
 
         isPosterLoaded = false
 
-        render { appState, dispatch -> render(appState.moviePage, dispatch) }
+        render { appState, dispatch ->
+            if (appState.moviePages.isNotEmpty()) {
+                render(appState.moviePages.last(), dispatch)
+            }
+        }
     }
 
     override fun onResume() {

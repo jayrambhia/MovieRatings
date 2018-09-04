@@ -15,7 +15,7 @@ data class AppState(
         val recentlyBrowsedPage: RecentlyBrowsedState = RecentlyBrowsedState(),
         val likesPage: LikesPageState = LikesPageState(),
         val trendingPage: TrendingPageState = TrendingPageState(),
-        val moviePage: MoviePageState = MoviePageState(),
+        val moviePages: List<MoviePageState> = listOf(),
         val collectionListPage: CollectionListPageState = CollectionListPageState(),
-        val collectionPage: CollectionPageState = CollectionPageState()
+        val collectionPages: List<CollectionPageState> = listOf()
 )

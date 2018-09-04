@@ -35,7 +35,8 @@ fun AppState.reduceLiked(action: Action): AppState {
     return updateSearchPage(movie)
             .updateRecentlyBrowsedPage(movie)
             .updateTrendingPage(movie)
-            .updateMoviePage(movie)
+            .updateMoviePages(movie)
+            .updateCollectionPages(movie)
 }
 
 private fun AppState.updateSearchPage(movie: Movie): AppState {
@@ -62,12 +63,37 @@ private fun AppState.updateTrendingPage(movie: Movie): AppState {
     }
 }
 
-private fun AppState.updateMoviePage(movie: Movie): AppState {
-    return if (moviePage.movie.imdbId == movie.imdbId) {
-        copy(moviePage = moviePage.copy(movie = moviePage.movie.like(movie.liked)))
-    } else {
-        this
+private fun AppState.updateMoviePages(movie: Movie): AppState {
+    val updated = moviePages.map {
+        moviePage ->
+        if (moviePage.movie.imdbId == movie.imdbId) {
+            moviePage.copy(movie = moviePage.movie.like(movie.liked))
+        } else {
+            moviePage
+        }
     }
+
+    if (updated != moviePages) {
+        return copy(moviePages = updated)
+    }
+
+    return this
+}
+
+private fun AppState.updateCollectionPages(movie: Movie): AppState {
+    val updated = collectionPages.map {
+        if (it.movies.hasMovie(movie) != -1) {
+            it.copy(movies = it.movies.updateMovie(movie))
+        } else {
+            it
+        }
+    }
+
+    if (updated != collectionPages) {
+        return copy(collectionPages = updated)
+    }
+
+    return this
 }
 
 data class LikeMovie(val movie: Movie, val liked: Boolean): Action

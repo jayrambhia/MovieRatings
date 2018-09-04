@@ -13,10 +13,7 @@ import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RegisterMovie
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.Season
-import com.fenchtose.movieratings.util.AppRxHooks
-import com.fenchtose.movieratings.util.Constants
-import com.fenchtose.movieratings.util.IntentUtils
-import com.fenchtose.movieratings.util.RxHooks
+import com.fenchtose.movieratings.util.*
 import java.lang.ref.WeakReference
 import kotlin.math.max
 
@@ -54,11 +51,26 @@ data class LoadSeason(val series: Movie, val season: Int): Action
 data class SeasonLoaded(val season: Season): Action
 data class UpdateSeasonProgress(val progress: SeasonProgress): Action
 
-fun AppState.reduceMoviePage(action: Action) = reduceChild(moviePage, action, {reduce(it)}, {copy(moviePage = it)})
+fun AppState.reduceMoviePage(action: Action) = reduceChild(moviePages, action, {reduce(it)}, {copy(moviePages = it)})
+
+private fun List<MoviePageState>.reduce(action: Action): List<MoviePageState> {
+    if (action is InitMoviePage) {
+        return push(MoviePageState(movieId = action.imdbId, movie = action.movie?: Movie.invalid()))
+    }
+
+    if (isEmpty()) {
+        return this
+    }
+
+    if (action == ClearMoviePage) {
+        return pop()
+    }
+
+    return swapLastIfUpdated(last().reduce(action))
+}
 
 private fun MoviePageState.reduce(action: Action): MoviePageState {
     return when(action) {
-        is InitMoviePage -> MoviePageState(movieId = action.imdbId, movie = action.movie?: Movie.invalid())
         is ClearMoviePage -> MoviePageState()
         is MovieLoaded -> if (movieId == action.movie.imdbId) copy(movie=action.movie, progress = Progress.Loaded) else this
         is SeasonLoaded -> if (movieId == action.season.seriesId) copy(season = action.season, seasonProgress = SeasonProgress.Loaded) else this
@@ -77,22 +89,27 @@ class MoviePageMiddleware(private val provider: MovieProvider,
     }
 
     fun middleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
+        if (state.moviePages.isEmpty()) {
+            return next(state, action, dispatch)
+        }
+
+        val moviePage = state.moviePages.last()
         if (action is LoadMovie) {
-            if (state.moviePage.movieId == action.imdbId) {
-                if (state.moviePage.progress == Progress.Default) {
-                    getMovie(action.imdbId, state.moviePage.currentSeason, dispatch)
+            if (moviePage.movieId == action.imdbId) {
+                if (moviePage.progress == Progress.Default) {
+                    getMovie(action.imdbId, moviePage.currentSeason, dispatch)
                     return UpdateProgress(Progress.Loading)
                 }
             }
         } else if (action is LoadSeason) {
-            if (state.moviePage.movieId == action.series.imdbId && state.moviePage.season?.season != action.season) {
+            if (moviePage.movieId == action.series.imdbId && moviePage.season?.season != action.season) {
                 loadSeason(action.series, action.season, dispatch)
                 return UpdateSeasonProgress(SeasonProgress.Loading)
             }
         } else if (action is OpenImdbPage) {
-            if (state.moviePage.movieId.isNotEmpty()) {
+            if (moviePage.movieId.isNotEmpty()) {
                 action.contextRef.get()?.let {
-                    IntentUtils.openImdb(it, state.moviePage.movieId, false)
+                    IntentUtils.openImdb(it, moviePage.movieId, false)
                     return NoAction
                 }
             }

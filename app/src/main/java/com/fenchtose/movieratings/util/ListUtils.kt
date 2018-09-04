@@ -22,6 +22,25 @@ fun <T> List<T>.add(t: T): List<T> {
     return toMutableList().apply { add(t) }
 }
 
+fun <T> List<T>.push(t: T): List<T> {
+    return add(t)
+}
+
+fun <T> List<T>.pop(): List<T> {
+    return toMutableList().apply { removeAt(size - 1) }
+}
+
+fun <T> List<T>.swapLastIfUpdated(t: T): List<T> {
+    if (t != last()) {
+        return toMutableList().apply {
+            removeAt(size - 1)
+            add(t)
+        }
+    }
+
+    return this
+}
+
 fun <T> List<T>.add(t: T, index: Int, strict: Boolean = true): List<T> {
     if (index < 0 || index >= size) {
         if (index > size && strict) {

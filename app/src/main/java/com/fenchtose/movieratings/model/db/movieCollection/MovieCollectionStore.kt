@@ -56,24 +56,37 @@ sealed class MovieCollectionResponse(val collection: MovieCollection, val movie:
 fun AppState.reduceCollections(action: Action): AppState {
     if (action is MovieCollectionResponse) {
         return updateCollectionListPage(action)
-                .updateCollectionPage(action)
-                .updateMoviePage(action)
+                .updateCollectionPages(action)
+                .updateMoviePages(action)
     }
 
     return this
 }
 
-private fun AppState.updateMoviePage(action: MovieCollectionResponse): AppState {
-    if (action is MovieCollectionResponse.MovieAdded) {
-        if (moviePage.movie.imdbId == action.movie.imdbId
-                && moviePage.movie.collections.hasCollection(action.collection.name) == -1) {
-            return copy(moviePage = moviePage.copy(movie = moviePage.movie.addCollection(action.collection)))
+private fun AppState.updateMoviePages(action: MovieCollectionResponse): AppState {
+    if (moviePages.isEmpty()) {
+        return this
+    }
+
+    val updated = moviePages.map {
+        moviePage ->
+        var mapped = moviePage
+        if (action is MovieCollectionResponse.MovieAdded) {
+            if (moviePage.movie.imdbId == action.movie.imdbId
+                    && moviePage.movie.collections.hasCollection(action.collection.name) == -1) {
+                mapped = moviePage.copy(movie = moviePage.movie.addCollection(action.collection))
+            }
+        } else if (action is MovieCollectionResponse.MovieRemoved) {
+            if (moviePage.movie.imdbId == action.movie.imdbId
+                    && moviePage.movie.collections.hasCollection(action.collection.name) != -1) {
+                mapped = moviePage.copy(movie = moviePage.movie.removeCollection(action.collection))
+            }
         }
-    } else if (action is MovieCollectionResponse.MovieRemoved) {
-        if (moviePage.movie.imdbId == action.movie.imdbId
-                && moviePage.movie.collections.hasCollection(action.collection.name) != -1) {
-            return copy(moviePage = moviePage.copy(movie = moviePage.movie.removeCollection(action.collection)))
-        }
+        mapped
+    }
+
+    if (updated != moviePages) {
+        return copy(moviePages = updated)
     }
 
     return this
@@ -88,15 +101,29 @@ private fun AppState.updateCollectionListPage(action: MovieCollectionResponse): 
     return this
 }
 
-private fun AppState.updateCollectionPage(action: MovieCollectionResponse): AppState {
-    if (action is MovieCollectionResponse.MovieAdded) {
-        if (collectionPage.active && collectionPage.collection.id == action.collection.id && collectionPage.movies.hasMovie(action.movie) == -1) {
-            return copy(collectionPage = collectionPage.copy(movies = collectionPage.movies.add(action.movie)))
+private fun AppState.updateCollectionPages(action: MovieCollectionResponse): AppState {
+    if (collectionPages.isEmpty()) {
+        return this
+    }
+
+    val updated = collectionPages.map {
+        collectionPage ->
+        var mapped = collectionPage
+        if (action is MovieCollectionResponse.MovieAdded) {
+            if (collectionPage.active && collectionPage.collection.id == action.collection.id && collectionPage.movies.hasMovie(action.movie) == -1) {
+                mapped = collectionPage.copy(movies = collectionPage.movies.add(action.movie))
+            }
+        } else if (action is MovieCollectionResponse.MovieRemoved) {
+            if (collectionPage.active && collectionPage.collection.id == action.collection.id && collectionPage.movies.hasMovie(action.movie) != -1) {
+                mapped = collectionPage.copy(movies = collectionPage.movies.remove(action.movie))
+            }
         }
-    } else if (action is MovieCollectionResponse.MovieRemoved) {
-        if (collectionPage.active && collectionPage.collection.id == action.collection.id && collectionPage.movies.hasMovie(action.movie) != -1) {
-            return copy(collectionPage = collectionPage.copy(movies = collectionPage.movies.remove(action.movie)))
-        }
+
+        mapped
+    }
+
+    if (updated != collectionPages) {
+        return copy(collectionPages = updated)
     }
 
     return this

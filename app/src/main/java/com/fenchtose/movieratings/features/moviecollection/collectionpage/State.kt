@@ -19,8 +19,7 @@ import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.entity.sort
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
-import com.fenchtose.movieratings.util.AppRxHooks
-import com.fenchtose.movieratings.util.RxHooks
+import com.fenchtose.movieratings.util.*
 
 data class CollectionPageState(
     val collection: MovieCollection = MovieCollection.invalid(),
@@ -38,13 +37,27 @@ data class CollectionSort(val collectionId: Long, val sort: Sort): Action
 const val COLLECTION_PAGE = "collection_page"
 
 fun AppState.reduceCollectionPage(action: Action): AppState {
-    return reduceChild(collectionPage, action, {reduce(it)}, {copy(collectionPage = it)})
+    return reduceChild(collectionPages, action, {reduce(it)}, {copy(collectionPages = it)})
+}
+
+private fun List<CollectionPageState>.reduce(action: Action): List<CollectionPageState> {
+    if (action is InitCollectionPage) {
+        return push(CollectionPageState(collection = action.collection))
+    }
+
+    if (isEmpty()) {
+        return this
+    }
+
+    if (action === ClearCollectionPage) {
+        return pop()
+    }
+
+    return swapLastIfUpdated(last().reduce(action))
 }
 
 private fun CollectionPageState.reduce(action: Action): CollectionPageState {
     return when {
-        action === ClearCollectionPage -> CollectionPageState()
-        action is InitCollectionPage -> copy(collection = action.collection)
         action is BaseMovieListPageAction -> when(action) {
             is BaseMovieListPageAction.Loading -> copy(progress = Progress.Loading)
             is BaseMovieListPageAction.Loaded -> copy(progress = Progress.Success, movies = action.movies)
@@ -57,7 +70,7 @@ private fun CollectionPageState.reduce(action: Action): CollectionPageState {
 }
 
 class CollectionPageMiddleware(val provider: MovieCollectionProvider,
-                               val rxHooks: RxHooks,
+                               private val rxHooks: RxHooks,
                                likeStore: LikeStore,
                                private val userPreferences: UserPreferences) {
     init {
@@ -65,7 +78,11 @@ class CollectionPageMiddleware(val provider: MovieCollectionProvider,
     }
 
     fun middleware(appState: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
-        val state = appState.collectionPage
+        if (appState.collectionPages.isEmpty()) {
+            return next(appState, action, dispatch)
+        }
+
+        val state = appState.collectionPages.last()
         if (action === LoadCollection) {
             if (state.active && state.movies.isEmpty()) {
                 load(state.collection, dispatch)
