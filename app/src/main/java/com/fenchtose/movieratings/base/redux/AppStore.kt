@@ -15,6 +15,8 @@ import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPa
 import com.fenchtose.movieratings.features.recentlybrowsedpage.recentlyBrowsedPageReducer
 import com.fenchtose.movieratings.features.searchpage.SearchMiddleWare
 import com.fenchtose.movieratings.features.searchpage.searchPageReducer
+import com.fenchtose.movieratings.features.season.episode.EpisodePageMiddleware
+import com.fenchtose.movieratings.features.season.episode.reduceEpisodes
 import com.fenchtose.movieratings.features.trending.TrendingMoviesMiddleware
 import com.fenchtose.movieratings.features.trending.reduceTrendingPage
 import com.fenchtose.movieratings.model.db.like.LikeMiddleware
@@ -34,7 +36,8 @@ class AppStore(context: Context): SimpleStore<AppState>(
                 AppState::reduceTrendingPage,
                 AppState::reduceMoviePage,
                 AppState::reduceCollectionListPage,
-                AppState::reduceCollectionPage
+                AppState::reduceCollectionPage,
+                AppState::reduceEpisodes
                 ),
         listOf<Middleware<AppState>>(
                 ::logger,
@@ -48,6 +51,16 @@ class AppStore(context: Context): SimpleStore<AppState>(
                 TrendingMoviesMiddleware.newInstance()::middleware,
                 MoviePageMiddleware.newInstance()::middleware,
                 CollectionListPageMiddleware.newInstance()::middleware,
-                CollectionPageMiddleware.newInstance(context)::middleware
+                CollectionPageMiddleware.newInstance(context)::middleware,
+                EpisodePageMiddleware.newInstance()::middleware
         )
-)
+) {
+
+    /**
+     * This method should only be used when necessary. This is used to dispatch init actions
+     * before subscribing.
+     */
+    fun dispatchEarly(action: Action) {
+        dispatch(action)
+    }
+}

@@ -9,13 +9,13 @@ import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
-import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragmentRedux
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
 
-class LikesPageFragment: BaseMovieListPageFragmentRedux() {
+class LikesPageFragment: BaseMovieListPageFragment() {
 
     override fun getScreenTitle() = R.string.likes_page_title
 

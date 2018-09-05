@@ -7,6 +7,7 @@ import com.fenchtose.movieratings.features.moviepage.MoviePageState
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedState
 import com.fenchtose.movieratings.features.searchpage.CollectionSearchPageState
 import com.fenchtose.movieratings.features.searchpage.SearchPageState
+import com.fenchtose.movieratings.features.season.episode.EpisodePageState
 import com.fenchtose.movieratings.features.trending.TrendingPageState
 
 data class AppState(
@@ -17,5 +18,6 @@ data class AppState(
         val trendingPage: TrendingPageState = TrendingPageState(),
         val moviePages: List<MoviePageState> = listOf(),
         val collectionListPage: CollectionListPageState = CollectionListPageState(),
-        val collectionPages: List<CollectionPageState> = listOf()
+        val collectionPages: List<CollectionPageState> = listOf(),
+        val episodePages: Map<String, EpisodePageState> = mapOf()
 )

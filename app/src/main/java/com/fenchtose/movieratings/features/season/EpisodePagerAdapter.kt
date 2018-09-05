@@ -12,7 +12,7 @@ import com.fenchtose.movieratings.model.entity.Season
 class EpisodePagerAdapter(private val context: Context,
                           private val series: Movie,
                           episodes: Season,
-                          private val callback: EpisodePage.EpisodeCallback): PagerAdapter() {
+                          private val loaded: (Movie) -> Unit): PagerAdapter() {
 
     private val episodes = episodes.episodes
 
@@ -22,14 +22,14 @@ class EpisodePagerAdapter(private val context: Context,
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val page = EpisodePage(context, episodes[position], series)
-        page.callback = callback
+        page.onLoaded = loaded
         container.addView(page)
         return page
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         container.removeView(`object` as View)
-        (`object` as EpisodePage).callback = null
+        (`object` as EpisodePage).onLoaded = null
     }
 
     override fun getPageTitle(position: Int): CharSequence = context.getString(R.string.season_page_tab_title, position + 1)

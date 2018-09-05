@@ -23,7 +23,7 @@ import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
 
-abstract class BaseMovieListPageFragmentRedux: BaseFragment() {
+abstract class BaseMovieListPageFragment: BaseFragment() {
 
     protected var recyclerView: RecyclerView? = null
     protected var adapter: BaseMovieAdapter? = null

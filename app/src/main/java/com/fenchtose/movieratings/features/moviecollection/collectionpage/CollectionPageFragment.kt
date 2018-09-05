@@ -16,7 +16,7 @@ import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
-import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragmentRedux
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
 import com.fenchtose.movieratings.features.baselistpage.Progress
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
@@ -28,7 +28,7 @@ import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.util.show
 
-class CollectionPageFragment: BaseMovieListPageFragmentRedux() {
+class CollectionPageFragment: BaseMovieListPageFragment() {
 
     private var emptyStateCta: View? = null
 

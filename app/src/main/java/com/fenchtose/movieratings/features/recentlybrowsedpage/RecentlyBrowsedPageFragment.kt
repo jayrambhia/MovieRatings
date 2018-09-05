@@ -5,10 +5,10 @@ import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragmentRedux
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
 
-class RecentlyBrowsedPageFragment: BaseMovieListPageFragmentRedux() {
+class RecentlyBrowsedPageFragment: BaseMovieListPageFragment() {
 
     override fun canGoBack() = true
 

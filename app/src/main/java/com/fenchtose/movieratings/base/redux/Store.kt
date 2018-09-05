@@ -81,7 +81,7 @@ abstract class SimpleStore<State>(initialState: State,
         return { subscriptions.remove(subscription) }
     }
 
-    private fun dispatch(action: Action) {
+    fun dispatch(action: Action) {
         _dispatch(action)
     }
 
