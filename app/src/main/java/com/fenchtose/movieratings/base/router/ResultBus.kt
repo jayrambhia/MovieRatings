@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
+// No longer needed due to Redux.
+@Suppress("unused")
 class ResultBus {
     companion object {
         private val map: HashMap<String, BehaviorSubject<Result<Any>>> = HashMap()

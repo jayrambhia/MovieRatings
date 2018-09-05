@@ -64,8 +64,6 @@ class Router(activity: RouterBaseActivity,
             if (top.javaClass == path.javaClass) {
                 return
             }
-
-            top.saveState()
         }
 
         move(path)
@@ -144,7 +142,6 @@ class Router(activity: RouterBaseActivity,
 
     private fun moveBack() {
         val path = history.pop()
-        path.clearState()
         path.detach()
         onRemoved.invoke(path)
         if (!history.empty()) {

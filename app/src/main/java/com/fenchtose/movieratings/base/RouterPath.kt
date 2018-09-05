@@ -9,7 +9,6 @@ import com.fenchtose.movieratings.base.router.Router
 abstract class RouterPath<T : BaseFragment> {
 
     var fragment: T? = null
-    private var savedState: PresenterState? = null
     private var router: Router? = null
 
     private fun createFragment() : T {
@@ -24,20 +23,6 @@ abstract class RouterPath<T : BaseFragment> {
         }
 
         return createFragment()
-    }
-
-    fun saveState() {
-        savedState = fragment?.saveState()
-    }
-
-    fun restoreState(): PresenterState? {
-        val temp = savedState
-        clearState()
-        return temp
-    }
-
-    fun clearState() {
-        savedState = null
     }
 
     fun getRouter(): Router? {

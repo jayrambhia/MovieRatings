@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.base
 
 import android.os.Bundle
-import android.support.annotation.CallSuper
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -76,6 +75,4 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
             _render(state, dispatch)
         }
     }
-
-    open fun saveState(): PresenterState? = null
 }
