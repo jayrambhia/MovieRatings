@@ -27,6 +27,8 @@ import com.fenchtose.movieratings.model.db.movieCollection.DeleteCollection
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
+import com.fenchtose.movieratings.model.offline.export.DataExporter
+import com.fenchtose.movieratings.model.offline.export.ExportData
 import com.fenchtose.movieratings.util.show
 
 class CollectionListPageFragment: BaseFragment() {
@@ -144,6 +146,15 @@ class CollectionListPageFragment: BaseFragment() {
             showSnackbar(requireContext().getString(resId, it.name))
             dispatch(ClearCollectionOp)
         }
+
+        state.shareSuccess?.let {
+            if (!it) {
+                showSnackbar(R.string.movie_collection_list_share_error)
+            }
+
+            dispatch(ClearShareError)
+        }
+
     }
 
     private fun onCreateCollectionRequested() {
@@ -220,7 +231,8 @@ class CollectionListPageFragment: BaseFragment() {
                     dialog, _ ->
                     dialog.dismiss()
                     GaEvents.SHARE_COLLECTIONS.track()
-                    TODO("Add share to redux")
+                    dispatch?.invoke(ExportData(COLLECTION_LIST, "flutter_collections.txt",
+                            DataExporter.Config(favs = false, collections = true, recentlyBrowsed = false)))
                 }
                 .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }
                 .show()

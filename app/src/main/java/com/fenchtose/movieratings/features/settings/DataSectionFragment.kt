@@ -184,6 +184,7 @@ class DataSectionFragment: BaseFragment() {
 
         subscribe(exporter.observe()
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter { it.key == "all data" }
                 .subscribe({
                     when(it) {
                         is DataExporter.Progress.Started -> {}
@@ -196,7 +197,7 @@ class DataSectionFragment: BaseFragment() {
                     exporter.release()
                 }))
 
-        exporter.export(uri, DataExporter.Config(true, true, includeHistory))
+        exporter.export("all data", uri, DataExporter.Config(true, true, includeHistory))
     }
 
     private fun showExportDataReady(uri: Uri) {

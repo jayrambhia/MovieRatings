@@ -24,6 +24,7 @@ import com.fenchtose.movieratings.model.db.like.reduceLiked
 import com.fenchtose.movieratings.model.db.movieCollection.CollectionMiddleware
 import com.fenchtose.movieratings.model.db.movieCollection.reduceCollections
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedMiddleware
+import com.fenchtose.movieratings.model.offline.export.DataFileExporterMiddleware
 
 class AppStore(context: Context): SimpleStore<AppState>(
         AppState(),
@@ -50,9 +51,10 @@ class AppStore(context: Context): SimpleStore<AppState>(
                 LikesPageMiddleware.newInstance(context)::middleware,
                 TrendingMoviesMiddleware.newInstance()::middleware,
                 MoviePageMiddleware.newInstance()::middleware,
-                CollectionListPageMiddleware.newInstance()::middleware,
+                CollectionListPageMiddleware.newInstance(context)::middleware,
                 CollectionPageMiddleware.newInstance(context)::middleware,
-                EpisodePageMiddleware.newInstance()::middleware
+                EpisodePageMiddleware.newInstance()::middleware,
+                DataFileExporterMiddleware.newInstance(context)::middleware
         )
 ) {
 

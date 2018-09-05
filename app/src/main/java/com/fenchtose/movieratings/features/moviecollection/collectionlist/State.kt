@@ -1,5 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionlist
 
+import android.content.Context
+import android.net.Uri
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
@@ -10,15 +12,19 @@ import com.fenchtose.movieratings.model.api.provider.DbMovieCollectionProvider
 import com.fenchtose.movieratings.model.api.provider.MovieCollectionProvider
 import com.fenchtose.movieratings.model.db.movieCollection.UpdateCollectionOp
 import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.model.offline.export.DataExporter
+import com.fenchtose.movieratings.model.offline.export.ExportProgress
 import com.fenchtose.movieratings.util.AppRxHooks
+import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.RxHooks
 import com.fenchtose.movieratings.util.add
 
 data class CollectionListPageState(
     val collections: List<MovieCollection> = listOf(),
     val progress: Progress = Progress.Default,
-    val collectionOp: CollectionOp? = null
-) {
+    val collectionOp: CollectionOp? = null,
+    val shareSuccess: Boolean? = null) {
+
     val active: Boolean = progress != Progress.Default
 }
 
@@ -26,6 +32,9 @@ object InitAction: Action
 object ClearAction: Action
 object LoadCollections: Action
 object ClearCollectionOp: Action
+object ClearShareError: Action
+
+const val COLLECTION_LIST = "collection_list"
 
 sealed class Progress {
     object Default: Progress()
@@ -73,6 +82,18 @@ private fun CollectionListPageState.reduce(action: Action): CollectionListPageSt
         return copy(collectionOp = null)
     }
 
+    if (action is ExportProgress && action.progress.key == COLLECTION_LIST) {
+        return copy(shareSuccess =  when(action.progress) {
+            is DataExporter.Progress.Error -> false
+            is DataExporter.Progress.Success -> true
+            is DataExporter.Progress.Started -> null
+        })
+    }
+
+    if (action === ClearShareError) {
+        return copy(shareSuccess = null)
+    }
+
     return this
 }
 
@@ -108,14 +129,21 @@ fun List<MovieCollection>.update(collection: MovieCollection): List<MovieCollect
     return this
 }
 
-class CollectionListPageMiddleware(val provider: MovieCollectionProvider,
-                                   val rxHooks: RxHooks) {
+class CollectionListPageMiddleware(
+        private val context: Context,
+        private val provider: MovieCollectionProvider,
+        private val rxHooks: RxHooks) {
 
     fun middleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
         if (action === LoadCollections) {
             if (state.collectionListPage.collections.isEmpty()) {
                 load(dispatch)
                 return UpdateProgress(Progress.Loading)
+            }
+        } else if (action is ExportProgress && action.key == COLLECTION_LIST && action.progress is DataExporter.Progress.Success<*>) {
+            val uri = action.progress.output as Uri?
+            uri?.let {
+                IntentUtils.openShareFileIntent(context, it)
             }
         }
 
@@ -135,8 +163,9 @@ class CollectionListPageMiddleware(val provider: MovieCollectionProvider,
     }
 
     companion object {
-        fun newInstance(): CollectionListPageMiddleware {
+        fun newInstance(context: Context): CollectionListPageMiddleware {
             return CollectionListPageMiddleware(
+                    context,
                     DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
                     AppRxHooks()
             )

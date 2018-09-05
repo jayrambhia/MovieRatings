@@ -5,14 +5,14 @@ import io.reactivex.Observable
 interface DataExporter<T> {
 
     fun observe(): Observable<Progress<T>>
-    fun export(output: T, config: Config)
+    fun export(key: String, output: T, config: Config)
     fun release()
-    fun exportCollection(output: T, collectionId: Long)
+    fun exportCollection(key: String, output: T, collectionId: Long)
 
-    sealed class Progress<T> {
-        class Started<T>: Progress<T>()
-        class Error<T>: Progress<T>()
-        class Success<T>(val output: T): Progress<T>() {
+    sealed class Progress<T>(val key: String) {
+        class Started<T>(key: String): Progress<T>(key)
+        class Error<T>(key: String): Progress<T>(key)
+        class Success<T>(key: String, val output: T): Progress<T>(key) {
             override fun toString(): String {
                 return "success: output: $output"
             }
@@ -21,5 +21,3 @@ interface DataExporter<T> {
 
     data class Config(val favs: Boolean, val collections: Boolean, val recentlyBrowsed: Boolean)
 }
-
-class DataExpo
