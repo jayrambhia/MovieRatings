@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import android.content.Context
+import android.net.Uri
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
@@ -17,6 +18,8 @@ import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.entity.sort
+import com.fenchtose.movieratings.model.offline.export.DataExporter
+import com.fenchtose.movieratings.model.offline.export.ExportProgress
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.*
@@ -24,7 +27,8 @@ import com.fenchtose.movieratings.util.*
 data class CollectionPageState(
     val collection: MovieCollection = MovieCollection.invalid(),
     val movies: List<Movie> = listOf(),
-    val progress: Progress = Progress.Default) {
+    val progress: Progress = Progress.Default,
+    val shareError: Boolean? = null) {
 
     val active = collection.id != -1L
 }
@@ -32,6 +36,7 @@ data class CollectionPageState(
 data class InitCollectionPage(val collection: MovieCollection): Action
 object ClearCollectionPage: Action
 object LoadCollection: Action
+object ClearShareError: Action
 
 data class CollectionSort(val collectionId: Long, val sort: Sort): Action
 const val COLLECTION_PAGE = "collection_page"
@@ -64,15 +69,20 @@ private fun CollectionPageState.reduce(action: Action): CollectionPageState {
             is BaseMovieListPageAction.Error -> copy(progress = Progress.Error)
         }
         action is CollectionSort -> copy(movies = movies.sort(action.sort))
+        action is DataExporter.Progress.Error<*> -> copy(shareError = true)
+        action === ClearShareError -> copy(shareError = null)
         else -> this
     }
 
 }
 
-class CollectionPageMiddleware(val provider: MovieCollectionProvider,
-                               private val rxHooks: RxHooks,
-                               likeStore: LikeStore,
-                               private val userPreferences: UserPreferences) {
+class CollectionPageMiddleware(
+        private val context: Context,
+        private val provider: MovieCollectionProvider,
+        private val rxHooks: RxHooks,
+        likeStore: LikeStore,
+        private val userPreferences: UserPreferences) {
+
     init {
         provider.addPreferenceApplier(likeStore)
     }
@@ -90,6 +100,11 @@ class CollectionPageMiddleware(val provider: MovieCollectionProvider,
             }
         } else if (action is CollectionSort && state.collection.id == action.collectionId) {
             userPreferences.setLatestCollectionSort(action.collectionId, action.sort)
+        } else if (action is ExportProgress && action.key == COLLECTION_PAGE && action.progress is DataExporter.Progress.Success<*>) {
+            val uri = action.progress.output as Uri?
+            uri?.let {
+                IntentUtils.openShareFileIntent(context, it)
+            }
         }
 
         return next(appState, action, dispatch)
@@ -112,6 +127,7 @@ class CollectionPageMiddleware(val provider: MovieCollectionProvider,
     companion object {
         fun newInstance(context: Context): CollectionPageMiddleware {
             return CollectionPageMiddleware(
+                    context,
                     DbMovieCollectionProvider(MovieRatingsApplication.database.movieCollectionDao()),
                     AppRxHooks(),
                     DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),

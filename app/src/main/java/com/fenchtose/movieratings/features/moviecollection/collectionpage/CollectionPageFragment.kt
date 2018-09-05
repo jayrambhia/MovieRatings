@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
-import android.app.AlertDialog
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -26,6 +26,7 @@ import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.image.GlideLoader
+import com.fenchtose.movieratings.model.offline.export.ExportCollection
 import com.fenchtose.movieratings.util.show
 
 class CollectionPageFragment: BaseMovieListPageFragment() {
@@ -33,6 +34,8 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
     private var emptyStateCta: View? = null
 
     private var collection: MovieCollection? = null
+
+    private var isEmpty: Boolean = true
 
     override fun canGoBack() = true
 
@@ -110,9 +113,17 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
 
         val state = appState.collectionPages.last()
         collection = state.collection
+        isEmpty = state.movies.isEmpty()
         when(state.progress) {
             is Progress.Empty -> emptyStateCta?.show()
             else -> emptyStateCta?.show(false)
+        }
+
+        state.shareError?.let {
+            if (it) {
+                showSnackbar(R.string.movie_collection_share_error)
+                dispatch(ClearShareError)
+            }
         }
     }
 
@@ -162,21 +173,24 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
     }
 
     private fun showShareDialog() {
-//        if (presenter?.canShare() == true) {
-            android.support.v7.app.AlertDialog.Builder(requireContext())
+        if (isEmpty) {
+            showSnackbar(R.string.movie_collection_share_empty)
+            return
+        }
+
+        collection?.let {
+            AlertDialog.Builder(requireContext())
                     .setTitle(R.string.movie_collection_share_dialog_title)
                     .setMessage(R.string.movie_collection_share_dialog_content)
                     .setPositiveButton(R.string.movie_collection_share_dialog_positive_cta) { dialog, _ ->
                         dialog.dismiss()
                         GaEvents.SHARE_COLLECTION.track()
-//                        presenter?.share()
+                        dispatch?.invoke(ExportCollection(COLLECTION_PAGE, "collection_${it.name}.txt", it.id))
                     }
                     .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }
                     .show()
-            return
-//        }
+        }
 
-//        showSnackbar(R.string.movie_collection_share_empty)
     }
 }
 

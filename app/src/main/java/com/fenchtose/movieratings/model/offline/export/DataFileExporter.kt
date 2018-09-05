@@ -183,6 +183,7 @@ class DataFileExporter(
 }
 
 data class ExportData(val key: String, val outputName: String, val config: DataExporter.Config): Action
+data class ExportCollection(val key: String, val outputName: String, val collectionId: Long): Action
 data class ExportProgress(val key: String, val progress: DataExporter.Progress<Uri>): Action
 
 class DataFileExporterMiddleware(private val context: Context,
@@ -193,26 +194,31 @@ class DataFileExporterMiddleware(private val context: Context,
 
     fun middleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
         if (action is ExportData) {
-            startObserving(action, dispatch)
+            startObserving(action.key, dispatch)
             val uri = fileUtils.createCacheFile(context, action.outputName)
             exporter.export(action.key, uri, action.config)
+        } else if (action is ExportCollection) {
+            startObserving(action.key, dispatch)
+            val uri = fileUtils.createCacheFile(context, action.outputName)
+            exporter.exportCollection(action.key, uri, action.collectionId)
         }
 
         return next(state, action, dispatch)
     }
 
-    private fun startObserving(action: ExportData, dispatch: Dispatch) {
+    private fun startObserving(key: String, dispatch: Dispatch) {
         var disposable: Disposable? = null
         disposable = exporter.observe()
                 .observeOn(rxHooks.mainThread())
+                .filter { it.key == key }
                 .subscribe({
-                    dispatch(ExportProgress(action.key, it))
+                    dispatch(ExportProgress(key, it))
                     if (it is DataExporter.Progress.Success) {
                         disposable?.dispose()
                     }
                 }, {
                     it.printStackTrace()
-                    dispatch(ExportProgress(action.key, DataExporter.Progress.Error(action.key)))
+                    dispatch(ExportProgress(key, DataExporter.Progress.Error(key)))
                 }, {
                     disposable?.dispose()
                 })
