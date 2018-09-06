@@ -57,7 +57,7 @@ fun AppState.reduceCollectionListPage(action: Action): AppState {
     return reduceChild(collectionListPage, action, {reduce(it)}, {copy(collectionListPage = it)})
 }
 
-private fun CollectionListPageState.reduce(action: Action): CollectionListPageState {
+fun CollectionListPageState.reduce(action: Action): CollectionListPageState {
     if (action === InitAction || action === ClearAction) {
         return CollectionListPageState()
     }
