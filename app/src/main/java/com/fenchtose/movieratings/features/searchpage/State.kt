@@ -3,11 +3,11 @@ package com.fenchtose.movieratings.features.searchpage
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.*
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.MovieCollectionOp
 import com.fenchtose.movieratings.model.api.provider.MovieProvider
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.LikeStore
 import com.fenchtose.movieratings.model.db.like.MovieLiked
-import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionResponse
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.hasMovie
@@ -30,7 +30,7 @@ data class SearchPageState(
 data class CollectionSearchPageState(
         val searchPageState: SearchPageState = SearchPageState(),
         val collection: MovieCollection = MovieCollection.invalid(),
-        val collectionOp: MovieCollectionResponse? = null
+        val collectionOp: MovieCollectionOp? = null
         )
 
 sealed class Progress {
@@ -56,10 +56,10 @@ sealed class SearchAction(val addToCollection: Boolean): Action {
     class Reload(val query: String, addToCollection: Boolean): SearchAction(addToCollection)
 }
 
-sealed class CollectionSearchAction(val collection: MovieCollection): Action {
-    class InitializeCollectionSearch(collection: MovieCollection): CollectionSearchAction(collection)
-    class ClearCollectionOp(collection: MovieCollection): CollectionSearchAction(collection)
-}
+data class InitCollectionSearchPage(val collection: MovieCollection): Action
+object ClearCollectionSearchPage: Action
+object ClearCollectionOp: Action
+
 
 fun searchPageReducer(state: AppState, action: Action): AppState {
     return when(action) {
@@ -69,7 +69,7 @@ fun searchPageReducer(state: AppState, action: Action): AppState {
             } else {
                 reduceChildState(state, state.collectionSearchPage, action, ::reduce, { s, c -> s.copy(collectionSearchPage = c)})
             }
-        is MovieCollectionResponse, is CollectionSearchAction -> reduceChildState(state, state.collectionSearchPage, action, ::reduce, { s, c -> s.copy(collectionSearchPage = c)})
+        is InitCollectionSearchPage, is ClearCollectionSearchPage, is ClearCollectionOp -> reduceChildState(state, state.collectionSearchPage, action, ::reduce, { s, c -> s.copy(collectionSearchPage = c)})
         else -> state
     }
 }
@@ -107,33 +107,9 @@ private fun reduce(state: SearchPageState, action: Action): SearchPageState {
 private fun reduce(state: CollectionSearchPageState, action: Action): CollectionSearchPageState {
     return when(action) {
         is SearchAction -> reduceChildState(state, state.searchPageState, action, ::reduce, {s, c -> s.copy(searchPageState = c)})
-        is CollectionSearchAction.InitializeCollectionSearch -> state.copy(searchPageState = SearchPageState(), collection = action.collection, collectionOp = null)
-        is CollectionSearchAction.ClearCollectionOp -> {
-            if (action.collection.id == state.collection.id) {
-                state.copy(collectionOp = null)
-            } else {
-                state
-            }
-        }
-        is MovieCollectionResponse -> {
-            if (action.collection.id == state.collection.id && state.searchPageState.movies.hasMovie(action.movie) != -1) {
-                val collectionOp = when(action) {
-                    is MovieCollectionResponse.MovieAdded -> action
-                    is MovieCollectionResponse.AddError -> action
-                    is MovieCollectionResponse.MovieExists -> action
-                    else -> null
-                }
-
-                if (state.searchPageState.progress != Progress.NoOp) {
-                    state.copy(searchPageState = state.searchPageState.copy(progress = Progress.NoOp), collectionOp = collectionOp)
-                } else {
-                    state.copy(collectionOp = collectionOp)
-                }
-
-            } else {
-                state
-            }
-        }
+        is InitCollectionSearchPage -> state.copy(searchPageState = SearchPageState(), collection = action.collection)
+        is ClearCollectionSearchPage -> CollectionSearchPageState()
+        is ClearCollectionOp -> state.copy(collectionOp = null)
         else -> state
     }
 }

@@ -19,8 +19,10 @@ import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
 import com.fenchtose.movieratings.features.baselistpage.Progress
+import com.fenchtose.movieratings.features.searchpage.ClearCollectionOp
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
+import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
 import com.fenchtose.movieratings.model.db.movieCollection.RemoveFromCollection
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
@@ -124,6 +126,29 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
                 showSnackbar(R.string.movie_collection_share_error)
                 dispatch(ClearShareError)
             }
+        }
+
+        state.collectionOp?.let {
+            if (it is MovieCollectionOp.Removed) {
+                showSnackbarWithAction(requireContext().getString(R.string.movie_collection_remove_movie_success, it.movie.title), R.string.undo_action,
+                        View.OnClickListener { dispatch.invoke(AddToCollection(state.collectionOp.collection, state.collectionOp.movie)) })
+
+                dispatch(ClearCollectionOp)
+                return@let
+            }
+
+            val resId = when(it) {
+                is MovieCollectionOp.RemoveError -> R.string.movie_collection_remove_movie_error
+                is MovieCollectionOp.Added -> R.string.movie_collection_add_movie_success
+                is MovieCollectionOp.AddError -> R.string.movie_collection_add_movie_error
+                else -> 0
+            }
+
+            if (resId != 0) {
+                showSnackbar(requireContext().getString(resId, it.movie.title))
+            }
+
+            dispatch(ClearCollectionOp)
         }
     }
 

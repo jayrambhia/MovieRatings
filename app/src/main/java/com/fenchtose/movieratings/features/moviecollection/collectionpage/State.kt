@@ -28,18 +28,35 @@ data class CollectionPageState(
     val collection: MovieCollection = MovieCollection.invalid(),
     val movies: List<Movie> = listOf(),
     val progress: Progress = Progress.Default,
-    val shareError: Boolean? = null) {
+    val collectionOp: MovieCollectionOp? = null,
+    val shareError: Boolean? = null,
+    val removed: Removed? = null) {
 
     val active = collection.id != -1L
 }
+
+data class Removed(
+    val movie: Movie,
+    val index: Int,
+    val show: Boolean
+)
 
 data class InitCollectionPage(val collection: MovieCollection): Action
 object ClearCollectionPage: Action
 object LoadCollection: Action
 object ClearShareError: Action
+object ClearCollectionOp: Action
 
 data class CollectionSort(val collectionId: Long, val sort: Sort): Action
 const val COLLECTION_PAGE = "collection_page"
+
+sealed class MovieCollectionOp(val collection: MovieCollection, val movie: Movie) {
+    class Exists(collection: MovieCollection, movie: Movie): MovieCollectionOp(collection, movie)
+    class Added(collection: MovieCollection, movie: Movie): MovieCollectionOp(collection, movie)
+    class AddError(collection: MovieCollection, movie: Movie): MovieCollectionOp(collection, movie)
+    class Removed(collection: MovieCollection, movie: Movie): MovieCollectionOp(collection, movie)
+    class RemoveError(collection: MovieCollection, movie: Movie): MovieCollectionOp(collection, movie)
+}
 
 fun AppState.reduceCollectionPage(action: Action): AppState {
     return reduceChild(collectionPages, action, {reduce(it)}, {copy(collectionPages = it)})
@@ -71,6 +88,7 @@ private fun CollectionPageState.reduce(action: Action): CollectionPageState {
         action is CollectionSort -> copy(movies = movies.sort(action.sort))
         action is DataExporter.Progress.Error<*> -> copy(shareError = true)
         action === ClearShareError -> copy(shareError = null)
+        action === ClearCollectionOp -> copy(collectionOp = null)
         else -> this
     }
 

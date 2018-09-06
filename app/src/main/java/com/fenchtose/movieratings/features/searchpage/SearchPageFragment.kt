@@ -22,10 +22,10 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.info.InfoPageBottomView
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.MovieCollectionOp
 import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
-import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionResponse
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
@@ -181,9 +181,9 @@ class SearchPageFragment: BaseFragment() {
         render(state.searchPageState, dispatch)
         state.collectionOp?.let {
             val resId = when(it) {
-                is MovieCollectionResponse.MovieExists -> R.string.movie_collection_movie_exists
-                is MovieCollectionResponse.AddError -> R.string.movie_collection_movie_error
-                is MovieCollectionResponse.MovieAdded -> R.string.movie_collection_movie_added
+                is MovieCollectionOp.Exists -> R.string.movie_collection_movie_exists
+                is MovieCollectionOp.AddError -> R.string.movie_collection_movie_error
+                is MovieCollectionOp.Added -> R.string.movie_collection_movie_added
                 else -> 0
             }
 
@@ -191,7 +191,7 @@ class SearchPageFragment: BaseFragment() {
                 showSnackbar(requireContext().getString(resId, state.collectionOp.collection.name))
                 val _path = path
                 if (_path is SearchPageFragment.SearchPath.AddToCollection) {
-                    dispatch.invoke(CollectionSearchAction.ClearCollectionOp(_path.collection))
+                    dispatch.invoke(ClearCollectionOp)
                 }
             }
         }
@@ -323,7 +323,9 @@ class SearchPageFragment: BaseFragment() {
 
             override fun category() = GaCategory.COLLECTION_SEARCH
 
-            override fun initAction() = CollectionSearchAction.InitializeCollectionSearch(collection)
+            override fun initAction() = InitCollectionSearchPage(collection)
+
+            override fun clearAction() = ClearCollectionOp
         }
     }
 
