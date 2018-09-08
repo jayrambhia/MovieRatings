@@ -30,8 +30,7 @@ import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.preferences.UserPreferences
-import com.fenchtose.movieratings.util.bottomSlide
-import com.fenchtose.movieratings.util.slideUp
+import com.fenchtose.movieratings.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
@@ -144,7 +143,9 @@ class SearchPageFragment: BaseFragment() {
         render({
             state, dispatch ->
             if (path is SearchPath.AddToCollection) {
-                render(state.collectionSearchPage, dispatch)
+                if (!state.collectionSearchPages.isEmpty()) {
+                    render(state.collectionSearchPages.last(), dispatch)
+                }
             } else {render(state.searchPage, dispatch) }
         })
     }
@@ -170,10 +171,17 @@ class SearchPageFragment: BaseFragment() {
             is Progress.Success -> {
                 setData(state.movies)
                 appInfoContainer?.bottomSlide(500)
-                fixScroll(state.progress is Progress.Success.Loaded)
+                if (state.progress is Progress.Success.Pagination) {
+                    adapterConfig?.showLoadingMore(false)
+                }
             }
 
             is Progress.Paginating -> adapterConfig?.showLoadingMore(true)
+        }
+
+        if (state.fixScroll) {
+            fixScroll()
+            dispatch(SearchAction.ScrollFixed(path is SearchPath.AddToCollection))
         }
     }
 
@@ -208,21 +216,38 @@ class SearchPageFragment: BaseFragment() {
         }
     }
 
-    private fun fixScroll(isFirstPage: Boolean) {
+    private fun fixScroll() {
         recyclerView?.post {
-            when(isFirstPage) {
-                true -> recyclerView?.scrollToPosition(0)
-                false -> adapterConfig?.showLoadingMore(false)
-            }
+            recyclerView?.scrollToPosition(0)
         }
     }
 
     private fun setData(movies: List<Movie>) {
         showLoading(false)
-        adapter?.data?.clear()
-        adapter?.data?.addAll(movies)
-        adapter?.notifyDataSetChanged()
-        recyclerView?.visibility = View.VISIBLE
+        adapter?.let {
+            it.data.clear()
+            it.data.addAll(movies)
+            it.notifyDataSetChanged()
+            /*if (it.data != movies) {
+                if (it.data.size == movies.size) {
+                    // maybe some movies updated.
+                    val updated = movies.mapIndexed {
+                        index, movie -> if (it.data[index] != movie) index else -1
+                    }.filter { it >= 0 }
+
+                    updated.forEach {
+                        adapter?.data?.swapIfUpdated(movies[it], it)
+                        adapter?.notifyItemChanged(it)
+                    }
+
+                } else {
+                    it.data.clear()
+                    it.data.addAll(movies)
+                    it.notifyDataSetChanged()
+                }
+            }*/
+        }
+        recyclerView?.show(true)
 
     }
 
@@ -325,7 +350,7 @@ class SearchPageFragment: BaseFragment() {
 
             override fun initAction() = InitCollectionSearchPage(collection)
 
-            override fun clearAction() = ClearCollectionOp
+            override fun clearAction() = ClearCollectionSearchPage
         }
     }
 

@@ -12,7 +12,7 @@ import com.fenchtose.movieratings.features.trending.TrendingPageState
 
 data class AppState(
         val searchPage: SearchPageState = SearchPageState(),
-        val collectionSearchPage: CollectionSearchPageState = CollectionSearchPageState(),
+        val collectionSearchPages: List<CollectionSearchPageState> = listOf(),
         val recentlyBrowsedPage: RecentlyBrowsedState = RecentlyBrowsedState(),
         val likesPage: LikesPageState = LikesPageState(),
         val trendingPage: TrendingPageState = TrendingPageState(),

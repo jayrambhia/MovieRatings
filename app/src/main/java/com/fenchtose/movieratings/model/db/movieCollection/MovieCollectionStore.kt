@@ -20,6 +20,7 @@ import com.fenchtose.movieratings.model.entity.remove
 import com.fenchtose.movieratings.util.AppRxHooks
 import com.fenchtose.movieratings.util.RxHooks
 import com.fenchtose.movieratings.util.add
+import com.fenchtose.movieratings.util.swapLastIfUpdated
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -137,12 +138,20 @@ private fun AppState.updateCollectionPages(op: MovieCollectionOp): AppState {
 }
 
 private fun AppState.updateSearchCollection(op: MovieCollectionOp): AppState {
-    if (collectionSearchPage.collection.id < 0) {
+    if (collectionSearchPages.isEmpty()) {
         return this
     }
 
     return when(op) {
-        is MovieCollectionOp.Added, is MovieCollectionOp.AddError, is MovieCollectionOp.Exists  -> copy(collectionSearchPage = collectionSearchPage.copy(collectionOp = op))
+        is MovieCollectionOp.Added, is MovieCollectionOp.AddError, is MovieCollectionOp.Exists  -> {
+            val state = collectionSearchPages.last()
+            if (state.collection.id == op.collection.id) {
+                val updated = collectionSearchPages.swapLastIfUpdated(state.copy(collectionOp = op))
+                copy(collectionSearchPages = updated)
+            } else {
+                this
+            }
+        }
         else -> this
     }
 }

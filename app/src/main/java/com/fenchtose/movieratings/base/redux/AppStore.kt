@@ -31,7 +31,7 @@ class AppStore(context: Context): SimpleStore<AppState>(
         listOf(
                 AppState::reduceLiked,
                 AppState::reduceCollections,
-                ::searchPageReducer,
+                AppState::searchPageReducer,
                 AppState::recentlyBrowsedPageReducer,
                 AppState::reduceLikesPage,
                 AppState::reduceTrendingPage,

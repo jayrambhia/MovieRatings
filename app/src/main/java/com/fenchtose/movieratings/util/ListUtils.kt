@@ -30,6 +30,13 @@ fun <T> List<T>.pop(): List<T> {
     return toMutableList().apply { removeAt(size - 1) }
 }
 
+fun <T> ArrayList<T>.swapIfUpdated(t: T, index: Int) {
+    if (t != get(index)) {
+        removeAt(index)
+        add(index, t)
+    }
+}
+
 fun <T> List<T>.swapLastIfUpdated(t: T): List<T> {
     if (t != last()) {
         return toMutableList().apply {

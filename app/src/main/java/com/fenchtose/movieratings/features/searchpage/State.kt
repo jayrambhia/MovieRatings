@@ -12,13 +12,14 @@ import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.entity.hasMovie
 import com.fenchtose.movieratings.model.entity.updateMovie
-import com.fenchtose.movieratings.util.addAll
+import com.fenchtose.movieratings.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import java.util.Collections
 
 data class SearchPageState(
         val query: String = "",
+        val fixScroll: Boolean = false,
         val progress: Progress = Progress.Default,
         val movies: List<Movie> = Collections.emptyList(),
         val page: Int = 0) {
@@ -34,7 +35,6 @@ data class CollectionSearchPageState(
         )
 
 sealed class Progress {
-    object NoOp: Progress()
     object Default: Progress()
     data class Loading(val query: String): Progress()
     object Error: Progress()
@@ -50,10 +50,15 @@ sealed class Progress {
 
 sealed class SearchAction(val addToCollection: Boolean): Action {
     class ClearSearch(addToCollection: Boolean): SearchAction(addToCollection)
-    class Search(val query: String, addToCollection: Boolean): SearchAction(addToCollection)
+    class Search(val query: String, addToCollection: Boolean): SearchAction(addToCollection) {
+        override fun toString(): String {
+            return "Search(query='$query', collection=$addToCollection)"
+        }
+    }
     class LoadMore(addToCollection: Boolean): SearchAction(addToCollection)
     class Result(val progress: Progress, addToCollection: Boolean): SearchAction(addToCollection)
     class Reload(val query: String, addToCollection: Boolean): SearchAction(addToCollection)
+    class ScrollFixed(addToCollection: Boolean): SearchAction(addToCollection)
 }
 
 data class InitCollectionSearchPage(val collection: MovieCollection): Action
@@ -61,56 +66,75 @@ object ClearCollectionSearchPage: Action
 object ClearCollectionOp: Action
 
 
-fun searchPageReducer(state: AppState, action: Action): AppState {
+fun AppState.searchPageReducer(action: Action): AppState {
     return when(action) {
         is SearchAction ->
             if (!action.addToCollection) {
-                reduceChildState(state, state.searchPage, action, ::reduce, { s, c -> s.copy(searchPage = c) })
+                reduceChild(searchPage, action, {reduce(it)}, {copy(searchPage=it)})
             } else {
-                reduceChildState(state, state.collectionSearchPage, action, ::reduce, { s, c -> s.copy(collectionSearchPage = c)})
+                reduceChild(collectionSearchPages, action, {reduce(it)}, {copy(collectionSearchPages=it)})
             }
-        is InitCollectionSearchPage, is ClearCollectionSearchPage, is ClearCollectionOp -> reduceChildState(state, state.collectionSearchPage, action, ::reduce, { s, c -> s.copy(collectionSearchPage = c)})
-        else -> state
+        is InitCollectionSearchPage, is ClearCollectionSearchPage, is ClearCollectionOp ->
+            reduceChild(collectionSearchPages, action, {reduce(it)}, {copy(collectionSearchPages=it)})
+        else -> this
     }
 }
 
-private fun reduce(state: SearchPageState, action: Action): SearchPageState {
+private fun SearchPageState.reduce(action: Action): SearchPageState {
     return when(action) {
         is SearchAction -> {
             when(action) {
-                is SearchAction.Search -> state // NO-OP
+                is SearchAction.Search -> this // NO-OP
                 is SearchAction.Result -> {
                     val progress = action.progress
                     when(progress) {
-                        is Progress.Loading -> state.copy(query = progress.query, progress = progress)
-                        is Progress.Success.Loaded -> state.copy(progress = progress, movies = progress.movies, page = progress.page)
-                        is Progress.Success.Pagination -> state.copy(progress = progress, movies = state.movies.addAll(progress.movies), page = progress.page)
-                        else -> state.copy(progress = progress)
+                        is Progress.Loading -> copy(query = progress.query, progress = progress)
+                        is Progress.Success.Loaded -> copy(progress = progress, movies = progress.movies, page = progress.page, fixScroll = true)
+                        is Progress.Success.Pagination -> copy(progress = progress, movies = movies.addAll(progress.movies), page = progress.page)
+                        else -> copy(progress = progress)
                     }
                 }
                 is SearchAction.ClearSearch -> SearchPageState()
-                is SearchAction.LoadMore -> state // NO-OP
-                is SearchAction.Reload -> state // NO-OP
+                is SearchAction.LoadMore -> this // NO-OP
+                is SearchAction.Reload -> this // NO-OP
+                is SearchAction.ScrollFixed -> copy(fixScroll = false)
             }
         }
         is MovieLiked -> {
-            if (state.movies.hasMovie(action.movie) != -1) {
-                   state.copy(movies = state.movies.updateMovie(action.movie))
+            if (movies.hasMovie(action.movie) != -1) {
+                   copy(movies = movies.updateMovie(action.movie))
             } else {
-                state
+                this
             }
         }
-        else -> state
+        else -> this
     }
 }
 
-private fun reduce(state: CollectionSearchPageState, action: Action): CollectionSearchPageState {
+private fun List<CollectionSearchPageState>.reduce(action: Action): List<CollectionSearchPageState> {
+    if (action is InitCollectionSearchPage) {
+        return push(CollectionSearchPageState(collection = action.collection))
+    }
+
+    if (isEmpty()) {
+        return this
+    }
+
+    if (action === ClearCollectionSearchPage) {
+        return pop()
+    }
+
+    val updated = last().reduce(action)
+    return swapLastIfUpdated(updated)
+}
+
+private fun CollectionSearchPageState.reduce(action: Action): CollectionSearchPageState {
     return when(action) {
-        is SearchAction -> reduceChildState(state, state.searchPageState, action, ::reduce, {s, c -> s.copy(searchPageState = c)})
-        is InitCollectionSearchPage -> state.copy(searchPageState = SearchPageState(), collection = action.collection)
+        is SearchAction -> reduceChild(searchPageState, action, {reduce(it)}, {copy(searchPageState = it)})
+        is InitCollectionSearchPage -> copy(searchPageState = SearchPageState(), collection = action.collection)
         is ClearCollectionSearchPage -> CollectionSearchPageState()
-        is ClearCollectionOp -> state.copy(collectionOp = null)
-        else -> state
+        is ClearCollectionOp -> copy(collectionOp = null)
+        else -> this
     }
 }
 
@@ -121,18 +145,24 @@ class SearchMiddleWare(private val provider: MovieProvider,
         provider.addPreferenceApplier(likeStore)
     }
 
-    fun searchMiddleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
+    fun searchMiddleware(appState: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
         return when(action) {
             is SearchAction.Search -> {
                 if (action.addToCollection) {
-                    if (state.collectionSearchPage.searchPageState.query == action.query && state.collectionSearchPage.searchPageState.movies.isNotEmpty()) {
-                        NoAction
+                    if (!appState.collectionSearchPages.isEmpty()) {
+                        val state = appState.collectionSearchPages.last()
+                        if (state.searchPageState.query == action.query && state.searchPageState.movies.isNotEmpty()) {
+                            NoAction
+                        } else {
+                            makeApiCall(action.query, 1, true, dispatch)
+                            SearchAction.Result(Progress.Loading(action.query), true)
+                        }
                     } else {
-                        makeApiCall(action.query, 1, true, dispatch)
-                        SearchAction.Result(Progress.Loading(action.query), true)
+                        NoAction
                     }
+
                 } else {
-                    if (state.searchPage.query == action.query && state.searchPage.movies.isNotEmpty()) {
+                    if (appState.searchPage.query == action.query && appState.searchPage.movies.isNotEmpty()) {
                         NoAction
                     } else {
                         makeApiCall(action.query, 1, false, dispatch)
@@ -142,7 +172,7 @@ class SearchMiddleWare(private val provider: MovieProvider,
             }
 
             is SearchAction.LoadMore -> {
-                makeApiCall(state.searchPage.query, state.searchPage.page + 1, action.addToCollection, dispatch)
+                makeApiCall(appState.searchPage.query, appState.searchPage.page + 1, action.addToCollection, dispatch)
                 SearchAction.Result(Progress.Paginating, action.addToCollection)
             }
 
@@ -155,7 +185,7 @@ class SearchMiddleWare(private val provider: MovieProvider,
                 }
             }
 
-            else -> next(state, action, dispatch)
+            else -> next(appState, action, dispatch)
         }
     }
 
