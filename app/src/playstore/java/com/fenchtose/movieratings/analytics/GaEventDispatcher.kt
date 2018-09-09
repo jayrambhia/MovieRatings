@@ -14,13 +14,14 @@ class GaEventDispatcher(private val tracker: Tracker): EventDispatcher {
         if (event is GaEvent) {
             if (isInvalid(event.action) || isInvalid(event.category) || isInvalid(event.label)) {
                 if (BuildConfig.DEBUG) {
-                    throw InvalidPropertiesFormatException("invalid properties for GA events")
+                    throw InvalidPropertiesFormatException("invalid properties for GA events: $event")
                 }
             } else {
                 tracker.send(HitBuilders.EventBuilder()
                         .setAction(event.action)
                         .setCategory(event.category)
                         .setLabel(event.label)
+                        .setNonInteraction(event.nonInteractive)
                         .build())
             }
         } else if (event is ScreenView) {

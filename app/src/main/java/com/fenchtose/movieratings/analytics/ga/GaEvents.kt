@@ -54,8 +54,11 @@ class GaEvents {
         val TAP_PURCHASE = GaEvent(GaCategory.SUPPORT_APP, "tap", "purchase: %s")
         val PURCHASED = GaEvent(GaCategory.SUPPORT_APP, "purchase", "sku: %s")
 
-        val GET_RATINGS = GaEvent(GaCategory.SERVICE, "get rating", "app: %s")
-        val GET_RATINGS_ONLINE = GaEvent(GaCategory.SERVICE, "get rating online", "server: %s")
+        val GET_RATINGS = GaEvent(GaCategory.SERVICE, "get rating", "app: %s", true)
+        val GET_RATINGS_ONLINE = GaEvent(GaCategory.SERVICE, "get rating online", "server: %s", true)
+        val SEND_NOTIFICATION = GaEvent(GaCategory.SERVICE, "send notification", "%s", true)
+        val OPEN_NOTIFICATION = GaEvent(GaCategory.SERVICE, "open notification", "%s")
+        val DISMISS_RATING = GaEvent(GaCategory.SERVICE, "dismiss", "rating")
     }
 }
 
@@ -100,5 +103,12 @@ class GaScreens {
         const val SETTINGS_TTS_SECTION = "settings tts section"
         const val SUPPORT_APP = "support app"
         const val TRENDING = "trending"
+    }
+}
+
+class GaLabels {
+    companion object {
+        const val NOTIFICATION_SUPPORT_APP = "support app"
+        const val NOTIFICATION_RATE_APP = "rate app"
     }
 }

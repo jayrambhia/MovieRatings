@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.analytics.events
 
+import android.os.Bundle
 import com.fenchtose.movieratings.MovieRatingsApplication
 
 interface Event {
@@ -8,7 +9,8 @@ interface Event {
     }
 }
 
-class GaEvent(val category: String, val action: String, val label: String): Event {
+data class GaEvent(val category: String, val action: String, val label: String,
+              val nonInteractive: Boolean = false): Event {
 
     fun withLabel(label: String): GaEvent {
         return GaEvent(category, action, label)
@@ -29,6 +31,27 @@ class GaEvent(val category: String, val action: String, val label: String): Even
     fun withAction(action: String): GaEvent {
         return GaEvent(category, action, label)
     }
+
+    fun toBundle(): Bundle {
+        return Bundle().apply {
+            putString("category", category)
+            putString("action", action)
+            putString("label", label)
+        }
+    }
+}
+
+fun Bundle.toGaEvent(): GaEvent? {
+    if (containsKey("action") && containsKey("label") && containsKey("category")) {
+        val action = getString("action", "")
+        val category = getString("category", "")
+        val label = getString("label", "")
+        if (!action.isEmpty() && !category.isEmpty() && !label.isEmpty()) {
+            return GaEvent(category, action, label)
+        }
+    }
+
+    return null
 }
 
 class ScreenView(val name: String): Event

@@ -14,12 +14,15 @@ import android.support.v4.app.NotificationManagerCompat
 import android.support.v4.content.ContextCompat
 import com.fenchtose.movieratings.MainActivity
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 
 
 fun showSupportAppNotification(context: Context) {
     val intent = Intent(context, MainActivity::class.java)
+    intent.putExtra("ga_event", GaEvents.OPEN_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_SUPPORT_APP).toBundle())
     intent.putExtra(Router.HISTORY,
             Router.History()
                     .addPath(DonatePageFragment.DonatePath.KEY, DonatePageFragment.DonatePath.createExtras())
@@ -33,10 +36,13 @@ fun showSupportAppNotification(context: Context) {
             Constants.SUPPORT_APP_NOTIFICATION_ID,
             pendingIntent
     )
+
+    GaEvents.SEND_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_SUPPORT_APP).track()
 }
 
 fun showReviewAppNotification(context: Context) {
     val intent = Intent(context, MainActivity::class.java)
+    intent.putExtra("ga_event", GaEvents.OPEN_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_RATE_APP).toBundle())
     intent.putExtra(Router.HISTORY, Router.History().addPath("RateApp", Bundle()).toBundle())
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     // Use PendingIntent.FLAG_UPDATE_CURRENT to avoid the issue of android caching the pending intent
@@ -46,6 +52,8 @@ fun showReviewAppNotification(context: Context) {
             Constants.REVIEW_APP_NOTIFICATION_ID,
             pendingIntent
     )
+
+    GaEvents.SEND_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_RATE_APP).track()
 }
 
 private fun showNotification(context: Context, @StringRes title: Int, @StringRes content: Int,

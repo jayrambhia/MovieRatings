@@ -130,6 +130,7 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
 
         state.collectionOp?.let {
             if (it is MovieCollectionOp.Removed) {
+                GaEvents.ADD_TO_COLLECTION.withCategory(path?.category()).track()
                 showSnackbarWithAction(requireContext().getString(R.string.movie_collection_remove_movie_success, it.movie.title), R.string.undo_action,
                         View.OnClickListener { dispatch.invoke(AddToCollection(state.collectionOp.collection, state.collectionOp.movie)) })
 
@@ -175,6 +176,7 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
     }
 
     private fun openSearch() {
+        GaEvents.TAP_SEARCH_FOR_COLLECTION.track()
         collection?.run {
             path?.getRouter()?.let {
                 dispatch?.invoke(Navigation(it, SearchPageFragment.SearchPath.AddToCollection(this)))

@@ -14,6 +14,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.features.stickyview.FloatingRating
 import com.fenchtose.movieratings.model.db.entity.MovieRating
 import com.fenchtose.movieratings.model.preferences.UserPreferences
@@ -158,10 +160,12 @@ class RatingDisplayer(ctx: Context,
         override fun onClick(bubble: RatingBubble?, x: Int, y: Int) {
             bubble?.let {
                 if (it.isClickForClose(x)) {
+                    GaEvents.DISMISS_RATING.track()
                     removeViewImmediate(it)
                 } else {
+                    GaEvents.OPEN_MOVIE.withCategory(GaCategory.SERVICE).track()
                     val opened = IntentUtils.openMovie(context, floatingRating?.rating?.imdbId,
-                            preferences.isSettingEnabled(UserPreferences.OPEN_MOVIE_IN_APP))
+                            preferences.isAppEnabled(UserPreferences.OPEN_MOVIE_IN_APP))
                     if (opened) {
                         removeView()
                     }

@@ -289,6 +289,7 @@ class SearchPageFragment: BaseFragment() {
     private fun createAddToCollectionExtraLayout(): SearchItemViewHolder.ExtraLayoutHelper {
         return AddToCollectionMovieLayoutHelper(object : AddToCollectionMovieLayoutHelper.Callback {
             override fun onAddRequested(movie: Movie) {
+                GaEvents.ADD_TO_COLLECTION.withCategory(path?.category()).track()
                 path?.takeIf { it is SearchPath.AddToCollection }?.let {
                     dispatch?.invoke(AddToCollection((it as SearchPath.AddToCollection).collection, movie))
                 }

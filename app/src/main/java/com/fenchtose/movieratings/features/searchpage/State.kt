@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.features.searchpage
 
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.*
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.MovieCollectionOp
@@ -154,6 +156,7 @@ class SearchMiddleWare(private val provider: MovieProvider,
                         if (state.searchPageState.query == action.query && state.searchPageState.movies.isNotEmpty()) {
                             NoAction
                         } else {
+                            GaEvents.SEARCH.withCategory(GaCategory.COLLECTION_SEARCH).withLabel(action.query).track()
                             makeApiCall(action.query, 1, true, dispatch)
                             SearchAction.Result(Progress.Loading(action.query), true)
                         }
@@ -165,6 +168,7 @@ class SearchMiddleWare(private val provider: MovieProvider,
                     if (appState.searchPage.query == action.query && appState.searchPage.movies.isNotEmpty()) {
                         NoAction
                     } else {
+                        GaEvents.SEARCH.withCategory(GaCategory.SEARCH).withLabel(action.query).track()
                         makeApiCall(action.query, 1, false, dispatch)
                         SearchAction.Result(Progress.Loading(action.query), false)
                     }
@@ -172,8 +176,20 @@ class SearchMiddleWare(private val provider: MovieProvider,
             }
 
             is SearchAction.LoadMore -> {
-                makeApiCall(appState.searchPage.query, appState.searchPage.page + 1, action.addToCollection, dispatch)
-                SearchAction.Result(Progress.Paginating, action.addToCollection)
+                if (action.addToCollection) {
+                    if (!appState.collectionSearchPages.isEmpty()) {
+                        val state = appState.collectionSearchPages.last()
+                        GaEvents.SEARCH_MORE.withCategory(GaCategory.COLLECTION_SEARCH).withLabelArg(state.searchPageState.page + 1).track()
+                        makeApiCall(state.searchPageState.query, state.searchPageState.page + 1, true, dispatch)
+                        SearchAction.Result(Progress.Paginating, true)
+                    } else {
+                        NoAction
+                    }
+                } else {
+                    GaEvents.SEARCH_MORE.withCategory(GaCategory.SEARCH).withLabelArg(appState.searchPage.page + 1).track()
+                    makeApiCall(appState.searchPage.query, appState.searchPage.page + 1, action.addToCollection, dispatch)
+                    SearchAction.Result(Progress.Paginating, false)
+                }
             }
 
             is SearchAction.Reload -> {

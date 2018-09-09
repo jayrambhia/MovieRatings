@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.fenchtose.movieratings.analytics.events.toGaEvent
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.router.Router
@@ -207,6 +208,10 @@ class MainActivity : RouterBaseActivity() {
             val historyBundle = intent.getBundleExtra(Router.HISTORY)
             if (historyBundle != null) {
                 history = Router.History(historyBundle)
+            }
+
+            if (intent.hasExtra("ga_event")) {
+                intent.getBundleExtra("ga_event").toGaEvent()?.track()
             }
         }
 

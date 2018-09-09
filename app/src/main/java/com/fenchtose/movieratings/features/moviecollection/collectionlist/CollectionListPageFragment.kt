@@ -205,6 +205,7 @@ class CollectionListPageFragment: BaseFragment() {
         if (shouldReturnSelection()) {
             GaEvents.SELECT_COLLECTION.track()
             path?.let {
+                GaEvents.ADD_TO_COLLECTION.withCategory(GaCategory.MOVIE).track()
                 (it as CollectionListPath).movieToBeAdded?.let {
                     dispatch?.invoke(AddToCollection(collection, it))
                 }
