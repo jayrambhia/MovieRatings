@@ -1,44 +1,42 @@
 package com.fenchtose.movieratings.features.moviepage
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.view.ViewCompat
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import com.bumptech.glide.Glide
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
-import com.fenchtose.movieratings.base.PresenterState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
-import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPageFragment
-import com.fenchtose.movieratings.model.entity.Episode
-import com.fenchtose.movieratings.model.entity.EpisodesList
+import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPath
+import com.fenchtose.movieratings.features.moviecollection.collectionpage.CollectionPagePath
+import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
-import com.fenchtose.movieratings.model.db.like.DbLikeStore
-import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStore
-import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
-import com.fenchtose.movieratings.model.preferences.SettingsPreferences
-import com.fenchtose.movieratings.widgets.pagesection.*
+import com.fenchtose.movieratings.widgets.pagesection.ExpandableSection
+import com.fenchtose.movieratings.widgets.pagesection.InlineTextSection
+import com.fenchtose.movieratings.widgets.pagesection.SimpleTextSection
+import com.fenchtose.movieratings.widgets.pagesection.TextSection
+import java.lang.ref.WeakReference
 
-class MoviePageFragment: BaseFragment(), MoviePage {
-
-    var movie: Movie? = null
+class MoviePageFragment: BaseFragment() {
 
     private var posterView: ImageView? = null
     private var ratingView: TextView? = null
@@ -60,25 +58,16 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     private var episodesSection: EpisodesSection? = null
 
-    private var presenter: MoviePresenter? = null
-
     private var imageLoader: ImageLoader? = null
 
+    override fun canGoBack() = true
+    override fun getScreenTitle() = R.string.movie_page_title
+    override fun screenName() = GaScreens.MOVIE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         postponeEnterTransition()
-        presenter = MoviePresenter(MovieRatingsApplication.movieProviderModule.movieProvider,
-                DbLikeStore.getInstance(MovieRatingsApplication.database.favDao()),
-                DbRecentlyBrowsedStore.getInstance(MovieRatingsApplication.database.recentlyBrowsedDao()),
-                DbMovieCollectionStore.getInstance(MovieRatingsApplication.database.movieCollectionDao()),
-                SettingsPreferences(requireContext()),
-                movie?.imdbId, movie, path?.getRouter())
-
-        presenter?.restoreState(path?.restoreState())
-
         imageLoader = GlideLoader(Glide.with(this))
-
         setHasOptionsMenu(true)
     }
 
@@ -90,20 +79,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         posterView = view.findViewById(R.id.poster_view)
         ratingView = view.findViewById(R.id.rating_view)
         titleView = view.findViewById(R.id.title_view)
-
-        collectionsFlexView = MoviePageFlexView(requireContext(), view.findViewById(R.id.collections_flexview),
-                object : MoviePageFlexView.CollectionCallback {
-                    override fun onItemClicked(collection: MovieCollection) {
-                        GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
-                        path?.getRouter()?.go(CollectionPageFragment.CollectionPagePath(collection))
-                    }
-
-                    override fun onAddToCollectionClicked() {
-                        GaEvents.TAP_ADD_TO_COLLECTION.withCategory(path?.category()).track()
-                        presenter?.addToCollection()
-                    }
-        })
-
+        collectionsFlexView = MoviePageFlexView(requireContext(), view.findViewById(R.id.collections_flexview))
 
         fab = view.findViewById(R.id.fab)
 
@@ -119,15 +95,25 @@ class MoviePageFragment: BaseFragment(), MoviePage {
                 GaEvents.COLLAPSE_PLOT.withCategory(path?.category()))
 
         episodesSection = EpisodesSection(requireContext(), view.findViewById<TextView>(R.id.episodes_header),
-                view.findViewById(R.id.episodes_recyclerview), view.findViewById(R.id.seasons_spinner), presenter)
+                view.findViewById(R.id.episodes_recyclerview), view.findViewById(R.id.seasons_spinner), path?.getRouter())
 
         isPosterLoaded = false
 
-        presenter?.attachView(this)
+        render { appState, dispatch ->
+            if (appState.moviePages.isNotEmpty()) {
+                render(appState.moviePages.last(), dispatch)
+            }
+        }
     }
 
-    override fun saveState(): PresenterState? {
-        return presenter?.saveState()
+    override fun onResume() {
+        super.onResume()
+        path?.let {
+            if (it is MoviePath) {
+                val id = it.movie.imdbId
+                dispatch?.invoke(LoadMovie(id))
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -135,7 +121,7 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         when(item?.itemId) {
             R.id.action_open_imdb -> {
                 GaEvents.OPEN_IMDB.withCategory(path?.category()).track()
-                presenter?.openImdb(requireContext())
+                dispatch?.invoke(OpenImdbPage(WeakReference(requireContext())))
             }
             else -> consumed = false
         }
@@ -143,24 +129,23 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.detachView(this)
-    }
+    private fun render(state: MoviePageState, dispatch: Dispatch) {
+        val movie = state.movie
+        if (movie.imdbId.isEmpty()) {
+            return
+        }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        MovieRatingsApplication.refWatcher?.watch(this)
-    }
-
-    private fun showMovie(movie: Movie) {
         path?.getRouter()?.updateTitle(movie.title)
         titleView?.text = movie.title
         genreSection?.setContent(movie.genre)
-        if (movie.ratings.size > 0) {
-            setRating(movie.ratings[0].value)
+        if (movie.ratings.isNotEmpty()) {
+            setRating(movie.ratings[0].rating)
         } else {
             ratingView?.visibility = View.GONE
+        }
+
+        if (!isPosterLoaded && movie.poster.isNotEmpty()) {
+            loadImage(movie.poster)
         }
 
         directorSection?.setContent(" ${movie.director}")
@@ -169,18 +154,29 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         writerSection?.setContent(movie.writers)
         plotSection?.setContent(movie.plot)
 
-        collectionsFlexView?.setCollections(movie.collections)
-
-        if (!isPosterLoaded) {
-            loadImage(movie.poster)
-        }
+        collectionsFlexView?.render(movie.collections, { collection ->
+            GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
+            path?.getRouter()?.let { dispatch.invoke(Navigation(it, CollectionPagePath(collection))) }
+        }, {
+            GaEvents.TAP_ADD_TO_COLLECTION.withCategory(path?.category()).track()
+            path?.getRouter()?.let {
+                dispatch.invoke(Navigation(it, CollectionListPath(true, movie)))
+            }
+        })
 
         setLiked(movie.liked)
 
         fab?.setOnClickListener {
             GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
-            val isLiked = presenter?.likeToggle()
-            setLiked(isLiked)
+            dispatch(LikeMovie(movie, !movie.liked))
+        }
+
+        episodesSection?.render(state.movie, state.season, state.seasonProgress, dispatch)
+    }
+
+    private fun setLiked(isLiked: Boolean?) {
+        isLiked?.let {
+            fab?.setImageResource(if (it) R.drawable.ic_favorite_onyx_24dp else R.drawable.ic_favorite_border_onyx_24dp)
         }
     }
 
@@ -214,43 +210,6 @@ class MoviePageFragment: BaseFragment(), MoviePage {
 
     }
 
-    override fun updateState(state: MoviePage.State) {
-        when(state) {
-            is MoviePage.State.Loading -> return
-            is MoviePage.State.Success -> showMovie(state.movie)
-            is MoviePage.State.LoadImage -> loadImage(state.image)
-            is MoviePage.State.Error -> showError()
-        }
-    }
-
-    override fun updateState(state: MoviePage.CollectionState) {
-        val resId = when(state) {
-            is MoviePage.CollectionState.Exists -> R.string.movie_collection_movie_exists
-            is MoviePage.CollectionState.Added -> R.string.movie_collection_movie_added
-            is MoviePage.CollectionState.Error -> R.string.movie_collection_movie_error
-        }
-
-        showSnackbar(requireContext().getString(resId, state.collection.name))
-    }
-
-    override fun updateState(state: MoviePage.EpisodeState) {
-        episodesSection?.setContent(state)
-    }
-
-    private fun showError() {
-        showSnackbarWithAction(requireContext().getString(R.string.movie_page_load_error),
-                R.string.movie_page_retry_cta,
-                View.OnClickListener {
-                    presenter?.reload()
-                })
-    }
-
-    private fun setLiked(isLiked: Boolean?) {
-        isLiked?.let {
-            fab?.setImageResource(if (it) R.drawable.ic_favorite_onyx_24dp else R.drawable.ic_favorite_border_onyx_24dp)
-        }
-    }
-
     private fun setRating(score: String) {
         val text = SpannableString(score)
         if (score.indexOfFirst { it == '/' } != -1) {
@@ -265,141 +224,33 @@ class MoviePageFragment: BaseFragment(), MoviePage {
         ratingView?.layoutParams = params
         ratingView?.visibility = View.VISIBLE
     }
-
-
-
-    override fun canGoBack() = true
-    override fun getScreenTitle() = R.string.movie_page_title
-    override fun screenName() = GaScreens.MOVIE
-
-    class MoviePath(private val movie: Movie, private val sharedElement: Pair<View, String>? = null): RouterPath<MoviePageFragment>() {
-
-        companion object {
-            val KEY = "MoviePath"
-
-            private val MOVIE_ID = "imdb_id"
-
-            fun createExtras(imdbId: String): Bundle {
-                val bundle = Bundle()
-                bundle.putString(Router.ROUTE_TO_SCREEN, KEY)
-                bundle.putString(MOVIE_ID, imdbId)
-                return bundle
-            }
-
-            fun createPath(): ((Bundle) -> MoviePath) {
-                return ::createPath
-            }
-
-            private fun createPath(extras: Bundle): MoviePath {
-                val movieId = extras.getString(MOVIE_ID, "")
-                val movie = Movie()
-                movie.imdbId = movieId
-                return MoviePath(movie)
-            }
-        }
-
-        override fun createFragmentInstance(): MoviePageFragment {
-            val fragment = MoviePageFragment()
-            fragment.movie = movie
-            return fragment
-        }
-
-        override fun getSharedTransitionElement(): Pair<View, String>? {
-            return sharedElement
-        }
-
-        override fun showMenuIcons(): IntArray {
-            return intArrayOf(R.id.action_open_imdb)
-        }
-
-        override fun category() = GaCategory.MOVIE
-
-        override fun toolbarElevation() = R.dimen.toolbar_no_elevation
-
-    }
-
-    class EpisodesSection(private val context: Context, private val header: View, private val recyclerView: RecyclerView,
-                          private val spinner: Spinner, private val seasonSelector: SeasonSelector?): PageSection<MoviePage.EpisodeState> {
-
-        private var adapter: EpisodesAdapter? = null
-        private var spinnerAdapter: SpinnerAdapter? = null
-
-        override fun setContent(state: MoviePage.EpisodeState) {
-            when(state) {
-                is MoviePage.EpisodeState.Success -> showEpisodes(state.season)
-                is MoviePage.EpisodeState.Invalid -> setVisibility(View.GONE)
-                else -> {
-
-                }
-            }
-        }
-
-        private fun showEpisodes(season: EpisodesList) {
-            setupSpinner(season.totalSeasons, season.season)
-            setVisibility(View.VISIBLE)
-            val adapter = getAdapter()
-            adapter.updateEpisodes(season.episodes)
-            adapter.notifyDataSetChanged()
-            return
-        }
-
-        private fun setVisibility(visible: Int) {
-            header.visibility = visible
-            recyclerView.visibility = visible
-            spinner.visibility = visible
-        }
-
-        private fun getAdapter(): EpisodesAdapter {
-            if (this.adapter == null) {
-                val adapter = EpisodesAdapter(context, object : EpisodesAdapter.Callback {
-                    override fun onSelected(episode: Episode) {
-                        GaEvents.OPEN_EPISODE.track()
-                        seasonSelector?.openEpisode(episode)
-                    }
-                })
-                adapter.setHasStableIds(true)
-                recyclerView.layoutManager = LinearLayoutManager(context)
-                recyclerView.layoutManager.isAutoMeasureEnabled = true
-                recyclerView.isNestedScrollingEnabled = false
-                recyclerView.adapter = adapter
-                this.adapter = adapter
-            }
-
-            return this.adapter!!
-        }
-
-        private fun setupSpinner(total: Int, current: Int) {
-            if (spinnerAdapter == null) {
-                val seasons = ArrayList<String>()
-                for (season in 1..total) {
-                    seasons.add(context.getString(R.string.movie_page_seasons_title, season))
-                }
-                val adapter = ArrayAdapter<String>(context, R.layout.spinner_selection_season, seasons)
-                adapter.setDropDownViewResource(R.layout.spinner_selection_season_item)
-                spinner.adapter = adapter
-                spinner.setSelection(current - 1)
-                this.spinnerAdapter = adapter
-
-                spinner.setOnTouchListener { _, event ->
-                    if (event.action == MotionEvent.ACTION_UP) {
-                        GaEvents.TAP_SEASON_SELECTOR.track()
-                    }
-                    false
-                }
-                spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                    override fun onNothingSelected(parent: AdapterView<*>?) {
-
-                    }
-
-                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        GaEvents.SELECT_SEASON.track()
-                        seasonSelector?.selectSeason(position + 1)
-                    }
-                }
-            }
-        }
-
-    }
-
 }
 
+class MoviePath(val movie: Movie, private val sharedElement: Pair<View, String>? = null): RouterPath<MoviePageFragment>() {
+    override fun createFragmentInstance() = MoviePageFragment()
+    override fun showMenuIcons() = intArrayOf(R.id.action_open_imdb)
+    override fun getSharedTransitionElement() = sharedElement
+    override fun category() = GaCategory.MOVIE
+    override fun toolbarElevation() = R.dimen.toolbar_no_elevation
+    override fun initAction() = InitMoviePage(movie.imdbId, movie)
+    override fun clearAction() = ClearMoviePage
+
+    companion object {
+        const val KEY = "MoviePath"
+        const val MOVIE_ID = "imdb_id"
+
+        fun createExtras(imdbId: String): Bundle {
+            val bundle = Bundle()
+            bundle.putString(Router.ROUTE_TO_SCREEN, MoviePath.KEY)
+            bundle.putString(MoviePath.MOVIE_ID, imdbId)
+            return bundle
+        }
+
+        fun createPath(): ((Bundle) -> MoviePath) {
+            return {
+                val movieId = it.getString(MOVIE_ID, "")
+                MoviePath(Movie.withId(movieId))
+            }
+        }
+    }
+}

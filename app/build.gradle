@@ -117,6 +117,11 @@ dependencies {
     playstoreImplementation 'com.android.billingclient:billing:1.0'
     playstoreImplementation 'com.google.android.gms:play-services-analytics:16.0.1'
 
+    // Moshi
+    implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'
+    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.6.0'
+    implementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
+
     lintChecks project(":lintRules")
 }
 

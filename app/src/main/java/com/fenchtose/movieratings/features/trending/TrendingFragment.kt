@@ -5,55 +5,37 @@ import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.RouterPath
+import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
-import com.fenchtose.movieratings.model.db.like.DbLikeStore
-import com.fenchtose.movieratings.util.AppRxHooks
+import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
 import com.fenchtose.movieratings.widgets.IndicatorTabLayout
 
-class TrendingFragment: BaseMovieListPageFragment<TrendingFragment, TrendingPresenter>() {
+class TrendingFragment: BaseMovieListPageFragment() {
 
-    override fun createPresenter(): TrendingPresenter {
-        val likeStore = DbLikeStore.getInstance(MovieRatingsApplication.database.favDao())
-
-        return TrendingPresenter(
-                AppRxHooks(),
-                MovieRatingsApplication.ratingProviderModule.ratingProvider,
-                MovieRatingsApplication.database.movieDao(),
-                likeStore,
-                setOf(likeStore),
-                path?.getRouter()
-        )
-    }
+    private var tabLayout: IndicatorTabLayout? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val tabLayout: IndicatorTabLayout? = view.findViewById(R.id.tabs)
+        tabLayout = view.findViewById(R.id.tabs)
         tabLayout?.let {
             it.addTab(createTab(R.string.trending_tab_today))
             it.addTab(createTab(R.string.trending_tab_week))
 
-            it.selectTab(
-                    when(presenter?.currentPeriod()) {
-                        "day" -> 0
-                        "week" -> 1
-                        else -> 0
-                    }
-            )
-
             it.addListener {
                 val tab = when(it) {
-                    0 -> "day"
-                    1 -> "week"
-                    else -> "day"
+                    0 -> TrendingTab.DAY
+                    1 -> TrendingTab.WEEK
+                    else -> TrendingTab.DAY
                 }
-                GaEvents.SELECT_TRENDING_TAB.withLabelArg(tab).track()
-                presenter?.updatePeriod(tab)
+
+                GaEvents.SELECT_TRENDING_TAB.withLabelArg(tab.key).track()
+                dispatch?.invoke(SwitchTab(tab))
             }
         }
     }
@@ -68,9 +50,18 @@ class TrendingFragment: BaseMovieListPageFragment<TrendingFragment, TrendingPres
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.trending_screen_title
     override fun screenName() = GaScreens.TRENDING
+    override fun getLayout() = R.layout.trending_movies_page_layout
+    override fun loadingAction() = LoadTrendingPage
 
-    override fun getLayout(): Int {
-        return R.layout.trending_movies_page_layout
+    override fun reduceState(appState: AppState): BaseMovieListPageState {
+        return BaseMovieListPageState(appState.trendingPage.movies, appState.trendingPage.progress)
+    }
+
+    override fun render(appState: AppState, dispatch: Dispatch) {
+        tabLayout?.selectTab(when(appState.trendingPage.currentTab) {
+            TrendingTab.DAY -> 0
+            TrendingTab.WEEK -> 1
+        })
     }
 
 }
@@ -79,4 +70,5 @@ class TrendingPath: RouterPath<TrendingFragment>() {
     override fun createFragmentInstance() = TrendingFragment()
     override fun category() = GaCategory.TRENDING
     override fun toolbarElevation() = R.dimen.toolbar_no_elevation
+    override fun clearAction() = ClearTrendingPage
 }

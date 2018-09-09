@@ -6,7 +6,7 @@ import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.SearchResult
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.dao.MovieDao
-import com.fenchtose.movieratings.model.entity.EpisodesList
+import com.fenchtose.movieratings.model.entity.Season
 import io.reactivex.Observable
 
 
@@ -28,7 +28,7 @@ class PreloadedMovieProvider(context:Context, private val dao: MovieDao): MovieP
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }
 
-    override fun getEpisodes(series: Movie, season: Int): Observable<EpisodesList> {
+    override fun getEpisodes(series: Movie, season: Int): Observable<Season> {
         throw RuntimeException("PreloadedMovieProvider should not be used in release")
     }
 

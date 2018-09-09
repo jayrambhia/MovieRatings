@@ -10,7 +10,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.moshi.MoshiConverterFactory
 import java.io.File
 
 class MovieRatingProviderModule(val app: MovieRatingsApplication, val gson: Gson) {
@@ -33,7 +33,7 @@ class MovieRatingProviderModule(val app: MovieRatingsApplication, val gson: Gson
         return Retrofit.Builder()
                 .client(app.getOkHttpClient())
                 .baseUrl(Constants.OMDB_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
     }
@@ -43,7 +43,7 @@ class MovieRatingProviderModule(val app: MovieRatingsApplication, val gson: Gson
         return Retrofit.Builder()
                 .client(app.getOkHttpClient(cache, listOf(RatingHeaderInterceptor())))
                 .baseUrl(BuildConfig.RATINGS_ENDPOINT)
-                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(MoshiConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
     }

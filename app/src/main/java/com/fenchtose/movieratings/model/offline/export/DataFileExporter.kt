@@ -1,9 +1,13 @@
 package com.fenchtose.movieratings.model.offline.export
 
+import android.content.Context
 import android.net.Uri
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
-import com.fenchtose.movieratings.model.entity.MovieCollection
+import com.fenchtose.movieratings.base.AppState
+import com.fenchtose.movieratings.base.redux.Action
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.redux.Next
 import com.fenchtose.movieratings.model.db.MovieDb
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
 import com.fenchtose.movieratings.model.db.like.LikeStore
@@ -13,12 +17,11 @@ import com.fenchtose.movieratings.model.db.movieCollection.DbMovieCollectionStor
 import com.fenchtose.movieratings.model.db.movieCollection.MovieCollectionStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.DbRecentlyBrowsedStore
 import com.fenchtose.movieratings.model.db.recentlyBrowsed.RecentlyBrowsedStore
-import com.fenchtose.movieratings.util.AppFileUtils
-import com.fenchtose.movieratings.util.Constants
-import com.fenchtose.movieratings.util.FileUtils
+import com.fenchtose.movieratings.util.*
 import com.google.gson.JsonObject
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 
@@ -57,7 +60,7 @@ class DataFileExporter(
         resultPublisher = null
     }
 
-    override fun export(output: Uri, config: DataExporter.Config) {
+    override fun export(key: String, output: Uri, config: DataExporter.Config) {
         Single.defer {
             val json = JsonObject()
             json.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
@@ -119,22 +122,22 @@ class DataFileExporter(
         }.flatMap {
             json -> Single.defer {
                 Single.fromCallable {
-                    fileUtils.export(MovieRatingsApplication.instance!!, output, MovieRatingsApplication.gson.toJson(json))
+                    fileUtils.export(MovieRatingsApplication.instance, output, MovieRatingsApplication.gson.toJson(json))
                 }
             }
         }.subscribeOn(Schedulers.io())
         .subscribe ({
-            success -> resultPublisher?.onNext(if (success) DataExporter.Progress.Success(output) else DataExporter.Progress.Error())
+            success -> resultPublisher?.onNext(if (success) DataExporter.Progress.Success(key, output) else DataExporter.Progress.Error(key))
         }, {
-            error -> resultPublisher?.onNext(DataExporter.Progress.Error())
+            error -> resultPublisher?.onNext(DataExporter.Progress.Error(key))
             error.printStackTrace()
         })
 
-        resultPublisher?.onNext(DataExporter.Progress.Started())
+        resultPublisher?.onNext(DataExporter.Progress.Started(key))
 
     }
 
-    override fun exportCollection(output: Uri, collection: MovieCollection) {
+    override fun exportCollection(key: String, output: Uri, collectionId: Long) {
         Single.defer {
             val json = JsonObject()
             json.addProperty(Constants.EXPORT_APP, Constants.EXPORT_APP_NAME)
@@ -142,7 +145,7 @@ class DataFileExporter(
             Single.just(Pair(HashSet<String>(), json))
         }.flatMap {
             pair ->
-                collectionStore.export(collection.id)
+                collectionStore.export(collectionId)
                         .map {
                             if (it.isNotEmpty()) {
                                 pair.second.add(Constants.EXPORT_COLLECTIONS, MovieRatingsApplication.gson.toJsonTree(it))
@@ -163,18 +166,72 @@ class DataFileExporter(
         }.flatMap {
             json -> Single.defer {
             Single.fromCallable {
-                fileUtils.export(MovieRatingsApplication.instance!!, output, MovieRatingsApplication.gson.toJson(json))
+                fileUtils.export(MovieRatingsApplication.instance, output, MovieRatingsApplication.gson.toJson(json))
             }
         }
         }.subscribeOn(Schedulers.io())
                 .subscribe ({
-                    success -> resultPublisher?.onNext(if (success) DataExporter.Progress.Success(output) else DataExporter.Progress.Error())
+                    success -> resultPublisher?.onNext(if (success) DataExporter.Progress.Success(key, output) else DataExporter.Progress.Error(key))
                 }, {
-                    error -> resultPublisher?.onNext(DataExporter.Progress.Error())
+                    error -> resultPublisher?.onNext(DataExporter.Progress.Error(key))
                     error.printStackTrace()
                 })
 
-        resultPublisher?.onNext(DataExporter.Progress.Started())
+        resultPublisher?.onNext(DataExporter.Progress.Started(key))
 
+    }
+}
+
+data class ExportData(val key: String, val outputName: String, val config: DataExporter.Config): Action
+data class ExportCollection(val key: String, val outputName: String, val collectionId: Long): Action
+data class ExportProgress(val key: String, val progress: DataExporter.Progress<Uri>): Action
+
+class DataFileExporterMiddleware(private val context: Context,
+                                 private val exporter: DataExporter<Uri>,
+                                 private val fileUtils: FileUtils,
+                                 private val rxHooks: RxHooks) {
+
+
+    fun middleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
+        if (action is ExportData) {
+            startObserving(action.key, dispatch)
+            val uri = fileUtils.createCacheFile(context, action.outputName)
+            exporter.export(action.key, uri, action.config)
+        } else if (action is ExportCollection) {
+            startObserving(action.key, dispatch)
+            val uri = fileUtils.createCacheFile(context, action.outputName)
+            exporter.exportCollection(action.key, uri, action.collectionId)
+        }
+
+        return next(state, action, dispatch)
+    }
+
+    private fun startObserving(key: String, dispatch: Dispatch) {
+        var disposable: Disposable? = null
+        disposable = exporter.observe()
+                .observeOn(rxHooks.mainThread())
+                .filter { it.key == key }
+                .subscribe({
+                    dispatch(ExportProgress(key, it))
+                    if (it is DataExporter.Progress.Success) {
+                        disposable?.dispose()
+                    }
+                }, {
+                    it.printStackTrace()
+                    dispatch(ExportProgress(key, DataExporter.Progress.Error(key)))
+                }, {
+                    disposable?.dispose()
+                })
+    }
+
+    companion object {
+        fun newInstance(context: Context): DataFileExporterMiddleware {
+            return DataFileExporterMiddleware(
+                    context,
+                    DataFileExporter.newInstance(MovieDb.instance),
+                    AppFileUtils(),
+                    AppRxHooks()
+            )
+        }
     }
 }

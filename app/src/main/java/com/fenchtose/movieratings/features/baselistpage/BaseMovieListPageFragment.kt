@@ -11,16 +11,19 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
-import com.fenchtose.movieratings.base.PresenterState
+import com.fenchtose.movieratings.base.redux.Action
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.router.Navigation
+import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
+import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
 
-abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListPresenter<V>>: BaseFragment(), BaseMovieListPage {
-
-    protected var presenter: P? = null
+abstract class BaseMovieListPageFragment: BaseFragment() {
 
     protected var recyclerView: RecyclerView? = null
     protected var adapter: BaseMovieAdapter? = null
@@ -30,8 +33,6 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        presenter = createPresenter()
-        presenter?.restoreState(path?.restoreState())
         onCreated()
     }
 
@@ -45,7 +46,7 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         stateContent = view.findViewById(R.id.screen_state_content)
         progressBar = view.findViewById(R.id.progressbar)
 
-        val adapter = BaseMovieAdapter(requireContext(), createAdapterConfig(presenter))
+        val adapter = BaseMovieAdapter(requireContext(), createAdapterConfig())
         adapter.setHasStableIds(true)
 
         recyclerView?.let {
@@ -56,36 +57,28 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
 
         this.adapter = adapter
 
-        presenter?.attachView(this as V)
     }
 
-    override fun saveState(): PresenterState? {
-        return presenter?.saveState()
+    override fun onResume() {
+        super.onResume()
+        render { appState, dispatch ->
+            render(reduceState(appState), dispatch)
+            render(appState, dispatch)
+        }
+        dispatch?.invoke(loadingAction())
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.detachView(this as V)
-        recyclerView?.adapter = null
-        adapter = null
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter = null
-    }
-
-    override fun updateState(state: BaseMovieListPage.State) {
+    private fun render(state: BaseMovieListPageState, dispatch: Dispatch) {
         progressBar?.visibility = View.GONE
-        when(state) {
-            is BaseMovieListPage.State.Loading -> {
+        when(state.progress) {
+            is Progress.Loading -> {
                 progressBar?.visibility = View.VISIBLE
                 recyclerView?.visibility = View.GONE
             }
-            is BaseMovieListPage.State.Success -> setData(state.movies)
-            is BaseMovieListPage.State.Empty -> showContentState(getEmptyContent())
-            is BaseMovieListPage.State.Error -> showContentState(getErrorContent())
-            is BaseMovieListPage.State.Cleared -> setData(listOf())
+
+            is Progress.Error -> showContentState(getErrorContent())
+            is Progress.Empty -> showContentState(getEmptyContent())
+            is Progress.Success -> setData(state.movies)
         }
     }
 
@@ -107,34 +100,38 @@ abstract class BaseMovieListPageFragment<V: BaseMovieListPage, P: BaseMovieListP
         return R.layout.base_movies_list_page_layout
     }
 
-    abstract fun createPresenter(): P
-
     abstract fun getErrorContent(): Int
 
     abstract fun getEmptyContent(): Int
 
-    open fun createAdapterConfig(presenter: P?): BaseMovieAdapter.AdapterConfig {
+    abstract fun reduceState(appState: AppState): BaseMovieListPageState
 
-        val callback = object: BaseMovieAdapter.AdapterCallback {
-            override fun onLiked(movie: Movie) {
-                GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
-                presenter?.toggleLike(movie)
-            }
+    abstract fun loadingAction(): Action
 
-            override fun onClicked(movie: Movie, sharedElement: Pair<View, String>?) {
-                GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
-                presenter?.openMovie(movie, sharedElement)
-            }
-        }
-
+    open fun createAdapterConfig(): BaseMovieAdapter.AdapterConfig {
         val glide = GlideLoader(Glide.with(this))
-
-        return BaseMovieListAdapterConfig(callback, glide, createExtraLayoutHelper())
+        return BaseMovieListAdapterConfig(::toggleLike, ::openMovie, glide, createExtraLayoutHelper())
     }
 
     open fun createExtraLayoutHelper(): (() -> SearchItemViewHolder.ExtraLayoutHelper)? = null
 
     protected open fun onCreated() {
 
+    }
+
+    protected open fun render(appState: AppState, dispatch: Dispatch) {
+
+    }
+
+    protected open fun toggleLike(movie: Movie) {
+        GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
+        dispatch?.invoke(LikeMovie(movie, !movie.liked))
+    }
+
+    protected open fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
+        GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
+        path?.getRouter()?.let {
+            dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
+        }
     }
 }

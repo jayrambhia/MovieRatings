@@ -7,7 +7,7 @@ import com.fenchtose.movieratings.model.api.MovieApi
 import com.fenchtose.movieratings.model.api.MovieRatingApi
 import com.fenchtose.movieratings.model.db.dao.MovieRatingDao
 import com.fenchtose.movieratings.model.db.movieRatings.MovieRatingStore
-import com.fenchtose.movieratings.model.entity.MovieRating
+import com.fenchtose.movieratings.model.db.entity.MovieRating
 import com.fenchtose.movieratings.model.entity.Trending
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers

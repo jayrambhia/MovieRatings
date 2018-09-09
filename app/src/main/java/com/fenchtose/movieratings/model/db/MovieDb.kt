@@ -7,7 +7,7 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.migration.Migration
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.db.dao.*
-import com.fenchtose.movieratings.model.entity.*
+import com.fenchtose.movieratings.model.db.entity.*
 
 @Database(entities = [
     (Movie::class), (Fav::class),

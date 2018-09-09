@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.model.db.dao
 
 import android.arch.persistence.room.*
-import com.fenchtose.movieratings.model.entity.Movie
-import com.fenchtose.movieratings.model.entity.MovieCollection
-import com.fenchtose.movieratings.model.entity.MovieCollectionEntry
+import com.fenchtose.movieratings.model.db.entity.Movie
+import com.fenchtose.movieratings.model.db.entity.MovieCollection
+import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
 
 @Dao
 interface MovieCollectionDao {
@@ -44,8 +44,8 @@ interface MovieCollectionDao {
     @Query("DELETE FROM COLLECTION_ENTRIES WHERE COLLECTION_ID == :collectionId AND IMDBID = :imdbId")
     fun deleteCollectionEntry(collectionId: Long, imdbId: String): Int
 
-    @Delete
-    fun delete(collection: MovieCollection): Int
+    @Query("DELETE FROM COLLECTIONS WHERE COLLECTION_ID = :collectionId")
+    fun deleteCollection(collectionId: Long): Int
 
     @Query("DELETE FROM COLLECTIONS")
     fun deleteAllCollections(): Int

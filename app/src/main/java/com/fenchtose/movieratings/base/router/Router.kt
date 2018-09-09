@@ -8,8 +8,9 @@ import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.RouterBaseActivity
+import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.features.moviepage.DetailTransition
-import com.fenchtose.movieratings.features.moviepage.MoviePageFragment
+import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import java.util.Stack
 
@@ -23,6 +24,8 @@ class Router(activity: RouterBaseActivity,
 
     private val keyPathMap: HashMap<String, ((Bundle) -> RouterPath<out BaseFragment>)> = HashMap()
 
+    var dispatch: Dispatch? = null
+
     private val TAG = "Router"
 
     companion object {
@@ -31,8 +34,8 @@ class Router(activity: RouterBaseActivity,
     }
 
     init {
-        keyPathMap.put(DonatePageFragment.DonatePath.KEY, DonatePageFragment.DonatePath.createPath())
-        keyPathMap.put(MoviePageFragment.MoviePath.KEY, MoviePageFragment.MoviePath.createPath())
+        keyPathMap[DonatePageFragment.DonatePath.KEY] = DonatePageFragment.DonatePath.createPath()
+        keyPathMap[MoviePath.KEY] = MoviePath.createPath()
     }
 
     fun canHandleKey(key: String): Boolean {
@@ -61,8 +64,6 @@ class Router(activity: RouterBaseActivity,
             if (top.javaClass == path.javaClass) {
                 return
             }
-
-            top.saveState()
         }
 
         move(path)
@@ -141,7 +142,6 @@ class Router(activity: RouterBaseActivity,
 
     private fun moveBack() {
         val path = history.pop()
-        path.clearState()
         path.detach()
         onRemoved.invoke(path)
         if (!history.empty()) {
@@ -150,6 +150,8 @@ class Router(activity: RouterBaseActivity,
                 move(top)
             }
         }
+
+        dispatch?.invoke(path.clearAction())
     }
 
     class History {

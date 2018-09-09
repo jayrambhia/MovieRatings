@@ -15,21 +15,21 @@ import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.features.season.episode.EpisodePage
-import com.fenchtose.movieratings.model.entity.EpisodesList
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.Season
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.util.IntentUtils
 
-class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
+class SeasonPageFragment: BaseFragment() {
 
     private var tabLayout: TabLayout? = null
     private var viewPager: ViewPager? = null
     private var adapter: EpisodePagerAdapter? = null
     private var poster: ImageView? = null
     private var imageLoader: ImageLoader? = null
-    private var currentEpisode: Movie? = null
+    private var currentEpisodeId: String? = null
+    private var currentPoster: String? = null
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.season_page_title
@@ -56,7 +56,12 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
         path?.takeIf { it is SeasonPath }?.let {
             it as SeasonPath
         }?.let {
-            adapter = EpisodePagerAdapter(requireContext(), it.series, it.episodes, this)
+            adapter = EpisodePagerAdapter(requireContext(), it.series, it.episodes, {
+                if (it.imdbId != currentEpisodeId && it.poster != currentPoster) {
+                    currentPoster = it.poster
+                    loadImage(it.poster)
+                }
+            })
             tabLayout?.setupWithViewPager(viewPager)
             viewPager?.adapter = adapter
 
@@ -72,6 +77,22 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
             })
+
+            viewPager?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+                }
+
+                override fun onPageSelected(position: Int) {
+                    path?.let{ it as SeasonPath }?.let {
+                        val episode = it.episodes.episodes[position]
+                        this@SeasonPageFragment.currentEpisodeId = episode.imdbId
+                    }
+                }
+            })
         }
     }
 
@@ -80,17 +101,12 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
         when(item?.itemId) {
             R.id.action_open_imdb -> {
                 GaEvents.OPEN_IMDB.withCategory(GaCategory.EPISODE).track()
-                IntentUtils.openImdb(requireContext(), currentEpisode?.imdbId)
+                IntentUtils.openImdb(requireContext(), currentEpisodeId)
             }
             else -> consumed = false
         }
 
         return if (consumed) true else super.onOptionsItemSelected(item)
-    }
-
-    override fun onEpisodeLoaded(episode: Movie) {
-        this.currentEpisode = episode
-        loadImage(episode.poster)
     }
 
     private fun loadImage(url: String) {
@@ -101,7 +117,7 @@ class SeasonPageFragment: BaseFragment(), EpisodePage.EpisodeCallback {
         }
     }
 
-    class SeasonPath(val series: Movie, val episodes: EpisodesList, val selectedEpisode: Int): RouterPath<SeasonPageFragment>() {
+    class SeasonPath(val series: Movie, val episodes: Season, val selectedEpisode: Int): RouterPath<SeasonPageFragment>() {
         override fun createFragmentInstance() = SeasonPageFragment()
         override fun showMenuIcons() = intArrayOf(R.id.action_open_imdb)
         override fun category() = GaCategory.SEASON

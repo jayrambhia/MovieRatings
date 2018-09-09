@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.db.displayedRatings
 
-import com.fenchtose.movieratings.model.entity.DisplayedRating
+import com.fenchtose.movieratings.model.db.entity.DisplayedRating
 import io.reactivex.Observable
 
 interface DisplayedRatingsStore {

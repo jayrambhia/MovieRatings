@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.model.api
 
-import com.fenchtose.movieratings.model.entity.EpisodesList
-import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.entity.Season
+import com.fenchtose.movieratings.model.entity.OmdbMovie
 import com.fenchtose.movieratings.model.entity.SearchResult
 import io.reactivex.Observable
 import retrofit2.http.GET
@@ -13,12 +13,12 @@ interface MovieApi {
     fun getMovieInfo(@Query("apikey") apiKey: String,
                      @Query("t") title: String,
                      @Query("y")year: String = "",
-                     @Query("plot") plot: String = "full") : Observable<Movie>
+                     @Query("plot") plot: String = "full") : Observable<OmdbMovie>
 
     @GET("/ ")
     fun getMovieInfoWithImdb(@Query("apikey") apiKey: String,
                              @Query("i") imdbId: String,
-                             @Query("plot") plot: String = "full") : Observable<Movie>
+                             @Query("plot") plot: String = "full") : Observable<OmdbMovie>
 
     @GET("/ ")
     fun search(@Query("apikey") apiKey: String,
@@ -28,12 +28,12 @@ interface MovieApi {
     @GET("/ ")
     fun getEpisodesList(@Query("apikey") apiKey: String,
                         @Query("i") seriesImdbId: String,
-                        @Query("season") season: Int): Observable<EpisodesList>
+                        @Query("season") season: Int): Observable<Season>
 
     @GET("/ ")
     fun getEpisode(@Query("apikey") apiKey: String,
                    @Query("i") seriesImdbId: String,
                    @Query("season") season: Int,
                    @Query("episode") episode: Int,
-                   @Query("plot") plot: String = "full"): Observable<Movie>
+                   @Query("plot") plot: String = "full"): Observable<OmdbMovie>
 }

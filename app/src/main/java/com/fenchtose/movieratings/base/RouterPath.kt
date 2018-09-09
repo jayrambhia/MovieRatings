@@ -1,13 +1,14 @@
 package com.fenchtose.movieratings.base
 
 import android.view.View
+import com.fenchtose.movieratings.base.redux.Action
+import com.fenchtose.movieratings.base.redux.NoAction
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.base.router.Router
 
 abstract class RouterPath<T : BaseFragment> {
 
     var fragment: T? = null
-    private var savedState: PresenterState? = null
     private var router: Router? = null
 
     private fun createFragment() : T {
@@ -22,20 +23,6 @@ abstract class RouterPath<T : BaseFragment> {
         }
 
         return createFragment()
-    }
-
-    fun saveState() {
-        savedState = fragment?.saveState()
-    }
-
-    fun restoreState(): PresenterState? {
-        val temp = savedState
-        clearState()
-        return temp
-    }
-
-    fun clearState() {
-        savedState = null
     }
 
     fun getRouter(): Router? {
@@ -61,5 +48,9 @@ abstract class RouterPath<T : BaseFragment> {
     open fun category(): String = ""
 
     open fun toolbarElevation(): Int = R.dimen.toolbar_default_elevation
+
+    open fun initAction(): Action = NoAction
+
+    open fun clearAction(): Action = NoAction
 
 }

@@ -4,12 +4,16 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.redux.Unsubscribe
+import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
-import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment
+import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPath
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
@@ -20,6 +24,13 @@ abstract class RouterBaseActivity: AppCompatActivity() {
 
     private var router: Router? = null
     private var visibleMenuItems: IntArray? = null
+
+    private var dispatch: Dispatch? = null
+    set(value) {
+        field = value
+        router?.dispatch = value
+    }
+    private var unsubscribe: Unsubscribe? = null
 
     protected fun initializeRouter(toolbar: Toolbar? = null,
                                    onMovedTo: (RouterPath<out BaseFragment>) -> Unit = {},
@@ -45,6 +56,17 @@ abstract class RouterBaseActivity: AppCompatActivity() {
             return
         }
         super.onBackPressed()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        unsubscribe = MovieRatingsApplication.store.subscribe { _, dispatch -> this.dispatch = dispatch }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        unsubscribe?.invoke()
+        this.dispatch = null
     }
 
     override fun onDestroy() {
@@ -88,7 +110,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     }
 
     private fun showSearchPage() {
-        router?.go(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+        navigate(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
     }
 
     private fun showInfoPage(showSearchOption: Boolean) {
@@ -103,17 +125,23 @@ abstract class RouterBaseActivity: AppCompatActivity() {
 
     private fun showFavoritesPage() {
         GaEvents.OPEN_LIKED_PAGE.track()
-        router?.go(LikesPageFragment.LikesPath())
+        navigate(LikesPageFragment.LikesPath())
     }
 
     private fun showRecentlyBrowsedPage() {
         GaEvents.OPEN_RECENTLY_BROWSED_PAGE.track()
-        router?.go(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
+        navigate(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
     }
 
     private fun showMovieCollectionsPage() {
         GaEvents.OPEN_COLLECTIONS_PAGE.track()
-        router?.go(CollectionListPageFragment.CollectionListPagePath(false))
+        navigate(CollectionListPath())
+    }
+
+    private fun navigate(path: RouterPath<*>) {
+        router?.let {
+            dispatch?.invoke(Navigation(it, path))
+        }
     }
 
     private fun showTrendingPage() {

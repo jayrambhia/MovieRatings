@@ -1,10 +1,11 @@
 package com.fenchtose.movieratings.model.db.movieCollection
 
 import android.support.annotation.WorkerThread
+import com.fenchtose.movieratings.model.db.entity.MovieCollectionEntry
+import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
-import com.fenchtose.movieratings.model.entity.MovieCollectionEntry
-import com.fenchtose.movieratings.model.db.dao.MovieCollectionDao
+import com.fenchtose.movieratings.model.entity.convert
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
@@ -26,10 +27,12 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
         return Observable.defer {
             Observable.just(name)
                     .map {
-                        name -> MovieCollection.create(name)
+                        name -> com.fenchtose.movieratings.model.db.entity.MovieCollection.create(name)
                     }
                     .doOnNext {
                         it.id = dao.insert(it)
+                    }.map {
+                        it.convert()
                     }
         }
     }
@@ -38,7 +41,7 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
         return Observable.defer {
             Observable.zip(
                     Observable.just(dao.deleteCollectionEntries(collection.id)),
-                    Observable.just(dao.delete(collection)),
+                    Observable.just(dao.deleteCollection(collection.id)),
                     BiFunction<Int, Int, Boolean> { _, t2 ->  t2 > 0}
                     )
         }
@@ -46,7 +49,7 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
 
     override fun addMovieToCollection(collection: MovieCollection, movie: Movie): Observable<MovieCollectionEntry> {
         return Observable.defer {
-            Observable.just(MovieCollectionEntry.create(collection, movie))
+            Observable.just(MovieCollectionEntry.create(collection.id, movie.imdbId))
                     .doOnNext {
                         dao.insert(it)
                     }
@@ -75,12 +78,12 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
     }
 
     @WorkerThread
-    override fun apply(movie: Movie) {
-        movie.collections = dao.getCollectionsForMovie(movie.imdbId).sortedBy { it.name }
-        movie.appliedPreferences.collections = true
+    override fun apply(movie: Movie): Movie {
+        return movie.copy(collections = dao.getCollectionsForMovie(movie.imdbId).map { it.convert() }.sortedBy { it.name },
+                preferences = movie.preferences.copy(collections = true))
     }
 
-    override fun export(): Single<List<MovieCollection>> {
+    override fun export(): Single<List<com.fenchtose.movieratings.model.db.entity.MovieCollection>> {
         return Single.defer {
             Single.fromCallable { dao.getMovieCollections() }
                     .map {
@@ -92,10 +95,10 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
         }
     }
 
-    override fun export(collectionId: Long): Single<List<MovieCollection>> {
+    override fun export(collectionId: Long): Single<List<com.fenchtose.movieratings.model.db.entity.MovieCollection>> {
         return Single.defer {
             Single.fromCallable {
-                dao.getMovieCollection(collectionId) ?: MovieCollection.invalid()
+                dao.getMovieCollection(collectionId) ?: com.fenchtose.movieratings.model.db.entity.MovieCollection.invalid()
             }.map {
                 if (it.id != -1L) {
                     it.entries = dao.getCollectionEntries(it.id)
@@ -108,7 +111,7 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
     }
 
     @WorkerThread
-    override fun import(collections: List<MovieCollection>): Int {
+    override fun import(collections: List<com.fenchtose.movieratings.model.db.entity.MovieCollection>): Int {
         var totalEntries = 0
 
         collections.filter {
@@ -116,7 +119,7 @@ class DbMovieCollectionStore private constructor(private val dao: MovieCollectio
         }.run {
             for (collection in this) {
                 val existingCollection = dao.findCollectionByName(collection.name)
-                val collectionId = existingCollection?.id ?: dao.insert(MovieCollection.create(collection.name))
+                val collectionId = existingCollection?.id ?: dao.insert(com.fenchtose.movieratings.model.db.entity.MovieCollection.create(collection.name))
                 if (collectionId != -1L) {
                     val existingEntries = dao.getCollectionEntries(collectionId).map { it.movieId }
                     collection.entries.filter {

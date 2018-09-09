@@ -6,14 +6,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 import com.fenchtose.movieratings.widgets.RatioImageView
 
 class SearchItemViewHolder(
         itemView: View,
-        callback: BaseMovieAdapter.AdapterCallback?,
+        toggleLike: (Movie) -> Unit,
+        openMovie: (Movie, Pair<View, String>?) -> Unit,
         extraLayoutCreator: (() -> ExtraLayoutHelper)? = null) : RecyclerView.ViewHolder(itemView) {
 
     private val imageView: RatioImageView = itemView.findViewById(R.id.imageview)
@@ -28,7 +28,7 @@ class SearchItemViewHolder(
         favButton.setOnClickListener {
             movie?.let {
                 setLiked(!it.liked, false)
-                callback?.onLiked(it)
+                toggleLike(it)
             }
         }
 
@@ -36,7 +36,7 @@ class SearchItemViewHolder(
             movie?.let {
                 val name = "poster$adapterPosition"
                 ViewCompat.setTransitionName(imageView, name)
-                callback?.onClicked(it, Pair(imageView, name))
+                openMovie(it, Pair(imageView, name))
             }
         }
 

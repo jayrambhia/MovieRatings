@@ -4,8 +4,8 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import com.fenchtose.movieratings.model.entity.MovieRating
-import com.fenchtose.movieratings.model.entity.RatingNotFound
+import com.fenchtose.movieratings.model.db.entity.MovieRating
+import com.fenchtose.movieratings.model.db.entity.RatingNotFound
 
 @Dao
 interface MovieRatingDao {

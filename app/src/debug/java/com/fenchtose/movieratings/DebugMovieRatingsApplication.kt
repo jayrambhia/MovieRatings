@@ -11,6 +11,13 @@ import okhttp3.logging.HttpLoggingInterceptor
 class DebugMovieRatingsApplication: MovieRatingsApplication() {
     override fun onCreate() {
         super.onCreate()
+        /*val builder = Stetho.newInitializerBuilder(this)
+
+        builder.enableWebKitInspector {
+            Stetho.DefaultInspectorModulesBuilder(this).runtimeRepl{
+
+            }.finish()
+        }*/
         Stetho.initializeWithDefaults(this)
     }
 

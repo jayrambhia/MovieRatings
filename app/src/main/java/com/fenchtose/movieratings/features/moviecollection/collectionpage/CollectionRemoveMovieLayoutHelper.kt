@@ -8,7 +8,7 @@ import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.ImageLoader
 
-class CollectionRemoveMovieLayoutHelper(private val callback: Callback) : SearchItemViewHolder.ExtraLayoutHelper {
+class CollectionRemoveMovieLayoutHelper(private val remove: (Movie) -> Unit) : SearchItemViewHolder.ExtraLayoutHelper {
 
     private var movie: Movie? = null
 
@@ -18,15 +18,11 @@ class CollectionRemoveMovieLayoutHelper(private val callback: Callback) : Search
             it.removeAllViews()
             val layout = LayoutInflater.from(itemView.context).inflate(R.layout.movie_collection_remove_movie_item_layout, it, true)
             val removeCta = layout.findViewById<View?>(R.id.remove_movie_cta)
-            removeCta?.setOnClickListener { movie?.let { callback.onRemoveRequested(it) } }
+            removeCta?.setOnClickListener { movie?.let { remove(it) } }
         }
     }
 
     override fun bind(movie: Movie, imageLoader: ImageLoader) {
         this.movie = movie
-    }
-
-    interface Callback {
-        fun onRemoveRequested(movie: Movie)
     }
 }

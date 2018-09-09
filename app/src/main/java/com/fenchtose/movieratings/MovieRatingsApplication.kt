@@ -2,6 +2,7 @@ package com.fenchtose.movieratings
 
 import android.app.Application
 import com.fenchtose.movieratings.analytics.AnalyticsDispatcher
+import com.fenchtose.movieratings.base.redux.AppStore
 import com.fenchtose.movieratings.model.api.provider.MovieProviderModule
 import com.fenchtose.movieratings.model.api.provider.MovieRatingProviderModule
 import com.fenchtose.movieratings.model.db.MovieDb
@@ -17,12 +18,8 @@ import okhttp3.internal.cache.CacheInterceptor
 
 open class MovieRatingsApplication : Application() {
 
-    init {
-        instance = this
-    }
-
     companion object {
-        var instance: MovieRatingsApplication? = null
+        lateinit var instance: MovieRatingsApplication
 
         val flavorHelper: AppFlavorHelper = AppFlavorHelper()
 
@@ -46,12 +43,14 @@ open class MovieRatingsApplication : Application() {
         }
 
         val movieProviderModule by lazy {
-            MovieProviderModule(instance!!, gson)
+            MovieProviderModule(instance, gson)
         }
 
         val ratingProviderModule by lazy {
-            MovieRatingProviderModule(instance!!, gson)
+            MovieRatingProviderModule(instance, gson)
         }
+
+        val store by lazy { AppStore(instance) }
     }
 
     open fun getOkHttpClient(cache: Cache? = null, interceptors: List<Interceptor> = listOf(),
@@ -65,6 +64,7 @@ open class MovieRatingsApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
 /*        if (LeakCanary.isInAnalyzerProcess(this)) {
             // This process is dedicated to LeakCanary for heap analysis.
             // You should not init your app in this process.

@@ -13,6 +13,8 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.redux.Unsubscribe
 import com.fenchtose.movieratings.model.entity.Episode
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.widgets.ThemedSnackbar
@@ -38,7 +40,7 @@ class EpisodePage(context: Context, private val episode: Episode,
     private val writerSection: TextSection
     private val plotSection: ExpandableSection
 
-    var callback: EpisodeCallback? = null
+    var onLoaded: ((Movie) -> Unit)? = null
 
     init {
         LayoutInflater.from(context).inflate(R.layout.episode_page_layout, this, true)
@@ -60,25 +62,35 @@ class EpisodePage(context: Context, private val episode: Episode,
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
     }
 
-    private var presenter: EpisodePresenter? = null
+    private var dispatch: Dispatch? = null
+    private var unsubscribe: Unsubscribe? = null
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        presenter = EpisodePresenter(MovieRatingsApplication.movieProviderModule.movieProvider, episode)
-        presenter?.attachView(this)
+        MovieRatingsApplication.store.dispatchEarly(EpisodePageAction.InitEpisodePage(episode))
+        unsubscribe = MovieRatingsApplication.store.subscribe { appState, dispatch ->
+            this.dispatch = dispatch
+            appState.episodePages[episode.imdbId]?.let {
+                render(it, dispatch)
+            }
+        }
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        presenter?.detachView(this)
-        presenter = null
+        unsubscribe?.invoke()
+        dispatch = null
     }
 
-    fun updateState(state: State) {
-        when(state) {
-            is State.Loading -> showLoading()
-            is State.Success -> showEpisode(state.episode)
-            is State.Error -> showError()
+    private fun render(state: EpisodePageState, dispatch: Dispatch) {
+        if (state.episode.imdbId.isEmpty() && state.progress === Progress.Default) {
+            dispatch(EpisodePageAction.LoadEpisodePage(episode.imdbId))
+        }
+
+        when(state.progress) {
+            is Progress.Loading -> showLoading()
+            is Progress.Loaded -> showEpisode(state.episode)
+            is Progress.Error -> showError()
         }
     }
 
@@ -94,21 +106,19 @@ class EpisodePage(context: Context, private val episode: Episode,
                 Snackbar.LENGTH_LONG,
                 R.string.episode_page_retry_cta,
                 View.OnClickListener {
-                    presenter?.reload()
+                    dispatch?.invoke(EpisodePageAction.LoadEpisodePage(episode.imdbId))
                 }
         ).show()
     }
 
     private fun showEpisode(episode: Movie) {
 
-        callback?.onEpisodeLoaded(episode)
-
         progressbar.visibility = View.GONE
         content.visibility = View.VISIBLE
 
         titleSection.setContent(episode.title)
         seriesTitleSection.setContent(context.getString(R.string.episode_page_series_title, series.title, this.episode.season))
-        ratingSection.setContent(episode.ratings.firstOrNull()?.value)
+        ratingSection.setContent(episode.ratings.firstOrNull()?.rating)
         genreSection.setContent(episode.genre)
         directorSection.setContent(" ${episode.director}")
         releaseSection.setContent(" ${episode.released}")
@@ -116,17 +126,10 @@ class EpisodePage(context: Context, private val episode: Episode,
         writerSection.setContent(episode.writers)
         plotSection.setContent(episode.plot)
 
+        onLoaded?.invoke(episode)
+
     }
 
     private fun category() = GaCategory.EPISODE
 
-    sealed class State {
-        object Loading: State()
-        class Success(val episode: Movie): State()
-        object Error: State()
-    }
-
-    interface EpisodeCallback {
-        fun onEpisodeLoaded(episode: Movie)
-    }
 }

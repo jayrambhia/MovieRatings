@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.model.inAppAnalytics
 
 import com.fenchtose.movieratings.model.db.displayedRatings.DisplayedRatingsStore
-import com.fenchtose.movieratings.model.entity.DisplayedRating
+import com.fenchtose.movieratings.model.db.entity.DisplayedRating
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.nhaarman.mockito_kotlin.*
 import io.reactivex.Observable

@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.model.db.movieRatings
 
 import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.model.db.dao.MovieRatingDao
-import com.fenchtose.movieratings.model.entity.RatingNotFound
+import com.fenchtose.movieratings.model.db.entity.RatingNotFound
 
 class DbMovieRatingStore private constructor(private val dao: MovieRatingDao): MovieRatingStore {
 
@@ -22,7 +22,7 @@ class DbMovieRatingStore private constructor(private val dao: MovieRatingDao): M
     @WorkerThread
     override fun update404(title: String, year: String?) {
         dao.insert(RatingNotFound(0, title,
-                year?:"", System.currentTimeMillis()/1000))
+                year ?: "", System.currentTimeMillis() / 1000))
     }
 
     override fun was404(title: String, year: String?, timestamp: Long): Boolean {

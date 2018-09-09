@@ -4,7 +4,7 @@ import android.content.Context
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
 import com.fenchtose.movieratings.model.db.displayedRatings.DisplayedRatingsStore
-import com.fenchtose.movieratings.model.entity.DisplayedRating
+import com.fenchtose.movieratings.model.db.entity.DisplayedRating
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import io.reactivex.Observable

@@ -6,7 +6,7 @@ import android.speech.tts.TextToSpeech
 import android.util.Log
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.entity.MovieRating
+import com.fenchtose.movieratings.model.db.entity.MovieRating
 import java.util.Locale
 
 class Speaker(context: Context): TextToSpeech.OnInitListener {

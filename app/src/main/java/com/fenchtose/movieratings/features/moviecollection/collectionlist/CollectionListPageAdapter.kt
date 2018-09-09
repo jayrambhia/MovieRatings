@@ -32,7 +32,7 @@ class CollectionListPageAdapter(context: Context,
         return data[position].id.hashCode().toLong()
     }
 
-    fun updateData(collections: ArrayList<MovieCollection>) {
+    fun updateData(collections: List<MovieCollection>) {
         data.clear()
         data.addAll(collections)
     }
