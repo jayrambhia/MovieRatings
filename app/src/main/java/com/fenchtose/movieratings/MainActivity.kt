@@ -26,6 +26,8 @@ import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.PackageUtils
+import com.fenchtose.movieratings.widgets.bottomnavigation.BottomNavigationBar
+import com.fenchtose.movieratings.widgets.bottomnavigation.MenuItem
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
@@ -60,6 +62,19 @@ class MainActivity : RouterBaseActivity() {
         activateButton?.setOnClickListener {
             GaEvents.TAP_ACTIVATE_FLUTTER.track()
             showAccessibilityInfo()
+        }
+
+        val bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottom_navigation_bar)
+        bottomNavigationBar.update(listOf(
+                MenuItem(1, R.drawable.ic_search_accent_24dp, Router.ROOT_SEARCH),
+                MenuItem(2, R.drawable.ic_favorite_accent_24dp, Router.ROOT_PERSONAL),
+                MenuItem(3, R.drawable.ic_collections_accent_24dp, Router.ROOT_COLLECTIONS),
+                MenuItem(4, R.drawable.ic_info_outline_accent_24dp, Router.ROOT_INFO)
+        ), 0)
+
+        bottomNavigationBar.addListener { position, item, reselected ->
+            Log.d("Bottom nav", "item selected: $position - $item")
+            getRouter()?.switchRoot(item.root, reselected)
         }
 
         accessibilityPagePublisher?.onNext(false)
@@ -203,6 +218,7 @@ class MainActivity : RouterBaseActivity() {
     private fun buildPathAndStart(router: Router) {
         val intent = intent
         var history: Router.History = Router.History()
+        var root: String
 
         if (intent != null) {
             val historyBundle = intent.getBundleExtra(Router.HISTORY)
@@ -213,10 +229,13 @@ class MainActivity : RouterBaseActivity() {
             if (intent.hasExtra("ga_event")) {
                 intent.getBundleExtra("ga_event").toGaEvent()?.track()
             }
+
+            // TODO fix root based deeplinking
+            root = Router.ROOT_SEARCH
         }
 
         if (!history.isEmpty()) {
-            router.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+//            router.buildRoute(Router.ROOT_SEARCH, SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
             val grouped = history.history.groupBy { router.canHandleKey(it.first) }
             grouped[true]?.map {
                 router.buildRoute(it.second)
@@ -236,16 +255,19 @@ class MainActivity : RouterBaseActivity() {
                     }
                 }
             }
+            root = Router.ROOT_SEARCH
         } else {
-            if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
-                router.buildRoute(AppInfoFragment.AppInfoPath(true))
+            root = if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
+                router.buildRoute(Router.ROOT_INFO, AppInfoFragment.AppInfoPath(true), true)
                 preferences?.setEnabled(UserPreferences.ONBOARDING_SHOWN, true)
+                Router.ROOT_INFO
             } else {
-                router.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+//                router.buildRoute(Router.ROOT_SEARCH, SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+                Router.ROOT_SEARCH
             }
         }
 
-        router.start()
+        router.start(root)
     }
 
 }

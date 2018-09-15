@@ -35,6 +35,7 @@
         android:orientation="vertical">
 
         <View
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#22ffffff"/>
@@ -45,13 +46,19 @@
             android:layout_gravity="bottom"
             android:background="@drawable/ripple_onyx_bg"
             android:drawablePadding="16dp"
-            android:drawableStart="@drawable/ic_accessibility_yellow_24dp"
+            android:drawableEnd="@drawable/ic_accessibility_yellow_24dp"
             android:gravity="center_vertical"
             android:paddingEnd="16dp"
             android:paddingStart="16dp"
             android:text="@string/activate_app_cta"
-            android:textAppearance="@style/Text.Light.Medium.Large"/>
+            android:textAppearance="@style/Text.Light.Medium.Big"/>
 
     </LinearLayout>
+
+    <com.fenchtose.movieratings.widgets.bottomnavigation.BottomNavigationBar
+        android:elevation="4dp"
+        android:id="@+id/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"/>
 
 </LinearLayout>

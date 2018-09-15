@@ -24,6 +24,10 @@
 		<item name="android:textSize">16sp</item>
 	</style>
 
+	<style name="Text.Light.Medium.Big">
+		<item name="android:textSize">18sp</item>
+	</style>
+
 	<style name="Text.Light.Medium.Small">
 		<item name="android:textSize">12sp</item>
 	</style>
@@ -38,6 +42,10 @@
 
 	<style name="Text.Light.Large">
 		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Light.Big">
+		<item name="android:textSize">18sp</item>
 	</style>
 
 	<style name="Text.Light.Small">
@@ -64,6 +72,10 @@
 		<item name="android:textSize">16sp</item>
 	</style>
 
+	<style name="Text.Dark.Medium.Big">
+		<item name="android:textSize">18sp</item>
+	</style>
+
 	<style name="Text.Dark.Medium.Small">
 		<item name="android:textSize">12sp</item>
 	</style>
@@ -78,6 +90,10 @@
 
 	<style name="Text.Dark.Large">
 		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Dark.Big">
+		<item name="android:textSize">18sp</item>
 	</style>
 
 	<style name="Text.Dark.Small">
@@ -104,6 +120,10 @@
 		<item name="android:textSize">16sp</item>
 	</style>
 
+	<style name="Text.Dark.Secondary.Medium.Big">
+		<item name="android:textSize">18sp</item>
+	</style>
+
 	<style name="Text.Dark.Secondary.Medium.Small">
 		<item name="android:textSize">12sp</item>
 	</style>
@@ -118,6 +138,10 @@
 
 	<style name="Text.Dark.Secondary.Large">
 		<item name="android:textSize">16sp</item>
+	</style>
+
+	<style name="Text.Dark.Secondary.Big">
+		<item name="android:textSize">18sp</item>
 	</style>
 
 	<style name="Text.Dark.Secondary.Small">

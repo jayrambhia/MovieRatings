@@ -91,7 +91,7 @@ class AppInfoFragment: BaseFragment() {
     class AppInfoPath(private val showSearchOption: Boolean): RouterPath<AppInfoFragment>() {
         override fun createFragmentInstance() =AppInfoFragment()
         override fun showMenuIcons(): IntArray {
-            return if (showSearchOption) intArrayOf(R.id.action_search, R.id.action_settings) else intArrayOf(R.id.action_settings)
+            return if (showSearchOption) intArrayOf(/*R.id.action_search,*/ R.id.action_settings) else intArrayOf(R.id.action_settings)
         }
         override fun category() = GaCategory.APP_INFO
     }
