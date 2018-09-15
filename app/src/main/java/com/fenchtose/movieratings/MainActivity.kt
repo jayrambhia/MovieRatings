@@ -7,16 +7,11 @@ import android.speech.tts.TextToSpeech
 import android.support.v4.os.ConfigurationCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.fenchtose.movieratings.analytics.events.toGaEvent
-import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.router.Router
-import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
-import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
@@ -28,21 +23,11 @@ import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.PackageUtils
 import com.fenchtose.movieratings.widgets.bottomnavigation.BottomNavigationBar
 import com.fenchtose.movieratings.widgets.bottomnavigation.MenuItem
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.subjects.PublishSubject
 
 
 class MainActivity : RouterBaseActivity() {
 
     private var container: FrameLayout? = null
-    private var activateButton: ViewGroup? = null
-
-    private var accessibilityPublisher: PublishSubject<Boolean>? = null
-    private var accessibilityPagePublisher: PublishSubject<Boolean>? = null
-    private var disposable: Disposable? = null
 
     private var preferences: UserPreferences? = null
     private var historyKeeper: HistoryKeeper? = null
@@ -54,15 +39,8 @@ class MainActivity : RouterBaseActivity() {
         setContentView(R.layout.activity_main)
 
         container = findViewById(R.id.fragment_container)
-        activateButton = findViewById(R.id.activate_button)
 
         preferences = SettingsPreferences(this)
-        setupObservables()
-
-        activateButton?.setOnClickListener {
-            GaEvents.TAP_ACTIVATE_FLUTTER.track()
-            showAccessibilityInfo()
-        }
 
         val bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottom_navigation_bar)
         bottomNavigationBar.update(listOf(
@@ -73,11 +51,10 @@ class MainActivity : RouterBaseActivity() {
         ), 0)
 
         bottomNavigationBar.addListener { position, item, reselected ->
+            // TODO GA
             Log.d("Bottom nav", "item selected: $position - $item")
             getRouter()?.switchRoot(item.root, reselected)
         }
-
-        accessibilityPagePublisher?.onNext(false)
 
         historyKeeper = DbHistoryKeeper(
                 PreferenceUserHistory(this),
@@ -91,41 +68,14 @@ class MainActivity : RouterBaseActivity() {
 
         initializeRouter(
                 findViewById(R.id.toolbar),
-                {
-                    when(it) {
-                        is AccessInfoFragment.AccessibilityPath -> accessibilityPagePublisher?.onNext(true)
-                    }
-                },
-                {
-                    when(it) {
-                        is AccessInfoFragment.AccessibilityPath -> accessibilityPagePublisher?.onNext(false)
-                    }
-                },
+                {},
+                {},
                 ::buildPathAndStart
         )
     }
 
-    override fun onResume() {
-        super.onResume()
-        triggerAccessibilityCheck()
-    }
 
-    fun triggerAccessibilityCheck() {
-        accessibilityPublisher?.onNext(AccessibilityUtils.hasAllPermissions(this))
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        accessibilityPublisher?.onComplete()
-        accessibilityPagePublisher?.onComplete()
-        disposable?.dispose()
-    }
-
-    private fun showAccessibilityInfo() {
-        getRouter()?.go(AccessInfoFragment.AccessibilityPath())
-    }
-
-    private fun onAccessibilityActivated() {
+    /*private fun onAccessibilityActivated() {
         getRouter()?.onBackRequested()
         // Show a dialog?
         val builder = AlertDialog.Builder(this)
@@ -141,42 +91,7 @@ class MainActivity : RouterBaseActivity() {
                 IntentUtils.launch3rdParty(this, PackageUtils.NETFLIX)
             }
         }
-    }
-
-    private fun setupObservables() {
-        accessibilityPublisher = PublishSubject.create()
-        accessibilityPagePublisher = PublishSubject.create()
-
-        disposable =
-                Observable.combineLatest(accessibilityPublisher, accessibilityPagePublisher,
-                BiFunction<Boolean, Boolean, Int> {
-                    hasAccessibility, isShowingAccessibilityInfo ->
-                    when {
-                        hasAccessibility && isShowingAccessibilityInfo -> 1
-                        !hasAccessibility && !isShowingAccessibilityInfo -> 2
-                        else -> 3
-                    }
-
-                })
-                .map {
-                      preferences?.let {
-                          if (!it.isAppEnabled(UserPreferences.SHOW_ACTIVATE_FLUTTER)) {
-                              return@map 3
-                          }
-                      }
-
-                    it
-                }
-                .subscribeBy(
-                        onNext = {
-                            when(it) {
-                                1 -> onAccessibilityActivated()
-                                2 -> activateButton?.visibility = View.VISIBLE
-                                3 -> activateButton?.visibility = View.GONE
-                            }
-                        }
-                )
-    }
+    }*/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -235,7 +150,6 @@ class MainActivity : RouterBaseActivity() {
         }
 
         if (!history.isEmpty()) {
-//            router.buildRoute(Router.ROOT_SEARCH, SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
             val grouped = history.history.groupBy { router.canHandleKey(it.first) }
             grouped[true]?.map {
                 router.buildRoute(it.second)
@@ -262,7 +176,6 @@ class MainActivity : RouterBaseActivity() {
                 preferences?.setEnabled(UserPreferences.ONBOARDING_SHOWN, true)
                 Router.ROOT_INFO
             } else {
-//                router.buildRoute(Router.ROOT_SEARCH, SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
                 Router.ROOT_SEARCH
             }
         }

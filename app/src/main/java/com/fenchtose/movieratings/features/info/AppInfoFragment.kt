@@ -61,7 +61,7 @@ class AppInfoFragment: BaseFragment() {
         val contentView = view.findViewById<TextView?>(R.id.info_content_view)
         contentView?.visibility = View.VISIBLE
         contentView?.setText(
-                if (AccessibilityUtils.hasAllPermissions(requireContext()))
+                if (AccessibilityUtils.isAccessibilityEnabled(requireContext()))
                     R.string.info_screen_content_with_accessibility
                 else
                     R.string.info_screen_content_no_accessibility)

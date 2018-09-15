@@ -6,7 +6,6 @@ import android.support.v7.widget.SwitchCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.fenchtose.movieratings.MainActivity
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
@@ -31,7 +30,6 @@ class MiscSectionFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val preferences = SettingsPreferences(requireContext())
 
-        addAppToggle(preferences, view, R.id.show_activate_toggle, UserPreferences.SHOW_ACTIVATE_FLUTTER)
         addAppToggle(preferences, view, R.id.use_year_toggle, UserPreferences.USE_YEAR)
         addAppToggle(preferences, view, R.id.support_review_toggle, UserPreferences.SHOW_RATE_APP_PROMPT)
         addAppToggle(preferences, view, R.id.support_inapp_toggle, UserPreferences.SHOW_SUPPORT_APP_PROMPT)
@@ -41,17 +39,6 @@ class MiscSectionFragment: BaseFragment() {
         subscribe(publisher
                 .debounce(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext {
-                    when(it) {
-                        UserPreferences.SHOW_ACTIVATE_FLUTTER -> {
-                            activity?.let {
-                                if (it is MainActivity) {
-                                    it.triggerAccessibilityCheck()
-                                }
-                            }
-                        }
-                    }
-                }
                 .subscribe {
                     showSnackbar(R.string.settings_preference_update_content)
                 })

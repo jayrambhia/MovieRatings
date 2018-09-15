@@ -14,6 +14,7 @@ import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
 import com.fenchtose.movieratings.model.entity.Sort
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.model.preferences.UserPreferences
 
 class LikesPageFragment: BaseMovieListPageFragment() {
 
@@ -75,9 +76,16 @@ class LikesPageFragment: BaseMovieListPageFragment() {
 
     override fun screenName() = GaScreens.LIKES
 
-    class LikesPath : RouterPath<LikesPageFragment>() {
+    class LikesPath(private val preferences: UserPreferences): RouterPath<LikesPageFragment>() {
         override fun createFragmentInstance() = LikesPageFragment()
-        override fun showMenuIcons() = intArrayOf(R.id.action_sort)
+        override fun showMenuIcons(): IntArray {
+            val icons = arrayListOf(R.id.action_sort)
+            if (preferences.isAppEnabled(UserPreferences.SAVE_HISTORY)) {
+                icons.add(R.id.action_history)
+            }
+
+            return icons.toIntArray()
+        }
         override fun category() = GaCategory.LIKES
         override fun clearAction() = ClearLikedPageState
     }

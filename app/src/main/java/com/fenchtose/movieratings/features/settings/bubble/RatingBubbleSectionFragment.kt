@@ -1,7 +1,10 @@
 package com.fenchtose.movieratings.features.settings.bubble
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.support.annotation.ColorInt
 import android.support.annotation.IdRes
 import android.support.v4.content.ContextCompat
@@ -21,6 +24,10 @@ import com.fenchtose.movieratings.base.router.EventBus
 import com.fenchtose.movieratings.features.settings.PreferenceUpdater
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.util.AccessibilityUtils
+import com.fenchtose.movieratings.util.PackageUtils
+import com.fenchtose.movieratings.util.VersionUtils
+import com.fenchtose.movieratings.util.show
 
 class RatingBubbleSectionFragment: BaseFragment() {
 
@@ -31,6 +38,8 @@ class RatingBubbleSectionFragment: BaseFragment() {
     private var preferences: UserPreferences? = null
     private var adapter: BubbleColorAdapter? = null
     private var recyclerView: RecyclerView? = null
+
+    private var drawPermissionConainer: View? = null
 
     private var ratingDurationView: TextView? = null
     private var updatePublisher: PreferenceUpdater? = null
@@ -43,7 +52,14 @@ class RatingBubbleSectionFragment: BaseFragment() {
         val preferences = SettingsPreferences(requireContext())
         this.preferences = preferences
 
-        addSettingToggle(preferences, view, R.id.open_movie_toggle, UserPreferences.OPEN_MOVIE_IN_APP)
+        drawPermissionConainer = view.findViewById(R.id.draw_permission_container)
+        view.findViewById<View>(R.id.draw_permission_cta).setOnClickListener {
+            if (VersionUtils.isMOrAbove()) {
+                openDrawSettings()
+            }
+        }
+
+        addAppSettingToggle(preferences, view, R.id.open_movie_toggle, UserPreferences.OPEN_MOVIE_IN_APP)
 
         val savedBubbleColor = preferences.getBubbleColor(ContextCompat.getColor(requireContext(), R.color.floating_rating_color))
 
@@ -90,6 +106,17 @@ class RatingBubbleSectionFragment: BaseFragment() {
         requireActivity().startService(Intent(context, BubbleService::class.java))
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (VersionUtils.isMOrAbove() && !AccessibilityUtils.isTV(requireContext())) {
+            if (!AccessibilityUtils.isDrawPermissionEnabled(requireContext())) {
+                drawPermissionConainer?.show(true)
+            } else {
+                drawPermissionConainer?.show(false)
+            }
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         updatePublisher?.release()
@@ -120,11 +147,11 @@ class RatingBubbleSectionFragment: BaseFragment() {
         }
     }
 
-    private fun addSettingToggle(preferences: UserPreferences, root: View, @IdRes buttonId: Int, key: String) {
+    private fun addAppSettingToggle(preferences: UserPreferences, root: View, @IdRes buttonId: Int, key: String) {
         val toggle = root.findViewById<SwitchCompat?>(buttonId)
         toggle?.let {
             it.visibility = View.VISIBLE
-            it.isChecked = preferences.isSettingEnabled(key)
+            it.isChecked = preferences.isAppEnabled(key)
             it.setOnCheckedChangeListener {
                 _, isChecked -> updatePreference(preferences, key, isChecked)
             }
@@ -134,6 +161,17 @@ class RatingBubbleSectionFragment: BaseFragment() {
     private fun updatePreference(preferences: UserPreferences, key: String, status: Boolean) {
         preferences.setEnabled(key, status)
         updatePublisher?.show(key)
+    }
+
+    @SuppressLint("InlinedApi")
+    private fun openDrawSettings() {
+        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + requireActivity().packageName))
+        if (PackageUtils.isIntentCallabale(requireContext(), intent)) {
+            startActivity(intent)
+        } else {
+            showSnackbar(R.string.accessibility_draw_permission_launch_error)
+        }
     }
 
     class RatingSectionPath: RouterPath<RatingBubbleSectionFragment>() {

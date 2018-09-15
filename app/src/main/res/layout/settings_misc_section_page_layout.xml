@@ -11,22 +11,6 @@
 		android:orientation="vertical"
 		android:layout_marginBottom="8dp">
 
-		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/show_activate_toggle"
-			android:textAppearance="@style/Text.Dark"
-			android:padding="@dimen/gutter"
-			android:text="@string/settings_activate_flutter"
-			android:visibility="gone"
-			tools:visibility="visible"
-			tools:checked="true"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
-
-		<View
-			android:layout_width="match_parent"
-			android:layout_height="1dp"
-			android:background="@color/divider_color"/>
-
 		<TextView
 			android:textAppearance="@style/Text.Dark.Secondary"
 			android:layout_width="match_parent"

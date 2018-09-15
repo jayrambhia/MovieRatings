@@ -321,22 +321,13 @@ class SearchPageFragment: BaseFragment() {
 
     sealed class SearchPath: RouterPath<SearchPageFragment>() {
 
-        class Default(private val preferences: UserPreferences): SearchPageFragment.SearchPath() {
+        class Default: SearchPageFragment.SearchPath() {
             override fun createFragmentInstance(): SearchPageFragment {
                 return SearchPageFragment()
             }
 
-            override fun showMenuIcons(): IntArray {
-                val icons = arrayListOf(R.id.action_history, R.id.action_trending)
-                if (preferences.isAppEnabled(UserPreferences.SAVE_HISTORY)) {
-                    icons.add(R.id.action_history)
-                }
-
-                return icons.toIntArray()
-            }
-
+            override fun showMenuIcons() = intArrayOf(R.id.action_trending)
             override fun showBackButton() = false
-
             override fun category() = GaCategory.SEARCH
         }
 

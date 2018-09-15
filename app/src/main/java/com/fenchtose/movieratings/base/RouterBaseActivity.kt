@@ -43,8 +43,8 @@ abstract class RouterBaseActivity: AppCompatActivity() {
 
         router = Router(this,
                 mapOf(
-                        Pair(Router.ROOT_SEARCH, RouterRoot(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))),
-                        Pair(Router.ROOT_PERSONAL, RouterRoot(LikesPageFragment.LikesPath())),
+                        Pair(Router.ROOT_SEARCH, RouterRoot(SearchPageFragment.SearchPath.Default())),
+                        Pair(Router.ROOT_PERSONAL, RouterRoot(LikesPageFragment.LikesPath(SettingsPreferences(this)))),
                         Pair(Router.ROOT_COLLECTIONS, RouterRoot(CollectionListPath())),
                         Pair(Router.ROOT_INFO, RouterRoot(AppInfoFragment.AppInfoPath(false)))
                 ),
@@ -112,33 +112,14 @@ abstract class RouterBaseActivity: AppCompatActivity() {
         return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
-    private fun showSearchPage() {
-        navigate(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
-    }
-
-    private fun showInfoPage(showSearchOption: Boolean) {
-        GaEvents.OPEN_INFO_PAGE.track()
-        router?.go(AppInfoFragment.AppInfoPath(showSearchOption))
-    }
-
     private fun showSettingsPage() {
         GaEvents.OPEN_SETTINGS.withCategory("menu").track()
         router?.go(SettingsFragment.SettingsPath())
     }
 
-    private fun showFavoritesPage() {
-        GaEvents.OPEN_LIKED_PAGE.track()
-        navigate(LikesPageFragment.LikesPath())
-    }
-
     private fun showRecentlyBrowsedPage() {
         GaEvents.OPEN_RECENTLY_BROWSED_PAGE.track()
         navigate(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
-    }
-
-    private fun showMovieCollectionsPage() {
-        GaEvents.OPEN_COLLECTIONS_PAGE.track()
-        navigate(CollectionListPath())
     }
 
     private fun navigate(path: RouterPath<*>) {
