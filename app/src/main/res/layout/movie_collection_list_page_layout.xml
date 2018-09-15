@@ -49,7 +49,7 @@
 		app:elevation="4dp"
 		app:fabSize="normal"
 		tools:visibility="visible"
-		app:backgroundTint="@color/colorPrimary"
+		app:backgroundTint="@color/colorAccent"
 		android:src="@drawable/ic_playlist_add_white_24dp"/>
 
 </FrameLayout>

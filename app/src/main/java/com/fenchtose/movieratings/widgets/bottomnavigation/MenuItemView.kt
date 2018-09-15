@@ -14,6 +14,7 @@ class MenuItemView(context: Context, val item: MenuItem): FrameLayout(context) {
         LayoutInflater.from(context).inflate(R.layout.bottom_bar_menu_item_view_layout, this, true)
         image = findViewById(R.id.item_image)
         image.setImageResource(item.iconRes)
+        setBackgroundResource(R.drawable.ripple_onyx_bg_2)
         active(false)
     }
 

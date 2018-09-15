@@ -16,6 +16,6 @@ class TVActivity : RouterBaseActivity() {
     }
 
     private fun buildPathAndStart(router: Router) {
-        router.go(AppInfoFragment.AppInfoPath(false))
+        router.go(AppInfoFragment.AppInfoPath())
     }
 }

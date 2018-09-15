@@ -63,10 +63,11 @@ class SearchPageFragment: BaseFragment() {
         clearButton = view.findViewById(R.id.clear_button)
 
         path?.takeIf { it is SearchPageFragment.SearchPath.Default }?.let {
-            appInfoContainer = view.findViewById(R.id.info_page_container)
-            appInfoContainer?.setRouter(it.getRouter(), it.category())
-            view.findViewById<View?>(R.id.settings_view)?.visibility = View.VISIBLE
-            view.findViewById<View?>(R.id.credit_view)?.visibility = View.GONE
+            appInfoContainer = view.findViewById<InfoPageBottomView?>(R.id.info_page_container)?.apply {
+                setRouter(it.getRouter(), it.category())
+                findViewById<View?>(R.id.settings_view)?.show(false)
+                findViewById<View?>(R.id.share_view)?.show(false)
+            }
         }
 
         val adapterConfig = SearchAdapterConfig(GlideLoader(Glide.with(this)),

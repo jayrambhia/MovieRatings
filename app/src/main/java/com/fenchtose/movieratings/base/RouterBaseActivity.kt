@@ -46,7 +46,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
                         Pair(Router.ROOT_SEARCH, RouterRoot(SearchPageFragment.SearchPath.Default())),
                         Pair(Router.ROOT_PERSONAL, RouterRoot(LikesPageFragment.LikesPath(SettingsPreferences(this)))),
                         Pair(Router.ROOT_COLLECTIONS, RouterRoot(CollectionListPath())),
-                        Pair(Router.ROOT_INFO, RouterRoot(AppInfoFragment.AppInfoPath(false)))
+                        Pair(Router.ROOT_INFO, RouterRoot(AppInfoFragment.AppInfoPath()))
                 ),
                 {
                     visibleMenuItems = it.showMenuIcons()

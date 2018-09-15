@@ -45,7 +45,7 @@
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
 			android:textAppearance="@style/Text.Light.Medium.Big"
-			android:drawableEnd="@drawable/ic_monetization_on_yellow_24dp"/>
+			android:drawableStart="@drawable/ic_monetization_on_yellow_24dp"/>
 
 	</LinearLayout>
 
@@ -55,6 +55,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
+		android:visibility="gone"
 		android:background="@drawable/ripple_onyx_bg">
 
 		<View
@@ -74,7 +75,7 @@
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
 			android:textAppearance="@style/Text.Light.Medium.Big"
-			android:drawableEnd="@drawable/ic_info_outline_yellow_24dp"/>
+			android:drawableStart="@drawable/ic_info_outline_yellow_24dp"/>
 
 	</LinearLayout>
 
@@ -84,8 +85,6 @@
 		android:layout_width="match_parent"
 		android:layout_height="48dp"
 		android:layout_gravity="bottom"
-		android:visibility="gone"
-		tools:visibility="visible"
 		android:background="@drawable/ripple_onyx_bg">
 
 		<View
@@ -104,7 +103,7 @@
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
 			android:textAppearance="@style/Text.Light.Medium.Big"
-			android:drawableEnd="@drawable/ic_settings_yellow_24dp"/>
+			android:drawableStart="@drawable/ic_settings_yellow_24dp"/>
 
 	</LinearLayout>
 
@@ -134,7 +133,7 @@
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
 			android:textAppearance="@style/Text.Light.Medium.Big"
-			android:drawableEnd="@drawable/ic_build_yellow_24dp"/>
+			android:drawableStart="@drawable/ic_build_yellow_24dp"/>
 
 	</LinearLayout>
 
@@ -163,7 +162,7 @@
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
 			android:textAppearance="@style/Text.Light.Medium.Big"
-			android:drawableEnd="@drawable/google_play"/>
+			android:drawableStart="@drawable/ic_shop_white_24dp"/>
 
 	</LinearLayout>
 
@@ -192,7 +191,7 @@
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
 			android:textAppearance="@style/Text.Light.Medium.Big"
-			android:drawableEnd="@drawable/ic_share_black_24dp"/>
+			android:drawableStart="@drawable/ic_share_black_24dp"/>
 
 	</LinearLayout>
 
@@ -216,7 +215,7 @@
 			android:layout_gravity="bottom"
 			android:background="@drawable/ripple_onyx_bg"
 			android:drawablePadding="16dp"
-			android:drawableEnd="@drawable/ic_accessibility_yellow_24dp"
+			android:drawableStart="@drawable/ic_accessibility_yellow_24dp"
 			android:gravity="center_vertical"
 			android:paddingEnd="16dp"
 			android:paddingStart="16dp"

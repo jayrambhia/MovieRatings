@@ -45,7 +45,7 @@ class MainActivity : RouterBaseActivity() {
         val bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottom_navigation_bar)
         bottomNavigationBar.update(listOf(
                 MenuItem(1, R.drawable.ic_search_accent_24dp, Router.ROOT_SEARCH),
-                MenuItem(2, R.drawable.ic_favorite_accent_24dp, Router.ROOT_PERSONAL),
+                MenuItem(2, R.drawable.ic_person_onyx_accent_24dp, Router.ROOT_PERSONAL),
                 MenuItem(3, R.drawable.ic_collections_accent_24dp, Router.ROOT_COLLECTIONS),
                 MenuItem(4, R.drawable.ic_info_outline_accent_24dp, Router.ROOT_INFO)
         ), 0)
@@ -172,7 +172,7 @@ class MainActivity : RouterBaseActivity() {
             root = Router.ROOT_SEARCH
         } else {
             root = if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
-                router.buildRoute(Router.ROOT_INFO, AppInfoFragment.AppInfoPath(true), true)
+                router.buildRoute(Router.ROOT_INFO, AppInfoFragment.AppInfoPath(), true)
                 preferences?.setEnabled(UserPreferences.ONBOARDING_SHOWN, true)
                 Router.ROOT_INFO
             } else {
