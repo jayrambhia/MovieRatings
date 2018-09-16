@@ -5,7 +5,7 @@
 <img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png" width="480px"/>
 </p>
 
-You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.3.3](https://github.com/jayrambhia/MovieRatings/releases/download/v0.3.3/flutter_v0.3.3.apk)
+You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.3.4](https://github.com/jayrambhia/MovieRatings/releases/download/v0.3.4/flutter_v0.3.4.apk)
 
 ## Screenshots of master
 

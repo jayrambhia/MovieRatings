@@ -1,5 +1,14 @@
 # Flutter Changelog
 
+# 0.3.4
+
+ - Made copies more generic instead of being about movies
+ - Redux architecture added
+ - Moshi and code-gen integrated
+ - Separated db and networking entities
+ - GA events added for ratings
+ - Made some GA events non-interactive
+
 # 0.3.3
 
  - `Trending` page added
