@@ -8,6 +8,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.features.tts.Speaker
 import com.fenchtose.movieratings.model.api.provider.MovieRatingsProvider
@@ -38,7 +39,6 @@ class NetflixReaderService : AccessibilityService() {
     private var preferences: UserPreferences? = null
 
     // For Samsung S6 edge, we are getting TYPE_WINDOW_STATE_CHANGED for adding floating window which triggers removeView()
-//    private val supportedPackages: Array<String> = arrayOf(Constants.PACKAGE_NETFLIX, Constants.PACKAGE_PRIMEVIDEO, Constants.PACKAGE_PLAY_MOVIES_TV, Constants.PACKAGE_HOTSTAR, Constants.PACKAGE_BBC_IPLAYER, Constants.PACKAGE_JIO_TV/*, Constants.PACKAGE_YOUTUBE*//*, BuildConfig.APPLICATION_ID*/)
     private val supportedPackages = Constants.supportedApps.keys
 
     private var lastWindowStateChangeEventTime: Long = 0
@@ -62,7 +62,7 @@ class NetflixReaderService : AccessibilityService() {
 
         preferences = SettingsPreferences(this)
         provider = MovieRatingsApplication.ratingProviderModule.ratingProvider
-        displayer = RatingDisplayer(this, preferences!!)
+        displayer = RatingDisplayer(this, preferences!!, analytics = true)
         historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance!!),
                 DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
                 preferences!!)
@@ -167,12 +167,6 @@ class NetflixReaderService : AccessibilityService() {
 
             val isAppEnabled = when (it.packageName) {
                 BuildConfig.APPLICATION_ID -> true
-                /*Constants.PACKAGE_NETFLIX -> preferences?.isAppEnabled(UserPreferences.NETFLIX)
-                Constants.PACKAGE_PRIMEVIDEO -> preferences?.isAppEnabled(UserPreferences.PRIMEVIDEO)
-                Constants.PACKAGE_PLAY_MOVIES_TV -> preferences?.isAppEnabled(UserPreferences.PLAY_MOVIES)
-                Constants.PACKAGE_HOTSTAR -> preferences?.isAppEnabled(UserPreferences.HOTSTAR)
-                Constants.PACKAGE_YOUTUBE -> preferences?.isAppEnabled(UserPreferences.YOUTUBE)
-                Constants.PACKAGE_BBC_IPLAYER -> preferences?.isAppEnabled(UserPreferences.BBC_IPLAYER)*/
                 else -> preferences?.isAppEnabled(it.packageName.toString())
             }
 
@@ -373,14 +367,6 @@ class NetflixReaderService : AccessibilityService() {
         info?.let {
 
             Log.d(TAG, "${" ".repeat(level)}info: text: ${it.text}, id: ${it.viewIdResourceName}, class: ${it.className}, parent id: ${it.parent?.viewIdResourceName}, desc=${it.contentDescription?.toString()}")
-            /*it.contentDescription?.let {
-//                Log.d(TAG, "type: ${it.javaClass}")
-//                Log.d(TAG, "sub: ${it.subSequence(0, 4)} + ${it.subSequence(4, it.length)}, length: ${it.length}")
-                if (it is Spanned) {
-                    val s = it as Spanned
-                    Log.d(TAG, "Spans: ${s.getSpans<Any>()}")
-                }
-            }*/
             if (info.childCount > 0) {
                 Log.d(TAG, "${" ".repeat(level)}--- <children> ---")
                 (0 until info.childCount)
@@ -473,9 +459,9 @@ class NetflixReaderService : AccessibilityService() {
         initResources()
 
         GaEvents.GET_RATINGS.withLabelArg(request.appName).track()
-
+        val useFlutterApi = preferences?.isAppEnabled(UserPreferences.USE_FLUTTER_API) ?: true
         provider?.let {
-            it.useFlutterApi(preferences?.isAppEnabled(UserPreferences.USE_FLUTTER_API) != false)
+            it.useFlutterApi(useFlutterApi)
             it.getMovieRating(request)
                     .subscribeOn(Schedulers.io())
                     .observeOn(myScheduler)
@@ -487,6 +473,7 @@ class NetflixReaderService : AccessibilityService() {
                     }, {
                         if (it is HttpException) {
                             if (it.code() == 404) {
+                                GaEvents.RATING_NOT_FOUND.withLabelArg(if (useFlutterApi) GaLabels.FLUTTER_API else GaLabels.OMDB_API).track()
                                 update404(request.title, request.year)
                             }
                         }
@@ -544,20 +531,29 @@ class NetflixReaderService : AccessibilityService() {
     private fun showSupportAppPrompt() {
         if (!isNotificationChannelBlocked(this, Constants.SUPPORT_CHANNEL_ID)) {
             showSupportAppNotification(this)
+            GaEvents.SEND_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_SUPPORT_APP).track()
             historyKeeper?.inAppPurchasePromptShown()
+            return
         }
+
+        GaEvents.NOTIFICATION_BLOCKED.withLabel(GaLabels.NOTIFICATION_SUPPORT_APP).track()
     }
 
     private fun showRateAppPrompt() {
         if (!isNotificationChannelBlocked(this, Constants.SUPPORT_CHANNEL_ID)) {
             showReviewAppNotification(this)
+            GaEvents.SEND_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_RATE_APP).track()
             historyKeeper?.rateAppPromptShown()
+            return
         }
+
+        GaEvents.NOTIFICATION_BLOCKED.withLabel(GaLabels.NOTIFICATION_RATE_APP).track()
     }
 
     private fun showRating(rating: MovieRating) {
         displayer?.showRatingWindow(rating)
         if (preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true) {
+            GaEvents.SPEAK_RATING.track()
             speaker?.talk(rating)
         }
     }

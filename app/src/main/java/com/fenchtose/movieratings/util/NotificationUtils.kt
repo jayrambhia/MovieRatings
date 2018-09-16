@@ -36,8 +36,6 @@ fun showSupportAppNotification(context: Context) {
             Constants.SUPPORT_APP_NOTIFICATION_ID,
             pendingIntent
     )
-
-    GaEvents.SEND_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_SUPPORT_APP).track()
 }
 
 fun showReviewAppNotification(context: Context) {
@@ -52,8 +50,6 @@ fun showReviewAppNotification(context: Context) {
             Constants.REVIEW_APP_NOTIFICATION_ID,
             pendingIntent
     )
-
-    GaEvents.SEND_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_RATE_APP).track()
 }
 
 private fun showNotification(context: Context, @StringRes title: Int, @StringRes content: Int,

@@ -14,8 +14,9 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaCategory
+import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.features.stickyview.FloatingRating
 import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.preferences.UserPreferences
@@ -26,7 +27,8 @@ import com.fenchtose.movieratings.widgets.RatingBubble
 
 class RatingDisplayer(ctx: Context,
                       private val preferences: UserPreferences,
-                      private val autoDismiss: Boolean = true) {
+                      private val autoDismiss: Boolean = true,
+                      private val analytics: Boolean = false) {
     private val context: Context = ctx.applicationContext
 
     private var touchListener: BubbleTouchListener? = null
@@ -60,6 +62,7 @@ class RatingDisplayer(ctx: Context,
             Log.e(TAG, "no drawing permission")
             val duration = preferences.getRatingDisplayDuration()
             ToastUtils.showMovieRating(context, rating, bubbleColor, duration)
+            trackEvent(GaEvents.SHOW_RATINGS.withLabel(GaLabels.TOAST))
             return
         }
 
@@ -71,6 +74,7 @@ class RatingDisplayer(ctx: Context,
             it.rating = rating
             it.bubble.updateColor(bubbleColor)
             resetAutoDismissRunners()
+            trackEvent(GaEvents.SHOW_RATINGS.withLabel(GaLabels.BUBBLE))
             if (it.bubble.parent != null) {
                 return
             }
@@ -160,12 +164,12 @@ class RatingDisplayer(ctx: Context,
         override fun onClick(bubble: RatingBubble?, x: Int, y: Int) {
             bubble?.let {
                 if (it.isClickForClose(x)) {
-                    GaEvents.DISMISS_RATING.track()
+                    trackEvent(GaEvents.DISMISS_RATING)
                     removeViewImmediate(it)
                 } else {
-                    GaEvents.OPEN_MOVIE.withCategory(GaCategory.SERVICE).track()
-                    val opened = IntentUtils.openMovie(context, floatingRating?.rating?.imdbId,
-                            preferences.isAppEnabled(UserPreferences.OPEN_MOVIE_IN_APP))
+                    val openInApp = preferences.isAppEnabled(UserPreferences.OPEN_MOVIE_IN_APP)
+                    trackEvent(GaEvents.RATING_OPEN_MOVIE.withLabel(if (openInApp) "app" else "imdb"))
+                    val opened = IntentUtils.openMovie(context, floatingRating?.rating?.imdbId, openInApp)
                     if (opened) {
                         removeView()
                     }
@@ -178,5 +182,11 @@ class RatingDisplayer(ctx: Context,
             resetAutoDismissRunners()
         }
 
+    }
+
+    private fun trackEvent(event: Event) {
+        if (analytics) {
+            event.track()
+        }
     }
 }

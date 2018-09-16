@@ -56,9 +56,15 @@ class GaEvents {
 
         val GET_RATINGS = GaEvent(GaCategory.SERVICE, "get rating", "app: %s", true)
         val GET_RATINGS_ONLINE = GaEvent(GaCategory.SERVICE, "get rating online", "server: %s", true)
+        val RATING_NOT_FOUND = GaEvent(GaCategory.SERVICE, "rating not found", "server: %s", true)
+        val SHOW_RATINGS = GaEvent(GaCategory.SERVICE, "show rating", "%s", true)
         val SEND_NOTIFICATION = GaEvent(GaCategory.SERVICE, "send notification", "%s", true)
+        val NOTIFICATION_BLOCKED = GaEvent(GaCategory.SERVICE, "notification blocked", "%s", true)
         val OPEN_NOTIFICATION = GaEvent(GaCategory.SERVICE, "open notification", "%s")
         val DISMISS_RATING = GaEvent(GaCategory.SERVICE, "dismiss", "rating")
+        val RATING_OPEN_MOVIE = GaEvent(GaCategory.SERVICE, "open movie", "%s")
+
+        val SPEAK_RATING = GaEvent(GaCategory.SERVICE, "tts", "rating", true)
     }
 }
 
@@ -110,5 +116,9 @@ class GaLabels {
     companion object {
         const val NOTIFICATION_SUPPORT_APP = "support app"
         const val NOTIFICATION_RATE_APP = "rate app"
+        const val TOAST = "toast"
+        const val BUBBLE = "bubble"
+        const val OMDB_API = "omdb"
+        const val FLUTTER_API = "flutter"
     }
 }
