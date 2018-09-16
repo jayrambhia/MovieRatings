@@ -7,7 +7,7 @@ import android.content.pm.PackageManager
 class PackageUtils {
 
     companion object {
-        val NETFLIX = "com.netflix.mediaservice"
+        const val NETFLIX = "com.netflix.mediaclient"
 
         fun hasInstalled(context: Context, packageName: String): Boolean {
             val packages = context.packageManager.getInstalledApplications(0)

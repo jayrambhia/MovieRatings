@@ -1,12 +1,11 @@
 package com.fenchtose.movieratings.features.settings.bubble
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.support.annotation.ColorInt
 import android.support.annotation.IdRes
+import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -24,10 +23,7 @@ import com.fenchtose.movieratings.base.router.EventBus
 import com.fenchtose.movieratings.features.settings.PreferenceUpdater
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
-import com.fenchtose.movieratings.util.AccessibilityUtils
-import com.fenchtose.movieratings.util.PackageUtils
-import com.fenchtose.movieratings.util.VersionUtils
-import com.fenchtose.movieratings.util.show
+import com.fenchtose.movieratings.util.*
 
 class RatingBubbleSectionFragment: BaseFragment() {
 
@@ -163,13 +159,9 @@ class RatingBubbleSectionFragment: BaseFragment() {
         updatePublisher?.show(key)
     }
 
-    @SuppressLint("InlinedApi")
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun openDrawSettings() {
-        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + requireActivity().packageName))
-        if (PackageUtils.isIntentCallabale(requireContext(), intent)) {
-            startActivity(intent)
-        } else {
+        if (!IntentUtils.openDrawSettings(requireContext())) {
             showSnackbar(R.string.accessibility_draw_permission_launch_error)
         }
     }

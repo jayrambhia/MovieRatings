@@ -1,8 +1,12 @@
 package com.fenchtose.movieratings.util
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.provider.Settings
+import android.support.annotation.RequiresApi
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MainActivity
 import com.fenchtose.movieratings.base.router.Router
@@ -14,11 +18,36 @@ class IntentUtils {
 
         val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID
 
-        fun launch3rdParty(context: Context, packageName: String) {
-            val intent = context.packageManager.getLaunchIntentForPackage(packageName)
-            if (intent != null) {
+        fun launch3rdParty(activity: Activity, packageName: String): Boolean {
+            val intent = activity.packageManager.getLaunchIntentForPackage(packageName)
+            return if (intent != null && PackageUtils.isIntentCallabale(activity, intent)) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                activity.startActivity(intent)
+                true
+            } else {
+                false
+            }
+        }
+
+        fun openSettings(context: Context): Boolean {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            return if (PackageUtils.isIntentCallabale(context, intent)) {
                 context.startActivity(intent)
+                true
+            } else {
+                false
+            }
+        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        fun openDrawSettings(context: Context): Boolean {
+            val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + context.packageName))
+            return if (PackageUtils.isIntentCallabale(context, intent)) {
+                context.startActivity(intent)
+                true
+            } else {
+                false
             }
         }
 

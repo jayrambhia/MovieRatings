@@ -124,8 +124,8 @@
 
     <string name="floating_rating_content">Flutter - %1$s</string>
 
-	<string name="info_screen_content_no_accessibility">Flutter can help you decide what you want to watch today! When you\'re browsing Netflix, Amazon Prime Video and other supported apps, it will show you movie ratings on your screen (just like Fb Messenger chat).\n\nClick on <b>\'Activate Flutter\'</b> at the bottom to get started with Flutter!\n\nGo to <b>Settings</b> to check out what you can configure.</string>
-    <string name="info_screen_content_with_accessibility">Flutter is active now. When you\'re browsing Netflix, Amazon Prime Video and other supported apps, it will show you the movie ratings on the screen.\n\nYou may also use Flutter to search for movies and TV shows and create your own collections.</string>
+	<string name="info_screen_content_no_accessibility">Flutter can help you decide what you want to watch today! When you are browsing Netflix, Prime Video and other supported apps, it will show you movie ratings on your screen (just like Fb Messenger chat).\n\nClick on <b>\'Activate Flutter\'</b> at the bottom to get started with Flutter!\n\nGo to <b>Settings</b> to check out what you can configure.</string>
+    <string name="info_screen_content_with_accessibility">Flutter is active now. When you are browsing Netflix, Prime Video and other supported apps, it will show you the movie ratings on the screen.\n\nYou may also use Flutter to search for movies and TV shows and create your own collections.</string>
 
     <string name="info_page_share_cta">Tell your friends about Flutter</string>
     <string name="info_page_rate_cta">Rate the app on Playstore</string>
@@ -138,9 +138,10 @@
     <string name="credit_dialog_title">Credits</string>
     <string name="credit_dialog_content">Flutter uses Open Movie Database to get movie ratings.</string>
 
-    <string name="accessibility_enabled_dialog_title">Flutter is now active!</string>
-    <string name="accessibility_enabled_dialog_content">Open Netflix app on your phone and open your favorite movie or a TV show and get ratings instantly!</string>
+    <string name="accessibility_enabled_dialog_title">Flutter is now active</string>
+    <string name="accessibility_enabled_dialog_content">Open Netflix app on your phone and open your favorite movie or a TV show and get ratings instantly.\n\nFlutter also supports other apps such as Prime Video, BBC iPlayer, Hotstar, etc.</string>
     <string name="accessibility_enabled_open_netflix">Open Netflix</string>
+	<string name="accessibility_enabled_netflix_open_error">Unable to open Netflix app. Flutter also supports other apps if you don\'t use Netflix.</string>
 
     <string name="accessibility_test_title">Fight Club</string>
     <string name="accessibility_warning_content">Accessibility Permission Required</string>
