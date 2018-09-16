@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.api
 
-import com.fenchtose.movieratings.model.db.entity.MovieRating
+import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.entity.Trending
 import io.reactivex.Observable
 import retrofit2.http.GET

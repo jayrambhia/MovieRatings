@@ -13,7 +13,7 @@ import com.fenchtose.movieratings.features.tts.Speaker
 import com.fenchtose.movieratings.model.api.provider.MovieRatingsProvider
 import com.fenchtose.movieratings.model.api.provider.RatingRequest
 import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
-import com.fenchtose.movieratings.model.db.entity.MovieRating
+import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory

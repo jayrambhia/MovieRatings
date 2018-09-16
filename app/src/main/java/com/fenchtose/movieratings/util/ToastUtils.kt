@@ -16,7 +16,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.model.db.entity.MovieRating
+import com.fenchtose.movieratings.model.entity.MovieRating
 
 class ToastUtils {
     companion object {

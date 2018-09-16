@@ -7,46 +7,34 @@ import android.arch.persistence.room.PrimaryKey
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.model.entity.OmdbMovie
 import com.fenchtose.movieratings.util.FixTitleUtils
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
 
-@JsonClass(generateAdapter = true)
 @Entity(tableName = "MOVIE_RATINGS", indices = arrayOf(Index("IMDBID", unique = true)))
 data class MovieRating(
         @PrimaryKey
         @ColumnInfo(name = "IMDBID")
-        @Json(name="id")
         val imdbId: String,
 
         @ColumnInfo(name = "IMDB_RATING")
-        @Json(name="rating")
         val rating: Float,
 
         @ColumnInfo(name = "IMDB_VOTES")
-        @Json(name="votes")
         val votes: Int,
 
         @ColumnInfo(name = "TITLE")
-        @Json(name="title")
         val title: String,
 
         @ColumnInfo(name = "TITLE_TYPE")
-        @Json(name="type")
         val type: String,
 
         @ColumnInfo(name = "TRANSLATED_TITLE")
-        @Json(name = "translated_title")
         val translatedTitle: String,
 
         @ColumnInfo(name = "START_YEAR")
-        @Json(name="start_year")
         val startYear: Int,
 
         @ColumnInfo(name = "END_YEAR")
-        @Json(name="end_year")
         val endYear: Int = -1,
 
-        @Transient
         @ColumnInfo(name = "TIMESTAMP")
         val timestamp: Int = -1
 ) {
@@ -76,44 +64,6 @@ data class MovieRating(
         return true
     }
 
-    companion object {
-        fun empty(): MovieRating {
-            return MovieRating("", -1f, -1, "", "", "", -1, -1, -1)
-        }
-
-        fun fromMovie(movie: OmdbMovie): MovieRating {
-
-            movie.ratings.firstOrNull {
-                it.source == "Internet Movie Database"
-            }?.let {
-                var startYear = -1
-                var endYear = -1
-
-                val years = FixTitleUtils.splitYears(movie.year)
-                if (years.isNotEmpty()) {
-                    startYear = years[0].toIntOrNull() ?: -1
-                }
-                if (years.size > 1) {
-                    endYear = years[1].toIntOrNull() ?: -1
-                }
-
-                val rating = MovieRating(
-                        imdbId = movie.imdbId,
-                        type = movie.type,
-                        title = movie.title,
-                        rating = it.rating.split("/").firstOrNull()?.toFloatOrNull() ?:0f,
-                        votes = movie.imdbVotes.replace(",","").toIntOrNull() ?: -1,
-                        startYear = startYear,
-                        endYear = endYear,
-                        translatedTitle = ""
-                )
-
-                return rating
-            }
-
-            return empty()
-        }
-    }
 
     fun toMovie(): Movie {
         val movie = Movie()
