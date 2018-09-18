@@ -17,13 +17,13 @@ class InAppPurchaseCard : CardView {
     private val cta: Button
     private val thanksView: TextView
 
-    var callback: Callback? = null
+    var onPurchase: ((SkuDetails) -> Unit)? = null
 
     var sku: SkuDetails? = null
     set(value) {
         field = value
         value?.let {
-            title.text = it.title
+            title.text = it.title.replace(Regex("\\(.+\\)"), "").trim()
             subtitle.text = it.description
             cta.text = it.price
             thanksView.text = context.getString(R.string.donate_already_purchased_text, it.price)
@@ -42,23 +42,19 @@ class InAppPurchaseCard : CardView {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         LayoutInflater.from(context).inflate(R.layout.inapp_purchase_item_layout, this, true)
         val density = context.resources.displayMetrics.density
-        radius = density*2
-        val padding = (density*8).toInt()
+        radius = density*8
+        val padding = (density*24).toInt()
         setContentPadding(padding, padding, padding, padding)
         title = findViewById(R.id.title_view)
         subtitle = findViewById(R.id.subtitle_view)
         cta = findViewById(R.id.purchase_cta)
         cta.setOnClickListener {
             sku?.let {
-                callback?.onPurchaseRequested(it)
+                onPurchase?.invoke(it)
             }
         }
 
         thanksView = findViewById(R.id.bought_view)
-    }
-
-    interface Callback {
-        fun onPurchaseRequested(sku: SkuDetails)
     }
 
 }

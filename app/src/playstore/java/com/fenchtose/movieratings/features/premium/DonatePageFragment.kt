@@ -1,11 +1,12 @@
 package com.fenchtose.movieratings.features.premium
 
 import android.app.AlertDialog
+import android.graphics.Point
 import android.os.Bundle
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.android.billingclient.api.*
 import com.fenchtose.movieratings.BuildConfig
@@ -22,28 +23,25 @@ import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
-import com.google.android.gms.analytics.ecommerce.ProductAction
+import com.fenchtose.movieratings.widgets.viewpager.CardsPagerTransformerShift
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchaseCard.Callback {
+class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
+
+    private var viewPager: ViewPager? = null
+    private var cardAdapter: CardAdapter? = null
+    private var progressContainer: View? = null
 
     private var billingClient: BillingClient? = null
-    private var skuContainer: LinearLayout? = null
-    private var progressContainer: View? = null
-    private val cards: ArrayList<InAppPurchaseCard> = ArrayList()
-
     private var historyKeeper: HistoryKeeper? = null
-
-//    private var currentPurchase: SkuDetails? = null
+    private var isBillingAvailable = false
 
     override fun canGoBack() = true
 
     override fun getScreenTitle() = R.string.donate_page_title
 
     override fun screenName() = GaScreens.SUPPORT_APP
-
-    private var isBillingAvailable = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.donate_page_layout, container, false)
@@ -66,7 +64,14 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
                 })
 
         progressContainer = view.findViewById(R.id.progress_container)
-        skuContainer = view.findViewById(R.id.sku_container)
+        viewPager = view.findViewById<ViewPager>(R.id.viewpager).apply {
+            setupViewPager(this)
+        }
+
+        cardAdapter = CardAdapter(requireContext(), ::onPurchaseRequested).apply {
+            viewPager?.adapter = this
+        }
+
         historyKeeper = DbHistoryKeeper(
                 PreferenceUserHistory(requireContext()),
                 ratingStore,
@@ -85,6 +90,24 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
             }
 
         })
+    }
+
+    private fun setupViewPager(viewPager: ViewPager) {
+        val point = Point()
+        requireActivity().windowManager.defaultDisplay.getSize(point)
+
+        val density = requireContext().resources.displayMetrics.density
+        val cardPartialWidth = 72 * density // 72dp
+        val pageMargin = 24 * density // 24dp
+        val padding = cardPartialWidth + pageMargin
+
+        viewPager.pageMargin = pageMargin.toInt()
+        viewPager.setPadding(padding.toInt(), 0, padding.toInt(), 0)
+
+        val offset = padding / (point.x - 2*padding)
+        viewPager.setPageTransformer(false,
+                CardsPagerTransformerShift(8f, 16f, 0.8f, offset))
+
     }
 
     override fun onDestroyView() {
@@ -135,9 +158,9 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
 
                 if (BuildConfig.DEBUG) {
                     val list = arrayListOf(
-                            SkuDetails("{\"productId\":\"donate_large\",\"type\":\"inapp\",\"price\":\"€5,49\",\"price_amount_micros\":5490000,\"price_currency_code\":\"EUR\",\"title\":\"Buy me lunch! (Flutter - Movie Ratings)\",\"description\":\"Buy a small lunch for the developer.\"}"),
-                            SkuDetails("{\"productId\":\"donate_medium\",\"type\":\"inapp\",\"price\":\"€2,99\",\"price_amount_micros\":2990000,\"price_currency_code\":\"EUR\",\"title\":\"Buy me beer! (Flutter - Movie Ratings)\",\"description\":\"Buy a beer for the developer.\"}"),
-                            SkuDetails("{\"productId\":\"donate_small\",\"type\":\"inapp\",\"price\":\"€0,99\",\"price_amount_micros\":990000,\"price_currency_code\":\"EUR\",\"title\":\"Buy me coffee! (Flutter - Movie Ratings)\",\"description\":\"Buy a cup of coffee for the developer.\"}")
+                            SkuDetails("{\"productId\":\"donate_large\",\"type\":\"inapp\",\"price\":\"€5,49\",\"price_amount_micros\":5490000,\"price_currency_code\":\"EUR\",\"title\":\"Generous (Flutter - Movie Ratings)\",\"description\":\"Buy a small lunch for the developer.\"}"),
+                            SkuDetails("{\"productId\":\"donate_medium\",\"type\":\"inapp\",\"price\":\"€2,99\",\"price_amount_micros\":2990000,\"price_currency_code\":\"EUR\",\"title\":\"Standard (Flutter - Movie Ratings)\",\"description\":\"Buy a beer for the developer.\"}"),
+                            SkuDetails("{\"productId\":\"donate_small\",\"type\":\"inapp\",\"price\":\"€0,99\",\"price_amount_micros\":990000,\"price_currency_code\":\"EUR\",\"title\":\"Basic (Flutter - Movie Ratings)\",\"description\":\"Buy a cup of coffee for the developer.\"}")
                     )
                     queryPurchaseHistory(list)
                 }
@@ -152,30 +175,19 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
 
         progressContainer?.visibility = View.GONE
 
-        val margin = (requireContext().resources.displayMetrics.density * 8).toInt()
-
-        cards.clear()
-        skuContainer?.removeAllViews()
-
         val pSkus = purchases?.map { it.sku } ?: ArrayList()
 
         if (pSkus.isNotEmpty()) {
             historyKeeper?.paidInAppPurchase()
         }
 
-        for (sku in skus.sortedBy { it.priceAmountMicros }) {
-            val view = InAppPurchaseCard(requireContext())
-            view.sku = sku
-            view.bought = pSkus.contains(sku.sku)
-            view.callback = this
-            val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            params.setMargins(margin, margin, margin, margin)
-            skuContainer?.addView(view, params)
-            cards.add(view)
+        cardAdapter?.update(skus.sortedBy { it.priceAmountMicros }, pSkus)
+        if (skus.size > 1) {
+            viewPager?.setCurrentItem(1, true)
         }
     }
 
-    override fun onPurchaseRequested(sku: SkuDetails) {
+    private fun onPurchaseRequested(sku: SkuDetails) {
         GaEvents.TAP_PURCHASE.withLabelArg(sku.sku).track()
 
         val flowParams = BillingFlowParams.newBuilder()
@@ -183,7 +195,6 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
                 .setType(BillingClient.SkuType.INAPP)
                 .build()
 
-//        currentPurchase = sku
         billingClient?.launchBillingFlow(activity, flowParams)
     }
 
@@ -193,7 +204,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener, InAppPurchas
 
         companion object {
 
-            val KEY = "DonatePath"
+            const val KEY = "DonatePath"
 
             fun createExtras(): Bundle {
                 val bundle = Bundle()
