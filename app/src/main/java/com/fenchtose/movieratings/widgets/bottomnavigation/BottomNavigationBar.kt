@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.widgets.bottomnavigation
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.util.Log
@@ -9,7 +11,7 @@ import com.fenchtose.movieratings.R
 
 class BottomNavigationBar: LinearLayout {
 
-    private val TAG = "BottomNavigationBar"
+//    private val TAG = "BottomNavigationBar"
 
     private val barHeight: Int
     private val listeners: ArrayList<OnItemSelected> = ArrayList()
@@ -17,6 +19,7 @@ class BottomNavigationBar: LinearLayout {
     private val views: ArrayList<MenuItemView> = ArrayList()
 
     private var current: Int = -1
+    private val borderPaint: Paint
 
     constructor(context: Context): this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -33,22 +36,22 @@ class BottomNavigationBar: LinearLayout {
             ))
             updateState(0)
         }
+        setWillNotDraw(false)
+        borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            strokeWidth = context.resources.getDimension(R.dimen.bottom_bar_divider_thickness)
+            color = ContextCompat.getColor(context, R.color.bottom_bar_divider_color)
+            setStyle(Paint.Style.STROKE)
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val mwidth = MeasureSpec.getSize(widthMeasureSpec)
-        Log.d(TAG, "width: $mwidth")
-        if (mwidth != 0) {
-            val ewidth = mwidth/childCount
-            Log.d(TAG, "total children: $childCount")
-            for (i in 0 until childCount) {
-                val child = getChildAt(i)
-                Log.d(TAG, "child width: $i: ${child.measuredWidth}, ${child.measuredHeight}")
-//                measureChild(child, MeasureSpec.makeMeasureSpec(ewidth, MeasureSpec.EXACTLY), heightMeasureSpec)
-            }
-        }
         setMeasuredDimension(widthMeasureSpec, MeasureSpec.makeMeasureSpec(barHeight, MeasureSpec.EXACTLY))
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        canvas.drawLine(0f, 0f, canvas.width.toFloat(), 0f, borderPaint)
     }
 
     fun addListener(listener: OnItemSelected) {

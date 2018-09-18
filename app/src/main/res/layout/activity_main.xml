@@ -23,11 +23,11 @@
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
+        tools:background="@color/colorAccent"
         android:layout_weight="1"
         android:layout_height="0dp"/>
 
     <com.fenchtose.movieratings.widgets.bottomnavigation.BottomNavigationBar
-        android:elevation="4dp"
         android:id="@+id/bottom_navigation_bar"
         android:layout_width="match_parent"
         android:layout_height="56dp"/>

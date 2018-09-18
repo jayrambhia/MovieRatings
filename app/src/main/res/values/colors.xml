@@ -13,6 +13,7 @@
 	<color name="bottom_bar_color">@color/colorAccent</color>
 	<color name="bottom_bar_item_color_active">@color/textColorLight</color>
 	<color name="bottom_bar_item_color_inactive">@color/granite_gray</color>
+	<color name="bottom_bar_divider_color">#1e66666e</color>
 
     <color name="netflix_accent_color">#E50914</color>
     <color name="divider_color">#44444444</color>

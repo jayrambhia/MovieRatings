@@ -29,7 +29,6 @@ import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
-import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy

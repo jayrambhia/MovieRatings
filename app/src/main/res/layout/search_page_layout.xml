@@ -20,7 +20,10 @@
 		    android:paddingStart="8dp"
 		    android:paddingEnd="8dp"
 		    android:paddingTop="8dp"
+		    android:singleLine="true"
+		    android:inputType="textAutoComplete|textAutoCorrect"
 		    android:paddingBottom="16dp"
+		    android:imeOptions="actionDone"
 		    android:textColorHint="@color/textColorGray"
 		    android:hint="@string/search_page_query_hint"/>
 
