@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.widget.FrameLayout
 import com.fenchtose.movieratings.analytics.events.toGaEvent
+import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.info.AppInfoFragment
@@ -44,15 +46,14 @@ class MainActivity : RouterBaseActivity() {
 
         val bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottom_navigation_bar)
         bottomNavigationBar.update(listOf(
-                MenuItem(1, R.drawable.ic_search_accent_24dp, Router.ROOT_SEARCH),
-                MenuItem(2, R.drawable.ic_person_onyx_accent_24dp, Router.ROOT_PERSONAL),
-                MenuItem(3, R.drawable.ic_collections_accent_24dp, Router.ROOT_COLLECTIONS),
-                MenuItem(4, R.drawable.ic_info_outline_accent_24dp, Router.ROOT_INFO)
+                MenuItem(1, R.drawable.ic_search_accent_24dp, Router.ROOT_SEARCH, GaLabels.ITEM_SEARCH),
+                MenuItem(2, R.drawable.ic_person_onyx_accent_24dp, Router.ROOT_PERSONAL, GaLabels.ITEM_PERSONAL),
+                MenuItem(3, R.drawable.ic_collections_accent_24dp, Router.ROOT_COLLECTIONS, GaLabels.ITEM_COLLECTIONS),
+                MenuItem(4, R.drawable.ic_info_outline_accent_24dp, Router.ROOT_INFO, GaLabels.ITEM_INFO)
         ), 0)
 
         bottomNavigationBar.addListener { position, item, reselected ->
-            // TODO GA
-            Log.d("Bottom nav", "item selected: $position - $item")
+            GaEvents.SELECT_BOTTOM_TAB.withLabelArg(item.eventLabel).track()
             getRouter()?.switchRoot(item.root, reselected)
         }
 
@@ -126,7 +127,6 @@ class MainActivity : RouterBaseActivity() {
                 intent.getBundleExtra("ga_event").toGaEvent()?.track()
             }
 
-            // TODO fix root based deeplinking
             root = Router.ROOT_SEARCH
         }
 
@@ -150,6 +150,9 @@ class MainActivity : RouterBaseActivity() {
                     }
                 }
             }
+
+            // TODO fix root based deeplinking.
+            // Root should be the root of the top in the history?
             root = Router.ROOT_SEARCH
         } else {
             root = if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {

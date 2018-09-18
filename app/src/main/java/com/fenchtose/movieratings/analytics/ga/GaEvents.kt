@@ -65,6 +65,8 @@ class GaEvents {
         val RATING_OPEN_MOVIE = GaEvent(GaCategory.SERVICE, "open movie", "%s")
 
         val SPEAK_RATING = GaEvent(GaCategory.SERVICE, "tts", "rating", true)
+
+        val SELECT_BOTTOM_TAB = GaEvent(GaCategory.BOTTOM_NAVIGATION, "select", "tab: %s")
     }
 }
 
@@ -85,6 +87,7 @@ class GaCategory {
         const val SETTINGS = "settings"
         const val SUPPORT_APP = "support app"
         const val TRENDING = "trending"
+        const val BOTTOM_NAVIGATION = "bottom navigation"
     }
 }
 
@@ -120,5 +123,10 @@ class GaLabels {
         const val BUBBLE = "bubble"
         const val OMDB_API = "omdb"
         const val FLUTTER_API = "flutter"
+
+        const val ITEM_SEARCH = "search"
+        const val ITEM_PERSONAL = "personal"
+        const val ITEM_COLLECTIONS = "collections"
+        const val ITEM_INFO = "info"
     }
 }

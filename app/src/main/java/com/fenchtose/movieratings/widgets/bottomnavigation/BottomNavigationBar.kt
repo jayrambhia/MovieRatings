@@ -26,10 +26,10 @@ class BottomNavigationBar: LinearLayout {
         setBackgroundColor(ContextCompat.getColor(context, R.color.bottom_bar_color))
         if (isInEditMode) {
             update(listOf(
-                    MenuItem(1, R.drawable.ic_search_accent_24dp),
-                    MenuItem(2, R.drawable.ic_favorite_accent_24dp),
-                    MenuItem(3, R.drawable.ic_collections_accent_24dp),
-                    MenuItem(4, R.drawable.ic_info_outline_accent_24dp)
+                    MenuItem(1, R.drawable.ic_search_accent_24dp, "", ""),
+                    MenuItem(2, R.drawable.ic_favorite_accent_24dp, "", ""),
+                    MenuItem(3, R.drawable.ic_collections_accent_24dp, "", ""),
+                    MenuItem(4, R.drawable.ic_info_outline_accent_24dp, "", "")
             ))
             updateState(0)
         }
@@ -108,7 +108,8 @@ class BottomNavigationBar: LinearLayout {
 data class MenuItem(
         val id: Int,
         val iconRes: Int,
-        val root: String = ""
+        val root: String = "",
+        val eventLabel: String
 )
 
 typealias OnItemSelected = (position: Int, item:MenuItem, reselected: Boolean) -> Unit

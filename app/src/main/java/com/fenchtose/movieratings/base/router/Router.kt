@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.util.Log
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.R
@@ -40,7 +41,7 @@ class Router(activity: RouterBaseActivity,
     }
 
     init {
-        keyPathMap[DonatePageFragment.DonatePath.KEY] = Pair(ROOT_INFO, DonatePageFragment.DonatePath.createPath())
+        keyPathMap[DonatePageFragment.DonatePath.KEY] = Pair(ROOT_SEARCH, DonatePageFragment.DonatePath.createPath())
         keyPathMap[MoviePath.KEY] = Pair(ROOT_SEARCH, MoviePath.createPath())
     }
 
@@ -65,6 +66,8 @@ class Router(activity: RouterBaseActivity,
     fun start(root: String) {
         currentRoot = root
         currentRoot()?.top()?.let {
+            // We may not have dispatch attached at this moment.
+            MovieRatingsApplication.store.dispatchEarly(it.initAction())
             move(it)
         }
     }
