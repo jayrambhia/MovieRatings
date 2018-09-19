@@ -12,16 +12,18 @@ import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.router.Router
+import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
-import com.fenchtose.movieratings.util.Constants
-import com.fenchtose.movieratings.util.IntentUtils
+import com.fenchtose.movieratings.util.*
 
 class InfoPageBottomView: LinearLayout {
 
     private var router: Router? = null
     private var category: String? = null
+
+    private var accessibilityButton: View? = null
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -31,6 +33,11 @@ class InfoPageBottomView: LinearLayout {
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
 
         val historyKeeper = DbHistoryKeeper.newInstance(MovieRatingsApplication.instance!!)
+        accessibilityButton = findViewById(R.id.activate_button)
+        accessibilityButton?.setOnClickListener {
+            GaEvents.TAP_ACTIVATE_FLUTTER.track()
+            router?.go(AccessInfoFragment.AccessibilityPath())
+        }
 
         val premiumView: View = findViewById(R.id.premium_view)
         if (BuildConfig.FLAVOR == "playstore") {
@@ -64,6 +71,12 @@ class InfoPageBottomView: LinearLayout {
             GaEvents.OPEN_SETTINGS.withCategory(category).track()
             router?.go(SettingsFragment.SettingsPath())
         }
+
+        findViewById<View?>(R.id.feedback_view)?.setOnClickListener {
+            GaEvents.REPORT_BUG.withCategory(category).track()
+            IntentUtils.openReportBugIntent(context, "\n\n\n\n\n------\nThis data will help us in figuring out the issue.\n\n" +
+                    "${getDeviceInfo()}\n\n${getAppInfo(context)}")
+        }
     }
 
     fun setRouter(router: Router?, category: String?) {
@@ -76,5 +89,10 @@ class InfoPageBottomView: LinearLayout {
                 .setTitle(R.string.credit_dialog_title)
                 .setMessage(R.string.credit_dialog_content)
                 .show()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        accessibilityButton?.show(!AccessibilityUtils.isAccessibilityEnabled(context))
     }
 }

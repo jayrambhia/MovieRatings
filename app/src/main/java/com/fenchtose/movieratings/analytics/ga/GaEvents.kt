@@ -9,10 +9,12 @@ class GaEvents {
         val CLEAR_SEARCH = GaEvent("%s", "tap", "clear")
         val OPEN_MOVIE = GaEvent("%s", "open movie", "open movie")
         val OPEN_SETTINGS = GaEvent("%s", "tap", "settings")
+        val REPORT_BUG = GaEvent("%s", "tap", "report bug")
         val TAP_RATE_APP = GaEvent("%s", "tap", "rate app")
         val TAP_SHARE_APP = GaEvent("%s", "tap", "share app")
         val TAP_ACTIVATE_FLUTTER = GaEvent("app", "tap", "activate flutter")
         val OPEN_SUPPORT_APP = GaEvent("%s", "open", "support app")
+        val TAP_TRENDING_PAGE = GaEvent("search", "tap", "trending")
 
         val LIKE_MOVIE = GaEvent("%s", "toggle", "like")
         val OPEN_LIKED_PAGE = GaEvent("search", "open", "likes")
@@ -65,6 +67,8 @@ class GaEvents {
         val RATING_OPEN_MOVIE = GaEvent(GaCategory.SERVICE, "open movie", "%s")
 
         val SPEAK_RATING = GaEvent(GaCategory.SERVICE, "tts", "rating", true)
+
+        val SELECT_BOTTOM_TAB = GaEvent(GaCategory.BOTTOM_NAVIGATION, "select", "tab: %s")
     }
 }
 
@@ -85,6 +89,7 @@ class GaCategory {
         const val SETTINGS = "settings"
         const val SUPPORT_APP = "support app"
         const val TRENDING = "trending"
+        const val BOTTOM_NAVIGATION = "bottom navigation"
     }
 }
 
@@ -120,5 +125,10 @@ class GaLabels {
         const val BUBBLE = "bubble"
         const val OMDB_API = "omdb"
         const val FLUTTER_API = "flutter"
+
+        const val ITEM_SEARCH = "search"
+        const val ITEM_PERSONAL = "personal"
+        const val ITEM_COLLECTIONS = "collections"
+        const val ITEM_INFO = "info"
     }
 }

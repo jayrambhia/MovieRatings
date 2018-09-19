@@ -1,9 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+    <LinearLayout
+	    android:id="@+id/enabled_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+	    <TextView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_horizontal"
+		    android:textAppearance="@style/Text.Dark.Medium.Larger"
+		    android:text="@string/accessibility_enabled_dialog_title"/>
+
+	    <TextView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="16dp"
+		    android:text="@string/accessibility_enabled_dialog_content"
+		    android:textAppearance="@style/Text.Dark"/>
+
+	    <Button
+		    style="@style/Widget.AppCompat.Button.Colored"
+		    android:id="@+id/netflix_cta"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_marginTop="16dp"
+		    android:layout_gravity="center_horizontal"
+		    android:text="@string/accessibility_enabled_open_netflix"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/access_container"
@@ -19,7 +54,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
-            android:textAppearance="@style/Text.Dark.Secondary"
+            android:textAppearance="@style/Text.Dark"
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:text="@string/accessibility_access_info_content"/>
@@ -56,7 +91,7 @@
             android:id="@+id/draw_info_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/Text.Dark.Secondary"
+            android:textAppearance="@style/Text.Dark"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"

@@ -12,7 +12,6 @@ sealed class Progress {
     object Default: Progress()
     object Loading: Progress()
     object Error: Progress()
-    object Empty: Progress()
     object Success: Progress()
 }
 

@@ -20,38 +20,16 @@
         app:navigationIcon="@drawable/ic_arrow_back_accent_24dp"
         android:background="?attr/colorPrimary"/>
 
-    <FrameLayout
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
+        tools:background="@color/colorAccent"
         android:layout_weight="1"
         android:layout_height="0dp"/>
 
-    <LinearLayout
-        android:id="@+id/activate_button"
+    <com.fenchtose.movieratings.widgets.bottomnavigation.BottomNavigationBar
+        android:id="@+id/bottom_navigation_bar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom"
-        android:background="@drawable/ripple_onyx_bg"
-        android:orientation="vertical">
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#22ffffff"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="47dp"
-            android:layout_gravity="bottom"
-            android:background="@drawable/ripple_onyx_bg"
-            android:drawablePadding="16dp"
-            android:drawableStart="@drawable/ic_accessibility_yellow_24dp"
-            android:gravity="center_vertical"
-            android:paddingEnd="16dp"
-            android:paddingStart="16dp"
-            android:text="@string/activate_app_cta"
-            android:textAppearance="@style/Text.Light.Medium.Large"/>
-
-    </LinearLayout>
+        android:layout_height="56dp"/>
 
 </LinearLayout>

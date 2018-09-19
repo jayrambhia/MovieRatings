@@ -10,6 +10,11 @@
     <color name="colorAccent">@color/onyx_accent</color>
     <color name="floating_rating_color">@color/yellow_primary</color>
 
+	<color name="bottom_bar_color">@color/colorAccent</color>
+	<color name="bottom_bar_item_color_active">@color/textColorLight</color>
+	<color name="bottom_bar_item_color_inactive">@color/granite_gray</color>
+	<color name="bottom_bar_divider_color">#1e66666e</color>
+
     <color name="netflix_accent_color">#E50914</color>
     <color name="divider_color">#44444444</color>
 
@@ -18,6 +23,8 @@
     <color name="textColorDark">#2A2d34</color>
 	<color name="textColorMildDark">#ff4a4d54</color>
     <color name="textColorGray">#6b6570</color>
+
+	<color name="granite_gray">#66666e</color>
 
     <!-- Bubble colors -->
 	<color name="space_cadet">#2e294e</color>

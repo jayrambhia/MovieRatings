@@ -77,8 +77,7 @@ abstract class BaseMovieListPageFragment: BaseFragment() {
             }
 
             is Progress.Error -> showContentState(getErrorContent())
-            is Progress.Empty -> showContentState(getEmptyContent())
-            is Progress.Success -> setData(state.movies)
+            is Progress.Success -> if (state.movies.isEmpty()) showContentState(getEmptyContent()) else setData(state.movies)
         }
     }
 

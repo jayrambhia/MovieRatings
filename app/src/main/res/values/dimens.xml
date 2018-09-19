@@ -27,4 +27,6 @@
 
 	<dimen name="toolbar_default_elevation">2dp</dimen>
 	<dimen name="toolbar_no_elevation">0dp</dimen>
+	<dimen name="bottom_bar_height">56dp</dimen>
+	<dimen name="bottom_bar_divider_thickness">2dp</dimen>
 </resources>

@@ -5,90 +5,124 @@
 	android:layout_height="match_parent"
 	xmlns:tools="http://schemas.android.com/tools">
 
-	<LinearLayout
+	<ScrollView
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:orientation="vertical">
-
-		<TextView
-			android:id="@+id/rating_duration_info"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:textAppearance="@style/Text.Dark.Secondary"
-			android:text="@string/settings_toast_duration_info"
-			android:padding="@dimen/gutter"/>
+		android:layout_height="match_parent">
 
 		<LinearLayout
-			android:id="@+id/seekbar_container"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:padding="@dimen/gutter"
-			android:gravity="center_vertical"
-			android:orientation="horizontal">
-
-			<android.support.v7.widget.AppCompatSeekBar
-				android:id="@+id/rating_duration_seekbar"
-				android:layout_width="0dp"
-				android:layout_height="wrap_content"
-				android:max="9"
-				android:layout_weight="1"/>
+			android:orientation="vertical">
 
 			<TextView
-				android:id="@+id/rating_duration_view"
-				android:layout_width="wrap_content"
+				android:id="@+id/rating_duration_info"
+				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:paddingStart="16dp"
-				android:paddingEnd="16dp"
-				android:textAppearance="@style/Text.Dark.Medium.Large"
-				android:textColor="@color/colorAccent"
-				tools:text="3"/>
+				android:textAppearance="@style/Text.Dark.Secondary"
+				android:text="@string/settings_toast_duration_info"
+				android:padding="@dimen/gutter"/>
+
+			<LinearLayout
+				android:id="@+id/seekbar_container"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="@dimen/gutter"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<android.support.v7.widget.AppCompatSeekBar
+					android:id="@+id/rating_duration_seekbar"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:max="9"
+					android:layout_weight="1"/>
+
+				<TextView
+					android:id="@+id/rating_duration_view"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingStart="16dp"
+					android:paddingEnd="16dp"
+					android:textAppearance="@style/Text.Dark.Medium.Large"
+					android:textColor="@color/colorAccent"
+					tools:text="3"/>
+
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="@color/divider_color"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textAppearance="@style/Text.Dark.Secondary"
+				android:text="@string/settings_rating_bubble_info"
+				android:padding="@dimen/gutter"/>
+
+			<android.support.v7.widget.RecyclerView
+				android:id="@+id/bubble_color_recyclerview"
+				android:layout_width="match_parent"
+				android:layout_height="64dp"
+				android:layout_marginBottom="16dp"
+				tools:listitem="@layout/bubble_color_item_layout"/>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="@color/divider_color"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textAppearance="@style/Text.Dark.Secondary"
+				android:text="@string/settings_rating_bubble_cta_info"
+				android:padding="@dimen/gutter"/>
+
+			<android.support.v7.widget.SwitchCompat
+				android:id="@+id/open_movie_toggle"
+				android:padding="@dimen/gutter"
+				android:text="@string/settings_rating_bubble_cta_title"
+				android:textAppearance="@style/Text.Dark"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"/>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="@color/divider_color"/>
+
+			<LinearLayout
+				android:id="@+id/draw_permission_container"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical">
+
+				<TextView
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:textAppearance="@style/Text.Dark.Secondary"
+					android:text="@string/settings_rating_bubble_toast_info"
+					android:padding="@dimen/gutter"/>
+
+				<Button
+					android:id="@+id/draw_permission_cta"
+					style="@style/Widget.AppCompat.Button.Colored"
+					android:layout_width="240dp"
+					android:layout_height="wrap_content"
+					android:layout_margin="8dp"
+					android:text="@string/settings_rating_bubble_toast_cta"/>
+
+				<View
+					android:layout_width="match_parent"
+					android:layout_height="1dp"
+					android:background="@color/divider_color"/>
+
+			</LinearLayout>
 
 		</LinearLayout>
 
-		<View
-			android:layout_width="match_parent"
-			android:layout_height="1dp"
-			android:background="@color/divider_color"/>
-
-		<TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:textAppearance="@style/Text.Dark.Secondary"
-			android:text="@string/settings_rating_bubble_info"
-			android:padding="@dimen/gutter"/>
-
-		<android.support.v7.widget.RecyclerView
-			android:id="@+id/bubble_color_recyclerview"
-			android:layout_width="match_parent"
-			android:layout_height="64dp"
-			android:layout_marginBottom="16dp"
-			tools:listitem="@layout/bubble_color_item_layout"/>
-
-		<View
-			android:layout_width="match_parent"
-			android:layout_height="1dp"
-			android:background="@color/divider_color"/>
-
-		<TextView
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:textAppearance="@style/Text.Dark.Secondary"
-			android:text="@string/settings_rating_bubble_cta_info"
-			android:padding="@dimen/gutter"/>
-
-		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/open_movie_toggle"
-			android:padding="@dimen/gutter"
-			android:text="@string/settings_rating_bubble_cta_title"
-			android:textAppearance="@style/Text.Dark"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
-
-		<View
-			android:layout_width="match_parent"
-			android:layout_height="1dp"
-			android:background="@color/divider_color"/>
-
-	</LinearLayout>
+	</ScrollView>
 
 </FrameLayout>

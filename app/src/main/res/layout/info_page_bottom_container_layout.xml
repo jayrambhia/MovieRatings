@@ -13,7 +13,7 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:padding="16dp"
-		android:textAppearance="@style/Text.Light"
+		android:textAppearance="@style/Text.Light.Large"
 		android:gravity="start"
 		android:visibility="gone"
 		tools:visibility="visible"
@@ -30,6 +30,7 @@
 		android:background="@drawable/ripple_onyx_bg">
 
 		<View
+			android:visibility="gone"
 			android:layout_width="match_parent"
 			android:layout_height="1dp"
 			android:background="#22ffffff"/>
@@ -43,7 +44,7 @@
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textAppearance="@style/Text.Light"
+			android:textAppearance="@style/Text.Light.Medium.Big"
 			android:drawableStart="@drawable/ic_monetization_on_yellow_24dp"/>
 
 	</LinearLayout>
@@ -54,9 +55,11 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center"
+		android:visibility="gone"
 		android:background="@drawable/ripple_onyx_bg">
 
 		<View
+			android:visibility="gone"
 			android:layout_width="match_parent"
 			android:layout_height="1dp"
 			android:background="#22ffffff"/>
@@ -71,7 +74,7 @@
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textAppearance="@style/Text.Light"
+			android:textAppearance="@style/Text.Light.Medium.Big"
 			android:drawableStart="@drawable/ic_info_outline_yellow_24dp"/>
 
 	</LinearLayout>
@@ -82,11 +85,10 @@
 		android:layout_width="match_parent"
 		android:layout_height="48dp"
 		android:layout_gravity="bottom"
-		android:visibility="gone"
-		tools:visibility="visible"
 		android:background="@drawable/ripple_onyx_bg">
 
 		<View
+			android:visibility="gone"
 			android:layout_width="match_parent"
 			android:layout_height="1dp"
 			android:background="#22ffffff"/>
@@ -100,7 +102,7 @@
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textAppearance="@style/Text.Light"
+			android:textAppearance="@style/Text.Light.Medium.Big"
 			android:drawableStart="@drawable/ic_settings_yellow_24dp"/>
 
 	</LinearLayout>
@@ -116,6 +118,7 @@
 		android:background="@drawable/ripple_onyx_bg">
 
 		<View
+			android:visibility="gone"
 			android:layout_width="match_parent"
 			android:layout_height="1dp"
 			android:background="#22ffffff"/>
@@ -129,7 +132,7 @@
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textAppearance="@style/Text.Light"
+			android:textAppearance="@style/Text.Light.Medium.Big"
 			android:drawableStart="@drawable/ic_build_yellow_24dp"/>
 
 	</LinearLayout>
@@ -143,6 +146,7 @@
 		android:background="@drawable/ripple_onyx_bg">
 
 		<View
+			android:visibility="gone"
 			android:layout_width="match_parent"
 			android:layout_height="1dp"
 			android:background="#22ffffff"/>
@@ -157,8 +161,8 @@
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textAppearance="@style/Text.Light"
-			android:drawableStart="@drawable/google_play"/>
+			android:textAppearance="@style/Text.Light.Medium.Big"
+			android:drawableStart="@drawable/ic_shop_white_24dp"/>
 
 	</LinearLayout>
 
@@ -171,6 +175,7 @@
 		android:background="@drawable/ripple_onyx_bg">
 
 		<View
+			android:visibility="gone"
 			android:layout_width="match_parent"
 			android:layout_height="1dp"
 			android:background="#22ffffff"/>
@@ -185,8 +190,68 @@
 			android:layout_marginEnd="8dp"
 			android:drawablePadding="16dp"
 			android:gravity="center_vertical"
-			android:textAppearance="@style/Text.Light"
+			android:textAppearance="@style/Text.Light.Medium.Big"
 			android:drawableStart="@drawable/ic_share_black_24dp"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/feedback_view"
+		android:orientation="vertical"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="bottom"
+		android:visibility="gone"
+		tools:visibility="visible"
+		android:background="@drawable/ripple_onyx_bg">
+
+		<View
+			android:visibility="gone"
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="#22ffffff"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:minHeight="48dp"
+			android:text="@string/info_page_feedback_cta"
+			android:padding="8dp"
+			android:layout_marginStart="8dp"
+			android:layout_marginEnd="8dp"
+			android:drawablePadding="16dp"
+			android:gravity="center_vertical"
+			android:textAppearance="@style/Text.Light.Medium.Big"
+			android:drawableStart="@drawable/ic_bug_report_white_24dp"/>
+
+	</LinearLayout>
+
+	<LinearLayout
+		android:id="@+id/activate_button"
+		android:layout_width="match_parent"
+		android:layout_height="48dp"
+		android:layout_gravity="bottom"
+		android:background="@drawable/ripple_onyx_bg"
+		android:orientation="vertical">
+
+		<View
+			android:visibility="gone"
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="#22ffffff"/>
+
+		<TextView
+			android:layout_width="match_parent"
+			android:layout_height="47dp"
+			android:layout_gravity="bottom"
+			android:background="@drawable/ripple_onyx_bg"
+			android:drawablePadding="16dp"
+			android:drawableStart="@drawable/ic_accessibility_yellow_24dp"
+			android:gravity="center_vertical"
+			android:paddingEnd="16dp"
+			android:paddingStart="16dp"
+			android:text="@string/activate_app_cta"
+			android:textAppearance="@style/Text.Light.Medium.Big"/>
 
 	</LinearLayout>
 

@@ -13,8 +13,8 @@ class DbHistoryKeeper(private val userHistory: UserHistory,
                       private val ratingsStore: DisplayedRatingsStore,
                       private val preferences: UserPreferences): HistoryKeeper {
 
-    val SUPPORT_APP_THRESHOLD = 10 * 24 * 3600 // 10 days
-    val RATE_APP_THRESHOLD = 14 * 24 * 3600 // 14 days
+    val SUPPORT_APP_THRESHOLD = 7 * 24 * 3600 // 10 days
+    val RATE_APP_THRESHOLD = 10 * 24 * 3600 // 14 days
     val RATINGS_SHOWN_THRESHOLD = 10
 
     companion object {

@@ -7,16 +7,13 @@ import android.speech.tts.TextToSpeech
 import android.support.v4.os.ConfigurationCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.fenchtose.movieratings.analytics.events.toGaEvent
 import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.router.Router
-import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.info.AppInfoFragment
-import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
@@ -26,21 +23,13 @@ import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.PackageUtils
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
-import io.reactivex.rxkotlin.subscribeBy
-import io.reactivex.subjects.PublishSubject
+import com.fenchtose.movieratings.widgets.bottomnavigation.BottomNavigationBar
+import com.fenchtose.movieratings.widgets.bottomnavigation.MenuItem
 
 
 class MainActivity : RouterBaseActivity() {
 
-    private var container: FrameLayout? = null
-    private var activateButton: ViewGroup? = null
-
-    private var accessibilityPublisher: PublishSubject<Boolean>? = null
-    private var accessibilityPagePublisher: PublishSubject<Boolean>? = null
-    private var disposable: Disposable? = null
+    private var container: ViewGroup? = null
 
     private var preferences: UserPreferences? = null
     private var historyKeeper: HistoryKeeper? = null
@@ -52,17 +41,21 @@ class MainActivity : RouterBaseActivity() {
         setContentView(R.layout.activity_main)
 
         container = findViewById(R.id.fragment_container)
-        activateButton = findViewById(R.id.activate_button)
 
         preferences = SettingsPreferences(this)
-        setupObservables()
 
-        activateButton?.setOnClickListener {
-            GaEvents.TAP_ACTIVATE_FLUTTER.track()
-            showAccessibilityInfo()
+        val bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottom_navigation_bar)
+        bottomNavigationBar.update(listOf(
+                MenuItem(1, R.drawable.ic_search_accent_24dp, Router.ROOT_SEARCH, GaLabels.ITEM_SEARCH),
+                MenuItem(2, R.drawable.ic_person_onyx_accent_24dp, Router.ROOT_PERSONAL, GaLabels.ITEM_PERSONAL),
+                MenuItem(3, R.drawable.ic_collections_accent_24dp, Router.ROOT_COLLECTIONS, GaLabels.ITEM_COLLECTIONS),
+                MenuItem(4, R.drawable.ic_info_outline_accent_24dp, Router.ROOT_INFO, GaLabels.ITEM_INFO)
+        ), 0)
+
+        bottomNavigationBar.addListener { position, item, reselected ->
+            GaEvents.SELECT_BOTTOM_TAB.withLabelArg(item.eventLabel).track()
+            getRouter()?.switchRoot(item.root, reselected)
         }
-
-        accessibilityPagePublisher?.onNext(false)
 
         historyKeeper = DbHistoryKeeper(
                 PreferenceUserHistory(this),
@@ -76,91 +69,10 @@ class MainActivity : RouterBaseActivity() {
 
         initializeRouter(
                 findViewById(R.id.toolbar),
-                {
-                    when(it) {
-                        is AccessInfoFragment.AccessibilityPath -> accessibilityPagePublisher?.onNext(true)
-                    }
-                },
-                {
-                    when(it) {
-                        is AccessInfoFragment.AccessibilityPath -> accessibilityPagePublisher?.onNext(false)
-                    }
-                },
+                {},
+                {},
                 ::buildPathAndStart
         )
-    }
-
-    override fun onResume() {
-        super.onResume()
-        triggerAccessibilityCheck()
-    }
-
-    fun triggerAccessibilityCheck() {
-        accessibilityPublisher?.onNext(AccessibilityUtils.hasAllPermissions(this))
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        accessibilityPublisher?.onComplete()
-        accessibilityPagePublisher?.onComplete()
-        disposable?.dispose()
-    }
-
-    private fun showAccessibilityInfo() {
-        getRouter()?.go(AccessInfoFragment.AccessibilityPath())
-    }
-
-    private fun onAccessibilityActivated() {
-        getRouter()?.onBackRequested()
-        // Show a dialog?
-        val builder = AlertDialog.Builder(this)
-                .setTitle(R.string.accessibility_enabled_dialog_title)
-                .setMessage(R.string.accessibility_enabled_dialog_content)
-                .setNeutralButton(android.R.string.ok) { dialog, _ ->
-                    dialog.dismiss()
-                }
-
-        if (PackageUtils.hasInstalled(this, PackageUtils.NETFLIX)) {
-            builder.setPositiveButton(R.string.accessibility_enabled_open_netflix) { dialog, _ ->
-                dialog.dismiss()
-                IntentUtils.launch3rdParty(this, PackageUtils.NETFLIX)
-            }
-        }
-    }
-
-    private fun setupObservables() {
-        accessibilityPublisher = PublishSubject.create()
-        accessibilityPagePublisher = PublishSubject.create()
-
-        disposable =
-                Observable.combineLatest(accessibilityPublisher, accessibilityPagePublisher,
-                BiFunction<Boolean, Boolean, Int> {
-                    hasAccessibility, isShowingAccessibilityInfo ->
-                    when {
-                        hasAccessibility && isShowingAccessibilityInfo -> 1
-                        !hasAccessibility && !isShowingAccessibilityInfo -> 2
-                        else -> 3
-                    }
-
-                })
-                .map {
-                      preferences?.let {
-                          if (!it.isAppEnabled(UserPreferences.SHOW_ACTIVATE_FLUTTER)) {
-                              return@map 3
-                          }
-                      }
-
-                    it
-                }
-                .subscribeBy(
-                        onNext = {
-                            when(it) {
-                                1 -> onAccessibilityActivated()
-                                2 -> activateButton?.visibility = View.VISIBLE
-                                3 -> activateButton?.visibility = View.GONE
-                            }
-                        }
-                )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -203,6 +115,7 @@ class MainActivity : RouterBaseActivity() {
     private fun buildPathAndStart(router: Router) {
         val intent = intent
         var history: Router.History = Router.History()
+        var root: String
 
         if (intent != null) {
             val historyBundle = intent.getBundleExtra(Router.HISTORY)
@@ -213,10 +126,11 @@ class MainActivity : RouterBaseActivity() {
             if (intent.hasExtra("ga_event")) {
                 intent.getBundleExtra("ga_event").toGaEvent()?.track()
             }
+
+            root = Router.ROOT_SEARCH
         }
 
         if (!history.isEmpty()) {
-            router.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
             val grouped = history.history.groupBy { router.canHandleKey(it.first) }
             grouped[true]?.map {
                 router.buildRoute(it.second)
@@ -236,16 +150,21 @@ class MainActivity : RouterBaseActivity() {
                     }
                 }
             }
+
+            // TODO fix root based deeplinking.
+            // Root should be the root of the top in the history?
+            root = Router.ROOT_SEARCH
         } else {
-            if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
-                router.buildRoute(AppInfoFragment.AppInfoPath(true))
+            root = if (preferences?.isSettingEnabled(UserPreferences.ONBOARDING_SHOWN) == false && !AccessibilityUtils.hasAllPermissions(this)) {
+                router.buildRoute(Router.ROOT_INFO, AppInfoFragment.AppInfoPath(), true)
                 preferences?.setEnabled(UserPreferences.ONBOARDING_SHOWN, true)
+                Router.ROOT_INFO
             } else {
-                router.buildRoute(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
+                Router.ROOT_SEARCH
             }
         }
 
-        router.start()
+        router.start(root)
     }
 
 }

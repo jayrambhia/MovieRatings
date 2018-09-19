@@ -25,7 +25,7 @@ data class TrendingMovie(
     val endYear: Int?
 ) {
     fun convert(): Movie {
-        val year = if (startYear != -1 && endYear != -1) {
+        val year = if (startYear != -1 && endYear != null && endYear != -1) {
             "$startYear - $endYear"
         } else {
             startYear.toString()

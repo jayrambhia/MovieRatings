@@ -21,6 +21,8 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
     private var unsubscribe: Unsubscribe? = null
     protected var dispatch: Dispatch? = null
 
+    private var root: View? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         disposables = CompositeDisposable()
@@ -31,9 +33,15 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
         ScreenView(screenName()).track()
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        root = view
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         unsubscribe?.invoke()
+        root = null
         dispatch = null
     }
 
@@ -48,18 +56,18 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
 
     fun showSnackbar(@StringRes resId: Int) {
         if (isAdded) {
-            ThemedSnackbar.make(view!!, resId, Snackbar.LENGTH_SHORT).show()
+            ThemedSnackbar.make(root!!, resId, Snackbar.LENGTH_SHORT).show()
         }
     }
 
     fun showSnackbar(content: CharSequence) {
         if (isAdded) {
-            ThemedSnackbar.make(view!!, content, Snackbar.LENGTH_SHORT).show()
+            ThemedSnackbar.make(root!!, content, Snackbar.LENGTH_SHORT).show()
         }
     }
 
     fun showSnackbarWithAction(content: String, @StringRes actionResId: Int, listener: View.OnClickListener) {
-        view?.let {
+        root?.let {
             ThemedSnackbar.makeWithAction(it,
                     content,
                     Snackbar.LENGTH_LONG,

@@ -11,13 +11,13 @@ import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Unsubscribe
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
+import com.fenchtose.movieratings.base.router.RouterRoot
 import com.fenchtose.movieratings.features.info.AppInfoFragment
 import com.fenchtose.movieratings.features.likespage.LikesPageFragment
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPath
 import com.fenchtose.movieratings.features.recentlybrowsedpage.RecentlyBrowsedPageFragment
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
-import com.fenchtose.movieratings.features.trending.TrendingPath
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 
 abstract class RouterBaseActivity: AppCompatActivity() {
@@ -41,6 +41,12 @@ abstract class RouterBaseActivity: AppCompatActivity() {
         }
 
         router = Router(this,
+                mapOf(
+                        Pair(Router.ROOT_SEARCH, RouterRoot(SearchPageFragment.SearchPath.Default())),
+                        Pair(Router.ROOT_PERSONAL, RouterRoot(LikesPageFragment.LikesPath(SettingsPreferences(this)))),
+                        Pair(Router.ROOT_COLLECTIONS, RouterRoot(CollectionListPath())),
+                        Pair(Router.ROOT_INFO, RouterRoot(AppInfoFragment.AppInfoPath()))
+                ),
                 {
                     visibleMenuItems = it.showMenuIcons()
                     invalidateOptionsMenu()
@@ -96,26 +102,12 @@ abstract class RouterBaseActivity: AppCompatActivity() {
         var consumed = true
         when(item?.itemId) {
             android.R.id.home -> onBackPressed()
-            R.id.action_search -> showSearchPage()
             R.id.action_settings -> showSettingsPage()
-            R.id.action_fav -> showFavoritesPage()
-            R.id.action_info -> showInfoPage(false)
             R.id.action_history -> showRecentlyBrowsedPage()
-            R.id.action_collection -> showMovieCollectionsPage()
-            R.id.action_trending -> showTrendingPage()
             else -> consumed = false
         }
 
         return if (consumed) true else super.onOptionsItemSelected(item)
-    }
-
-    private fun showSearchPage() {
-        navigate(SearchPageFragment.SearchPath.Default(SettingsPreferences(this)))
-    }
-
-    private fun showInfoPage(showSearchOption: Boolean) {
-        GaEvents.OPEN_INFO_PAGE.track()
-        router?.go(AppInfoFragment.AppInfoPath(showSearchOption))
     }
 
     private fun showSettingsPage() {
@@ -123,29 +115,15 @@ abstract class RouterBaseActivity: AppCompatActivity() {
         router?.go(SettingsFragment.SettingsPath())
     }
 
-    private fun showFavoritesPage() {
-        GaEvents.OPEN_LIKED_PAGE.track()
-        navigate(LikesPageFragment.LikesPath())
-    }
-
     private fun showRecentlyBrowsedPage() {
         GaEvents.OPEN_RECENTLY_BROWSED_PAGE.track()
         navigate(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
-    }
-
-    private fun showMovieCollectionsPage() {
-        GaEvents.OPEN_COLLECTIONS_PAGE.track()
-        navigate(CollectionListPath())
     }
 
     private fun navigate(path: RouterPath<*>) {
         router?.let {
             dispatch?.invoke(Navigation(it, path))
         }
-    }
-
-    private fun showTrendingPage() {
-        router?.go(TrendingPath())
     }
 
     protected fun getRouter(): Router? = router

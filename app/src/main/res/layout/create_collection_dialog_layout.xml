@@ -11,6 +11,9 @@
 		android:layout_height="wrap_content"
 		android:layout_margin="16dp"
 		android:padding="8dp"
+		android:singleLine="true"
+		android:imeOptions="actionDone"
+		android:inputType="textCapSentences"
 		android:textAppearance="@style/Text.Dark.Large"
 		android:textColorHint="@color/textColorGray"
 		android:hint="@string/movie_collection_create_dialog_hint"/>

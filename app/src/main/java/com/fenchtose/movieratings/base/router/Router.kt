@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.util.Log
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.R
@@ -12,17 +13,18 @@ import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.features.moviepage.DetailTransition
 import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
-import java.util.Stack
 
 class Router(activity: RouterBaseActivity,
+             private val roots: Map<String, RouterRoot>,
              private val onMovedTo: (RouterPath<out BaseFragment>) -> Unit,
              private val onRemoved: (RouterPath<out BaseFragment>) -> Unit) {
 
-    private val history: Stack<RouterPath<out BaseFragment>> = Stack()
+//    private val history: Stack<RouterPath<out BaseFragment>> = Stack()
     private val manager = activity.supportFragmentManager
     private val titlebar: ActionBar? = activity.supportActionBar
+    private var currentRoot: String = ""
 
-    private val keyPathMap: HashMap<String, ((Bundle) -> RouterPath<out BaseFragment>)> = HashMap()
+    private val keyPathMap: HashMap<String, Pair<String, ((Bundle) -> RouterPath<out BaseFragment>)>> = HashMap()
 
     var dispatch: Dispatch? = null
 
@@ -31,70 +33,101 @@ class Router(activity: RouterBaseActivity,
     companion object {
         val ROUTE_TO_SCREEN = "route_to_screen"
         val HISTORY = "history"
+
+        const val ROOT_SEARCH = "search"
+        const val ROOT_PERSONAL = "personal"
+        const val ROOT_INFO = "info"
+        const val ROOT_COLLECTIONS = "collections"
     }
 
     init {
-        keyPathMap[DonatePageFragment.DonatePath.KEY] = DonatePageFragment.DonatePath.createPath()
-        keyPathMap[MoviePath.KEY] = MoviePath.createPath()
+        keyPathMap[DonatePageFragment.DonatePath.KEY] = Pair(ROOT_SEARCH, DonatePageFragment.DonatePath.createPath())
+        keyPathMap[MoviePath.KEY] = Pair(ROOT_SEARCH, MoviePath.createPath())
     }
 
     fun canHandleKey(key: String): Boolean {
         return keyPathMap.containsKey(key)
     }
 
-    fun buildRoute(path: RouterPath<out BaseFragment>): Router {
-        history.push(path)
+    private fun currentRoot(): RouterRoot? = roots[currentRoot]
+
+    fun buildRoute(root: String, path: RouterPath<out BaseFragment>, recreateRoot: Boolean = false): Router {
+        roots[root]?.build(dispatch, path, recreateRoot)
         return this
     }
 
     fun buildRoute(extras: Bundle): Router {
-        keyPathMap[extras.getString(ROUTE_TO_SCREEN, "")]?.invoke(extras)?.let { buildRoute(it) }
+        keyPathMap[extras.getString(ROUTE_TO_SCREEN, "")]?.let {
+            buildRoute(it.first, it.second(extras))
+        }
         return this
     }
 
-    fun start() {
-        if (history.isNotEmpty()) {
-            move(history.peek())
+    fun start(root: String) {
+        currentRoot = root
+        currentRoot()?.top()?.let {
+            // We may not have dispatch attached at this moment.
+            MovieRatingsApplication.store.dispatchEarly(it.initAction())
+            move(it)
         }
+    }
+
+    fun switchRoot(root: String, startAtBase: Boolean) {
+        if (currentRoot == root) {
+            if (!startAtBase) {
+                return
+            }
+
+            currentRoot()?.clearTillBase(dispatch)
+        }
+
+        start(root)
     }
 
     fun go(path: RouterPath<out BaseFragment>) {
-        if (history.size >= 1) {
-            val top = history.peek()
+        currentRoot()?.let {
+            val top = it.top()
             if (top.javaClass == path.javaClass) {
                 return
             }
+
+            move(path)
+            it.build(dispatch, path)
         }
 
-        move(path)
-        history.push(path)
     }
 
     fun onBackRequested(): Boolean {
-        if (history.empty()) {
-            Log.e(TAG, "history is empty. We can't go back")
-            return true
-        }
+        currentRoot()?.let {
+            /*if (it.history.empty()) {
+                Log.e(TAG, "history is empty. We can't go back")
+                return true
+            }*/
 
-        val canTopGoBack = canTopGoBack()
-        if (canTopGoBack) {
-            if (history.size == 1) {
-                return  true
+            val canTopGoBack = canTopGoBack()
+            if (canTopGoBack) {
+                if (it.size() == 1) {
+                    return true
+                }
+
+                goBack()
             }
 
-            goBack()
+            return false
         }
 
-        return false
+        Log.e(TAG, "current root not found.")
+        return true
     }
 
     private fun goBack(): Boolean {
+        currentRoot()?.let {
+            if (it.size() > 1) {
+                moveBack()
+                return true
+            }
 
-        if (history.size > 1) {
-            moveBack()
-            return true
         }
-
         return false
     }
 
@@ -110,7 +143,7 @@ class Router(activity: RouterBaseActivity,
     }
 
     private fun getTopView() : BaseFragment? {
-        return history.peek().fragment
+        return currentRoot()?.top()?.fragment
     }
 
     private fun move(path: RouterPath<out BaseFragment>) {
@@ -141,17 +174,21 @@ class Router(activity: RouterBaseActivity,
     }
 
     private fun moveBack() {
-        val path = history.pop()
-        path.detach()
-        onRemoved.invoke(path)
-        if (!history.empty()) {
-            val top = history.peek()
-            top?.let {
-                move(top)
+        currentRoot()?.let {
+            val path = it.pop()
+            path?.let {
+                path.detach()
+                onRemoved.invoke(path)
             }
+
+            val top = it.top()
+            move(top)
+            path?.let {
+                dispatch?.invoke(path.clearAction())
+            }
+
         }
 
-        dispatch?.invoke(path.clearAction())
     }
 
     class History {

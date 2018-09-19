@@ -15,13 +15,13 @@ import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.util.AccessibilityUtils
+import com.fenchtose.movieratings.util.show
 
 class AppInfoFragment: BaseFragment() {
 
     private var isTV: Boolean = false
     private var testView: View? = null
     private var testContainer: View? = null
-    private var settingsView: View? = null
     private var activationWarning: View? = null
     private var handler: Handler? = null
 
@@ -52,8 +52,6 @@ class AppInfoFragment: BaseFragment() {
             }
         }
 
-        settingsView = view.findViewById(R.id.settings_view)
-
         activationWarning = view.findViewById(R.id.activation_warning_view)
 
         view.findViewById<TextView>(R.id.version_view).text = BuildConfig.VERSION_NAME
@@ -61,12 +59,17 @@ class AppInfoFragment: BaseFragment() {
         val contentView = view.findViewById<TextView?>(R.id.info_content_view)
         contentView?.visibility = View.VISIBLE
         contentView?.setText(
-                if (AccessibilityUtils.hasAllPermissions(requireContext()))
+                if (AccessibilityUtils.isAccessibilityEnabled(requireContext()))
                     R.string.info_screen_content_with_accessibility
                 else
                     R.string.info_screen_content_no_accessibility)
 
-        view.findViewById<InfoPageBottomView>(R.id.bottom_container).setRouter(path?.getRouter(), path?.category())
+        view.findViewById<InfoPageBottomView>(R.id.bottom_container).apply {
+            setRouter(path?.getRouter(), path?.category())
+            findViewById<View?>(R.id.rate_view)?.show(false)
+            findViewById<View?>(R.id.premium_view)?.show(false)
+            findViewById<View?>(R.id.feedback_view)?.show(true)
+        }
     }
 
     override fun onDestroyView() {
@@ -79,7 +82,6 @@ class AppInfoFragment: BaseFragment() {
         if (isTV) {
             val hasAccessibility = AccessibilityUtils.isAccessibilityEnabled(requireContext())
             testView?.visibility = if (hasAccessibility) VISIBLE else GONE
-            settingsView?.visibility = if (hasAccessibility) VISIBLE else GONE
             activationWarning?.visibility = if (hasAccessibility) GONE else VISIBLE
         }
     }
@@ -88,11 +90,8 @@ class AppInfoFragment: BaseFragment() {
     override fun getScreenTitle() = R.string.search_page_title
     override fun screenName() = GaScreens.APP_INFO
 
-    class AppInfoPath(private val showSearchOption: Boolean): RouterPath<AppInfoFragment>() {
+    class AppInfoPath: RouterPath<AppInfoFragment>() {
         override fun createFragmentInstance() =AppInfoFragment()
-        override fun showMenuIcons(): IntArray {
-            return if (showSearchOption) intArrayOf(R.id.action_search, R.id.action_settings) else intArrayOf(R.id.action_settings)
-        }
         override fun category() = GaCategory.APP_INFO
     }
 }

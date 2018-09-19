@@ -1,14 +1,10 @@
 package com.fenchtose.movieratings.features.accessinfo
 
-import android.annotation.SuppressLint
-import android.content.Intent
-import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
+import android.support.annotation.RequiresApi
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import com.fenchtose.movieratings.R
@@ -16,14 +12,13 @@ import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
-import com.fenchtose.movieratings.util.AccessibilityUtils
-import com.fenchtose.movieratings.util.PackageUtils
-import com.fenchtose.movieratings.util.VersionUtils
+import com.fenchtose.movieratings.util.*
 
 class AccessInfoFragment : BaseFragment() {
 
     private var accessContainer: View? = null
     private var drawContainer: View? = null
+    private var enabledContainer: View? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.access_info_layout, container, false)
@@ -34,6 +29,7 @@ class AccessInfoFragment : BaseFragment() {
 
         accessContainer = view.findViewById(R.id.access_container)
         drawContainer = view.findViewById(R.id.draw_container)
+        enabledContainer = view.findViewById(R.id.enabled_container)
 
         view.findViewById<View>(R.id.settings_button).setOnClickListener {
             openSettings()
@@ -50,6 +46,12 @@ class AccessInfoFragment : BaseFragment() {
             }
         }
 
+        view.findViewById<View>(R.id.netflix_cta).setOnClickListener {
+            if (!IntentUtils.launch3rdParty(requireActivity(), PackageUtils.NETFLIX)) {
+                showSnackbar(R.string.accessibility_enabled_netflix_open_error)
+            }
+        }
+
         val drawInfoView: TextView = view.findViewById(R.id.draw_info_view)
         drawInfoView.text = getString(R.string.draw_access_info_content,
                 getString(R.string.accessibility_info_app_name),
@@ -59,26 +61,22 @@ class AccessInfoFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        drawContainer?.visibility =  if (!AccessibilityUtils.isDrawPermissionEnabled(requireContext())) VISIBLE else GONE
-        accessContainer?.visibility = if (!AccessibilityUtils.isAccessibilityEnabled(requireContext())) VISIBLE else GONE
+        val accessibilityEnabled = AccessibilityUtils.isAccessibilityEnabled(requireContext())
+        val drawPermission = AccessibilityUtils.isDrawPermissionEnabled(requireContext())
+        drawContainer?.show(!drawPermission)
+        accessContainer?.show(!accessibilityEnabled)
+        enabledContainer?.show(accessibilityEnabled)
     }
 
     private fun openSettings() {
-        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-        if (PackageUtils.isIntentCallabale(requireContext(), intent)) {
-            startActivity(intent)
-        } else {
+        if (!IntentUtils.openSettings(requireContext())) {
             showSnackbar(R.string.accessibility_settings_launch_error)
         }
     }
 
-    @SuppressLint("InlinedApi")
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun openDrawSettings() {
-        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + requireActivity().packageName))
-        if (PackageUtils.isIntentCallabale(requireContext(), intent)) {
-            startActivity(intent)
-        } else {
+         if (!IntentUtils.openDrawSettings(requireContext())) {
             showSnackbar(R.string.accessibility_draw_permission_launch_error)
         }
     }
