@@ -7,7 +7,7 @@ import android.speech.tts.TextToSpeech
 import android.support.v4.os.ConfigurationCompat
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.widget.FrameLayout
+import android.view.ViewGroup
 import com.fenchtose.movieratings.analytics.events.toGaEvent
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaLabels
@@ -29,7 +29,7 @@ import com.fenchtose.movieratings.widgets.bottomnavigation.MenuItem
 
 class MainActivity : RouterBaseActivity() {
 
-    private var container: FrameLayout? = null
+    private var container: ViewGroup? = null
 
     private var preferences: UserPreferences? = null
     private var historyKeeper: HistoryKeeper? = null

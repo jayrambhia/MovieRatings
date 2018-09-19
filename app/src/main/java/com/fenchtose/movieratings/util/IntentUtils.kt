@@ -65,6 +65,17 @@ class IntentUtils {
             context.startActivity(Intent.createChooser(intent, "Share via"))
         }
 
+        fun openReportBugIntent(context: Context, body: String) {
+            val intent = Intent(Intent.ACTION_SENDTO).apply {
+                type = "text/plain"
+                data = Uri.parse("mailto:")
+                putExtra(Intent.EXTRA_EMAIL, arrayOf("flutter.rating@gmail.com"))
+                putExtra(Intent.EXTRA_TEXT, body)
+            }
+
+            context.startActivity(Intent.createChooser(intent, "Report bug via"))
+        }
+
         fun openShareFileIntent(context: Context, uri: Uri) {
             val intent = Intent(Intent.ACTION_SEND)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)

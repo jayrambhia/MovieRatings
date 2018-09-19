@@ -68,6 +68,7 @@ class AppInfoFragment: BaseFragment() {
             setRouter(path?.getRouter(), path?.category())
             findViewById<View?>(R.id.rate_view)?.show(false)
             findViewById<View?>(R.id.premium_view)?.show(false)
+            findViewById<View?>(R.id.feedback_view)?.show(true)
         }
     }
 

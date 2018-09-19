@@ -18,7 +18,6 @@ import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
-import com.fenchtose.movieratings.features.baselistpage.Progress
 import com.fenchtose.movieratings.features.searchpage.ClearCollectionOp
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
@@ -116,10 +115,7 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
         val state = appState.collectionPages.last()
         collection = state.collection
         isEmpty = state.movies.isEmpty()
-        when(state.progress) {
-            is Progress.Empty -> emptyStateCta?.show()
-            else -> emptyStateCta?.show(false)
-        }
+        emptyStateCta?.show(isEmpty)
 
         state.shareError?.let {
             if (it) {

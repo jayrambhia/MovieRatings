@@ -24,6 +24,7 @@ import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.info.InfoPageBottomView
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.MovieCollectionOp
 import com.fenchtose.movieratings.features.moviepage.MoviePath
+import com.fenchtose.movieratings.features.trending.TrendingPath
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
 import com.fenchtose.movieratings.model.entity.Movie
@@ -44,7 +45,7 @@ class SearchPageFragment: BaseFragment() {
     private var recyclerView: RecyclerView? = null
     private var adapter: BaseMovieAdapter? = null
     private var adapterConfig: SearchAdapterConfig? = null
-    private var appInfoContainer: InfoPageBottomView? = null
+    private var appInfoContainer: ViewGroup? = null
 
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
@@ -62,10 +63,20 @@ class SearchPageFragment: BaseFragment() {
         clearButton = view.findViewById(R.id.clear_button)
 
         path?.takeIf { it is SearchPageFragment.SearchPath.Default }?.let {
-            appInfoContainer = view.findViewById<InfoPageBottomView?>(R.id.info_page_container)?.apply {
-                setRouter(it.getRouter(), it.category())
-                findViewById<View?>(R.id.settings_view)?.show(false)
-                findViewById<View?>(R.id.share_view)?.show(false)
+            appInfoContainer = view.findViewById<ViewGroup?>(R.id.bottom_container)?.apply {
+                findViewById<InfoPageBottomView>(R.id.info_page_container).apply {
+                    setRouter(it.getRouter(), it.category())
+                    findViewById<View?>(R.id.settings_view)?.show(false)
+                    findViewById<View?>(R.id.share_view)?.show(false)
+                }
+
+                val router = it.getRouter()
+                findViewById<View>(R.id.trending_cta).setOnClickListener {
+                    GaEvents.TAP_TRENDING_PAGE.track()
+                    router?.let {
+                        dispatch?.invoke(Navigation(it, TrendingPath()))
+                    }
+                }
             }
         }
 
@@ -326,7 +337,7 @@ class SearchPageFragment: BaseFragment() {
                 return SearchPageFragment()
             }
 
-            override fun showMenuIcons() = intArrayOf(R.id.action_trending)
+            override fun showMenuIcons() = intArrayOf()
             override fun showBackButton() = false
             override fun category() = GaCategory.SEARCH
         }
@@ -337,11 +348,8 @@ class SearchPageFragment: BaseFragment() {
             }
 
             override fun showBackButton() = true
-
             override fun category() = GaCategory.COLLECTION_SEARCH
-
             override fun initAction() = InitCollectionSearchPage(collection)
-
             override fun clearAction() = ClearCollectionSearchPage
         }
     }

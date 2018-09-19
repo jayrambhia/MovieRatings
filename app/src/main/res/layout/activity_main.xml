@@ -20,7 +20,7 @@
         app:navigationIcon="@drawable/ic_arrow_back_accent_24dp"
         android:background="?attr/colorPrimary"/>
 
-    <FrameLayout
+    <android.support.design.widget.CoordinatorLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         tools:background="@color/colorAccent"

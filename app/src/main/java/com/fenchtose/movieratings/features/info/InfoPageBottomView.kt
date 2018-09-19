@@ -16,10 +16,7 @@ import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
-import com.fenchtose.movieratings.util.AccessibilityUtils
-import com.fenchtose.movieratings.util.Constants
-import com.fenchtose.movieratings.util.IntentUtils
-import com.fenchtose.movieratings.util.show
+import com.fenchtose.movieratings.util.*
 
 class InfoPageBottomView: LinearLayout {
 
@@ -73,6 +70,12 @@ class InfoPageBottomView: LinearLayout {
         settingsView?.setOnClickListener {
             GaEvents.OPEN_SETTINGS.withCategory(category).track()
             router?.go(SettingsFragment.SettingsPath())
+        }
+
+        findViewById<View?>(R.id.feedback_view)?.setOnClickListener {
+            GaEvents.REPORT_BUG.withCategory(category).track()
+            IntentUtils.openReportBugIntent(context, "\n\n\n\n\n------\nThis data will help us in figuring out the issue.\n\n" +
+                    "${getDeviceInfo()}\n\n${getAppInfo(context)}")
         }
     }
 
