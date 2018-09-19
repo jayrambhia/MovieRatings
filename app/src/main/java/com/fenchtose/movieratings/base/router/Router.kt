@@ -3,7 +3,13 @@ package com.fenchtose.movieratings.base.router
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.ActionBar
+import android.transition.Fade
+import android.transition.Slide
+import android.transition.Transition
+import android.transition.TransitionSet
 import android.util.Log
+import android.view.Gravity
+import android.view.animation.AnimationSet
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
@@ -68,7 +74,7 @@ class Router(activity: RouterBaseActivity,
         currentRoot()?.top()?.let {
             // We may not have dispatch attached at this moment.
             MovieRatingsApplication.store.dispatchEarly(it.initAction())
-            move(it)
+            move(it, true)
         }
     }
 
@@ -146,7 +152,7 @@ class Router(activity: RouterBaseActivity,
         return currentRoot()?.top()?.fragment
     }
 
-    private fun move(path: RouterPath<out BaseFragment>) {
+    private fun move(path: RouterPath<out BaseFragment>, animate: Boolean = false) {
         path.attachRouter(this)
         val fragment = path.createOrGetFragment()
         val transaction = manager.beginTransaction().replace(R.id.fragment_container, fragment)
@@ -156,6 +162,16 @@ class Router(activity: RouterBaseActivity,
                 fragment.sharedElementEnterTransition = DetailTransition()
                 fragment.sharedElementReturnTransition = DetailTransition()
             }
+        }
+
+        if (animate) {
+            fragment.enterTransition = TransitionSet().apply {
+                addTransition(Fade(Fade.IN))
+                addTransition(Slide(Gravity.BOTTOM))
+                ordering = TransitionSet.ORDERING_TOGETHER
+            }
+        } else {
+            fragment.enterTransition = null
         }
 
         transaction.commit()
