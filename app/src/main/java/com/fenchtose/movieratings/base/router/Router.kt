@@ -97,19 +97,14 @@ class Router(activity: RouterBaseActivity,
                 return
             }
 
-            move(path)
             it.build(dispatch, path)
+            move(path)
         }
 
     }
 
     fun onBackRequested(): Boolean {
         currentRoot()?.let {
-            /*if (it.history.empty()) {
-                Log.e(TAG, "history is empty. We can't go back")
-                return true
-            }*/
-
             val canTopGoBack = canTopGoBack()
             if (canTopGoBack) {
                 if (it.size() == 1) {
@@ -177,8 +172,15 @@ class Router(activity: RouterBaseActivity,
         transaction.commit()
         titlebar?.let {
             it.setTitle(fragment.getScreenTitle())
-            it.setDisplayShowHomeEnabled(path.showBackButton())
-            it.setDisplayHomeAsUpEnabled(path.showBackButton())
+            val root = currentRoot()
+            val backEnabled = if (root != null) {
+                root.size() > 1 && path.showBackButton()
+            } else {
+                path.showBackButton()
+            }
+
+            it.setDisplayShowHomeEnabled(backEnabled)
+            it.setDisplayHomeAsUpEnabled(backEnabled)
             it.elevation = it.themedContext.resources.getDimension(path.toolbarElevation())
         }
 
