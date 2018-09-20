@@ -74,7 +74,7 @@ class Router(activity: RouterBaseActivity,
         currentRoot()?.top()?.let {
             // We may not have dispatch attached at this moment.
             MovieRatingsApplication.store.dispatchEarly(it.initAction())
-            move(it, true)
+            move(it, currentRoot()?.size() == 1)
         }
     }
 
