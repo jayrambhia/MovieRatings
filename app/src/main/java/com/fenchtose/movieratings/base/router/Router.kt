@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.support.v7.app.ActionBar
 import android.transition.Fade
 import android.transition.Slide
-import android.transition.Transition
 import android.transition.TransitionSet
 import android.util.Log
 import android.view.Gravity
-import android.view.animation.AnimationSet
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
@@ -22,10 +20,9 @@ import com.fenchtose.movieratings.features.premium.DonatePageFragment
 
 class Router(activity: RouterBaseActivity,
              private val roots: Map<String, RouterRoot>,
-             private val onMovedTo: (RouterPath<out BaseFragment>) -> Unit,
-             private val onRemoved: (RouterPath<out BaseFragment>) -> Unit) {
+             private val onMovedTo: (path: RouterPath<out BaseFragment>, isRoot: Boolean) -> Unit,
+             private val onRemoved: (path: RouterPath<out BaseFragment>) -> Unit) {
 
-//    private val history: Stack<RouterPath<out BaseFragment>> = Stack()
     private val manager = activity.supportFragmentManager
     private val titlebar: ActionBar? = activity.supportActionBar
     private var currentRoot: String = ""
@@ -37,8 +34,8 @@ class Router(activity: RouterBaseActivity,
     private val TAG = "Router"
 
     companion object {
-        val ROUTE_TO_SCREEN = "route_to_screen"
-        val HISTORY = "history"
+        const val ROUTE_TO_SCREEN = "route_to_screen"
+        const val HISTORY = "history"
 
         const val ROOT_SEARCH = "search"
         const val ROOT_PERSONAL = "personal"
@@ -184,7 +181,7 @@ class Router(activity: RouterBaseActivity,
             it.elevation = it.themedContext.resources.getDimension(path.toolbarElevation())
         }
 
-        onMovedTo.invoke(path)
+        onMovedTo.invoke(path, currentRoot()?.size() == 1)
     }
 
     fun updateTitle(title: CharSequence) {
@@ -228,7 +225,7 @@ class Router(activity: RouterBaseActivity,
         }
 
         companion object {
-            private val KEY_PATHS = "paths"
+            private const val KEY_PATHS = "paths"
         }
 
         fun addPath(pathKey: String, extras: Bundle): History {

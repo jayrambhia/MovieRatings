@@ -33,7 +33,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     private var unsubscribe: Unsubscribe? = null
 
     protected fun initializeRouter(toolbar: Toolbar? = null,
-                                   onMovedTo: (RouterPath<out BaseFragment>) -> Unit = {},
+                                   onMovedTo: (RouterPath<out BaseFragment>, Boolean) -> Unit = {_, _ -> },
                                    onRemoved: (RouterPath<out BaseFragment>) -> Unit = {},
                                    onInit: (Router) -> Unit = {}) {
         toolbar?.let {
@@ -48,9 +48,10 @@ abstract class RouterBaseActivity: AppCompatActivity() {
                         Pair(Router.ROOT_INFO, RouterRoot(AppInfoFragment.AppInfoPath()))
                 ),
                 {
-                    visibleMenuItems = it.showMenuIcons()
+                    path, isRoot ->
+                    visibleMenuItems = path.showMenuIcons()
                     invalidateOptionsMenu()
-                    onMovedTo(it)
+                    onMovedTo(path, isRoot)
                 }, { onRemoved(it) }
         )
 

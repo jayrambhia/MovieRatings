@@ -23,6 +23,7 @@ import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.PackageUtils
+import com.fenchtose.movieratings.util.show
 import com.fenchtose.movieratings.widgets.bottomnavigation.BottomNavigationBar
 import com.fenchtose.movieratings.widgets.bottomnavigation.MenuItem
 
@@ -34,7 +35,11 @@ class MainActivity : RouterBaseActivity() {
     private var preferences: UserPreferences? = null
     private var historyKeeper: HistoryKeeper? = null
 
+    private var bottomNavigationBar: BottomNavigationBar? = null
+
     private val TTS_REG_CHECK = 11
+
+    private val ALWAYS_SHOW_BOTTOM_NAVIGATION = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,17 +49,18 @@ class MainActivity : RouterBaseActivity() {
 
         preferences = SettingsPreferences(this)
 
-        val bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottom_navigation_bar)
-        bottomNavigationBar.update(listOf(
-                MenuItem(1, R.drawable.ic_search_accent_24dp, Router.ROOT_SEARCH, GaLabels.ITEM_SEARCH),
-                MenuItem(2, R.drawable.ic_person_onyx_accent_24dp, Router.ROOT_PERSONAL, GaLabels.ITEM_PERSONAL),
-                MenuItem(3, R.drawable.ic_collections_accent_24dp, Router.ROOT_COLLECTIONS, GaLabels.ITEM_COLLECTIONS),
-                MenuItem(4, R.drawable.ic_info_outline_accent_24dp, Router.ROOT_INFO, GaLabels.ITEM_INFO)
-        ), 0)
+        bottomNavigationBar = findViewById<BottomNavigationBar>(R.id.bottom_navigation_bar).apply {
+            update(listOf(
+                    MenuItem(1, R.drawable.ic_search_accent_24dp, Router.ROOT_SEARCH, GaLabels.ITEM_SEARCH),
+                    MenuItem(2, R.drawable.ic_person_onyx_accent_24dp, Router.ROOT_PERSONAL, GaLabels.ITEM_PERSONAL),
+                    MenuItem(3, R.drawable.ic_collections_accent_24dp, Router.ROOT_COLLECTIONS, GaLabels.ITEM_COLLECTIONS),
+                    MenuItem(4, R.drawable.ic_info_outline_accent_24dp, Router.ROOT_INFO, GaLabels.ITEM_INFO)
+            ), 0)
 
-        bottomNavigationBar.addListener { position, item, reselected ->
-            GaEvents.SELECT_BOTTOM_TAB.withLabelArg(item.eventLabel).track()
-            getRouter()?.switchRoot(item.root, reselected)
+            addListener { position, item, reselected ->
+                GaEvents.SELECT_BOTTOM_TAB.withLabelArg(item.eventLabel).track()
+                getRouter()?.switchRoot(item.root, reselected)
+            }
         }
 
         historyKeeper = DbHistoryKeeper(
@@ -69,7 +75,7 @@ class MainActivity : RouterBaseActivity() {
 
         initializeRouter(
                 findViewById(R.id.toolbar),
-                {},
+                { _, isRoot -> bottomNavigationBar?.show(isRoot || ALWAYS_SHOW_BOTTOM_NAVIGATION)},
                 {},
                 ::buildPathAndStart
         )
