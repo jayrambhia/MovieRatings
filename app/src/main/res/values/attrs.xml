@@ -11,4 +11,7 @@
 		<attr name="settings__title" format="reference|string"/>
 		<attr name="settings__subtitle" format="reference|string"/>
 	</declare-styleable>
+	<declare-styleable name="MaxHeightViewPager">
+		<attr name="vp__max_height" format="dimension"/>
+	</declare-styleable>
 </resources>
