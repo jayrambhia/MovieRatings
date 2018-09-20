@@ -65,13 +65,17 @@
 	<string name="settings_install_tts_dialog_later">Not now</string>
 	<string name="settings_misc">Miscellaneous configurations</string>
 	<string name="settings_activate_flutter">Show \'Activate Flutter\'</string>
+	<string name="settings_ratings_api_title">Configure ratings strategy</string>
 	<string name="settings_use_year_info">Flutter can try to obtain the \'release\' year of the movie to get more accurate ratings.\n\nNote: A lot of TV shows on Netflix do not have correct release year.</string>
 	<string name="settings_use_year">Use \'release\' year</string>
+	<string name="settings_notification_title">Configure notifications</string>
 	<string name="settings_support_notification_info">Flutter may occasionally send push notifications to ask you to support the app. You may select which notifications you want to receive.</string>
 	<string name="settings_support_inapp_purchase">Support flutter via in-app purchases</string>
 	<string name="settings_support_rate_app">Rate app on Playstore</string>
 	<string name="settings_api_fallback_info">Flutter uses OMDb to get movie ratings, search results, etc. To get accurate ratings for translated titles, we have created our private movie ratings API. It\'s still in beta. If you are facing any problems about getting movie ratings, you may switch back to using OMDb API.</string>
 	<string name="settings_api_fallback">Use Flutter\'s private APIs</string>
+	<string name="settings_api_order_info">In case there are multiple movies with the same title (and release year is not available), flutter shows you the ratings of the popular title (by votes). A lot of shows on Netflix are new so you can choose to see the ratings based on recency.</string>
+	<string name="settings_api_order_recent">Show recent titles</string>
 	<string name="settings_install_tts_unsupported">It seems that Text to Speech is not supported by the device.</string>
 	<string name="settings_export_data_dialog_title">Export your data</string>
 	<string name="settings_export_data_dialog_content">Flutter lets you export your data in json format. You may share it with your friends, send yourself a copy for back-up or just keep it on your device.</string>

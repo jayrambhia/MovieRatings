@@ -11,4 +11,7 @@ interface MovieRatingsProvider {
     fun getTrending(period: String): Observable<Trending>
 }
 
-data class RatingRequest(val title: String, val year: String?, val appName: String)
+const val ORDER_POPULAR = "popular"
+const val ORDER_RECENT = "recent"
+
+data class RatingRequest(val title: String, val year: String?, val order: String="popular", val appName: String)

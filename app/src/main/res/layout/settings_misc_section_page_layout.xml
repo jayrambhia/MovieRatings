@@ -3,13 +3,23 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent">
+	android:layout_height="match_parent"
+	android:scrollbars="none">
 
 	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
 		android:layout_marginBottom="8dp">
+
+		<TextView
+			android:textAppearance="@style/Text.Dark.Secondary.Medium.Large"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/settings_ratings_api_title"
+			android:paddingStart="@dimen/gutter"
+			android:paddingEnd="@dimen/gutter"
+			android:layout_marginTop="@dimen/gutter"/>
 
 		<TextView
 			android:textAppearance="@style/Text.Dark.Secondary"
@@ -39,25 +49,15 @@
 			android:textAppearance="@style/Text.Dark.Secondary"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/settings_support_notification_info"
+			android:text="@string/settings_api_order_info"
 			android:paddingStart="@dimen/gutter"
 			android:paddingEnd="@dimen/gutter"
 			android:layout_marginTop="@dimen/gutter"/>
 
 		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/support_inapp_toggle"
+			android:id="@+id/api_order_toggle"
 			android:padding="@dimen/gutter"
-			android:text="@string/settings_support_inapp_purchase"
-			android:visibility="gone"
-			tools:visibility="visible"
-			android:textAppearance="@style/Text.Dark"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
-
-		<android.support.v7.widget.SwitchCompat
-			android:id="@+id/support_review_toggle"
-			android:padding="@dimen/gutter"
-			android:text="@string/settings_support_rate_app"
+			android:text="@string/settings_api_order_recent"
 			android:visibility="gone"
 			tools:visibility="visible"
 			android:textAppearance="@style/Text.Dark"
@@ -82,6 +82,49 @@
 			android:id="@+id/api_fallback_toggle"
 			android:padding="@dimen/gutter"
 			android:text="@string/settings_api_fallback"
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:textAppearance="@style/Text.Dark"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="@color/divider_color"/>
+
+		<TextView
+			android:textAppearance="@style/Text.Dark.Secondary.Medium.Large"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/settings_notification_title"
+			android:paddingStart="@dimen/gutter"
+			android:paddingEnd="@dimen/gutter"
+			android:layout_marginTop="@dimen/gutter"/>
+
+		<TextView
+			android:textAppearance="@style/Text.Dark.Secondary"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/settings_support_notification_info"
+			android:paddingStart="@dimen/gutter"
+			android:paddingEnd="@dimen/gutter"
+			android:layout_marginTop="@dimen/gutter"/>
+
+		<android.support.v7.widget.SwitchCompat
+			android:id="@+id/support_inapp_toggle"
+			android:padding="@dimen/gutter"
+			android:text="@string/settings_support_inapp_purchase"
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:textAppearance="@style/Text.Dark"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
+		<android.support.v7.widget.SwitchCompat
+			android:id="@+id/support_review_toggle"
+			android:padding="@dimen/gutter"
+			android:text="@string/settings_support_rate_app"
 			android:visibility="gone"
 			tools:visibility="visible"
 			android:textAppearance="@style/Text.Dark"

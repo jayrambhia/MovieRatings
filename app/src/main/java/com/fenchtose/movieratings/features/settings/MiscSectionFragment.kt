@@ -34,6 +34,7 @@ class MiscSectionFragment: BaseFragment() {
         addAppToggle(preferences, view, R.id.support_review_toggle, UserPreferences.SHOW_RATE_APP_PROMPT)
         addAppToggle(preferences, view, R.id.support_inapp_toggle, UserPreferences.SHOW_SUPPORT_APP_PROMPT)
         addAppToggle(preferences, view, R.id.api_fallback_toggle, UserPreferences.USE_FLUTTER_API)
+        addSettingToggle(preferences, view, R.id.api_order_toggle, UserPreferences.SHOW_RECENT_RATING)
 
         val publisher = PublishSubject.create<String>()
         subscribe(publisher
@@ -51,6 +52,17 @@ class MiscSectionFragment: BaseFragment() {
         toggle?.let {
             it.visibility = View.VISIBLE
             it.isChecked = preferences.isAppEnabled(key)
+            it.setOnCheckedChangeListener {
+                _, isChecked -> updatePreference(preferences, key, isChecked)
+            }
+        }
+    }
+
+    private fun addSettingToggle(preferences: UserPreferences, root: View, @IdRes buttonId: Int, key: String) {
+        val toggle = root.findViewById<SwitchCompat?>(buttonId)
+        toggle?.let {
+            it.visibility = View.VISIBLE
+            it.isChecked = preferences.isSettingEnabled(key)
             it.setOnCheckedChangeListener {
                 _, isChecked -> updatePreference(preferences, key, isChecked)
             }

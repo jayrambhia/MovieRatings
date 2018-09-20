@@ -53,7 +53,7 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
                     } else {
                         lastRequest = request
                         if (useFlutterApi && flutterApi != null) {
-                            flutterApi.getMovieRating(request.title, request.year)
+                            flutterApi.getMovieRating(request.title, request.year, order = request.order)
                         } else if (omdbApi != null) {
 
                             omdbApi.getMovieInfo(BuildConfig.OMDB_API_KEY, request.title, request.year

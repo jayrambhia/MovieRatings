@@ -12,6 +12,8 @@ import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.features.tts.Speaker
 import com.fenchtose.movieratings.model.api.provider.MovieRatingsProvider
+import com.fenchtose.movieratings.model.api.provider.ORDER_POPULAR
+import com.fenchtose.movieratings.model.api.provider.ORDER_RECENT
 import com.fenchtose.movieratings.model.api.provider.RatingRequest
 import com.fenchtose.movieratings.model.db.displayedRatings.DbDisplayedRatingsStore
 import com.fenchtose.movieratings.model.entity.MovieRating
@@ -426,7 +428,9 @@ class NetflixReaderService : AccessibilityService() {
             val request = RatingRequest(
                     title = text,
                     appName = appName,
-                    year = if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) year else null)
+                    order = if (preferences?.isSettingEnabled(UserPreferences.SHOW_RECENT_RATING) == true) ORDER_RECENT else ORDER_POPULAR,
+                    year = if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) year else null
+            )
 
             requestPublisher.onNext(request)
         }
