@@ -1,5 +1,18 @@
 # Flutter Changelog
 
+# 0.3.5
+
+ - Bottom navigation integrated
+ - Support page card designs updated
+ - Search page design updated
+ - Info page options updated
+ - Fix bug where movie page would not open correctly
+ - Option added to choose order of the movie rating - popular or recent
+ - Rate app / Support app notification threshold decreased
+ - Accessibility page info updated
+ - Report bug option added
+ - Fixed bug where moshi would not parse "N/A" to int
+
 # 0.3.4
 
  - Made copies more generic instead of being about movies
