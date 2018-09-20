@@ -1,8 +1,10 @@
 package com.fenchtose.movieratings.model.api.provider
 
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.model.entity.NaIntAdapter
 import com.fenchtose.movieratings.util.Constants
 import com.google.gson.Gson
+import com.squareup.moshi.Moshi
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -19,7 +21,11 @@ class MovieProviderModule(val app: MovieRatingsApplication, val gson: Gson) {
         val retrofit = Retrofit.Builder()
                 .client(app.getOkHttpClient())
                 .baseUrl(Constants.OMDB_ENDPOINT)
-                .addConverterFactory(MoshiConverterFactory.create())
+                .addConverterFactory(MoshiConverterFactory.create(
+                        Moshi.Builder()
+                                .add(NaIntAdapter())
+                                .build()
+                ))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 

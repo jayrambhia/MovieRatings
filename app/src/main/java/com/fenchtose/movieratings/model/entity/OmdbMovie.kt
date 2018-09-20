@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.model.entity
 
+import androidx.text.isDigitsOnly
 import com.fenchtose.movieratings.model.db.entity.Rating
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.squareup.moshi.*
 
 @JsonClass(generateAdapter = true)
 data class OmdbMovie(
@@ -92,6 +92,24 @@ data class OmdbRating(
 ) {
     fun convert(): Rating {
         return Rating(source, rating)
+    }
+}
+
+class NaIntAdapter {
+    @FromJson fun fromJson(jsonReader: JsonReader, delegate: JsonAdapter<OmdbMovie>): Int {
+        return when(jsonReader.peek()) {
+            JsonReader.Token.STRING -> {
+                val string = jsonReader.nextString()
+                return if (string.isDigitsOnly()) {
+                    string.toInt()
+                } else {
+                    -1
+                }
+            }
+
+            JsonReader.Token.NUMBER -> jsonReader.nextInt()
+            else -> -1
+        }
     }
 }
 
