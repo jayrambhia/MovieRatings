@@ -120,7 +120,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
     override fun onPurchasesUpdated(@BillingClient.BillingResponse responseCode: Int, purchases: MutableList<Purchase>?) {
         if (responseCode == BillingClient.BillingResponse.OK && purchases != null && !purchases.isEmpty()) {
             historyKeeper?.paidInAppPurchase()
-            GaEvents.PURCHASED.withLabelArg(purchases.first().sku)
+            GaEvents.PURCHASED.withLabelArg(purchases.first().sku).track()
 
             AlertDialog.Builder(context)
                     .setTitle(R.string.donate_dialog_title)
@@ -175,7 +175,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
 
         progressContainer?.visibility = View.GONE
 
-        val pSkus = purchases?.map { it.sku } ?: ArrayList()
+        val pSkus = purchases?.map { it.sku } ?: listOf()
 
         if (pSkus.isNotEmpty()) {
             historyKeeper?.paidInAppPurchase()

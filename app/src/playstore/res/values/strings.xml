@@ -3,7 +3,7 @@
 	<string name="donate_page_title">Support Flutter</string>
 	<string name="donate_page_persuasion_message">Did you know that Flutter has shown you ratings of over %d titles?</string>
 	<string name="donate_page_content">Flutter is free for all and contains no ads. If you liked the app and wish to support it, please buy any of the following in-app purchases.\n\nThese purchases do not unlock any features.</string>
-	<string name="donate_already_purchased_text">You have already purchased this for %1s. Thanks for your support!</string>
+	<string name="donate_already_purchased_text">You have purchased this for %1s. Thanks for your support!\n\nWould you like to purchase it again?</string>
 	<string name="donate_dialog_title">You\'re the best!</string>
 	<string name="donate_dialog_message">Thanks for buying an in-app package and supporting the developers and the app.</string>
 </resources>

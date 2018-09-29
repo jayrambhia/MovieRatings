@@ -4,11 +4,11 @@ import android.content.Context
 import android.support.v7.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.android.billingclient.api.SkuDetails
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.util.show
 
 class InAppPurchaseCard : CardView {
 
@@ -33,8 +33,9 @@ class InAppPurchaseCard : CardView {
     var bought: Boolean = false
     set(value) {
         field = value
-        cta.visibility = if (field) View.GONE else View.VISIBLE
-        thanksView.visibility = if (field) View.VISIBLE else View.GONE
+//        cta.show(!field)
+        thanksView.show(field)
+        subtitle.show(!field)
     }
 
     constructor(context: Context) : this(context, null)
