@@ -25,7 +25,8 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
 
     private var lastRequest: RatingRequest? = null
 
-    private val threshold = 7 * 24 * 3600 // 7 days
+    private val threshold404 = 7 * 24 * 3600 // 7 days
+    private val thresholdRating = 14 * 24 * 3600 // 14 days
 
     private var useFlutterApi = true
 
@@ -39,12 +40,12 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
         return getMovieRating(
                 {
                     Observable.defer {
-                        Observable.just(getRatingsFromDb(request.title, yearInt))
+                        Observable.just(getRatingsFromDb(request.title, yearInt, thresholdRating))
                     }
                 },
                 {
                     Observable.defer {
-                        Observable.just(store.was404(request.title, request.year, System.currentTimeMillis()/1000 - threshold))
+                        Observable.just(store.was404(request.title, request.year, System.currentTimeMillis()/1000 - threshold404))
                     }
                 },
                 {
@@ -89,7 +90,7 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
                                 .doOnNext {
                                     analyticsCall.invoke()
                                 }.doOnNext {
-                                    dao.insert(it.convert())
+                                    dao.insert(it.convert((System.currentTimeMillis()/1000).toInt()))
                                 }
                     }
                 }
@@ -112,16 +113,18 @@ class RetrofitMovieRatingsProvider(flutterRetrofit: Retrofit?,
     }
 
     @WorkerThread
-    private fun getRatingsFromDb(title: String, year: Int): MovieRating {
+    private fun getRatingsFromDb(title: String, year: Int, threshold: Int): MovieRating {
+        val timestamp = (System.currentTimeMillis()/1000).toInt() - threshold
+
         var ratings = dao.getRatingsForTitle(title)
                 .filter {
-                    it.fitsYear(year)
+                    it.fitsYear(year) && it.timestamp > timestamp
                 }
 
         if (ratings.isEmpty()) {
            ratings = dao.getRatingsForTranslatedTitle(title)
                    .filter {
-                       it.fitsYear(year)
+                       it.fitsYear(year) && it.timestamp > timestamp
                    }
         }
 

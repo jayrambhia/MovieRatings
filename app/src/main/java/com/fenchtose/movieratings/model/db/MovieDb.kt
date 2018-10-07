@@ -27,7 +27,7 @@ abstract class MovieDb : RoomDatabase() {
 
     companion object {
         val instance: MovieDb by lazy {
-            Room.databaseBuilder(MovieRatingsApplication.instance!!, MovieDb::class.java, "ex")
+            Room.databaseBuilder(MovieRatingsApplication.instance, MovieDb::class.java, "ex")
                     .addMigrations(
                             MIGRATION_1_to_2, MIGRATION_2_to_3,
                             MIGRATION_3_to_4, MIGRATION_4_to_5,

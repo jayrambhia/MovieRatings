@@ -30,7 +30,7 @@ data class MovieRating(
         @Json(name="end_year")
         val endYear: Int? = -1) {
 
-    fun convert(): com.fenchtose.movieratings.model.db.entity.MovieRating {
+    fun convert(timestamp: Int): com.fenchtose.movieratings.model.db.entity.MovieRating {
         return com.fenchtose.movieratings.model.db.entity.MovieRating(
                 imdbId = imdbId,
                 rating = rating,
@@ -40,7 +40,7 @@ data class MovieRating(
                 translatedTitle = translatedTitle,
                 startYear = startYear,
                 endYear = endYear?: -1,
-                timestamp = -1
+                timestamp = timestamp
         )
     }
 

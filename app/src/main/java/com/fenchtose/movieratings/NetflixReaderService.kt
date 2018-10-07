@@ -63,11 +63,7 @@ class NetflixReaderService : AccessibilityService() {
         super.onCreate()
 
         preferences = SettingsPreferences(this)
-        provider = MovieRatingsApplication.ratingProviderModule.ratingProvider
         displayer = RatingDisplayer(this, preferences!!, analytics = true)
-        historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance!!),
-                DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
-                preferences!!)
 
         myScheduler = AndroidSchedulers.from(Looper.myLooper())
 
@@ -115,6 +111,16 @@ class NetflixReaderService : AccessibilityService() {
                 speaker = Speaker(this)
             }
 
+            if (provider == null) {
+                provider = MovieRatingsApplication.ratingProviderModule.ratingProvider
+            }
+
+            if (historyKeeper == null) {
+                historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance),
+                        DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
+                        preferences!!)
+            }
+
             if (resourceRemover == null) {
                 resourceRemover = PublishSubject.create()
                 resourceRemover
@@ -132,6 +138,8 @@ class NetflixReaderService : AccessibilityService() {
         synchronized(this) {
             speaker?.shutdown()
             speaker = null
+            provider = null
+            historyKeeper = null
             resourceRemover?.onComplete()
             resourceRemover = null
             System.gc()

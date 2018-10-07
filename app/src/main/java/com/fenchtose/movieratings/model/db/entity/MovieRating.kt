@@ -65,7 +65,7 @@ data class MovieRating(
     }
 
 
-    fun toMovie(): Movie {
+    /*fun toMovie(): Movie {
         val movie = Movie()
         movie.imdbId = imdbId
         movie.title = title
@@ -88,7 +88,7 @@ data class MovieRating(
         movie.poster = "http://img.omdbapi.com/?i=$imdbId&h=600&apikey=${BuildConfig.OMDB_API_KEY}"
 
         return movie
-    }
+    }*/
 }
 
 @Entity(tableName = "RATING_NOT_FOUND", indices = arrayOf(Index("TITLE")))
