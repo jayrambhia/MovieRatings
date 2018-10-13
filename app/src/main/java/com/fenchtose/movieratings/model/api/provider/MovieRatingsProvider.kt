@@ -14,4 +14,9 @@ interface MovieRatingsProvider {
 const val ORDER_POPULAR = "popular"
 const val ORDER_RECENT = "recent"
 
-data class RatingRequest(val title: String, val year: String?, val order: String="popular", val appName: String)
+data class RatingRequest(
+        val title: String,
+        val year: String?,
+        val order: String="popular",
+        val checkAnime: Int = 0,
+        val appName: String)

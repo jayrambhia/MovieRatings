@@ -15,7 +15,7 @@ import com.fenchtose.movieratings.model.db.entity.*
     (MovieCollectionEntry::class), (Episode::class),
     (DisplayedRating::class), (MovieRating::class),
     (RatingNotFound::class)],
-        version = 8)
+        version = 9)
 abstract class MovieDb : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao
@@ -32,7 +32,7 @@ abstract class MovieDb : RoomDatabase() {
                             MIGRATION_1_to_2, MIGRATION_2_to_3,
                             MIGRATION_3_to_4, MIGRATION_4_to_5,
                             MIGRATION_5_to_6, MIGRATION_6_to_7,
-                            MIGRATION_7_to_8)
+                            MIGRATION_7_to_8, MIGRATION_8_to_9)
                     .build()
         }
 
@@ -90,6 +90,12 @@ abstract class MovieDb : RoomDatabase() {
             override fun migrate(_db: SupportSQLiteDatabase) {
                 _db.execSQL("CREATE TABLE IF NOT EXISTS `RATING_NOT_FOUND` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `TITLE` TEXT NOT NULL, `YEAR` TEXT NOT NULL, `TIMESTAMP` INTEGER NOT NULL)")
                 _db.execSQL("CREATE  INDEX `index_RATING_NOT_FOUND_TITLE` ON `RATING_NOT_FOUND` (`TITLE`)")
+            }
+        }
+
+        private val MIGRATION_8_to_9 = object: Migration(8, 9) {
+            override fun migrate(_db: SupportSQLiteDatabase) {
+                _db.execSQL("ALTER TABLE `MOVIE_RATINGS` ADD COLUMN `SOURCE` TEXT DEFAULT \"IMDB\" NOT NULL")
             }
         }
     }

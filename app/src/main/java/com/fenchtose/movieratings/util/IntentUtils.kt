@@ -11,6 +11,7 @@ import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MainActivity
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.moviepage.MoviePath
+import com.fenchtose.movieratings.model.entity.MovieRating
 
 class IntentUtils {
 
@@ -116,23 +117,43 @@ class IntentUtils {
             return false
         }
 
-        fun openMovie(context: Context, imdb: String?, inApp: Boolean = false, newTask: Boolean = true): Boolean {
-            imdb?.let {
-                if (!inApp) {
-                    return openImdb(context, imdb, newTask)
-                }
-
-                val intent = Intent(context, MainActivity::class.java)
-                intent.putExtra(Router.HISTORY,
-                        Router.History()
-                                .addPath(MoviePath.KEY, MoviePath.createExtras(it))
-                                .toBundle())
+        fun openMAL(context: Context, id: String?, newTask: Boolean = true): Boolean {
+            id?.let {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://myanimelist.net/anime/$id"))
                 if (newTask) {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
-
-                context.startActivity(intent)
+                context.startActivity(Intent.createChooser(intent, "Open My Anime List page with").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 return true
+            }
+
+            return false
+        }
+
+        fun openMovie(context: Context, movie: MovieRating?, inApp: Boolean = false, newTask: Boolean = true): Boolean {
+            movie?.let {
+                return when(it.source) {
+                    "IMDB" -> {
+                        if (!inApp) {
+                            return openImdb(context, it.imdbId, newTask)
+                        }
+
+                        val intent = Intent(context, MainActivity::class.java)
+                        intent.putExtra(Router.HISTORY,
+                                Router.History()
+                                        .addPath(MoviePath.KEY, MoviePath.createExtras(it.imdbId))
+                                        .toBundle())
+                        if (newTask) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }
+
+                        context.startActivity(intent)
+                        true
+                    }
+                    "MAL" -> openMAL(context, it.imdbId, newTask)
+                    else -> false
+                }
+
             }
 
             return false

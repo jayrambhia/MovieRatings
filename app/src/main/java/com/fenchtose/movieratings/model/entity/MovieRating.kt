@@ -21,6 +21,9 @@ data class MovieRating(
         @Json(name="type")
         val type: String,
 
+        @Json(name="source")
+        val source: String,
+
         @Json(name = "translated_title")
         val translatedTitle: String,
 
@@ -40,13 +43,22 @@ data class MovieRating(
                 translatedTitle = translatedTitle,
                 startYear = startYear,
                 endYear = endYear?: -1,
-                timestamp = timestamp
+                timestamp = timestamp,
+                source = source
         )
+    }
+
+    fun displayRating(): String {
+        if (source != "IMDB" && source.isNotBlank()) {
+            return "%.1f (%s)".format(rating, source)
+        }
+
+        return "%.1f".format(rating)
     }
 
     companion object {
         fun empty(): MovieRating {
-            return MovieRating("", -1f, -1, "", "", "", -1, -1)
+            return MovieRating("", -1f, -1, "", "", "", "",-1, -1)
         }
 
         fun fromMovie(movie: OmdbMovie): MovieRating {
@@ -73,7 +85,8 @@ data class MovieRating(
                         votes = movie.imdbVotes.replace(",","").toIntOrNull() ?: -1,
                         startYear = startYear,
                         endYear = endYear,
-                        translatedTitle = ""
+                        translatedTitle = "",
+                        source = "IMDB"
                 )
 
                 return rating
@@ -93,6 +106,7 @@ fun com.fenchtose.movieratings.model.db.entity.MovieRating.convert(): MovieRatin
             type = type,
             translatedTitle = translatedTitle,
             startYear = startYear,
-            endYear = endYear
+            endYear = endYear,
+            source = source
     )
 }
