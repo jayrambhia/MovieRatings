@@ -24,7 +24,7 @@ class BubbleService: Service() {
     override fun onBind(intent: Intent?) = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val rating = MovieRating("test", 8.2f, 0, "", "", "", -1, -1)
+        val rating = MovieRating("test", 8.2f, 0, "", "", "", "", -1, -1)
         displayer?.showRatingWindow(rating)
 
         disposable = EventBus.subscribe<BubbleColorEvent>()

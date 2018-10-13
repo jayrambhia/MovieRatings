@@ -76,6 +76,8 @@
 	<string name="settings_api_fallback">Use Flutter\'s private APIs</string>
 	<string name="settings_api_order_info">In case there are multiple movies with the same title (and release year is not available), flutter shows you the ratings of the popular title (by votes). A lot of shows on Netflix are new so you can choose to see the ratings based on recency.</string>
 	<string name="settings_api_order_recent">Show recent titles</string>
+	<string name="settings_anime_info">Flutter can use My Anime List (MAL) database to get ratings of Animes if it\'s not found on IMDb.</string>
+	<string name="settings_anime">Use MAL database</string>
 	<string name="settings_install_tts_unsupported">It seems that Text to Speech is not supported by the device.</string>
 	<string name="settings_export_data_dialog_title">Export your data</string>
 	<string name="settings_export_data_dialog_content">Flutter lets you export your data in json format. You may share it with your friends, send yourself a copy for back-up or just keep it on your device.</string>

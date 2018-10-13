@@ -94,6 +94,30 @@
 			android:background="@color/divider_color"/>
 
 		<TextView
+			android:textAppearance="@style/Text.Dark.Secondary"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/settings_anime_info"
+			android:paddingStart="@dimen/gutter"
+			android:paddingEnd="@dimen/gutter"
+			android:layout_marginTop="@dimen/gutter"/>
+
+		<android.support.v7.widget.SwitchCompat
+			android:id="@+id/anime_toggle"
+			android:padding="@dimen/gutter"
+			android:text="@string/settings_anime"
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:textAppearance="@style/Text.Dark"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:background="@color/divider_color"/>
+
+		<TextView
 			android:textAppearance="@style/Text.Dark.Secondary.Medium.Large"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

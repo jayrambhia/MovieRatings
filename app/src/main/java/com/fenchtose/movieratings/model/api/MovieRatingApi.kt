@@ -11,7 +11,8 @@ interface MovieRatingApi {
     fun getMovieRating(@Query("title") title: String,
                        @Query("year") year: String? = null,
                        @Query("type") type: String? = null,
-                       @Query("order") order: String = "popular"): Observable<MovieRating>
+                       @Query("order") order: String = "popular",
+                       @Query("check_anime") checkAnime: Int = 0): Observable<MovieRating>
 
     @GET("/trending")
     fun getTrending(@Query("period") period: String): Observable<Trending>

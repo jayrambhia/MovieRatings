@@ -4,20 +4,18 @@ import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
-import com.fenchtose.movieratings.BuildConfig
-import com.fenchtose.movieratings.model.entity.OmdbMovie
-import com.fenchtose.movieratings.util.FixTitleUtils
+import com.fenchtose.movieratings.model.db.entity.MovieRating.Companion.ID
 
-@Entity(tableName = "MOVIE_RATINGS", indices = arrayOf(Index("IMDBID", unique = true)))
+@Entity(tableName = "MOVIE_RATINGS", indices = arrayOf(Index(ID, unique = true)))
 data class MovieRating(
         @PrimaryKey
-        @ColumnInfo(name = "IMDBID")
+        @ColumnInfo(name = ID)
         val imdbId: String,
 
-        @ColumnInfo(name = "IMDB_RATING")
+        @ColumnInfo(name = RATING)
         val rating: Float,
 
-        @ColumnInfo(name = "IMDB_VOTES")
+        @ColumnInfo(name = VOTES)
         val votes: Int,
 
         @ColumnInfo(name = "TITLE")
@@ -36,7 +34,10 @@ data class MovieRating(
         val endYear: Int = -1,
 
         @ColumnInfo(name = "TIMESTAMP")
-        val timestamp: Int = -1
+        val timestamp: Int = -1,
+
+        @ColumnInfo(name = "SOURCE")
+        val source: String
 ) {
 
     fun fitsYear(year: Int): Boolean {
@@ -64,31 +65,12 @@ data class MovieRating(
         return true
     }
 
-
-    /*fun toMovie(): Movie {
-        val movie = Movie()
-        movie.imdbId = imdbId
-        movie.title = title
-        movie.type = type
-
-        if (startYear != -1 && endYear != -1) {
-            movie.year = "$startYear - $endYear"
-        } else if (startYear != -1) {
-            movie.year = startYear.toString()
-        }
-
-        if (votes > 0) {
-            movie.imdbVotes = votes.toString()
-        }
-
-        if (rating > 0) {
-            movie.ratings = arrayListOf(Rating("Internet Movie Database", "$rating/10"))
-        }
-
-        movie.poster = "http://img.omdbapi.com/?i=$imdbId&h=600&apikey=${BuildConfig.OMDB_API_KEY}"
-
-        return movie
-    }*/
+    companion object {
+        // TODO change these column names
+        const val ID = "IMDBID"
+        const val RATING = "IMDB_RATING"
+        const val VOTES = "IMDB_VOTES"
+    }
 }
 
 @Entity(tableName = "RATING_NOT_FOUND", indices = arrayOf(Index("TITLE")))

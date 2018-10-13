@@ -167,13 +167,26 @@ class RatingDisplayer(ctx: Context,
                     trackEvent(GaEvents.DISMISS_RATING)
                     removeViewImmediate(it)
                 } else {
-                    val openInApp = preferences.isAppEnabled(UserPreferences.OPEN_MOVIE_IN_APP)
-                    trackEvent(GaEvents.RATING_OPEN_MOVIE.withLabel(if (openInApp) "app" else "imdb"))
-                    val opened = IntentUtils.openMovie(context, floatingRating?.rating?.imdbId, openInApp)
-                    if (opened) {
-                        removeView()
-                    }
+                    openBubble()
                 }
+            }
+        }
+
+        private fun openBubble() {
+            val openInApp = preferences.isAppEnabled(UserPreferences.OPEN_MOVIE_IN_APP)
+            val label = when(floatingRating?.rating?.source) {
+                "MAL" -> "mal"
+                "IMDB" -> if (openInApp) "app" else "imdb"
+                else -> null
+            }
+
+            label?.let {
+                trackEvent(GaEvents.RATING_OPEN_MOVIE.withLabel(it))
+            }
+
+            val opened = IntentUtils.openMovie(context, floatingRating?.rating, openInApp)
+            if (opened) {
+                removeView()
             }
         }
 

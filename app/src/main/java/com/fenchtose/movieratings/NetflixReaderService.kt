@@ -437,6 +437,7 @@ class NetflixReaderService : AccessibilityService() {
                     title = text,
                     appName = appName,
                     order = if (preferences?.isSettingEnabled(UserPreferences.SHOW_RECENT_RATING) == true) ORDER_RECENT else ORDER_POPULAR,
+                    checkAnime = if (preferences?.isAppEnabled(UserPreferences.CHECK_ANIME) == true) 1 else 0,
                     year = if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) year else null
             )
 

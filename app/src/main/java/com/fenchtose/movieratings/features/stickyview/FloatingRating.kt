@@ -14,7 +14,7 @@ class FloatingRating(private val context: Context) {
     set(value) {
         field = value
         value?.let {
-            setRating(it.rating.toString())
+            setRating(it.displayRating())
         }
     }
 
