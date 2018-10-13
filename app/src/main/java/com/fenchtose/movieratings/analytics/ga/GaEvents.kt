@@ -10,6 +10,7 @@ class GaEvents {
         val OPEN_MOVIE = GaEvent("%s", "open movie", "open movie")
         val OPEN_SETTINGS = GaEvent("%s", "tap", "settings")
         val REPORT_BUG = GaEvent("%s", "tap", "report bug")
+        val OPEN_PRIVACY_POLICY = GaEvent("%s", "tap", "privacy policy")
         val TAP_RATE_APP = GaEvent("%s", "tap", "rate app")
         val TAP_SHARE_APP = GaEvent("%s", "tap", "share app")
         val TAP_ACTIVATE_FLUTTER = GaEvent("app", "tap", "activate flutter")

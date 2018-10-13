@@ -77,6 +77,11 @@ class InfoPageBottomView: LinearLayout {
             IntentUtils.openReportBugIntent(context, "\n\n\n\n\n------\nThis data will help us in figuring out the issue.\n\n" +
                     "${getDeviceInfo()}\n\n${getAppInfo(context)}")
         }
+
+        findViewById<View?>(R.id.privacy_policy_view)?.setOnClickListener {
+            GaEvents.OPEN_PRIVACY_POLICY.withCategory(category).track()
+            IntentUtils.openPrivacyPolicy(context)
+        }
     }
 
     fun setRouter(router: Router?, category: String?) {

@@ -77,6 +77,12 @@ class IntentUtils {
             context.startActivity(Intent.createChooser(intent, "Report bug via"))
         }
 
+        fun openPrivacyPolicy(context: Context) {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/privacy_policy.txt"))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(Intent.createChooser(intent, "Open privacy policy with").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        }
+
         fun openShareFileIntent(context: Context, uri: Uri) {
             val intent = Intent(Intent.ACTION_SEND)
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
