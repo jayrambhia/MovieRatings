@@ -33,7 +33,7 @@ class InAppPurchaseCard : CardView {
     var bought: Boolean = false
     set(value) {
         field = value
-//        cta.show(!field)
+        cta.show(!field)
         thanksView.show(field)
         subtitle.show(!field)
     }

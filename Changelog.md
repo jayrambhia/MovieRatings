@@ -1,5 +1,12 @@
 # Flutter Changelog
 
+# 0.3.6
+
+ - In-app purchase card's purchase status fixed
+ - Movie rating expiry time added (2 weeks)
+ - Privacy policy added in the app
+ - Support added for My Anime List
+
 # 0.3.5
 
  - Bottom navigation integrated
