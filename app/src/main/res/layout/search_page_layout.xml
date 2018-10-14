@@ -57,11 +57,21 @@
         android:visibility="gone"
         android:layout_gravity="center"/>
 
+	<com.fenchtose.movieratings.features.updates.UpdatesBannersContainer
+		android:id="@+id/banners"
+		android:background="@color/accent_orange"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginTop="64dp"
+		android:layout_marginStart="4dp"
+		android:layout_marginEnd="4dp"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_marginTop="64dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/search_movie_item_layout"

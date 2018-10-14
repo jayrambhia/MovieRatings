@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	tools:parentTag="android.widget.LinearLayout">
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_margin="8dp"
+		android:visibility="gone"
+		android:textAppearance="@style/Text.Dark.Medium.Big"
+		android:text="(h) Updates"/>
+
+	<android.support.v7.widget.RecyclerView
+		android:id="@+id/recyclerview"
+		android:padding="64dp"
+		android:background="@color/bone"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_margin="4dp"
+		tools:listitem="@layout/update_banner_item_view"/>
+
+</merge>
