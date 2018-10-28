@@ -137,6 +137,7 @@
     <string name="info_page_rate_cta">Rate on PlayStore</string>
     <string name="info_page_credit_cta">Credits</string>
     <string name="info_page_test_cta">See how it works</string>
+	<string name="info_page_debug_cta">Debug options</string>
     <string name="info_page_settings_cta">Configure settings</string>
 	<string name="info_page_share_content">Hey, check out Flutter Ratings! It shows movie ratings on your screen when you\'re browsing Netflix and other streaming apps. Get the app %1s.</string>
 	<string name="info_page_go_premium_cta">Support Flutter</string>
@@ -261,7 +262,8 @@
 	<string name="support_notification_channel_description">Notification to prompt users to rate and support the app.</string>
 
 	<string name="support_app_notification_title">Finding flutter useful?</string>
-	<string name="support_app_notification_content">Support the app and show your appreciation</string>
+	<string name="support_app_notification_content">Support the app and show your appreciation.</string>
+	<string name="support_app_notification_content_variant">Support the app to get updates and improved experience.</string>
 
 	<string name="review_app_notification_title">Do you like Flutter?</string>
 	<string name="review_app_notification_content">Leave a review on Playstore and tell others your experience about Flutter.</string>

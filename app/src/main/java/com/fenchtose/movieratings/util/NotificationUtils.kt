@@ -18,11 +18,17 @@ import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
+import java.util.*
 
 
-fun showSupportAppNotification(context: Context) {
+fun showSupportAppNotification(context: Context, category: String) {
     val intent = Intent(context, MainActivity::class.java)
-    intent.putExtra("ga_event", GaEvents.OPEN_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_SUPPORT_APP).toBundle())
+
+    val variant = Random().nextInt(6091)%2 == 1
+    val label = if (variant) GaLabels.NOTIFICATION_SUPPORT_APP_VARIANT else GaLabels.NOTIFICATION_SUPPORT_APP
+    val content = if (variant) R.string.support_app_notification_content_variant else R.string.support_app_notification_content
+
+    intent.putExtra("ga_event", GaEvents.OPEN_NOTIFICATION.withLabel(label).toBundle())
     intent.putExtra(Router.HISTORY,
             Router.History()
                     .addPath(DonatePageFragment.DonatePath.KEY, DonatePageFragment.DonatePath.createExtras())
@@ -32,13 +38,15 @@ fun showSupportAppNotification(context: Context) {
     // Use PendingIntent.FLAG_UPDATE_CURRENT to avoid the issue of android caching the pending intent
     val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     showNotification(context, R.string.support_app_notification_title,
-            R.string.support_app_notification_content,
+            content,
             Constants.SUPPORT_APP_NOTIFICATION_ID,
             pendingIntent
     )
+
+    GaEvents.SEND_NOTIFICATION.withCategory(category).withLabel(label).track()
 }
 
-fun showReviewAppNotification(context: Context) {
+fun showReviewAppNotification(context: Context, category: String) {
     val intent = Intent(context, MainActivity::class.java)
     intent.putExtra("ga_event", GaEvents.OPEN_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_RATE_APP).toBundle())
     intent.putExtra(Router.HISTORY, Router.History().addPath("RateApp", Bundle()).toBundle())
@@ -50,6 +58,8 @@ fun showReviewAppNotification(context: Context) {
             Constants.REVIEW_APP_NOTIFICATION_ID,
             pendingIntent
     )
+
+    GaEvents.SEND_NOTIFICATION.withCategory(category).withLabel(GaLabels.NOTIFICATION_RATE_APP).track()
 }
 
 private fun showNotification(context: Context, @StringRes title: Int, @StringRes content: Int,

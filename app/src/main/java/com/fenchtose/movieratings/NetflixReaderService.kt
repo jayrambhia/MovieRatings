@@ -5,6 +5,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import com.fenchtose.movieratings.analytics.ga.GaCategory
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import com.fenchtose.movieratings.analytics.ga.GaEvents
@@ -543,8 +544,7 @@ class NetflixReaderService : AccessibilityService() {
 
     private fun showSupportAppPrompt() {
         if (!isNotificationChannelBlocked(this, Constants.SUPPORT_CHANNEL_ID)) {
-            showSupportAppNotification(this)
-            GaEvents.SEND_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_SUPPORT_APP).track()
+            showSupportAppNotification(this, GaCategory.SERVICE)
             historyKeeper?.inAppPurchasePromptShown()
             return
         }
@@ -554,8 +554,7 @@ class NetflixReaderService : AccessibilityService() {
 
     private fun showRateAppPrompt() {
         if (!isNotificationChannelBlocked(this, Constants.SUPPORT_CHANNEL_ID)) {
-            showReviewAppNotification(this)
-            GaEvents.SEND_NOTIFICATION.withLabel(GaLabels.NOTIFICATION_RATE_APP).track()
+            showReviewAppNotification(this, GaCategory.SERVICE)
             historyKeeper?.rateAppPromptShown()
             return
         }
