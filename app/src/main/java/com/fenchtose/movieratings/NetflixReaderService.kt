@@ -22,12 +22,12 @@ import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
+import com.fenchtose.movieratings.reader.*
 import com.fenchtose.movieratings.util.*
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.subjects.PublishSubject
 import retrofit2.HttpException
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 
@@ -37,6 +37,7 @@ class NetflixReaderService : AccessibilityService() {
     private val TAG: String = "NetflixReaderService"
 
     private var provider: MovieRatingsProvider? = null
+    private val readersMap = HashMap<String, AppReader>()
 
     private var preferences: UserPreferences? = null
 
@@ -61,6 +62,17 @@ class NetflixReaderService : AccessibilityService() {
 
     override fun onCreate() {
         super.onCreate()
+
+        readersMap.clear()
+        readersMap[Constants.PACKAGE_NETFLIX] = NetflixReader()
+        readersMap[Constants.PACKAGE_PRIMEVIDEO] = PrimeVideoReader()
+        readersMap[Constants.PACKAGE_HOTSTAR] = HotstarReader()
+        readersMap[Constants.PACKAGE_BBC_IPLAYER] = BBCiPlayerReader()
+        readersMap[Constants.PACKAGE_PLAY_MOVIES_TV] = PlayMoviesReader()
+        readersMap[Constants.PACKAGE_JIO_CINEMA] = JioCinemaReader()
+        readersMap[Constants.PACKAGE_JIO_TV] = JioTvReader()
+        readersMap[Constants.PACKAGE_YOUTUBE] = YoutubeReader()
+        readersMap[BuildConfig.APPLICATION_ID] = FlutterTestReader()
 
         preferences = SettingsPreferences(this)
         displayer = RatingDisplayer(this, preferences!!, analytics = true)
@@ -172,200 +184,41 @@ class NetflixReaderService : AccessibilityService() {
             title = null
         }
 
-        val info = event.source
-        info?.let {
+        val info = event.source ?: return
+        val isAppEnabled = when (info.packageName) {
+            BuildConfig.APPLICATION_ID -> true
+            else -> preferences?.isAppEnabled(info.packageName.toString())
+        }
 
-            val isAppEnabled = when (it.packageName) {
-                BuildConfig.APPLICATION_ID -> true
-                else -> preferences?.isAppEnabled(it.packageName.toString())
-            }
+        if (isAppEnabled == null || !isAppEnabled) {
+            return
+        }
 
-            if (isAppEnabled == null || !isAppEnabled) {
-                return@let
-            }
-
-            val titles: List<CharSequence> = when(it.packageName) {
-                BuildConfig.APPLICATION_ID -> it.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title").filter { it.text != null }.map { it.text }
-                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_title")
-                        .filter { it.text != null }
-                        .map {
-                            val text = it.text
-                            it.recycle()
-                            text
-                        }
-                Constants.PACKAGE_PRIMEVIDEO -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/TitleText")
-                        .filter { it.text != null }
-                        .map {
-                            val text = it.text
-                            it.recycle()
-                            text
-                        }
-                Constants.PACKAGE_PLAY_MOVIES_TV ->  {
-                    val nodes = ArrayList<CharSequence>()
-                    if (event.className == "com.google.android.apps.play.movies.mobile.usecase.details.DetailsActivity" && event.text != null) {
-                        val text = event.text.toString().replace("[", "").replace("]", "")
-                        nodes.add(text)
-                    }
-                    nodes
-                }
-                Constants.PACKAGE_HOTSTAR -> {
-                    val nodes = ArrayList<CharSequence>()
-                    // it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_HOTSTAR + ":id/metadata_title").filter { it.text != null }.map { it.text }
-                    if (event.className == "in.startv.hotstar.rocky.detailpage.HSDetailPageActivity" && event.text != null) {
-                        val text = event.text.toString().replace("[", "").replace("]", "")
-                        nodes.add(text)
-                    }
-                    nodes
-                }
-                Constants.PACKAGE_YOUTUBE -> {
-//                    checkNodeRecursively(it, 0)
-                    val nodes = ArrayList<CharSequence>()
-                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_YOUTUBE + ":id/watch_list").filter { it.childCount > 0 }
-                            .flatMap {
-                                findChildrenWithId(it, Constants.PACKAGE_YOUTUBE + ":id/title")
-                                        .filter { it.text != null && it.parent?.viewIdResourceName == null}
-                                        .map {
-                                            val text = it.text
-                                            it.recycle()
-                                            text
-                                        }
-                            }.toCollection(nodes)
-                    nodes
-                }
-                Constants.PACKAGE_BBC_IPLAYER -> {
-                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_BBC_IPLAYER + ":id/programme_details_title")
-                            .filter { it.text != null }
-                            .map {
-                                val text = it.text
-                                it.recycle()
-                                text
-                            }
-                }
-                Constants.PACKAGE_JIO_TV -> {
-                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_TV + ":id/program_name")
-                            .filter { it.text != null }
-                            .map {
-                                val text = it.text
-                                it.recycle()
-                                text
-                            }
-                }
-                Constants.PACKAGE_JIO_CINEMA -> {
-                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_CINEMA + ":id/tvShowName")
-                            .filter { it.text != null }
-                            .map {
-                                val text = it.text
-                                it.recycle()
-                                text
-                            }
-                }
-                else -> {
-                    checkNodeRecursively(it, 0)
-                    ArrayList()
-                }
-            }.distinctBy { it }
-
+        val reader = readersMap[info.packageName]
+        if (reader != null) {
+            val titles = reader.readTitles(event, info).distinctBy { it }
+            val years = reader.readYear(info).distinctBy { it }
             if (BuildConfig.DEBUG) {
+                if (titles.isEmpty()) {
+                    checkNodeRecursively(info, 0)
+                }
                 Log.d(TAG, "scraped titles: $titles")
             }
 
-            val years: List<CharSequence> = when(it.packageName) {
-                Constants.PACKAGE_NETFLIX -> it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_basic_info_year")
-                        .filter { it.text != null }
-                        .map {
-                            val text = it.text
-                            it.recycle()
-                            text
-                        }
-                Constants.PACKAGE_PRIMEVIDEO -> {
-                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/ItemMetadataView")
-                            // get children of that node
-                            .flatMap {
-                                val children = ArrayList<CharSequence>()
-                                (0 until it.childCount).map {
-                                    i ->
-                                        var text: CharSequence
-                                        try {
-                                            val child = it.getChild(i)
-                                            text = child.text
-                                            child.recycle()
-                                        } catch (e: IllegalStateException) {
-                                            e.printStackTrace()
-                                            text = ""
-                                        }
-                                        text
-                                }.filter {
-                                    it != null && it.isNotBlank()
-                                }
-                                .toCollection(children)
-                                children
-                            }
-                            // filter node which has text containing 4 digits
-                            .filter {
-                                !FixTitleUtils.fixPrimeVideoYear(it.toString()).isNullOrEmpty()
-                            }
-                }
-                Constants.PACKAGE_PLAY_MOVIES_TV ->  {
-                    val nodes = ArrayList<CharSequence>()
-                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PLAY_MOVIES_TV + ":id/play_header_listview")
-                            .takeIf { it.size > 0 }
-                            ?.firstOrNull()
-                            ?.run {
-                                (0 until childCount).map {
-                                    i -> getChild(i)
-                                }.filter {
-                                    it != null && it.text != null && it.className.contains("TextView") && FixTitleUtils.matchesPlayMoviesYear(it.text.toString())
-                                }.map {
-                                    val text = it.text
-                                    it.recycle()
-                                    text
-                                }
-                                 .toCollection(nodes)
-                            }
-
-                    nodes
-                }
-                Constants.PACKAGE_HOTSTAR -> {
-                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_HOTSTAR + ":id/metadata_subtitle")
-                            .filter { it.text != null }
-                            .map {
-                                val text = it.text
-                                it.recycle()
-                                text
-                            }
-                            .filter {
-                                !FixTitleUtils.fixHotstarYear(it.toString()).isNullOrEmpty()
-                            }
-                }
-                Constants.PACKAGE_JIO_CINEMA -> {
-                    it.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_CINEMA + ":id/tvMovieSubtitle")
-                            .filter { it.text != null }
-                            .map {
-                                val text = it.text
-                                it.recycle()
-                                text
-                            }
-                            .filter {
-                                !FixTitleUtils.fixJioCinemaYear(it.toString()).isNullOrEmpty()
-                            }
-                }
-                else -> ArrayList()
-            }.distinctBy { it }
-
             titles.firstOrNull { it != null && it.isNotBlank() }
-                    ?.let {
-                        setMovieTitle(
-                                fixTitle(info.packageName, it.toString()),
-                                years.takeIf { it.isNotEmpty() }?.firstOrNull()?.let {
-                                    fixYear(info.packageName, it.toString())
-                                },
-                                event.packageName.toString()
-                        )
-                    }
+                ?.let {
+                    setMovieTitle(
+                        fixTitle(info.packageName, it.toString()),
+                        years.takeIf { it.isNotEmpty() }?.firstOrNull()?.let {
+                            fixYear(info.packageName, it.toString())
+                        },
+                        event.packageName.toString()
+                    )
+                }
 
+        } else {
+            checkNodeRecursively(info, 0)
         }
-
-//        event.recycle()
     }
 
     @Suppress("unused")
@@ -386,33 +239,6 @@ class NetflixReaderService : AccessibilityService() {
 
                 Log.d(TAG, "${" ".repeat(level)}--- </children> ---")
             }
-        }
-    }
-
-    private fun findChildrenWithId(node: AccessibilityNodeInfo, id: String): ArrayList<AccessibilityNodeInfo> {
-        val children = ArrayList<AccessibilityNodeInfo>()
-        recursiveFindChildrenWithId(children, node, id)
-        return children
-    }
-
-    private fun recursiveFindChildrenWithId(result: ArrayList<AccessibilityNodeInfo>, node: AccessibilityNodeInfo, id: String) {
-        var added = false
-        if (node.viewIdResourceName == id) {
-            result.add(node)
-            added = true
-        }
-
-        if (node.childCount > 0) {
-            (0 until node.childCount)
-                    .forEach {
-                        index ->
-                        val child = node.getChild(index)
-                        recursiveFindChildrenWithId(result, child, id)
-                    }
-        }
-
-        if (!added) {
-            node.recycle()
         }
     }
 
@@ -450,22 +276,7 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun fixYear(packageName: CharSequence, text: String?): String {
-        text?.let {
-            val fixed = when(packageName) {
-                Constants.PACKAGE_NETFLIX -> FixTitleUtils.fixNetflixYear(it)
-                Constants.PACKAGE_PRIMEVIDEO -> FixTitleUtils.fixPrimeVideoYear(it)
-                Constants.PACKAGE_PLAY_MOVIES_TV -> FixTitleUtils.fixPlayMoviesYear(it)
-                Constants.PACKAGE_HOTSTAR -> FixTitleUtils.fixHotstarYear(it)
-                Constants.PACKAGE_JIO_CINEMA -> FixTitleUtils.fixJioCinemaYear(it)
-                else -> ""
-            }
-
-            fixed?.let {
-                return it
-            }
-        }
-
-        return ""
+        return text?.let { return readersMap[packageName]?.fixYear(it) ?: "" } ?: ""
     }
 
     private fun getMovieInfo(request: RatingRequest) {
