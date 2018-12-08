@@ -13,7 +13,6 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
-import com.fenchtose.movieratings.features.debugging.DebugOptionsPath
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
@@ -33,7 +32,7 @@ class InfoPageBottomView: LinearLayout {
         orientation = LinearLayout.VERTICAL
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
 
-        val historyKeeper = DbHistoryKeeper.newInstance(MovieRatingsApplication.instance)
+        val historyKeeper = DbHistoryKeeper.newInstance(MovieRatingsApplication.instance!!)
         accessibilityButton = findViewById(R.id.activate_button)
         accessibilityButton?.setOnClickListener {
             GaEvents.TAP_ACTIVATE_FLUTTER.track()
@@ -59,17 +58,19 @@ class InfoPageBottomView: LinearLayout {
             IntentUtils.openPlaystore(context)
         }
 
-        findViewById<View?>(R.id.share_view)?.setOnClickListener {
-            GaEvents.TAP_SHARE_APP.withCategory(category).track()
-            IntentUtils.openShareIntent(context, context.getString(R.string.info_page_share_content, Constants.APP_SHARE_URL))
+        val share = findViewById<View>(R.id.share_view)
+        share?.let {
+            share.setOnClickListener {
+                GaEvents.TAP_SHARE_APP.withCategory(category).track()
+                IntentUtils.openShareIntent(context, context.getString(R.string.info_page_share_content, Constants.APP_SHARE_URL))
+            }
         }
 
-
-        findViewById<View?>(R.id.settings_view)?.setOnClickListener {
+        val settingsView = findViewById<View?>(R.id.settings_view)
+        settingsView?.setOnClickListener {
             GaEvents.OPEN_SETTINGS.withCategory(category).track()
             router?.go(SettingsFragment.SettingsPath())
         }
-
 
         findViewById<View?>(R.id.feedback_view)?.setOnClickListener {
             GaEvents.REPORT_BUG.withCategory(category).track()
@@ -80,10 +81,6 @@ class InfoPageBottomView: LinearLayout {
         findViewById<View?>(R.id.privacy_policy_view)?.setOnClickListener {
             GaEvents.OPEN_PRIVACY_POLICY.withCategory(category).track()
             IntentUtils.openPrivacyPolicy(context)
-        }
-
-        findViewById<View?>(R.id.debug_view)?.setOnClickListener {
-            router?.go(DebugOptionsPath())
         }
     }
 

@@ -70,7 +70,6 @@ class AppInfoFragment: BaseFragment() {
             findViewById<View?>(R.id.premium_view)?.show(false)
             findViewById<View?>(R.id.feedback_view)?.show(true)
             findViewById<View?>(R.id.privacy_policy_view)?.show(true)
-            findViewById<View?>(R.id.debug_view)?.show(BuildConfig.DEBUG)
         }
     }
 

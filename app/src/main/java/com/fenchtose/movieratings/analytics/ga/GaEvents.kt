@@ -91,7 +91,6 @@ class GaCategory {
         const val SUPPORT_APP = "support app"
         const val TRENDING = "trending"
         const val BOTTOM_NAVIGATION = "bottom navigation"
-        const val DEBUGGING = "debugging"
     }
 }
 
@@ -116,14 +115,12 @@ class GaScreens {
         const val SETTINGS_TTS_SECTION = "settings tts section"
         const val SUPPORT_APP = "support app"
         const val TRENDING = "trending"
-        const val DEBUGGING = "debugging"
     }
 }
 
 class GaLabels {
     companion object {
         const val NOTIFICATION_SUPPORT_APP = "support app"
-        const val NOTIFICATION_SUPPORT_APP_VARIANT = "support app variant"
         const val NOTIFICATION_RATE_APP = "rate app"
         const val TOAST = "toast"
         const val BUBBLE = "bubble"

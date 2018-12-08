@@ -1,13 +1,13 @@
 # Flutter Changelog
 
-### 0.3.6
+# 0.3.6
 
  - In-app purchase card's purchase status fixed
  - Movie rating expiry time added (2 weeks)
  - Privacy policy added in the app
  - Support added for My Anime List
 
-### 0.3.5
+# 0.3.5
 
  - Bottom navigation integrated
  - Support page card designs updated
@@ -20,7 +20,7 @@
  - Report bug option added
  - Fixed bug where moshi would not parse "N/A" to int
 
-### 0.3.4
+# 0.3.4
 
  - Made copies more generic instead of being about movies
  - Redux architecture added
@@ -29,7 +29,7 @@
  - GA events added for ratings
  - Made some GA events non-interactive
 
-### 0.3.3
+# 0.3.3
 
  - `Trending` page added
  - Events cleaned up
@@ -38,7 +38,7 @@
  - Progress loader added to support page
  - Empty collection list page share issue fixed
 
-### 0.3.2
+# 0.3.2
 
  - Fix `NoSuchElement` crash
 

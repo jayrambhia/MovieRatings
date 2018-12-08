@@ -158,9 +158,9 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
 
                 if (BuildConfig.DEBUG) {
                     val list = arrayListOf(
-                            SkuDetails("{\"productId\":\"donate_large\",\"type\":\"inapp\",\"price\":\"€5,49\",\"price_amount_micros\":5490000,\"price_currency_code\":\"EUR\",\"title\":\"Generous (Flutter - Movie Ratings)\",\"description\":\"Show your generous support and help us run the app for 2 more weeks!\"}"),
-                            SkuDetails("{\"productId\":\"donate_medium\",\"type\":\"inapp\",\"price\":\"€2,99\",\"price_amount_micros\":2990000,\"price_currency_code\":\"EUR\",\"title\":\"Standard (Flutter - Movie Ratings)\",\"description\":\"Buy this in-app package to support the app and get us a coffee.\"}"),
-                            SkuDetails("{\"productId\":\"donate_small\",\"type\":\"inapp\",\"price\":\"€0,99\",\"price_amount_micros\":990000,\"price_currency_code\":\"EUR\",\"title\":\"Basic (Flutter - Movie Ratings)\",\"description\":\"Buy this tiny in-app package to show your support.\"}")
+                            SkuDetails("{\"productId\":\"donate_large\",\"type\":\"inapp\",\"price\":\"€5,49\",\"price_amount_micros\":5490000,\"price_currency_code\":\"EUR\",\"title\":\"Generous (Flutter - Movie Ratings)\",\"description\":\"Buy a small lunch for the developer.\"}"),
+                            SkuDetails("{\"productId\":\"donate_medium\",\"type\":\"inapp\",\"price\":\"€2,99\",\"price_amount_micros\":2990000,\"price_currency_code\":\"EUR\",\"title\":\"Standard (Flutter - Movie Ratings)\",\"description\":\"Buy a beer for the developer.\"}"),
+                            SkuDetails("{\"productId\":\"donate_small\",\"type\":\"inapp\",\"price\":\"€0,99\",\"price_amount_micros\":990000,\"price_currency_code\":\"EUR\",\"title\":\"Basic (Flutter - Movie Ratings)\",\"description\":\"Buy a cup of coffee for the developer.\"}")
                     )
                     queryPurchaseHistory(list)
                 }

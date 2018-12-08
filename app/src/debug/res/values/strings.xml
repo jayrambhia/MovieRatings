@@ -4,6 +4,4 @@
     <string name="app_name_short">Flutter Dev</string>
     <string name="accessibility_label">Flutter Movie Ratings Dev</string>
     <string name="import_activity_label">Import data to Dev Flutter</string>
-
-    <string name="debug_screen_title">Debug options</string>
 </resources>
