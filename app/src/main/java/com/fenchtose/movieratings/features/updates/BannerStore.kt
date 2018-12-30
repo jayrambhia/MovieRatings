@@ -46,7 +46,7 @@ private fun allBanners(): List<UpdateItem> {
             id = BANNER_BATTERY_OPTIMIZATION,
             maxVersion = -1,
             icon = R.drawable.ic_battery_charging_90_black_24dp,
-            description = "Turn off battery optimizations for an uninterrupted experience",
+            description = "Add this app to battery optimization whitelist in order to have an uninterrupted experience.",
             positiveCtaText = "Know more",
             filter = {
                 checkBatteryOptimized(it)
@@ -69,7 +69,7 @@ class PreferencesBannerStore(private val context: Context) : BannerStore {
             val lastShown = preferences.getLong(KEY_LAST_INTERACTED, 0)
             Observable
                 .just(
-                    (if (System.currentTimeMillis()/1000 - lastShown > THRESHOLD) allBanners() else listOf())
+                    (if (System.currentTimeMillis() / 1000 - lastShown > THRESHOLD) allBanners() else listOf())
                         .filter { it.maxVersion == -1 || it.maxVersion >= version }
                         .filter { !isDismissed(it.id) }
                         .filter { it.filter(context) }
@@ -78,7 +78,7 @@ class PreferencesBannerStore(private val context: Context) : BannerStore {
     }
 
     override fun dismiss(banner: UpdateItem) {
-        preferences.edit().putLong(KEY_LAST_INTERACTED, System.currentTimeMillis()/1000).apply()
+        preferences.edit().putLong(KEY_LAST_INTERACTED, System.currentTimeMillis() / 1000).apply()
         preferences.edit().putBoolean(KEY_PREFIX + banner.id, true).apply()
     }
 

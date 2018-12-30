@@ -23,7 +23,7 @@
             android:scaleType="center"
             android:layout_marginEnd="@dimen/gutter"
             tools:src="@drawable/ic_accessibility_yellow_24dp"
-            app:tint="@color/textColorDark"
+            android:tint="@color/textColorDark"
             />
 
         <TextView

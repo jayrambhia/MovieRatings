@@ -11,6 +11,8 @@ import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.settings.bubble.RatingBubbleSectionFragment
+import com.fenchtose.movieratings.util.checkBatteryOptimized
+import com.fenchtose.movieratings.util.show
 
 class SettingsFragment : BaseFragment() {
     override fun canGoBack() = true
@@ -27,11 +29,17 @@ class SettingsFragment : BaseFragment() {
         bindAction(view, R.id.settings_tts_section, TTSSectionFragment.TTSSettingsPath())
         bindAction(view, R.id.settings_misc_section, MiscSectionFragment.MiscSettingsPath())
         bindAction(view, R.id.settings_rating_section, RatingBubbleSectionFragment.RatingSectionPath())
+        if (checkBatteryOptimized(requireContext())) {
+            bindAction(view, R.id.section_battery_optimization, BatteryOptimizationPath())
+        }
     }
 
-    private fun bindAction(root: View, @IdRes id: Int, path: RouterPath<out BaseFragment>) {
-        root.findViewById<View?>(id)?.setOnClickListener {
-            this.path?.getRouter()?.go(path)
+    private fun bindAction(root: View, @IdRes id: Int, goTo: RouterPath<out BaseFragment>) {
+        root.findViewById<View?>(id)?.apply {
+            show(true)
+            setOnClickListener {
+                path?.getRouter()?.go(goTo)
+            }
         }
     }
 

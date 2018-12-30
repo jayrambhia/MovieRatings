@@ -103,6 +103,9 @@
 	<string name="settings_misc_section_subtitle">Configure settings (include year in searches, etc)</string>
 	<string name="settings_rating_section_title">Customize rating bubble</string>
 	<string name="settings_rating_section_subtitle">Change color, duration and position of the bubble</string>
+	<string name="settings_battery_optimization_section_title">Battery optimization</string>
+	<string name="settings_battery_optimization_section_subtitle">Add app to the whitelist for an uninterrupted experience</string>
+
 	<string name="settings_app_section_page_header">Supported apps</string>
 	<string name="settings_data_section_page_header">Data &amp; privacy</string>
 	<string name="settings_tts_section_page_header">Text to Speech</string>
@@ -275,5 +278,9 @@
 	<string name="trending_tab_week">This week</string>
 
 	<string name="update_banner_dismiss_cta">Dismiss</string>
+
+	<string name="battery_optimization_info_screen_title">Battery optimizations</string>
+	<string name="battery_optimization_info_screen_content">To save battery and optimize the usage, your device stops the apps when they are not used for 30 minutes or so.\n\nThis also applies to this app. So when this app is stopped, it will no longer be able to show you movie ratings when you are browsing Netflix or other apps.\n\nThis app is developed with battery usage at the center and does not consume a lot of battery.\n\nYou can avoid this poor experience by adding this app to battery optimization whitelist in your device settings.</string>
+	<string name="battery_optimization_info_screen_cta">Add app to whitelist</string>
 
 </resources>
