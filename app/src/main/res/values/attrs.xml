@@ -7,10 +7,6 @@
         <attr name="flex__vertical_spacing" format="dimension"/>
         <attr name="flex__horizontal_spacing" format="dimension"/>
     </declare-styleable>
-	<declare-styleable name="SettingsPageComponent">
-		<attr name="settings__title" format="reference|string"/>
-		<attr name="settings__subtitle" format="reference|string"/>
-	</declare-styleable>
 	<declare-styleable name="MaxHeightViewPager">
 		<attr name="vp__max_height" format="dimension"/>
 	</declare-styleable>
