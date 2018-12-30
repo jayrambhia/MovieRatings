@@ -13,6 +13,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
+import com.fenchtose.movieratings.features.debugging.DebugOptionsPath
 import com.fenchtose.movieratings.features.premium.DonatePageFragment
 import com.fenchtose.movieratings.features.settings.SettingsFragment
 import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
@@ -81,6 +82,10 @@ class InfoPageBottomView: LinearLayout {
         findViewById<View?>(R.id.privacy_policy_view)?.setOnClickListener {
             GaEvents.OPEN_PRIVACY_POLICY.withCategory(category).track()
             IntentUtils.openPrivacyPolicy(context)
+        }
+
+        findViewById<View?>(R.id.debug_view)?.setOnClickListener {
+            router?.go(DebugOptionsPath())
         }
     }
 
