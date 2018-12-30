@@ -30,7 +30,7 @@ fun showSupportAppNotification(context: Context, category: String) {
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
 
     // Use PendingIntent.FLAG_UPDATE_CURRENT to avoid the issue of android caching the pending intent
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent = PendingIntent.getActivity(context, Constants.SUPPORT_APP_NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     showNotification(context, R.string.support_app_notification_title,
             R.string.support_app_notification_content,
             Constants.SUPPORT_APP_NOTIFICATION_ID,
@@ -46,7 +46,7 @@ fun showReviewAppNotification(context: Context, category: String) {
     intent.putExtra(Router.HISTORY, Router.History().addPath("RateApp", Bundle()).toBundle())
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     // Use PendingIntent.FLAG_UPDATE_CURRENT to avoid the issue of android caching the pending intent
-    val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+    val pendingIntent = PendingIntent.getActivity(context, Constants.REVIEW_APP_NOTIFICATION_ID, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     showNotification(context, R.string.review_app_notification_title,
             R.string.review_app_notification_content,
             Constants.REVIEW_APP_NOTIFICATION_ID,

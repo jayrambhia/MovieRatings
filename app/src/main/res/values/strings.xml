@@ -263,7 +263,7 @@
 	<string name="support_notification_channel_description">Notification to prompt users to rate and support the app.</string>
 
 	<string name="support_app_notification_title">Finding flutter useful?</string>
-	<string name="support_app_notification_content">Support the app and show your appreciation</string>
+	<string name="support_app_notification_content">Support the app to get updates and improved experience.</string>
 
 	<string name="review_app_notification_title">Do you like Flutter?</string>
 	<string name="review_app_notification_content">Leave a review on Playstore and tell others your experience about Flutter.</string>
