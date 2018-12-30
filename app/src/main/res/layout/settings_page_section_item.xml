@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ripple_white_bg">
+
+    <TextView
+        android:textAppearance="@style/Text.Dark.Large"
+        android:id="@+id/settings_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:paddingStart="@dimen/gutter"
+        android:paddingEnd="@dimen/gutter"
+        tools:text="Manage supported apps"/>
+
+    <TextView
+        android:textAppearance="@style/Text.Dark.Secondary"
+        android:id="@+id/settings_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/gutter"
+        android:paddingEnd="@dimen/gutter"
+        tools:text="Enable/disable rating window for apps"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/divider_color"/>
+
+</LinearLayout>

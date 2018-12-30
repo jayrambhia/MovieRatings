@@ -1,53 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:orientation="vertical"
+<android.support.v7.widget.RecyclerView android:id="@+id/recyclerview"
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
-
-	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
-		android:id="@+id/settings_app_section"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:settings__title="@string/settings_app_section_title"
-		app:settings__subtitle="@string/settings_app_section_subtitle"/>
-
-	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
-		android:id="@+id/settings_data_section"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:settings__title="@string/settings_data_and_privacy_section_title"
-		app:settings__subtitle="@string/settings_data_and_privacy_section_subtitle"/>
-
-	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
-		android:id="@+id/settings_tts_section"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:settings__title="@string/settings_tts_section_title"
-		app:settings__subtitle="@string/settings_tts_section_subtitle"/>
-
-	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
-		android:id="@+id/settings_rating_section"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:settings__title="@string/settings_rating_section_title"
-		app:settings__subtitle="@string/settings_rating_section_subtitle"/>
-
-	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
-		android:id="@+id/settings_misc_section"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		app:settings__title="@string/settings_misc_section_title"
-		app:settings__subtitle="@string/settings_misc_section_subtitle"/>
-
-	<com.fenchtose.movieratings.features.settings.widgets.SettingsPageComponent
-		android:id="@+id/section_battery_optimization"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:visibility="gone"
-		tools:visibility="visible"
-		app:settings__title="@string/settings_battery_optimization_section_title"
-		app:settings__subtitle="@string/settings_battery_optimization_section_subtitle"/>
-
-</LinearLayout>
+	android:layout_height="match_parent"
+	tools:listitem="@layout/settings_page_section_item"
+	xmlns:tools="http://schemas.android.com/tools"/>

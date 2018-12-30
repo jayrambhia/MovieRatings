@@ -118,6 +118,7 @@ class GaScreens {
         const val TRENDING = "trending"
         const val DEBUGGING = "debugging"
         const val BATTERY_OPTIMIZATION_INFO = "battery optimization info"
+        const val SETTINGS_NOTIFICATION_SECTION = "settings notification section"
     }
 }
 
