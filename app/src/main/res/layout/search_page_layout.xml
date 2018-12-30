@@ -57,11 +57,21 @@
         android:visibility="gone"
         android:layout_gravity="center"/>
 
+	<include
+		android:id="@+id/update_banner_container"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="64dp"
+		android:visibility="gone"
+		tools:visibility="visible"
+		layout="@layout/update_banner_layout"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_marginTop="64dp"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/search_movie_item_layout"

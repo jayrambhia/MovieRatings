@@ -26,6 +26,14 @@ fun <T> List<T>.push(t: T): List<T> {
     return add(t)
 }
 
+fun <T> List<T>.remove(index: Int): List<T> {
+    if (index in 0..(size - 1)) {
+        return toMutableList().apply { removeAt(index) }
+    }
+
+    return this
+}
+
 fun <T> List<T>.pop(): List<T> {
     return toMutableList().apply { removeAt(size - 1) }
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardUseCompatPadding="true"
+    app:contentPaddingTop="@dimen/gutter"
+    app:contentPaddingLeft="@dimen/gutter"
+    app:contentPaddingRight="@dimen/gutter"
+    app:contentPaddingBottom="8dp"
+    app:cardCornerRadius="1dp"
+    app:cardElevation="2dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/banner_icon"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:scaleType="center"
+            android:layout_marginEnd="@dimen/gutter"
+            tools:src="@drawable/ic_accessibility_yellow_24dp"
+            android:tint="@color/textColorDark"
+            />
+
+        <TextView
+            android:id="@+id/banner_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/banner_icon"
+            android:textAppearance="@style/Text.Dark.Big"
+            android:layout_marginBottom="8dp"
+            tools:text="Turn off battery optimizations for an uninterrupted experience"
+            />
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:id="@+id/banner_positive_cta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/banner_content"
+            android:layout_alignParentEnd="true"
+            tools:text="Open settings"/>
+
+        <Button
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:id="@+id/banner_dismiss_cta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/banner_content"
+            android:layout_toStartOf="@id/banner_positive_cta"
+            tools:text="Dismiss"/>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

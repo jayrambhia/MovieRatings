@@ -19,6 +19,8 @@ import com.fenchtose.movieratings.features.season.episode.EpisodePageMiddleware
 import com.fenchtose.movieratings.features.season.episode.reduceEpisodes
 import com.fenchtose.movieratings.features.trending.TrendingMoviesMiddleware
 import com.fenchtose.movieratings.features.trending.reduceTrendingPage
+import com.fenchtose.movieratings.features.updates.UpdatesBannerMiddleware
+import com.fenchtose.movieratings.features.updates.reduceUpdateBanners
 import com.fenchtose.movieratings.model.db.like.LikeMiddleware
 import com.fenchtose.movieratings.model.db.like.reduceLiked
 import com.fenchtose.movieratings.model.db.movieCollection.CollectionMiddleware
@@ -38,7 +40,8 @@ class AppStore(context: Context): SimpleStore<AppState>(
                 AppState::reduceMoviePage,
                 AppState::reduceCollectionListPage,
                 AppState::reduceCollectionPage,
-                AppState::reduceEpisodes
+                AppState::reduceEpisodes,
+                AppState::reduceUpdateBanners
                 ),
         listOf<Middleware<AppState>>(
                 ::logger,
@@ -54,7 +57,8 @@ class AppStore(context: Context): SimpleStore<AppState>(
                 CollectionListPageMiddleware.newInstance(context)::middleware,
                 CollectionPageMiddleware.newInstance(context)::middleware,
                 EpisodePageMiddleware.newInstance()::middleware,
-                DataFileExporterMiddleware.newInstance(context)::middleware
+                DataFileExporterMiddleware.newInstance(context)::middleware,
+                UpdatesBannerMiddleware.newInstance(context)::middleware
         )
 ) {
 

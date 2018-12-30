@@ -41,6 +41,17 @@ class IntentUtils {
         }
 
         @RequiresApi(Build.VERSION_CODES.M)
+        fun openBatteryOptimizationWhitelist(context: Context): Boolean {
+            val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+            return if (PackageUtils.isIntentCallabale(context, intent)) {
+                context.startActivity(intent)
+                true
+            } else {
+                false
+            }
+        }
+
+        @RequiresApi(Build.VERSION_CODES.M)
         fun openDrawSettings(context: Context): Boolean {
             val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     Uri.parse("package:" + context.packageName))
