@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged"
-    android:packageNames="com.netflix.mediaclient, com.amazon.avod.thirdpartyclient, com.google.android.videos, in.startv.hotstar, com.google.android.youtube, bbc.iplayer.android, com.jio.jioplay.tv, com.jio.media.ondemand, android.system.ui"
+    android:packageNames="com.netflix.mediaclient, com.amazon.avod.thirdpartyclient, com.google.android.videos, in.startv.hotstar, com.google.android.youtube, bbc.iplayer.android, com.jio.jioplay.tv, com.jio.media.ondemand, com.redbox.android.activity, android.system.ui"
     android:description="@string/accessibility_description"
     android:summary="@string/accessibility_summary"
     android:accessibilityFeedbackType="feedbackGeneric"

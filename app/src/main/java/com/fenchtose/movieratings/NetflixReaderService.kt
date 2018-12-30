@@ -72,6 +72,7 @@ class NetflixReaderService : AccessibilityService() {
         readersMap[Constants.PACKAGE_JIO_CINEMA] = JioCinemaReader()
         readersMap[Constants.PACKAGE_JIO_TV] = JioTvReader()
         readersMap[Constants.PACKAGE_YOUTUBE] = YoutubeReader()
+        readersMap[Constants.PACKAGE_REDBOX] = RedboxReader()
         readersMap[BuildConfig.APPLICATION_ID] = FlutterTestReader()
 
         preferences = SettingsPreferences(this)

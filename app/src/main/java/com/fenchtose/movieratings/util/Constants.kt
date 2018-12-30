@@ -5,39 +5,42 @@ import com.fenchtose.movieratings.R
 
 class Constants {
     companion object {
-        val OMDB_ENDPOINT = "https://www.omdbapi.com/"
+        const val OMDB_ENDPOINT = "https://www.omdbapi.com/"
         val USE_DUMMY_API = BuildConfig.DEBUG && BuildConfig.OMDB_API_KEY.isEmpty()
-        val PACKAGE_NETFLIX = "com.netflix.mediaclient"
-        val PACKAGE_PRIMEVIDEO = "com.amazon.avod.thirdpartyclient"
-        val PACKAGE_PLAY_MOVIES_TV = "com.google.android.videos"
-        val PACKAGE_HOTSTAR = "in.startv.hotstar"
-        val PACKAGE_YOUTUBE = "com.google.android.youtube"
-        val PACKAGE_BBC_IPLAYER = "bbc.iplayer.android"
-        val PACKAGE_JIO_TV = "com.jio.jioplay.tv"
-        val PACKAGE_JIO_CINEMA = "com.jio.media.ondemand"
-        val APP_SHARE_URL = "https://goo.gl/y3HXVi"
+        const val PACKAGE_NETFLIX = "com.netflix.mediaclient"
+        const val PACKAGE_PRIMEVIDEO = "com.amazon.avod.thirdpartyclient"
+        const val PACKAGE_PLAY_MOVIES_TV = "com.google.android.videos"
+        const val PACKAGE_HOTSTAR = "in.startv.hotstar"
+        const val PACKAGE_YOUTUBE = "com.google.android.youtube"
+        const val PACKAGE_BBC_IPLAYER = "bbc.iplayer.android"
+        const val PACKAGE_JIO_TV = "com.jio.jioplay.tv"
+        const val PACKAGE_JIO_CINEMA = "com.jio.media.ondemand"
+        const val PACKAGE_REDBOX = "com.redbox.android.activity"
 
-        val EXPORT_MOVIES = "movies"
-        val EXPORT_COLLECTIONS = "collections"
-        val EXPORT_LIKES = "likes"
-        val EXPORT_APP = "app"
-        val EXPORT_VERSION = "version"
-        val EXPORT_RECENTLY_BROWSED = "recently_browsed"
-        val EXPORT_APP_NAME = "Flutter"
+        const val APP_SHARE_URL = "https://goo.gl/y3HXVi"
+
+        const val EXPORT_MOVIES = "movies"
+        const val EXPORT_COLLECTIONS = "collections"
+        const val EXPORT_LIKES = "likes"
+        const val EXPORT_APP = "app"
+        const val EXPORT_VERSION = "version"
+        const val EXPORT_RECENTLY_BROWSED = "recently_browsed"
+        const val EXPORT_APP_NAME = "Flutter"
 
         val supportedApps = hashMapOf(
-                Pair(PACKAGE_NETFLIX, R.string.settings_netflix),
-                Pair(PACKAGE_PRIMEVIDEO, R.string.settings_primevideo),
-                Pair(PACKAGE_PLAY_MOVIES_TV, R.string.settings_playmovies),
-                Pair(PACKAGE_BBC_IPLAYER, R.string.settings_bbc_iplayer),
-                Pair(PACKAGE_HOTSTAR, R.string.settings_hotstar),
-                Pair(PACKAGE_JIO_TV, R.string.settings_jio_tv),
-                Pair(PACKAGE_JIO_CINEMA, R.string.settings_jio_cinema)
+            Pair(PACKAGE_NETFLIX, R.string.settings_netflix),
+            Pair(PACKAGE_PRIMEVIDEO, R.string.settings_primevideo),
+            Pair(PACKAGE_PLAY_MOVIES_TV, R.string.settings_playmovies),
+            Pair(PACKAGE_BBC_IPLAYER, R.string.settings_bbc_iplayer),
+            Pair(PACKAGE_HOTSTAR, R.string.settings_hotstar),
+            Pair(PACKAGE_JIO_TV, R.string.settings_jio_tv),
+            Pair(PACKAGE_JIO_CINEMA, R.string.settings_jio_cinema),
+            Pair(PACKAGE_REDBOX, R.string.settings_redbox)
         )
 
-        val SUPPORT_CHANNEL_ID = "support"
-        val SUPPORT_APP_NOTIFICATION_ID = 21
-        val REVIEW_APP_NOTIFICATION_ID = 22
+        const val SUPPORT_CHANNEL_ID = "support"
+        const val SUPPORT_APP_NOTIFICATION_ID = 21
+        const val REVIEW_APP_NOTIFICATION_ID = 22
 
     }
 
