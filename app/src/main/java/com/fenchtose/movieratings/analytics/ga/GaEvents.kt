@@ -61,7 +61,7 @@ class GaEvents {
         val GET_RATINGS_ONLINE = GaEvent(GaCategory.SERVICE, "get rating online", "server: %s", true)
         val RATING_NOT_FOUND = GaEvent(GaCategory.SERVICE, "rating not found", "server: %s", true)
         val SHOW_RATINGS = GaEvent(GaCategory.SERVICE, "show rating", "%s", true)
-        val SEND_NOTIFICATION = GaEvent(GaCategory.SERVICE, "send notification", "%s", true)
+        val SEND_NOTIFICATION = GaEvent("%s", "send notification", "%s", true)
         val NOTIFICATION_BLOCKED = GaEvent(GaCategory.SERVICE, "notification blocked", "%s", true)
         val OPEN_NOTIFICATION = GaEvent(GaCategory.SERVICE, "open notification", "%s")
         val DISMISS_RATING = GaEvent(GaCategory.SERVICE, "dismiss", "rating")
@@ -91,6 +91,7 @@ class GaCategory {
         const val SUPPORT_APP = "support app"
         const val TRENDING = "trending"
         const val BOTTOM_NAVIGATION = "bottom navigation"
+        const val DEBUGGING = "debugging"
     }
 }
 
@@ -115,6 +116,7 @@ class GaScreens {
         const val SETTINGS_TTS_SECTION = "settings tts section"
         const val SUPPORT_APP = "support app"
         const val TRENDING = "trending"
+        const val DEBUGGING = "debugging"
     }
 }
 

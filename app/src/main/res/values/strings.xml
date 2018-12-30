@@ -143,6 +143,7 @@
 	<string name="info_page_go_premium_cta">Support Flutter</string>
 	<string name="info_page_feedback_cta">Report a bug / feature</string>
 	<string name="info_page_privacy_policy_cta">Privacy policy</string>
+	<string name="info_page_debug_cta">Debug options</string>
 
     <string name="credit_dialog_title">Credits</string>
     <string name="credit_dialog_content">Flutter uses Open Movie Database to get movie ratings.</string>
