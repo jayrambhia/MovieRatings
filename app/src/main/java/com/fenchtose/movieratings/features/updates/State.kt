@@ -1,20 +1,27 @@
 package com.fenchtose.movieratings.features.updates
 
 import android.content.Context
+import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Next
 import com.fenchtose.movieratings.base.redux.reduceChild
+import com.fenchtose.movieratings.base.router.Navigation
+import com.fenchtose.movieratings.base.router.Router
+import com.fenchtose.movieratings.features.settings.MiscSectionFragment
+import com.fenchtose.movieratings.features.updates.BannerStore.Companion.BANNER_MAL
 import com.fenchtose.movieratings.util.AppRxHooks
 import com.fenchtose.movieratings.util.RxHooks
 import com.fenchtose.movieratings.util.remove
 
 data class UpdateItem(
     val id: String,
-    val version: Int,
-    val title: CharSequence,
-    val description: CharSequence
+    val maxVersion: Int,
+    val icon: Int = 0,
+    val description: CharSequence,
+    val positiveCtaText: String,
+    val filter: (context: Context) -> Boolean = { true }
 )
 
 data class UpdateBannersState(
@@ -23,6 +30,7 @@ data class UpdateBannersState(
 
 data class Dismiss(val banner: UpdateItem): Action
 data class Loaded(val banners: List<UpdateItem>): Action
+data class PositiveCta(val banner: UpdateItem, val router: Router): Action
 
 data class Load(val version: Int): Action
 
@@ -34,6 +42,7 @@ private fun UpdateBannersState.reduce(action: Action): UpdateBannersState {
     return when(action) {
         is Dismiss -> copy(banners = banners.dismiss(action.banner))
         is Loaded -> copy(banners = action.banners)
+        is PositiveCta -> copy(banners = banners.dismiss(action.banner))
         else -> this
     }
 }
@@ -62,18 +71,29 @@ class UpdatesBannerMiddleware(private val store: BannerStore,
             load(action.version, dispatch)
         } else if (action is Dismiss) {
             store.dismiss(action.banner)
+            return next(state, Load(BuildConfig.VERSION_CODE), dispatch)
+        } else if (action is PositiveCta) {
+            onPositive(action.banner, action.router, dispatch)
+            store.dismiss(action.banner)
+            return next(state, Load(BuildConfig.VERSION_CODE), dispatch)
         }
 
         return next(state, action, dispatch)
+    }
+
+    private fun onPositive(banner: UpdateItem, router: Router, dispatch: Dispatch) {
+        when(banner.id) {
+            BANNER_MAL -> dispatch(Navigation(router, MiscSectionFragment.MiscSettingsPath()))
+        }
     }
 
     private fun load(version: Int, dispatch: Dispatch) {
         store.load(version)
                 .subscribeOn(rxHooks.ioThread())
                 .observeOn(rxHooks.mainThread())
-                .subscribe({
+                .subscribe {
                     dispatch(Loaded(it))
-                })
+                }
     }
 
     companion object {

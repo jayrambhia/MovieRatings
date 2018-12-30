@@ -274,4 +274,6 @@
 	<string name="trending_tab_today">Today</string>
 	<string name="trending_tab_week">This week</string>
 
+	<string name="update_banner_dismiss_cta">Dismiss</string>
+
 </resources>

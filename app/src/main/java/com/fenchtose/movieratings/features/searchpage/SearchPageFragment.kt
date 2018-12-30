@@ -12,6 +12,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.GaEvents
@@ -25,6 +26,9 @@ import com.fenchtose.movieratings.features.info.InfoPageBottomView
 import com.fenchtose.movieratings.features.moviecollection.collectionpage.MovieCollectionOp
 import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.features.trending.TrendingPath
+import com.fenchtose.movieratings.features.updates.Banner
+import com.fenchtose.movieratings.features.updates.Load
+import com.fenchtose.movieratings.features.updates.UpdateBannersState
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
 import com.fenchtose.movieratings.model.entity.Movie
@@ -47,6 +51,8 @@ class SearchPageFragment: BaseFragment() {
     private var adapterConfig: SearchAdapterConfig? = null
     private var appInfoContainer: ViewGroup? = null
 
+    private var bannerContainer: View? = null
+
     private var watcher: TextWatcher? = null
     private var querySubject: PublishSubject<String>? = null
 
@@ -61,6 +67,8 @@ class SearchPageFragment: BaseFragment() {
         recyclerView = view.findViewById(R.id.recyclerview)
         searchView = view.findViewById(R.id.search_view)
         clearButton = view.findViewById(R.id.clear_button)
+
+        bannerContainer = view.findViewById(R.id.update_banner_container)
 
         path?.takeIf { it is SearchPageFragment.SearchPath.Default }?.let {
             appInfoContainer = view.findViewById<ViewGroup?>(R.id.bottom_container)?.apply {
@@ -157,8 +165,18 @@ class SearchPageFragment: BaseFragment() {
                 if (!state.collectionSearchPages.isEmpty()) {
                     render(state.collectionSearchPages.last(), dispatch)
                 }
-            } else {render(state.searchPage, dispatch) }
+            } else {
+                render(state.searchPage, dispatch)
+                if (state.searchPage.progress == Progress.Default) {
+                    render(state.updatesBanners, dispatch)
+                }
+            }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        dispatch?.invoke(Load(BuildConfig.VERSION_CODE))
     }
 
     private fun render(state: SearchPageState, dispatch: Dispatch) {
@@ -166,6 +184,8 @@ class SearchPageFragment: BaseFragment() {
         if (state.query != searchView?.text?.toString()) {
             searchView?.setText(state.query)
         }
+
+        bannerContainer?.show(false)
 
         when(state.progress) {
             is Progress.Default -> {
@@ -213,6 +233,18 @@ class SearchPageFragment: BaseFragment() {
                     dispatch.invoke(ClearCollectionOp)
                 }
             }
+        }
+    }
+
+    private fun render(state: UpdateBannersState, dispatch: Dispatch) {
+        state.banners.firstOrNull()?.let { item ->
+            path?.getRouter()?.let { router ->
+                Banner.Builder(requireContext(), bannerContainer!!)
+                    .withUpdateBanner(item, router, dispatch)
+                    .build()
+                    .show()
+            }
+
         }
     }
 
