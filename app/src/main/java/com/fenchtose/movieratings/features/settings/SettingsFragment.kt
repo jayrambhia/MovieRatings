@@ -16,7 +16,6 @@ import com.fenchtose.movieratings.features.settings.bubble.RatingBubbleSectionFr
 import com.fenchtose.movieratings.widgets.SimpleAdapter
 import com.fenchtose.movieratings.widgets.SimpleAdapterViewBinder
 import com.fenchtose.movieratings.util.checkBatteryOptimized
-import com.fenchtose.movieratings.util.show
 
 class SettingsFragment : BaseFragment() {
     override fun canGoBack() = true
@@ -77,6 +76,11 @@ class SettingsFragment : BaseFragment() {
                 R.string.settings_rating_section_title,
                 R.string.settings_rating_section_subtitle,
                 RatingBubbleSectionFragment.RatingSectionPath()
+            ),
+            SettingsSection(
+                R.string.settings_notification_section_title,
+                R.string.settings_notification_section_subtitle,
+                NotificationSectionPath()
             )
         )
 
