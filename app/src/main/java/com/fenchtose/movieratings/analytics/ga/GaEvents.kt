@@ -70,6 +70,10 @@ class GaEvents {
         val SPEAK_RATING = GaEvent(GaCategory.SERVICE, "tts", "rating", true)
 
         val SELECT_BOTTOM_TAB = GaEvent(GaCategory.BOTTOM_NAVIGATION, "select", "tab: %s")
+
+        val UPDATE_BANNER_SHOWN = GaEvent(GaCategory.UPDATE_BANNER, "shown", "banner: %s")
+        val UPDATE_BANNER_DISMISS = GaEvent(GaCategory.UPDATE_BANNER, "dismiss", "banner: %s")
+        val UPDATE_BANNER_CTA = GaEvent(GaCategory.UPDATE_BANNER, "cta", "banner: %s")
     }
 }
 
@@ -92,6 +96,7 @@ class GaCategory {
         const val TRENDING = "trending"
         const val BOTTOM_NAVIGATION = "bottom navigation"
         const val DEBUGGING = "debugging"
+        const val UPDATE_BANNER = "update banner"
     }
 }
 

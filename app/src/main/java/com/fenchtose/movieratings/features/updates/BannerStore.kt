@@ -61,7 +61,7 @@ class PreferencesBannerStore(private val context: Context) : BannerStore {
         context.getSharedPreferences("updates_banners", Context.MODE_PRIVATE)
     private val KEY_PREFIX = "banner_"
     private val KEY_LAST_INTERACTED = "banner_last_interacted"
-    private val THRESHOLD = 60 * 3600 // 1 hour
+    private val THRESHOLD = 3600 // 1 hour
 
     override fun load(version: Int): Observable<List<UpdateItem>> {
         return Observable.defer {

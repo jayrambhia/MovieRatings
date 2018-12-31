@@ -2,6 +2,8 @@ package com.fenchtose.movieratings.features.updates
 
 import android.content.Context
 import com.fenchtose.movieratings.BuildConfig
+import com.fenchtose.movieratings.analytics.events.GaEvent
+import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
@@ -71,15 +73,19 @@ private fun List<UpdateItem>.dismiss(item: UpdateItem): List<UpdateItem> {
 class UpdatesBannerMiddleware(private val store: BannerStore,
                               private val rxHooks: RxHooks) {
     fun middleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
-        if (action is Load) {
-            load(action.version, dispatch)
-        } else if (action is Dismiss) {
-            store.dismiss(action.banner)
-            return next(state, Load(BuildConfig.VERSION_CODE), dispatch)
-        } else if (action is PositiveCta) {
-            onPositive(action.banner, action.router, dispatch)
-            store.dismiss(action.banner)
-            return next(state, Load(BuildConfig.VERSION_CODE), dispatch)
+        when (action) {
+            is Load -> load(action.version, dispatch)
+            is Dismiss -> {
+                GaEvents.UPDATE_BANNER_DISMISS.withLabelArg(action.banner.id).track()
+                store.dismiss(action.banner)
+                return next(state, Load(BuildConfig.VERSION_CODE), dispatch)
+            }
+            is PositiveCta -> {
+                GaEvents.UPDATE_BANNER_CTA.withLabelArg(action.banner.id).track()
+                onPositive(action.banner, action.router, dispatch)
+                store.dismiss(action.banner)
+                return next(state, Load(BuildConfig.VERSION_CODE), dispatch)
+            }
         }
 
         return next(state, action, dispatch)

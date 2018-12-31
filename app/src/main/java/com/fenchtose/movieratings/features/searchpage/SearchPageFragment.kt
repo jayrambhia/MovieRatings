@@ -243,6 +243,7 @@ class SearchPageFragment: BaseFragment() {
                     .withUpdateBanner(item, router, dispatch)
                     .build()
                     .show()
+                GaEvents.UPDATE_BANNER_SHOWN.withLabelArg(item.id).track()
             }
 
         }

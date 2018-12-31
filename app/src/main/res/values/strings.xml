@@ -268,10 +268,10 @@
 	<string name="support_notification_channel_description">Notification to prompt users to rate and support the app.</string>
 
 	<string name="support_app_notification_title">Finding flutter useful?</string>
-	<string name="support_app_notification_content">Support the app to get updates and improved experience.</string>
+	<string name="support_app_notification_content">Support the app so that we can provide you future updates and improvements.</string>
 
 	<string name="review_app_notification_title">Do you like Flutter?</string>
-	<string name="review_app_notification_content">Leave a review on Playstore and tell others your experience about Flutter.</string>
+	<string name="review_app_notification_content">Leave a review on Playstore and tell others about your experience with the app.</string>
 
 	<string name="trending_screen_title">Trending</string>
 	<string name="trending_page_empty_content">We don\'t have list of trending titles. Please try again later.</string>
