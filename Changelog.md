@@ -1,5 +1,17 @@
 # Flutter Changelog
 
+# 0.3.7
+
+ - Debug menu added
+ - NetflixReaderService refactored
+ - PendingIntent notification issue fixed
+ - Battery optimization / whitelist info screen, settings section added
+ - Settings page refactored
+ - Notification settings page and section added
+ - Update banners mechanism added
+ - Banners added about MAL, Redbox app, and battery optimizations
+ - Push notification content updated
+
 # 0.3.6
 
  - In-app purchase card's purchase status fixed

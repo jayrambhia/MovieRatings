@@ -5,7 +5,7 @@
 <img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png" width="480px"/>
 </p>
 
-You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.3.6](https://github.com/jayrambhia/MovieRatings/releases/download/v0.3.6/flutter_v0.3.6.apk)
+You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.3.7](https://github.com/jayrambhia/MovieRatings/releases/download/v0.3.7/flutter_v0.3.7.apk)
 
 ## Screenshots of master
 
@@ -87,6 +87,7 @@ Flutter is brilliant but you're the boss! You need to enable Flutter's accessibi
  - Netflix, Amazon Prime Video and Google Play Movies & TV for the worldwide audience.
  - BBC iPlayer for UK users.
  - Hotstar, Jio TV and Jio Cinema for our Indian users.
+ - Redbox app (as per use request)
  - Support for other popular streaming apps coming soon!
 
 <b>What’s the future of Flutter?</b>
