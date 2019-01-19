@@ -35,9 +35,9 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:visibility="gone"
-			tools:visibility="visible"
 			android:textAppearance="@style/Text.Dark.Large"
-			android:layout_marginTop="16dp"
+			android:layout_marginTop="32dp"
+			android:layout_marginBottom="32dp"
 			tools:text="@string/donate_already_purchased_text"/>
 
 		<Button

@@ -34,6 +34,18 @@
 			android:textAppearance="@style/Text.Light.Large"
 			android:text="@string/donate_page_content"/>
 
+		<TextView
+			android:id="@+id/persuasion_message_2"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:paddingStart="@dimen/gutter"
+			android:paddingEnd="@dimen/gutter"
+			android:layout_marginTop="16dp"
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:textAppearance="@style/Text.Light.Medium.Large"
+			tools:text="@string/donate_page_persuasion_message_2"/>
+
 		<FrameLayout
 			android:id="@+id/progress_container"
 			tools:visibility="gone"

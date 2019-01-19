@@ -23,6 +23,7 @@ import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.util.show
 import com.fenchtose.movieratings.widgets.viewpager.CardsPagerTransformerShift
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -36,6 +37,8 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
     private var billingClient: BillingClient? = null
     private var historyKeeper: HistoryKeeper? = null
     private var isBillingAvailable = false
+
+    private val totalPurchases = 50
 
     override fun canGoBack() = true
 
@@ -138,13 +141,28 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
             return
         }
 
+        if (BuildConfig.DEBUG) {
+            showDetails(skus, listOf())
+            return
+        }
+
         billingClient?.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP) {
-            _, purchases -> showDetails(skus, purchases)
+            _, purchases -> showDetails(skus, purchases?.map { it.sku } ?: listOf())
         }
     }
 
     private fun queryAvailablePurchases() {
         if (isDetached || !isAdded) {
+            return
+        }
+
+        if (BuildConfig.DEBUG) {
+            val list = arrayListOf(
+                SkuDetails("{\"productId\":\"donate_large\",\"type\":\"inapp\",\"price\":\"€5,49\",\"price_amount_micros\":5490000,\"price_currency_code\":\"EUR\",\"title\":\"Generous (Flutter - Movie Ratings)\",\"description\":\"Buy this tiny in-app package to show your support.\"}"),
+                SkuDetails("{\"productId\":\"donate_medium\",\"type\":\"inapp\",\"price\":\"€2,99\",\"price_amount_micros\":2990000,\"price_currency_code\":\"EUR\",\"title\":\"Standard (Flutter - Movie Ratings)\",\"description\":\"Buy this in-app package to support the app and get us a coffee.\"}"),
+                SkuDetails("{\"productId\":\"donate_small\",\"type\":\"inapp\",\"price\":\"€0,99\",\"price_amount_micros\":990000,\"price_currency_code\":\"EUR\",\"title\":\"Basic (Flutter - Movie Ratings)\",\"description\":\"Show your generous support and help us run the app for 2 more weeks!\"}")
+            )
+            queryPurchaseHistory(list)
             return
         }
 
@@ -156,33 +174,27 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
                 if (responseCode == BillingClient.BillingResponse.OK && skuDetails != null && skuDetails.isNotEmpty()) {
                     queryPurchaseHistory(skuDetails)
                 }
-
-                if (BuildConfig.DEBUG) {
-                    val list = arrayListOf(
-                            SkuDetails("{\"productId\":\"donate_large\",\"type\":\"inapp\",\"price\":\"€5,49\",\"price_amount_micros\":5490000,\"price_currency_code\":\"EUR\",\"title\":\"Generous (Flutter - Movie Ratings)\",\"description\":\"Buy this tiny in-app package to show your support.\"}"),
-                            SkuDetails("{\"productId\":\"donate_medium\",\"type\":\"inapp\",\"price\":\"€2,99\",\"price_amount_micros\":2990000,\"price_currency_code\":\"EUR\",\"title\":\"Standard (Flutter - Movie Ratings)\",\"description\":\"Buy this in-app package to support the app and get us a coffee.\"}"),
-                            SkuDetails("{\"productId\":\"donate_small\",\"type\":\"inapp\",\"price\":\"€0,99\",\"price_amount_micros\":990000,\"price_currency_code\":\"EUR\",\"title\":\"Basic (Flutter - Movie Ratings)\",\"description\":\"Show your generous support and help us run the app for 2 more weeks!\"}")
-                    )
-                    queryPurchaseHistory(list)
-                }
         }
     }
 
-    private fun showDetails(skus: List<SkuDetails>, purchases: List<Purchase>?) {
-
+    private fun showDetails(skus: List<SkuDetails>, purchases: List<String>) {
         if (isDetached || !isAdded) {
             return
         }
 
         progressContainer?.visibility = View.GONE
 
-        val pSkus = purchases?.map { it.sku } ?: listOf()
-
-        if (pSkus.isNotEmpty()) {
+        if (purchases.isNotEmpty()) {
             historyKeeper?.paidInAppPurchase()
+        } else {
+            view?.findViewById<TextView>(R.id.persuasion_message_2)?.apply {
+                text = requireContext().getString(R.string.donate_page_persuasion_message_2, totalPurchases)
+                show(true)
+            }
         }
 
-        cardAdapter?.update(skus.sortedBy { it.priceAmountMicros }, pSkus)
+        cardAdapter?.update(skus.sortedBy { it.priceAmountMicros }, purchases)
+
         if (skus.size > 1) {
             viewPager?.setCurrentItem(1, true)
         }
