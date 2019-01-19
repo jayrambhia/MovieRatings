@@ -60,8 +60,7 @@ class RatingDisplayer(ctx: Context,
 
         if (!AccessibilityUtils.canDrawOverWindow(context)) {
             Log.e(TAG, "no drawing permission")
-            val duration = preferences.getRatingDisplayDuration()
-            ToastUtils.showMovieRating(context, rating, bubbleColor, duration)
+            ToastUtils.showMovieRating(context, rating, bubbleColor)
             trackEvent(GaEvents.SHOW_RATINGS.withLabel(GaLabels.TOAST))
             return
         }

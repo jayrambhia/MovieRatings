@@ -24,6 +24,7 @@ import com.fenchtose.movieratings.features.settings.PreferenceUpdater
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.*
+import com.fenchtose.movieratings.widgets.ViewGrouper
 
 class RatingBubbleSectionFragment: BaseFragment() {
 
@@ -36,8 +37,9 @@ class RatingBubbleSectionFragment: BaseFragment() {
     private var recyclerView: RecyclerView? = null
 
     private var drawPermissionConainer: View? = null
-
+    private var seekbarGroup: ViewGrouper? = null
     private var ratingDurationView: TextView? = null
+
     private var updatePublisher: PreferenceUpdater? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -78,6 +80,12 @@ class RatingBubbleSectionFragment: BaseFragment() {
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         this.recyclerView = recyclerView
 
+        seekbarGroup = ViewGrouper(
+            view.findViewById(R.id.rating_duration_info),
+            view.findViewById(R.id.seekbar_container),
+            view.findViewById(R.id.duration_divider)
+        )
+
         val ratingDurationSeekbar = view.findViewById<SeekBar>(R.id.rating_duration_seekbar)
         ratingDurationView = view.findViewById(R.id.rating_duration_view)
 
@@ -107,8 +115,10 @@ class RatingBubbleSectionFragment: BaseFragment() {
         if (VersionUtils.isMOrAbove() && !AccessibilityUtils.isTV(requireContext())) {
             if (!AccessibilityUtils.isDrawPermissionEnabled(requireContext())) {
                 drawPermissionConainer?.show(true)
+                seekbarGroup?.show(false)
             } else {
                 drawPermissionConainer?.show(false)
+                seekbarGroup?.show(true)
             }
         }
     }
