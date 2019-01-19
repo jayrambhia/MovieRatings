@@ -1,11 +1,13 @@
 package com.fenchtose.movieratings.model.db.like
 
+import android.annotation.SuppressLint
 import android.support.annotation.WorkerThread
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Next
+import com.fenchtose.movieratings.features.searchpage.SearchPageState
 import com.fenchtose.movieratings.model.db.entity.Fav
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.entity.Movie
@@ -33,6 +35,7 @@ fun AppState.reduceLiked(action: Action): AppState {
 
     val movie = action.movie
     return updateSearchPage(movie)
+        .updateCollectionSearchPages(movie)
             .updateRecentlyBrowsedPage(movie)
             .updateTrendingPage(movie)
             .updateMoviePages(movie)
@@ -40,11 +43,37 @@ fun AppState.reduceLiked(action: Action): AppState {
 }
 
 private fun AppState.updateSearchPage(movie: Movie): AppState {
-    return if (searchPage.movies.hasMovie(movie) != -1) {
-        copy(searchPage = searchPage.copy(movies = searchPage.movies.updateMovie(movie)))
+    val updated = searchPage.updateLiked(movie)
+    return if (searchPage != updated) {
+        copy(searchPage = updated)
     } else {
         this
     }
+}
+
+private fun SearchPageState.updateLiked(movie: Movie): SearchPageState {
+    return if (movies.hasMovie(movie) != -1) {
+        copy(movies = movies.updateMovie(movie))
+    } else {
+        this
+    }
+}
+
+private fun AppState.updateCollectionSearchPages(movie: Movie): AppState {
+    val updated = collectionSearchPages.map {
+        val changed = it.searchPageState.updateLiked(movie)
+        if (changed != it.searchPageState) {
+            it.copy(searchPageState = changed)
+        } else {
+            it
+        }
+    }
+
+    if (updated != collectionSearchPages) {
+        return copy(collectionSearchPages = updated)
+    }
+
+    return this
 }
 
 private fun AppState.updateRecentlyBrowsedPage(movie: Movie): AppState {
@@ -108,15 +137,16 @@ class LikeMiddleware(private val likeStore: LikeStore) {
         return next(state, action, dispatch)
     }
 
+    @SuppressLint("CheckResult")
     private fun toggleLike(action: LikeMovie, dispatch: Dispatch) {
         Observable.just(action)
                 .subscribeOn(Schedulers.io())
                 .doOnNext {
                     likeStore.setLiked(it.movie.imdbId, it.liked)
                 }.observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+                .subscribe {
                     dispatch(MovieLiked(it.movie.copy(liked = it.liked)))
-                })
+                }
     }
 
     companion object {
