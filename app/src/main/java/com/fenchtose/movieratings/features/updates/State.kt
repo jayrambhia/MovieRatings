@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.features.updates
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.fenchtose.movieratings.BuildConfig
-import com.fenchtose.movieratings.analytics.events.GaEvent
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
@@ -11,12 +11,10 @@ import com.fenchtose.movieratings.base.redux.Next
 import com.fenchtose.movieratings.base.redux.reduceChild
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
+import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.settings.AppSectionFragment
 import com.fenchtose.movieratings.features.settings.BatteryOptimizationPath
 import com.fenchtose.movieratings.features.settings.MiscSectionFragment
-import com.fenchtose.movieratings.features.updates.BannerStore.Companion.BANNER_BATTERY_OPTIMIZATION
-import com.fenchtose.movieratings.features.updates.BannerStore.Companion.BANNER_MAL
-import com.fenchtose.movieratings.features.updates.BannerStore.Companion.BANNER_REDBOX
 import com.fenchtose.movieratings.util.AppRxHooks
 import com.fenchtose.movieratings.util.RxHooks
 import com.fenchtose.movieratings.util.remove
@@ -96,9 +94,11 @@ class UpdatesBannerMiddleware(private val store: BannerStore,
             BANNER_MAL -> dispatch(Navigation(router, MiscSectionFragment.MiscSettingsPath()))
             BANNER_REDBOX -> dispatch(Navigation(router, AppSectionFragment.SettingsAppSectionPath()))
             BANNER_BATTERY_OPTIMIZATION -> dispatch(Navigation(router, BatteryOptimizationPath()))
+            BANNER_DRAW_WINDOW_PERMISSON -> dispatch(Navigation(router, AccessInfoFragment.AccessibilityPath()))
         }
     }
 
+    @SuppressLint("CheckResult")
     private fun load(version: Int, dispatch: Dispatch) {
         store.load(version)
                 .subscribeOn(rxHooks.ioThread())

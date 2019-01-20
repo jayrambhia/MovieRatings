@@ -3,22 +3,19 @@ package com.fenchtose.movieratings.features.updates
 import android.content.Context
 import android.content.SharedPreferences
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.features.updates.BannerStore.Companion.BANNER_BATTERY_OPTIMIZATION
-import com.fenchtose.movieratings.features.updates.BannerStore.Companion.BANNER_MAL
-import com.fenchtose.movieratings.features.updates.BannerStore.Companion.BANNER_REDBOX
+import com.fenchtose.movieratings.util.AccessibilityUtils
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.PackageUtils
 import com.fenchtose.movieratings.util.checkBatteryOptimized
 import io.reactivex.Observable
 
+const val BANNER_MAL = "mal"
+const val BANNER_REDBOX = "redbox"
+const val BANNER_BATTERY_OPTIMIZATION = "battery_optimization"
+const val BANNER_DRAW_WINDOW_PERMISSON = "draw_permission"
+
+
 interface BannerStore {
-
-    companion object {
-        const val BANNER_MAL = "mal"
-        const val BANNER_REDBOX = "redbox"
-        const val BANNER_BATTERY_OPTIMIZATION = "battery_optimization"
-    }
-
     fun load(version: Int): Observable<List<UpdateItem>>
     fun dismiss(banner: UpdateItem)
 }
@@ -40,6 +37,17 @@ private fun allBanners(): List<UpdateItem> {
             positiveCtaText = "Configure settings",
             filter = {
                 PackageUtils.hasInstalled(it, Constants.PACKAGE_REDBOX)
+            }
+        ),
+        UpdateItem(
+            id = BANNER_DRAW_WINDOW_PERMISSON,
+            maxVersion = -1,
+            icon =  R.drawable.ic_settings_applications_black_24dp,
+            description = "Enable permission to draw over other apps to see movie ratings when you are browsing Netflix or other supported apps.",
+            positiveCtaText = "Configure settings",
+            filter = {
+                AccessibilityUtils.isAccessibilityEnabled(it) &&
+                    !AccessibilityUtils.canDrawOverWindow(it)
             }
         ),
         UpdateItem(
