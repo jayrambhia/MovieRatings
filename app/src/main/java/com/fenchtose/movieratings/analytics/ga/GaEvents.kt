@@ -132,7 +132,8 @@ class GaLabels {
         const val NOTIFICATION_SUPPORT_APP = "support app"
         const val NOTIFICATION_RATE_APP = "rate app"
         const val TOAST = "toast"
-        const val BUBBLE = "bubble"
+        const val BUBBLE_BIG = "bubble big"
+        const val BUBBLE_SMALL = "bubble small"
         const val OMDB_API = "omdb"
         const val FLUTTER_API = "flutter"
 

@@ -59,6 +59,26 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:textAppearance="@style/Text.Dark.Secondary"
+				android:text="@string/settings_rating_bubble_details_info"
+				android:padding="@dimen/gutter"/>
+
+			<android.support.v7.widget.SwitchCompat
+				android:id="@+id/rating_details_toggle"
+				android:padding="@dimen/gutter"
+				android:text="@string/settings_rating_bubble_details_title"
+				android:textAppearance="@style/Text.Dark"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"/>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="@color/divider_color"/>
+
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textAppearance="@style/Text.Dark.Secondary"
 				android:text="@string/settings_rating_bubble_info"
 				android:padding="@dimen/gutter"/>
 

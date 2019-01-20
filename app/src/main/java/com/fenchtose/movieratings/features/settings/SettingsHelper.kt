@@ -12,10 +12,10 @@ import java.util.concurrent.TimeUnit
 class SettingsHelper(
     private val preferences: UserPreferences,
     private val root: View,
-    onUpdate: (key: String) -> Unit
+    onUpdate: (key: String, value: Boolean) -> Unit
 ) {
 
-    private val publisher = PublishSubject.create<String>()
+    private val publisher = PublishSubject.create<Pair<String, Boolean>>()
     private val disposable: Disposable
 
     init {
@@ -23,7 +23,7 @@ class SettingsHelper(
             .debounce(500, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                onUpdate(it)
+                onUpdate(it.first, it.second)
             }
     }
 
@@ -51,7 +51,11 @@ class SettingsHelper(
 
     private fun updatePreference(preferences: UserPreferences, app: String, checked: Boolean) {
         preferences.setEnabled(app, checked)
-        publisher.onNext(app)
+        publisher.onNext(Pair(app, checked))
+    }
+
+    fun dispatch(key: String, value: Boolean) {
+        publisher.onNext(Pair(key, value))
     }
 
     fun clear() {

@@ -17,6 +17,7 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.events.Event
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaLabels
+import com.fenchtose.movieratings.features.stickyview.BubbleSize
 import com.fenchtose.movieratings.features.stickyview.FloatingRating
 import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.preferences.UserPreferences
@@ -46,7 +47,7 @@ class RatingDisplayer(ctx: Context,
 
     private val removeRunnable = Runnable {
         floatingRating?.let {
-            removeViewImmediate(it.bubble)
+            removeViewImmediate(it.getBubbleView())
         }
     }
 
@@ -57,6 +58,7 @@ class RatingDisplayer(ctx: Context,
         }
 
         val bubbleColor = preferences.getBubbleColor(ContextCompat.getColor(context, R.color.floating_rating_color))
+        val bubbleSize = if (preferences.isAppEnabled(UserPreferences.RATING_DETAILS)) BubbleSize.BIG else BubbleSize.SMALL
 
         if (!AccessibilityUtils.canDrawOverWindow(context)) {
             Log.e(TAG, "no drawing permission")
@@ -66,19 +68,26 @@ class RatingDisplayer(ctx: Context,
         }
 
         if (floatingRating == null) {
-            floatingRating = FloatingRating(context)
+            floatingRating = FloatingRating(context, bubbleColor, bubbleSize)
         }
 
         floatingRating?.let {
             it.rating = rating
-            it.bubble.updateColor(bubbleColor)
+            it.updateColor(bubbleColor)
+            it.updateSize(bubbleSize)
             resetAutoDismissRunners()
-            trackEvent(GaEvents.SHOW_RATINGS.withLabel(GaLabels.BUBBLE))
-            if (it.bubble.parent != null) {
+            
+            val label = when(bubbleSize) {
+                BubbleSize.SMALL -> GaLabels.BUBBLE_SMALL
+                BubbleSize.BIG -> GaLabels.BUBBLE_BIG
+            }
+
+            trackEvent(GaEvents.SHOW_RATINGS.withLabel(label))
+            if (it.getBubbleView().parent != null) {
                 return
             }
 
-            isShowingView = if (addViewToWindow(it.bubble)) {
+            isShowingView = if (addViewToWindow(it.getBubbleView())) {
                 true
             } else {
                 floatingRating = null
@@ -124,6 +133,10 @@ class RatingDisplayer(ctx: Context,
 
     fun updateColor(@ColorInt color: Int) {
         floatingRating?.updateColor(color)
+    }
+
+    fun updateSize(size: BubbleSize) {
+        floatingRating?.updateSize(size)
     }
 
     fun removeView() {

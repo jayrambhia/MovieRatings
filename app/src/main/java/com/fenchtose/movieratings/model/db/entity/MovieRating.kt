@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Index
 import android.arch.persistence.room.PrimaryKey
 import com.fenchtose.movieratings.model.db.entity.MovieRating.Companion.ID
+import com.fenchtose.movieratings.util.Constants
 
 @Entity(tableName = "MOVIE_RATINGS", indices = arrayOf(Index(ID, unique = true)))
 data class MovieRating(
@@ -51,7 +52,7 @@ data class MovieRating(
             }
 
             if (endYear == -1) {
-                if (type == "tvSeries") {
+                if (type == Constants.RATING_TYPE_SERIES) {
                     // might be still running
                     return startYear <= year
                 }

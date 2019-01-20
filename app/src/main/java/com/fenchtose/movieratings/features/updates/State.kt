@@ -15,6 +15,7 @@ import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.settings.AppSectionFragment
 import com.fenchtose.movieratings.features.settings.BatteryOptimizationPath
 import com.fenchtose.movieratings.features.settings.MiscSectionFragment
+import com.fenchtose.movieratings.features.settings.bubble.RatingBubbleSectionFragment
 import com.fenchtose.movieratings.util.AppRxHooks
 import com.fenchtose.movieratings.util.RxHooks
 import com.fenchtose.movieratings.util.remove
@@ -95,6 +96,7 @@ class UpdatesBannerMiddleware(private val store: BannerStore,
             BANNER_REDBOX -> dispatch(Navigation(router, AppSectionFragment.SettingsAppSectionPath()))
             BANNER_BATTERY_OPTIMIZATION -> dispatch(Navigation(router, BatteryOptimizationPath()))
             BANNER_DRAW_WINDOW_PERMISSON -> dispatch(Navigation(router, AccessInfoFragment.AccessibilityPath()))
+            BANNER_RATING_DETAILS -> dispatch(Navigation(router, RatingBubbleSectionFragment.RatingSectionPath()))
         }
     }
 

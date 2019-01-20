@@ -4,12 +4,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.ColorInt
-import android.support.annotation.IdRes
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SwitchCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +18,8 @@ import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.EventBus
-import com.fenchtose.movieratings.features.settings.PreferenceUpdater
+import com.fenchtose.movieratings.features.settings.SettingsHelper
+import com.fenchtose.movieratings.features.stickyview.BubbleSize
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import com.fenchtose.movieratings.util.*
@@ -32,7 +31,6 @@ class RatingBubbleSectionFragment: BaseFragment() {
     override fun getScreenTitle() = R.string.settings_rating_bubble_section_page_header
     override fun screenName() = GaScreens.SETTINGS_RATING_SECTION
 
-    private var preferences: UserPreferences? = null
     private var adapter: BubbleColorAdapter? = null
     private var recyclerView: RecyclerView? = null
 
@@ -40,7 +38,8 @@ class RatingBubbleSectionFragment: BaseFragment() {
     private var seekbarGroup: ViewGrouper? = null
     private var ratingDurationView: TextView? = null
 
-    private var updatePublisher: PreferenceUpdater? = null
+    private var settingsHelper: SettingsHelper? = null
+    private var preferences: UserPreferences? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.settings_rating_bubble_section_page_layout, container, false)
@@ -49,6 +48,12 @@ class RatingBubbleSectionFragment: BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val preferences = SettingsPreferences(requireContext())
         this.preferences = preferences
+        this.settingsHelper = SettingsHelper(preferences, view) { key, value ->
+            showSnackbar(R.string.settings_preference_update_content)
+            if (key == UserPreferences.RATING_DETAILS) {
+                EventBus.send(BubbleDetailEvent(if (value) BubbleSize.BIG else BubbleSize.SMALL))
+            }
+        }
 
         drawPermissionConainer = view.findViewById(R.id.draw_permission_container)
         view.findViewById<View>(R.id.draw_permission_cta).setOnClickListener {
@@ -57,7 +62,8 @@ class RatingBubbleSectionFragment: BaseFragment() {
             }
         }
 
-        addAppSettingToggle(preferences, view, R.id.open_movie_toggle, UserPreferences.OPEN_MOVIE_IN_APP)
+        settingsHelper?.addAppToggle(R.id.open_movie_toggle, UserPreferences.OPEN_MOVIE_IN_APP)
+        settingsHelper?.addAppToggle(R.id.rating_details_toggle, UserPreferences.RATING_DETAILS)
 
         val savedBubbleColor = preferences.getBubbleColor(ContextCompat.getColor(requireContext(), R.color.floating_rating_color))
 
@@ -105,8 +111,6 @@ class RatingBubbleSectionFragment: BaseFragment() {
             }
         })
 
-        updatePublisher = PreferenceUpdater(view as ViewGroup)
-
         requireActivity().startService(Intent(context, BubbleService::class.java))
     }
 
@@ -125,20 +129,20 @@ class RatingBubbleSectionFragment: BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        updatePublisher?.release()
+        settingsHelper?.clear()
+        settingsHelper = null
         requireActivity().stopService(Intent(context, BubbleService::class.java))
     }
 
     private fun updateBubbleColor(@ColorInt color: Int) {
         preferences?.setBubbleColor(color)
         EventBus.send(BubbleColorEvent(color))
-//        updatePublisher?.show("color")
     }
 
     private fun updateRatingDisplayDuration(durationInMs: Int) {
         preferences?.let {
             it.setRatingDisplayDuration(durationInMs)
-            updatePublisher?.show("toast")
+            settingsHelper?.dispatch("toast", true)
             ratingDurationView?.text = (it.getRatingDisplayDuration()/1000).toString()
         }
     }
@@ -151,22 +155,6 @@ class RatingBubbleSectionFragment: BaseFragment() {
         } else {
             manager.scrollToPosition(Math.min(position + 2, total))
         }
-    }
-
-    private fun addAppSettingToggle(preferences: UserPreferences, root: View, @IdRes buttonId: Int, key: String) {
-        val toggle = root.findViewById<SwitchCompat?>(buttonId)
-        toggle?.let {
-            it.visibility = View.VISIBLE
-            it.isChecked = preferences.isAppEnabled(key)
-            it.setOnCheckedChangeListener {
-                _, isChecked -> updatePreference(preferences, key, isChecked)
-            }
-        }
-    }
-
-    private fun updatePreference(preferences: UserPreferences, key: String, status: Boolean) {
-        preferences.setEnabled(key, status)
-        updatePublisher?.show(key)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

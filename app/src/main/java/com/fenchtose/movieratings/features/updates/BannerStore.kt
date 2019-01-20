@@ -13,7 +13,7 @@ const val BANNER_MAL = "mal"
 const val BANNER_REDBOX = "redbox"
 const val BANNER_BATTERY_OPTIMIZATION = "battery_optimization"
 const val BANNER_DRAW_WINDOW_PERMISSON = "draw_permission"
-
+const val BANNER_RATING_DETAILS = "rating_details"
 
 interface BannerStore {
     fun load(version: Int): Observable<List<UpdateItem>>
@@ -49,6 +49,13 @@ private fun allBanners(): List<UpdateItem> {
                 AccessibilityUtils.isAccessibilityEnabled(it) &&
                     !AccessibilityUtils.canDrawOverWindow(it)
             }
+        ),
+        UpdateItem(
+            id = BANNER_RATING_DETAILS,
+            maxVersion = 310,
+            icon =  R.drawable.ic_settings_applications_black_24dp,
+            description = "Now you will see more details in the rating bubble - including title and year of release",
+            positiveCtaText = "Configure settings"
         ),
         UpdateItem(
             id = BANNER_BATTERY_OPTIMIZATION,

@@ -6,28 +6,20 @@ import com.fenchtose.movieratings.model.entity.Sort
 interface UserPreferences {
 
     companion object {
-//        val NETFLIX = "netflix"
-//        val PRIMEVIDEO = "primevideo"
-//        val PLAY_MOVIES = "play_movies"
-//        val HOTSTAR = "hotstar"
-//        val YOUTUBE = "youtube"
-//        val BBC_IPLAYER = "bbc_iplayer"
-        val SAVE_HISTORY = "save_history"
-        val USE_TTS = "use_tts"
-        val TTS_AVAILABLE = "tts_available"
-        val SHOW_ACTIVATE_FLUTTER = "show_activate_flutter"
-        val USE_YEAR = "use_year"
-        val SHOW_RECENT_RATING = "recent_rating"
-        val CHECK_ANIME = "check_anime"
-        val ONBOARDING_SHOWN = "onboarding_shown"
-        val LOCALE_INFO_SHOWN = "locale_info_shown"
-
-        val SHOW_SUPPORT_APP_PROMPT = "show_support_app"
-        val SHOW_RATE_APP_PROMPT = "show_rate_app"
-
-        val USE_FLUTTER_API = "use_flutter_api"
-
-        val OPEN_MOVIE_IN_APP = "open_movie_in_app"
+        const val SAVE_HISTORY = "save_history"
+        const val USE_TTS = "use_tts"
+        const val TTS_AVAILABLE = "tts_available"
+        const val SHOW_ACTIVATE_FLUTTER = "show_activate_flutter"
+        const val USE_YEAR = "use_year"
+        const val SHOW_RECENT_RATING = "recent_rating"
+        const val CHECK_ANIME = "check_anime"
+        const val ONBOARDING_SHOWN = "onboarding_shown"
+        const val LOCALE_INFO_SHOWN = "locale_info_shown"
+        const val SHOW_SUPPORT_APP_PROMPT = "show_support_app"
+        const val SHOW_RATE_APP_PROMPT = "show_rate_app"
+        const val USE_FLUTTER_API = "use_flutter_api"
+        const val OPEN_MOVIE_IN_APP = "open_movie_in_app"
+        const val RATING_DETAILS = "rating_details"
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.entity
 
+import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FixTitleUtils
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -54,6 +55,22 @@ data class MovieRating(
         }
 
         return "%.1f".format(rating)
+    }
+
+    fun displayYear(): String {
+        if (startYear <= 0) {
+            return ""
+        }
+
+        if (endYear == null || endYear <= 0) {
+            if (type == Constants.RATING_TYPE_SERIES) {
+                return "($startYear - )"
+            } else {
+                return "($startYear)"
+            }
+        }
+
+        return "($startYear - $endYear)"
     }
 
     companion object {

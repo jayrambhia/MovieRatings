@@ -1,24 +1,26 @@
 package com.fenchtose.movieratings.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
 import android.support.annotation.ColorInt
 import android.support.annotation.ColorRes
 import android.support.annotation.StyleRes
 import android.support.v4.content.ContextCompat
 import android.support.v4.widget.ImageViewCompat
-import android.util.AttributeSet
+import android.support.v4.widget.TextViewCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.features.stickyview.BubbleSize
 import com.fenchtose.movieratings.util.isColorDark
 
-class RatingBubble: FrameLayout {
+@SuppressLint("ViewConstructor")
+class RatingBubble(context: Context, color: Int, size: BubbleSize) : FrameLayout(context) {
 
     @ColorInt
     private var color: Int? = null
@@ -26,19 +28,21 @@ class RatingBubble: FrameLayout {
     private val label: TextView
     private val closeButton: ImageView
     private val closeButtonRight: ImageView
+    private var size = BubbleSize.SMALL
+    private var left = true
 
-    constructor(context: Context) : this(context, null)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    init {
         LayoutInflater.from(context).inflate(R.layout.floating_rating_view, this, true)
         label = findViewById(R.id.rating_view)
         closeButton = findViewById(R.id.close_btn)
         closeButtonRight = findViewById(R.id.close_btn_right)
-        setup(context, attrs)
+        this.color = color
+        this.size = size
+        setup()
     }
 
-    private fun setup(context: Context, attrs: AttributeSet?) {
-        setBackgroundResource(R.drawable.floating_rating_view_background)
+    private fun setup() {
+        setBackgroundResource(getBubbleBackground(false, size))
     }
 
     override fun setBackgroundResource(resid: Int) {
@@ -49,9 +53,11 @@ class RatingBubble: FrameLayout {
     }
 
     fun updateDirection(left: Boolean) {
+        this.left = left
         val params = label.layoutParams as FrameLayout.LayoutParams
+        setBackgroundResource(getBubbleBackground(left, size))
+
         if (left) {
-            setBackgroundResource(R.drawable.floating_rating_view_background_left)
             closeButtonRight.visibility = View.VISIBLE
             closeButton.visibility = View.GONE
             if (params.leftMargin != 0) {
@@ -59,7 +65,6 @@ class RatingBubble: FrameLayout {
             }
             params.leftMargin = 0
         } else {
-            setBackgroundResource(R.drawable.floating_rating_view_background)
             closeButtonRight.visibility = View.GONE
             closeButton.visibility = View.VISIBLE
             if (params.rightMargin != 0) {
@@ -81,16 +86,27 @@ class RatingBubble: FrameLayout {
         val isDark = isColorDark(color)
 
         @StyleRes val textStyle = if (isDark) R.style.Text_Light_Medium else R.style.Text_Dark_Medium
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            label.setTextAppearance(textStyle)
-        } else {
-            label.setTextAppearance(context, textStyle)
-        }
+        TextViewCompat.setTextAppearance(label, textStyle)
 
         @ColorRes val imageColor = if (isDark) R.color.textColorLight else R.color.textColorDark
         ImageViewCompat.setImageTintList(closeButton, ColorStateList.valueOf(ContextCompat.getColor(context, imageColor)))
         ImageViewCompat.setImageTintList(closeButtonRight, ColorStateList.valueOf(ContextCompat.getColor(context, imageColor)))
+    }
 
+    fun updateSize(size: BubbleSize) {
+        if (this.size == size) {
+            return
+        }
+
+        this.size = size
+        updateDirection(left)
+    }
+
+    private fun getBubbleBackground(left: Boolean, size: BubbleSize): Int {
+        return when(size) {
+            BubbleSize.SMALL -> if (left) R.drawable.floating_rating_view_background_left else R.drawable.floating_rating_view_background
+            BubbleSize.BIG -> if (left) R.drawable.floating_rating_view_big_background_left else R.drawable.floating_rating_view_big_background
+        }
     }
 
     fun setText(text: CharSequence) {

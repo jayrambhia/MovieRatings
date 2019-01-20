@@ -33,7 +33,7 @@ class NotificationSectionFragment : BaseFragment() {
 
         helper?.clear()
 
-        val helper = SettingsHelper(preferences, view) {
+        val helper = SettingsHelper(preferences, view) { _, _ ->
             showSnackbar(R.string.settings_preference_update_content)
         }
 

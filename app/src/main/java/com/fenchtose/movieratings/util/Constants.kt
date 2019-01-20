@@ -42,6 +42,8 @@ class Constants {
         const val SUPPORT_APP_NOTIFICATION_ID = 21
         const val REVIEW_APP_NOTIFICATION_ID = 22
 
+        const val RATING_TYPE_SERIES = "tvSeries"
+
     }
 
     enum class TitleType(val type: String) {

@@ -2,19 +2,19 @@ package com.fenchtose.movieratings.features.stickyview
 
 import android.content.Context
 import android.support.annotation.ColorInt
+import android.view.View
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.widgets.RatingBubble
 
-class FloatingRating(private val context: Context) {
+class FloatingRating(private val context: Context, val color: Int, var size: BubbleSize) {
 
-    val bubble: RatingBubble = RatingBubble(context)
-
+    private val bubble: RatingBubble = RatingBubble(context, color, size)
     var rating: MovieRating? = null
     set(value) {
         field = value
         value?.let {
-            setRating(it.displayRating())
+            updateRating(it)
         }
     }
 
@@ -22,7 +22,30 @@ class FloatingRating(private val context: Context) {
         bubble.updateColor(color)
     }
 
-    private fun setRating(rating: String) {
-        bubble.setText(context.resources.getString(R.string.floating_rating_content, rating))
+    fun updateSize(size: BubbleSize) {
+        this.size = size
+        bubble.updateSize(size)
+        rating?.let { updateRating(it) }
     }
+
+    private fun updateRating(rating: MovieRating) {
+        if (size == BubbleSize.BIG) {
+            val builder = StringBuilder(rating.title)
+            rating.displayYear().takeIf { it.isNotBlank() }?.let {
+                builder.append("\n$it")
+            }
+            builder.append("\n")
+            builder.append(rating.displayRating())
+            bubble.setText(builder)
+        } else {
+            bubble.setText(context.resources.getString(R.string.floating_rating_content, rating.displayRating()))
+        }
+    }
+
+    fun getBubbleView(): RatingBubble = bubble
+
+}
+
+enum class BubbleSize {
+    SMALL, BIG
 }

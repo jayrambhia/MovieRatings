@@ -6,17 +6,17 @@ import com.fenchtose.movieratings.base.router.EventBus
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 
-class BubbleService: Service() {
+class BubbleService : Service() {
 
     private var displayer: RatingDisplayer? = null
 
-    private var disposable: Disposable? = null
+    private var disposables: CompositeDisposable? = null
 
     override fun onCreate() {
         super.onCreate()
-
+        disposables = CompositeDisposable()
         val preferences = SettingsPreferences(this)
         displayer = RatingDisplayer(this, preferences, false)
     }
@@ -24,19 +24,31 @@ class BubbleService: Service() {
     override fun onBind(intent: Intent?) = null
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val rating = MovieRating("test", 8.2f, 0, "", "", "", "", -1, -1)
+        val rating = MovieRating("test", 8.2f, 0, "Movie title", "", "", "", 2018, -1)
         displayer?.showRatingWindow(rating)
 
-        disposable = EventBus.subscribe<BubbleColorEvent>()
-                .subscribe({
-                    event ->
+        disposables?.add(
+            EventBus.subscribe<BubbleColorEvent>()
+                .subscribe { event ->
                     displayer?.let {
                         it.updateColor(event.color)
                         if (!it.isShowingView) {
-                            displayer?.showRatingWindow(rating)
+                            it.showRatingWindow(rating)
                         }
                     }
-                }, { })
+                }
+        )
+
+        disposables?.add(
+            EventBus.subscribe<BubbleDetailEvent>().subscribe { event ->
+                displayer?.let {
+                    it.updateSize(event.size)
+                    if (!it.isShowingView) {
+                        it.showRatingWindow(rating)
+                    }
+                }
+            }
+        )
 
         return START_STICKY
     }
@@ -48,6 +60,6 @@ class BubbleService: Service() {
     }
 
     private fun unsubscribe() {
-        disposable?.dispose()
+        disposables?.dispose()
     }
 }
