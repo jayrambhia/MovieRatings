@@ -52,15 +52,20 @@ class RatingDisplayer(ctx: Context,
     }
 
     fun showRatingWindow(rating: MovieRating) {
-        if (rating.imdbId.isEmpty() || rating.rating <= 0f) {
+        if (rating.imdbId.isEmpty() || (rating.rating <= 0f && !rating.is404())) {
             removeView()
             return
         }
 
         val bubbleColor = preferences.getBubbleColor(ContextCompat.getColor(context, R.color.floating_rating_color))
-        val bubbleSize = if (preferences.isAppEnabled(UserPreferences.RATING_DETAILS)) BubbleSize.BIG else BubbleSize.SMALL
+        val bubbleSize = if (preferences.isAppEnabled(UserPreferences.RATING_DETAILS) || rating.is404()) BubbleSize.BIG else BubbleSize.SMALL
 
         if (!AccessibilityUtils.canDrawOverWindow(context)) {
+            if (rating.is404()) {
+                // No point in showing a toast.
+                return
+            }
+
             Log.e(TAG, "no drawing permission")
             ToastUtils.showMovieRating(context, rating, bubbleColor)
             trackEvent(GaEvents.SHOW_RATINGS.withLabel(GaLabels.TOAST))
@@ -76,10 +81,13 @@ class RatingDisplayer(ctx: Context,
             it.updateColor(bubbleColor)
             it.updateSize(bubbleSize)
             resetAutoDismissRunners()
-            
-            val label = when(bubbleSize) {
-                BubbleSize.SMALL -> GaLabels.BUBBLE_SMALL
-                BubbleSize.BIG -> GaLabels.BUBBLE_BIG
+
+            val label = when {
+                rating.is404() -> GaLabels.RATING_404
+                else -> when(bubbleSize) {
+                    BubbleSize.SMALL -> GaLabels.BUBBLE_SMALL
+                    BubbleSize.BIG -> GaLabels.BUBBLE_BIG
+                }
             }
 
             trackEvent(GaEvents.SHOW_RATINGS.withLabel(label))
@@ -95,6 +103,15 @@ class RatingDisplayer(ctx: Context,
             }
         }
 
+    }
+
+    fun show404(title: String) {
+        if (title.isBlank()) {
+            removeView()
+            return
+        }
+
+        showRatingWindow(MovieRating.create404Dummy(title))
     }
 
     @SuppressLint("RtlHardcoded")
@@ -184,29 +201,39 @@ class RatingDisplayer(ctx: Context,
             }
         }
 
-        private fun openBubble() {
-            val openInApp = preferences.isAppEnabled(UserPreferences.OPEN_MOVIE_IN_APP)
-            val label = when(floatingRating?.rating?.source) {
-                "MAL" -> "mal"
-                "IMDB" -> if (openInApp) "app" else "imdb"
-                else -> null
-            }
-
-            label?.let {
-                trackEvent(GaEvents.RATING_OPEN_MOVIE.withLabel(it))
-            }
-
-            val opened = IntentUtils.openMovie(context, floatingRating?.rating, openInApp)
-            if (opened) {
-                removeView()
-            }
-        }
-
         override fun updatePosition(bubble: RatingBubble?, y: Int, left: Boolean) {
             preferences.setBubblePosition(y, left)
             resetAutoDismissRunners()
         }
 
+    }
+
+    private fun openBubble() {
+        val rating = floatingRating?.rating ?: return
+        val opened = when {
+            rating.is404() -> openImdbSearch(rating.title)
+            else -> openTitle(rating)
+        }
+
+        if (opened) {
+            removeView()
+        }
+    }
+
+    private fun openImdbSearch(title: String): Boolean {
+        return IntentUtils.openImdbSearch(context, title)
+    }
+
+    private fun openTitle(rating: MovieRating): Boolean {
+        val openInApp = preferences.isAppEnabled(UserPreferences.OPEN_MOVIE_IN_APP)
+        val label = when(rating.source) {
+            "MAL" -> "mal"
+            "IMDB" -> if (openInApp) "app" else "imdb"
+            else -> null
+        }
+
+        label?.let { trackEvent(GaEvents.RATING_OPEN_MOVIE.withLabel(it)) }
+        return IntentUtils.openMovie(context, rating, openInApp)
     }
 
     private fun trackEvent(event: Event) {

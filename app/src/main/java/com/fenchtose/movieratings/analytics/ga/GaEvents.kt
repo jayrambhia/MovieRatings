@@ -66,6 +66,7 @@ class GaEvents {
         val OPEN_NOTIFICATION = GaEvent(GaCategory.SERVICE, "open notification", "%s")
         val DISMISS_RATING = GaEvent(GaCategory.SERVICE, "dismiss", "rating")
         val RATING_OPEN_MOVIE = GaEvent(GaCategory.SERVICE, "open movie", "%s")
+        val RATING_OPEN_404 = GaEvent(GaCategory.SERVICE, "open 404", "movie not found")
 
         val SPEAK_RATING = GaEvent(GaCategory.SERVICE, "tts", "rating", true)
 
@@ -141,5 +142,6 @@ class GaLabels {
         const val ITEM_PERSONAL = "personal"
         const val ITEM_COLLECTIONS = "collections"
         const val ITEM_INFO = "info"
+        const val RATING_404 = "rating 404"
     }
 }

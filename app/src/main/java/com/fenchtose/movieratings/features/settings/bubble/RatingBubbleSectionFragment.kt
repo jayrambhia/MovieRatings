@@ -64,6 +64,7 @@ class RatingBubbleSectionFragment: BaseFragment() {
 
         settingsHelper?.addAppToggle(R.id.open_movie_toggle, UserPreferences.OPEN_MOVIE_IN_APP)
         settingsHelper?.addAppToggle(R.id.rating_details_toggle, UserPreferences.RATING_DETAILS)
+        settingsHelper?.addSettingToggle(R.id.open_404_toggle, UserPreferences.OPEN_404)
 
         val savedBubbleColor = preferences.getBubbleColor(ContextCompat.getColor(requireContext(), R.color.floating_rating_color))
 

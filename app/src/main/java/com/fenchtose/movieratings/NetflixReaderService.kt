@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings
 
 import android.accessibilityservice.AccessibilityService
+import android.annotation.SuppressLint
 import android.os.Looper
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
@@ -31,7 +32,7 @@ import io.reactivex.subjects.PublishSubject
 import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 
-
+@SuppressLint("CheckResult")
 class NetflixReaderService : AccessibilityService() {
 
     private var title: String? = null
@@ -286,26 +287,24 @@ class NetflixReaderService : AccessibilityService() {
 
         GaEvents.GET_RATINGS.withLabelArg(request.appName).track()
         val useFlutterApi = preferences?.isAppEnabled(UserPreferences.USE_FLUTTER_API) ?: true
-        provider?.let {
-            it.useFlutterApi(useFlutterApi)
-            it.getMovieRating(request)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(myScheduler)
-                    .subscribe({
-                        if (it.imdbId.isNotEmpty()) {
-                            showRating(it)
-                            historyPublisher.onNext(request)
-                        }
-                    }, {
-                        if (it is HttpException) {
-                            if (it.code() == 404) {
-                                GaEvents.RATING_NOT_FOUND.withLabelArg(if (useFlutterApi) GaLabels.FLUTTER_API else GaLabels.OMDB_API).track()
-                                update404(request.title, request.year)
-                            }
-                        }
-                        it.printStackTrace()
-                    })
-        }
+        val provider = provider ?: return
+
+        provider.useFlutterApi(useFlutterApi)
+        provider.getMovieRating(request)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .filter { it.imdbId.isNotEmpty() }
+            .doOnNext { historyPublisher.onNext(request) }
+            .subscribe(::showRating) { error ->
+                if (error is HttpException && error.code() == 404) {
+                    GaEvents.RATING_NOT_FOUND.withLabelArg(if (useFlutterApi) GaLabels.FLUTTER_API else GaLabels.OMDB_API).track()
+                    update404(request.title, request.year)
+                }
+
+                if (BuildConfig.DEBUG) {
+                    error.printStackTrace()
+                }
+            }
     }
 
     private fun updateHistory(imdbId: String, appName: String) {
@@ -324,6 +323,9 @@ class NetflixReaderService : AccessibilityService() {
 
     private fun update404(title: String, year: String?) {
         provider?.report404(title, year)
+        if (preferences?.isSettingEnabled(UserPreferences.OPEN_404) == true) {
+            displayer?.show404(title)
+        }
     }
 
     private fun checkForSupportPrompt() {

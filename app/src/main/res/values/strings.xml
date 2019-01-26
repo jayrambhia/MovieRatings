@@ -120,6 +120,8 @@
 	<string name="settings_rating_bubble_toast_cta">Open permission settings</string>
 	<string name="settings_rating_bubble_details_title">Show title details</string>
 	<string name="settings_rating_bubble_details_info">Choose between a minimalistic or a detailed version of title ratings.</string>
+	<string name="settings_rating_bubble_404_info">The bubble will open Imdb search for the title, if the app is unable to find the rating for that title. It will be shown only the first time.</string>
+	<string name="settings_rating_bubble_404_title">Show \'Not found\' bubble</string>
 
     <string name="menu_action_settings">Settings</string>
 	<string name="menu_action_fav">Favorites</string>
@@ -137,6 +139,7 @@
 	<string name="menu_action_trending">Trending</string>
 
     <string name="floating_rating_content">Flutter - %1$s</string>
+	<string name="floating_rating_404_content">Rating not found.\nTap to search on Imdb.</string>
 
 	<string name="info_screen_content_no_accessibility">Flutter can help you decide what you want to watch today! When you are browsing Netflix, Prime Video and other supported apps, it will show you movie ratings on your screen (just like Fb Messenger chat).\n\nClick on <b>\'Activate Flutter\'</b> at the bottom to get started with Flutter!\n\nGo to <b>Settings</b> to check out what you can configure.</string>
     <string name="info_screen_content_with_accessibility">Flutter is active now. When you are browsing Netflix, Prime Video and other supported apps, it will show you the movie ratings on the screen.\n\nYou may also use Flutter to search for movies and TV shows and create your own collections.</string>

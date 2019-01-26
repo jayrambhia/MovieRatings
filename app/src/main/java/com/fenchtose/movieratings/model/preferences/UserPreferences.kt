@@ -20,6 +20,7 @@ interface UserPreferences {
         const val USE_FLUTTER_API = "use_flutter_api"
         const val OPEN_MOVIE_IN_APP = "open_movie_in_app"
         const val RATING_DETAILS = "rating_details"
+        const val OPEN_404 = "open_404"
     }
 
     /**

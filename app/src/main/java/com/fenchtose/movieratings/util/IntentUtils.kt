@@ -175,5 +175,21 @@ class IntentUtils {
 
             return false
         }
+
+        fun openImdbSearch(context: Context, title: String, newTask: Boolean = true): Boolean {
+            val uri = Uri.Builder()
+                .scheme("https")
+                .appendPath("www.imdb.com")
+                .appendPath("find")
+                .appendQueryParameter("q", title)
+                .build()
+
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            if (newTask) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(Intent.createChooser(intent, "Open IMDb search with").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            return true
+        }
     }
 }

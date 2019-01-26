@@ -5,6 +5,8 @@ import com.fenchtose.movieratings.util.FixTitleUtils
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+private const val MOVIE_ID_404 = "404movie"
+
 @JsonClass(generateAdapter = true)
 data class MovieRating(
         @Json(name="id")
@@ -50,11 +52,11 @@ data class MovieRating(
     }
 
     fun displayRating(): String {
-        if (source != "IMDB" && source.isNotBlank()) {
-            return "%.1f (%s)".format(rating, source)
+        return when {
+            is404() -> "Not found. Search on Imdb?"
+            isImdb() -> "%.1f".format(rating)
+            else -> "%.1f (%s)".format(rating, source)
         }
-
-        return "%.1f".format(rating)
     }
 
     fun displayYear(): String {
@@ -73,9 +75,16 @@ data class MovieRating(
         return "($startYear - $endYear)"
     }
 
+    fun is404() = imdbId == MOVIE_ID_404
+    fun isImdb() = source == "IMDB"
+
     companion object {
         fun empty(): MovieRating {
             return MovieRating("", -1f, -1, "", "", "", "",-1, -1)
+        }
+
+        fun create404Dummy(title: String): MovieRating {
+            return MovieRating(MOVIE_ID_404, -1f, -1, title, "", "", "", -1, -1)
         }
 
         fun fromMovie(movie: OmdbMovie): MovieRating {
