@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.model.db.displayedRatings
 
+import android.annotation.SuppressLint
 import com.fenchtose.movieratings.model.db.dao.DisplayedRatingDao
 import com.fenchtose.movieratings.model.db.entity.DisplayedRating
 import io.reactivex.Observable
@@ -19,6 +20,7 @@ class DbDisplayedRatingsStore private constructor(private val dao: DisplayedRati
         }
     }
 
+    @SuppressLint("CheckResult")
     override fun update(rating: DisplayedRating) {
         Observable.just(rating)
                 .subscribeOn(Schedulers.io())

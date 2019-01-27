@@ -83,33 +83,14 @@ class NetflixReaderService : AccessibilityService() {
         myScheduler = AndroidSchedulers.from(Looper.myLooper())
 
         requestPublisher = PublishSubject.create()
-        requestPublisher
-                .doOnNext {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "get movie info: $it, ${System.currentTimeMillis()}")
-                    }
-                }
-                .debounce(60, TimeUnit.MILLISECONDS)
-                .doOnNext {
-                    if (BuildConfig.DEBUG) {
-                        Log.d(TAG, "get movie info after debounce: $it, ${System.currentTimeMillis()}")
-                    }
-                }
-                .observeOn(myScheduler)
-                .subscribe({
-                    getMovieInfo(it)
-                },{
-                    it.printStackTrace()
-                })
+        requestPublisher.debounce(60, TimeUnit.MILLISECONDS)
+            .observeOn(myScheduler)
+            .subscribe(::getMovieInfo)
 
         historyPublisher = PublishSubject.create()
         historyPublisher.debounce(1000, TimeUnit.MILLISECONDS)
-                .observeOn(myScheduler)
-                .subscribe({
-                    updateHistory(it.title, it.appName)
-                }, {
-                    it.printStackTrace()
-                })
+            .observeOn(myScheduler)
+            .subscribe { updateHistory(it.title, it.appName) }
     }
 
     override fun onDestroy() {
@@ -118,11 +99,16 @@ class NetflixReaderService : AccessibilityService() {
         historyPublisher.onComplete()
     }
 
+    override fun onInterrupt() {
+
+    }
+
     private fun initResources() {
         synchronized(this) {
 
             if (speaker == null && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true
-                    && preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true) {
+                && preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true
+            ) {
                 speaker = Speaker(this)
             }
 
@@ -131,21 +117,19 @@ class NetflixReaderService : AccessibilityService() {
             }
 
             if (historyKeeper == null) {
-                historyKeeper = DbHistoryKeeper(PreferenceUserHistory(MovieRatingsApplication.instance),
-                        DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
-                        preferences!!)
+                historyKeeper = DbHistoryKeeper(
+                    PreferenceUserHistory(MovieRatingsApplication.instance),
+                    DbDisplayedRatingsStore.getInstance(MovieRatingsApplication.database.displayedRatingsDao()),
+                    preferences!!
+                )
             }
 
             if (resourceRemover == null) {
-                resourceRemover = PublishSubject.create()
-                resourceRemover
-                        ?.debounce(RESOURCE_THRESHOLD, TimeUnit.SECONDS)
-                        ?.subscribe({
-                            clearResources()
-                        })
+                resourceRemover = PublishSubject.create<Boolean>().apply {
+                    debounce(RESOURCE_THRESHOLD, TimeUnit.SECONDS).subscribe { clearResources() }
+                    onNext(true)
+                }
             }
-
-            resourceRemover?.onNext(true)
         }
     }
 
@@ -164,12 +148,16 @@ class NetflixReaderService : AccessibilityService() {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
 
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName + ", " + event.action + " ${event.text}, ${event.className}\n$event")
+            Log.d(
+                TAG,
+                "eventt: " + AccessibilityEvent.eventTypeToString(event.eventType) + ", " + event.packageName + ", " + event.action + " ${event.text}, ${event.className}\n$event"
+            )
         }
 
         if (!supportedPackages.contains(event.packageName)) {
             if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && displayer != null && displayer!!.isShowingView
-                    && event.packageName != BuildConfig.APPLICATION_ID) {
+                && event.packageName != BuildConfig.APPLICATION_ID
+            ) {
                 if (System.currentTimeMillis() - lastWindowStateChangeEventTime > WINDOW_STATE_CHANGE_THRESHOLD) {
                     // User has moved to some other app
                     displayer?.removeView()
@@ -193,59 +181,55 @@ class NetflixReaderService : AccessibilityService() {
             else -> preferences?.isAppEnabled(info.packageName.toString())
         }
 
-        if (isAppEnabled == null || !isAppEnabled) {
+        if (isAppEnabled != true) {
             return
         }
 
-        val reader = readersMap[info.packageName]
-        if (reader != null) {
-            val titles = reader.readTitles(event, info).distinctBy { it }
-            val years = reader.readYear(info).distinctBy { it }
-            if (BuildConfig.DEBUG) {
-                if (titles.isEmpty()) {
-                    checkNodeRecursively(info, 0)
-                }
-                Log.d(TAG, "scraped titles: $titles")
-            }
-
-            titles.firstOrNull { it != null && it.isNotBlank() }
-                ?.let {
-                    setMovieTitle(
-                        fixTitle(info.packageName, it.toString()),
-                        years.takeIf { it.isNotEmpty() }?.firstOrNull()?.let {
-                            fixYear(info.packageName, it.toString())
-                        },
-                        event.packageName.toString()
-                    )
-                }
-
-        } else {
+        val reader = readersMap[info.packageName] ?: run {
             checkNodeRecursively(info, 0)
+            return
         }
+
+        val title = reader.readTitles(
+            event,
+            info
+        ).distinctBy { it }.firstOrNull { it != null && it.isNotBlank() } ?: run {
+            if (BuildConfig.DEBUG) {
+                checkNodeRecursively(info, 0)
+                Log.d(TAG, "scraped title: $title")
+            }
+            return
+        }
+
+        val year =
+            reader.readYear(info).distinctBy { it }.firstOrNull { it != null && it.isNotBlank() }
+
+        setMovieTitle(
+            title.toString(),
+            fixYear(info.packageName, year?.toString()),
+            event.packageName.toString()
+        )
     }
 
     @Suppress("unused")
     private fun checkNodeRecursively(info: AccessibilityNodeInfo?, level: Int) {
-        if (!BuildConfig.DEBUG) {
+        if (!BuildConfig.DEBUG || info == null) {
             return
         }
 
-        info?.let {
+        Log.d(
+            TAG,
+            "${" ".repeat(level)}info: text: ${info.text}, id: ${info.viewIdResourceName}, class: ${info.className}, parent id: ${info.parent?.viewIdResourceName}, desc=${info.contentDescription}"
+        )
+        if (info.childCount > 0) {
+            Log.d(TAG, "${" ".repeat(level)}--- <children> ---")
+            (0 until info.childCount)
+                .forEach { index ->
+                    checkNodeRecursively(info.getChild(index), level + 1)
+                }
 
-            Log.d(TAG, "${" ".repeat(level)}info: text: ${it.text}, id: ${it.viewIdResourceName}, class: ${it.className}, parent id: ${it.parent?.viewIdResourceName}, desc=${it.contentDescription?.toString()}")
-            if (info.childCount > 0) {
-                Log.d(TAG, "${" ".repeat(level)}--- <children> ---")
-                (0 until info.childCount)
-                        .forEach { index ->
-                            checkNodeRecursively(it.getChild(index), level + 1)
-                        }
-
-                Log.d(TAG, "${" ".repeat(level)}--- </children> ---")
-            }
+            Log.d(TAG, "${" ".repeat(level)}--- </children> ---")
         }
-    }
-
-    override fun onInterrupt() {
     }
 
     private fun setMovieTitle(text: String, year: String?, appName: String) {
@@ -253,29 +237,22 @@ class NetflixReaderService : AccessibilityService() {
         // When the third condition is added, it could work better but could also be annoying because
         // event when the user scrolls, this would be triggered. This is just for Netflix because they
         // changed activity based navigation.
-
-        if (title == null || title != text /*|| displayer?.isShowingView == false*/) {
-            title = text
-            if (BuildConfig.DEBUG) {
-                Log.i(TAG, "Movie :- title: $text, year: $year")
-            }
-
-            displayer?.removeView()
-
-            val request = RatingRequest(
-                    title = text,
-                    appName = appName,
-                    order = if (preferences?.isSettingEnabled(UserPreferences.SHOW_RECENT_RATING) == true) ORDER_RECENT else ORDER_POPULAR,
-                    checkAnime = if (preferences?.isAppEnabled(UserPreferences.CHECK_ANIME) == true) 1 else 0,
-                    year = if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) year else null
-            )
-
-            requestPublisher.onNext(request)
+        title = text.takeIf { it != title } ?: return
+        if (BuildConfig.DEBUG) {
+            Log.i(TAG, "Movie :- title: $text, year: $year")
         }
-    }
 
-    private fun fixTitle(@Suppress("UNUSED_PARAMETER") packageName: CharSequence, text: String): String {
-        return FixTitleUtils.clean(text)
+        displayer?.removeView()
+
+        val request = RatingRequest(
+            title = text,
+            appName = appName,
+            order = if (preferences?.isSettingEnabled(UserPreferences.SHOW_RECENT_RATING) == true) ORDER_RECENT else ORDER_POPULAR,
+            checkAnime = if (preferences?.isAppEnabled(UserPreferences.CHECK_ANIME) == true) 1 else 0,
+            year = if (preferences?.isAppEnabled(UserPreferences.USE_YEAR) == true) year else null
+        )
+
+        requestPublisher.onNext(request)
     }
 
     private fun fixYear(packageName: CharSequence, text: String?): String {
@@ -297,7 +274,9 @@ class NetflixReaderService : AccessibilityService() {
             .doOnNext { historyPublisher.onNext(request) }
             .subscribe(::showRating) { error ->
                 if (error is HttpException && error.code() == 404) {
-                    GaEvents.RATING_NOT_FOUND.withLabelArg(if (useFlutterApi) GaLabels.FLUTTER_API else GaLabels.OMDB_API).track()
+                    GaEvents.RATING_NOT_FOUND.withLabelArg(
+                        if (useFlutterApi) GaLabels.FLUTTER_API else GaLabels.OMDB_API
+                    ).track()
                     update404(request.title, request.year)
                 }
 
@@ -309,16 +288,10 @@ class NetflixReaderService : AccessibilityService() {
 
     private fun updateHistory(imdbId: String, appName: String) {
         Observable.just(Pair(imdbId, appName))
-                .subscribeOn(Schedulers.io())
-                .doOnNext {
-                    Log.d(TAG, "update history")
-                    historyKeeper?.ratingDisplayed(imdbId, appName)
-                }
-                .observeOn(myScheduler)
-                .subscribe {
-                    Log.d(TAG, "update history on next")
-                    checkForSupportPrompt()
-                }
+            .subscribeOn(Schedulers.io())
+            .doOnNext { historyKeeper?.ratingDisplayed(imdbId, appName) }
+            .observeOn(myScheduler)
+            .subscribe { checkForSupportPrompt() }
     }
 
     private fun update404(title: String, year: String?) {
@@ -329,31 +302,26 @@ class NetflixReaderService : AccessibilityService() {
     }
 
     private fun checkForSupportPrompt() {
-        historyKeeper?.let {
-            it.shouldShowSupportAppPrompt()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe ({
-                        if (it) {
-                            showSupportAppPrompt()
-                        } else {
-                            checkForRateAppPrompt()
-                        }
-                    })
-        }
+        val historyKeeper = historyKeeper ?: return
+        historyKeeper.shouldShowSupportAppPrompt()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                if (it) {
+                    showSupportAppPrompt()
+                } else {
+                    checkForRateAppPrompt()
+                }
+            }
     }
 
     private fun checkForRateAppPrompt() {
-        historyKeeper?.let {
-            it.shouldShowRateAppPrompt()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe ({
-                        if (it) {
-                            showRateAppPrompt()
-                        }
-                    })
-        }
+        val historyKeeper = historyKeeper ?: return
+        historyKeeper.shouldShowRateAppPrompt()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .filter { it }
+            .subscribe { showRateAppPrompt() }
     }
 
     private fun showSupportAppPrompt() {
@@ -378,7 +346,9 @@ class NetflixReaderService : AccessibilityService() {
 
     private fun showRating(rating: MovieRating) {
         displayer?.showRatingWindow(rating)
-        if (preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true) {
+        if (preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true &&
+            preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true
+        ) {
             GaEvents.SPEAK_RATING.track()
             speaker?.talk(rating)
         }
