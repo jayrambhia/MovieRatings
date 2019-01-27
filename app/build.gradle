@@ -8,7 +8,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 
 ext.versionMajor = 0
 ext.versionMinor = 3
-ext.versionPatch = 7
+ext.versionPatch = 8
 
 android {
     compileSdkVersion 27

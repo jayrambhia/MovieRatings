@@ -1,5 +1,14 @@
 # Flutter Changelog
 
+# 0.3.8
+
+ - Fix issue with Toast. Removed custom duration for toasts
+ - Fixed support page layout and card height
+ - Fixed issue of not retaining 'liked' state in collection search
+ - 'Draw over window' banner added
+ - 'Detailed' rating bubble added
+ - 'Not found' bubble added
+
 # 0.3.7
 
  - Debug menu added
