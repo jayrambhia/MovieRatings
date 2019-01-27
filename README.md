@@ -2,7 +2,7 @@
 ![status](https://travis-ci.org/jayrambhia/MovieRatings.svg?branch=master)
 
 <p align="center">
-<img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/cover.png" width="480px"/>
+<img src="https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/cover.png" width="480px"/>
 </p>
 
 You can get the latest Playstore version here on [Playstore](https://play.google.com/store/apps/details?id=com.fenchtose.flutter&referrer=utm_source%3Dgithub) - or download directly - [0.3.8](https://github.com/jayrambhia/MovieRatings/releases/download/v0.3.8/flutter_v0.3.8.apk)
@@ -11,15 +11,15 @@ You can get the latest Playstore version here on [Playstore](https://play.google
 
 Search Page | Favorites Page | Movie Page
 :----------:|:--------------:|:----------: 
-![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/search_screen.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/likes_screen.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/movie_screen.png)
+![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/search_screen.png) | ![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/likes_screen.png) | ![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/movie_screen.png)
 
 Collections Page | Collection Page | Settings Page
 :----------:|:--------------:|:---------------:
-![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/collections_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/collection_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/settings_screen.png)
+![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/collections_page.png) | ![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/collection_page.png) | ![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/settings_screen.png)
 
 Series Page | List of Episodes on Series Page | Episode Page |
 :----------:|:-------------------------------:|:-----------------------------:
-![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/series_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/series_episodes_page.png) | ![](https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/episodes_page.png)
+![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/series_page.png) | ![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/series_episodes_page.png) | ![](https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/episodes_page.png)
 
 ## Contribute
 
@@ -55,7 +55,7 @@ Are you new to android development? I encourage you to contribute to the project
 ## Playstore description
 
 <p align="center">
-<img src="https://github.com/jayrambhia/MovieRatings/blob/master/screenshots/playstore_logo.png" width="160px"/>
+<img src="https://raw.githubusercontent.com/jayrambhia/MovieRatings/master/screenshots/playstore_logo.png" width="160px"/>
 </p>
 
 Flutter is a smart app that helps you decide what to watch on streaming apps like Netflix and Amazon Prime! It shows movie ratings on your screen making sure that you don't even have to search for it. It's completely ad-free and promotion-free.
