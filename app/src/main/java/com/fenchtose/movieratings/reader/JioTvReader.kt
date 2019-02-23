@@ -9,13 +9,8 @@ class JioTvReader : AppReader {
         event: AccessibilityEvent,
         info: AccessibilityNodeInfo
     ): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_TV + ":id/program_name")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "program_name")
     }
 
+    override fun getAppId() = Constants.PACKAGE_JIO_TV
 }

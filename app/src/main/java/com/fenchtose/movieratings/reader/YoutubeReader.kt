@@ -50,4 +50,6 @@ class YoutubeReader : AppReader {
         }
     }
 
+    override fun getAppId() = Constants.PACKAGE_YOUTUBE
+
 }

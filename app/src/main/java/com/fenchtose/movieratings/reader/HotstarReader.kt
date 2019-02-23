@@ -20,13 +20,7 @@ class HotstarReader : AppReader {
     }
 
     override fun readYear(info: AccessibilityNodeInfo): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_HOTSTAR + ":id/metadata_subtitle")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "metadata_subtitle")
             .filter {
                 !FixTitleUtils.fixHotstarYear(it.toString()).isNullOrEmpty()
             }
@@ -35,5 +29,7 @@ class HotstarReader : AppReader {
     override fun fixYear(text: String): String {
         return FixTitleUtils.fixHotstarYear(text) ?: ""
     }
+
+    override fun getAppId() = Constants.PACKAGE_HOTSTAR
 
 }

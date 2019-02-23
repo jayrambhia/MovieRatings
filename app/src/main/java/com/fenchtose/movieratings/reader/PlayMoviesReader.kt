@@ -44,4 +44,6 @@ class PlayMoviesReader : AppReader {
         return FixTitleUtils.fixPlayMoviesYear(text) ?: ""
     }
 
+    override fun getAppId() = Constants.PACKAGE_PLAY_MOVIES_TV
+
 }

@@ -10,27 +10,17 @@ class NetflixReader : AppReader {
         event: AccessibilityEvent,
         info: AccessibilityNodeInfo
     ): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_title")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "video_details_title")
     }
 
     override fun readYear(info: AccessibilityNodeInfo): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_NETFLIX + ":id/video_details_basic_info_year")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "video_details_basic_info_year")
     }
 
     override fun fixYear(text: String): String {
         return FixTitleUtils.fixNetflixYear(text) ?: ""
     }
+
+    override fun getAppId() = Constants.PACKAGE_NETFLIX
 
 }

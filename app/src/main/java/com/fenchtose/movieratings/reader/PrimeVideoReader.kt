@@ -4,6 +4,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import com.fenchtose.movieratings.util.Constants
 import com.fenchtose.movieratings.util.FixTitleUtils
+import com.fenchtose.movieratings.util.emptyAsNull
 import java.lang.IllegalStateException
 
 class PrimeVideoReader : AppReader {
@@ -11,16 +12,16 @@ class PrimeVideoReader : AppReader {
         event: AccessibilityEvent,
         info: AccessibilityNodeInfo
     ): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/TitleText")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "header_title_text").emptyAsNull() ?: findText(info, "TitleText")
     }
 
     override fun readYear(info: AccessibilityNodeInfo): List<CharSequence> {
+        return findText(info, "header_date_released")
+            .filter { !FixTitleUtils.fixPrimeVideoYear(it.toString()).isNullOrEmpty() }
+            .emptyAsNull() ?: readYearLegacy(info)
+    }
+
+    private fun readYearLegacy(info: AccessibilityNodeInfo) : List<CharSequence> {
         return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_PRIMEVIDEO + ":id/ItemMetadataView")
             // get children of that node
             .flatMap {
@@ -51,5 +52,7 @@ class PrimeVideoReader : AppReader {
     override fun fixYear(text: String): String {
         return FixTitleUtils.fixPrimeVideoYear(text) ?: ""
     }
+
+    override fun getAppId() = Constants.PACKAGE_PRIMEVIDEO
 
 }

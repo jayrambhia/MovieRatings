@@ -9,12 +9,8 @@ class BBCiPlayerReader : AppReader {
         event: AccessibilityEvent,
         info: AccessibilityNodeInfo
     ): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_BBC_IPLAYER + ":id/programme_details_title")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "programme_details_title")
     }
+
+    override fun getAppId() = Constants.PACKAGE_BBC_IPLAYER
 }

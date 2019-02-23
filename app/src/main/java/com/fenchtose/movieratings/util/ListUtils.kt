@@ -1,5 +1,13 @@
 package com.fenchtose.movieratings.util
 
+fun<T> List<T>.emptyAsNull(): List<T>? {
+    if (isEmpty()) {
+        return null
+    }
+
+    return this
+}
+
 fun<T> List<T>.addAll(collection: Collection<T>): List<T> {
     val data = ArrayList<T>(this)
     data.addAll(collection)

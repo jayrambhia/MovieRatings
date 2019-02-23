@@ -9,8 +9,9 @@ class FlutterTestReader : AppReader {
         event: AccessibilityEvent,
         info: AccessibilityNodeInfo
     ): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(BuildConfig.APPLICATION_ID + ":id/flutter_test_title")
-            .filter { it.text != null }.map { it.text }
+        return findText(info, "flutter_test_title")
     }
+
+    override fun getAppId() = BuildConfig.APPLICATION_ID
 
 }

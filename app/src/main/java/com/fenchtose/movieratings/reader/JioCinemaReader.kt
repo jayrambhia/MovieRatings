@@ -10,23 +10,11 @@ class JioCinemaReader : AppReader {
         event: AccessibilityEvent,
         info: AccessibilityNodeInfo
     ): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_CINEMA + ":id/tvShowName")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "tvShowName")
     }
 
     override fun readYear(info: AccessibilityNodeInfo): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_JIO_CINEMA + ":id/tvMovieSubtitle")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "tvMovieSubtitle")
             .filter {
                 !FixTitleUtils.fixJioCinemaYear(it.toString()).isNullOrEmpty()
             }
@@ -35,5 +23,7 @@ class JioCinemaReader : AppReader {
     override fun fixYear(text: String): String {
         return FixTitleUtils.fixJioCinemaYear(text) ?: ""
     }
+
+    override fun getAppId() = Constants.PACKAGE_JIO_CINEMA
 
 }

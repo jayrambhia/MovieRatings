@@ -9,13 +9,8 @@ class RedboxReader : AppReader {
         event: AccessibilityEvent,
         info: AccessibilityNodeInfo
     ): List<CharSequence> {
-        return info.findAccessibilityNodeInfosByViewId(Constants.PACKAGE_REDBOX + ":id/productNameTitleDetails")
-            .filter { it.text != null }
-            .map {
-                val text = it.text
-                it.recycle()
-                text
-            }
+        return findText(info, "productNameTitleDetails")
     }
 
+    override fun getAppId() = Constants.PACKAGE_REDBOX
 }

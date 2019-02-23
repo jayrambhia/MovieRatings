@@ -140,9 +140,9 @@ class NetflixReaderService : AccessibilityService() {
                 resourceRemover = PublishSubject.create()
                 resourceRemover
                         ?.debounce(RESOURCE_THRESHOLD, TimeUnit.SECONDS)
-                        ?.subscribe({
+                        ?.subscribe {
                             clearResources()
-                        })
+                        }
             }
 
             resourceRemover?.onNext(true)
@@ -224,7 +224,6 @@ class NetflixReaderService : AccessibilityService() {
         }
     }
 
-    @Suppress("unused")
     private fun checkNodeRecursively(info: AccessibilityNodeInfo?, level: Int) {
         if (!BuildConfig.DEBUG) {
             return
@@ -232,15 +231,15 @@ class NetflixReaderService : AccessibilityService() {
 
         info?.let {
 
-            Log.d(TAG, "${" ".repeat(level)}info: text: ${it.text}, id: ${it.viewIdResourceName}, class: ${it.className}, parent id: ${it.parent?.viewIdResourceName}, desc=${it.contentDescription?.toString()}")
+            Log.d("dump", "${" ".repeat(level)}info: text: ${it.text}, id: ${it.viewIdResourceName}, class: ${it.className}, parent id: ${it.parent?.viewIdResourceName}, desc=${it.contentDescription?.toString()}")
             if (info.childCount > 0) {
-                Log.d(TAG, "${" ".repeat(level)}--- <children> ---")
+                Log.d("dump", "${" ".repeat(level)}--- <children> ---")
                 (0 until info.childCount)
                         .forEach { index ->
                             checkNodeRecursively(it.getChild(index), level + 1)
                         }
 
-                Log.d(TAG, "${" ".repeat(level)}--- </children> ---")
+                Log.d("dump", "${" ".repeat(level)}--- </children> ---")
             }
         }
     }
@@ -333,13 +332,13 @@ class NetflixReaderService : AccessibilityService() {
             it.shouldShowSupportAppPrompt()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe ({
+                    .subscribe {
                         if (it) {
                             showSupportAppPrompt()
                         } else {
                             checkForRateAppPrompt()
                         }
-                    })
+                    }
         }
     }
 
@@ -348,11 +347,11 @@ class NetflixReaderService : AccessibilityService() {
             it.shouldShowRateAppPrompt()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe ({
+                    .subscribe {
                         if (it) {
                             showRateAppPrompt()
                         }
-                    })
+                    }
         }
     }
 
