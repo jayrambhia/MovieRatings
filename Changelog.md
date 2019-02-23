@@ -1,5 +1,9 @@
 # Flutter Changelog
 
+# 0.3.9
+
+ - Update PrimeVideo reader to support the new UI
+
 # 0.3.8
 
  - Fix issue with Toast. Removed custom duration for toasts
