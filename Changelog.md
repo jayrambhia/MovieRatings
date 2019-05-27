@@ -1,5 +1,9 @@
 # Flutter Changelog
 
+# 0.4.0
+
+ - No changes
+
 # 0.3.9
 
  - Update PrimeVideo reader to support the new UI
