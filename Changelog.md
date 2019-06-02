@@ -1,5 +1,9 @@
 # Flutter Changelog
 
+# 0.4.1
+
+ - Support page layout and persuasion message updated
+
 # 0.4.0
 
  - No changes
