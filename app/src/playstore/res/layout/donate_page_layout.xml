@@ -2,7 +2,6 @@
 <ScrollView
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
-	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fillViewport="true">
@@ -27,15 +26,18 @@
 			tools:text="@string/donate_page_persuasion_message"/>
 
 		<TextView
+			android:id="@+id/persuasion_message2"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:paddingStart="@dimen/gutter"
 			android:paddingEnd="@dimen/gutter"
+			android:visibility="gone"
+			tools:visibility="visible"
 			android:textAppearance="@style/Text.Light.Large"
-			android:text="@string/donate_page_content"/>
+			tools:text="@string/donate_page_content_no_purchase" />
 
 		<TextView
-			android:id="@+id/persuasion_message_2"
+			android:id="@+id/warning_message"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:paddingStart="@dimen/gutter"
@@ -43,8 +45,8 @@
 			android:layout_marginTop="16dp"
 			android:visibility="gone"
 			tools:visibility="visible"
-			android:textAppearance="@style/Text.Light.Medium.Large"
-			tools:text="@string/donate_page_persuasion_message_2"/>
+			android:textAppearance="@style/Text.Light"
+			android:text="@string/donate_page_purchase_warning"/>
 
 		<FrameLayout
 			android:id="@+id/progress_container"
@@ -61,18 +63,12 @@
 
 		</FrameLayout>
 
-		<Space
-			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1" />
-
-		<com.fenchtose.movieratings.widgets.viewpager.MaxItemHeightViewPager
-			android:id="@+id/viewpager"
-			android:layout_marginTop="36dp"
-			android:layout_marginBottom="36dp"
+		<com.fenchtose.movieratings.features.premium.CardsContainer
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:clipToPadding="false"/>
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+			android:id="@+id/cards_container" />
 
 	</LinearLayout>
 

@@ -1,9 +1,7 @@
 package com.fenchtose.movieratings.features.premium
 
 import android.app.AlertDialog
-import android.graphics.Point
 import android.os.Bundle
-import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,22 +21,22 @@ import com.fenchtose.movieratings.model.inAppAnalytics.DbHistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.HistoryKeeper
 import com.fenchtose.movieratings.model.inAppAnalytics.PreferenceUserHistory
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
+import com.fenchtose.movieratings.util.Constants
+import com.fenchtose.movieratings.util.IntentUtils
 import com.fenchtose.movieratings.util.show
-import com.fenchtose.movieratings.widgets.viewpager.CardsPagerTransformerShift
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
 class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
 
-    private var viewPager: ViewPager? = null
-    private var cardAdapter: CardAdapter? = null
     private var progressContainer: View? = null
+    private lateinit var cardsContainer: CardsContainer
 
     private var billingClient: BillingClient? = null
     private var historyKeeper: HistoryKeeper? = null
     private var isBillingAvailable = false
 
-    private val totalPurchases = 50
+    private val totalPurchases = 70
 
     override fun canGoBack() = true
 
@@ -67,15 +65,8 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
                 })
         )
 
+        cardsContainer = view.findViewById(R.id.cards_container)
         progressContainer = view.findViewById(R.id.progress_container)
-        viewPager = view.findViewById<ViewPager>(R.id.viewpager).apply {
-            setupViewPager(this)
-        }
-
-        cardAdapter = CardAdapter(requireContext(), ::onPurchaseRequested).apply {
-            viewPager?.adapter = this
-        }
-
         historyKeeper = DbHistoryKeeper(
                 PreferenceUserHistory(requireContext()),
                 ratingStore,
@@ -94,24 +85,6 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
             }
 
         })
-    }
-
-    private fun setupViewPager(viewPager: ViewPager) {
-        val point = Point()
-        requireActivity().windowManager.defaultDisplay.getSize(point)
-
-        val density = requireContext().resources.displayMetrics.density
-        val cardPartialWidth = 72 * density // 72dp
-        val pageMargin = 24 * density // 24dp
-        val padding = cardPartialWidth + pageMargin
-
-        viewPager.pageMargin = pageMargin.toInt()
-        viewPager.setPadding(padding.toInt(), 0, padding.toInt(), 0)
-
-        val offset = padding / (point.x - 2*padding)
-        viewPager.setPageTransformer(false,
-                CardsPagerTransformerShift(8f, 16f, 0.8f, offset))
-
     }
 
     override fun onDestroyView() {
@@ -183,28 +156,42 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
         }
 
         progressContainer?.visibility = View.GONE
-
-        if (purchases.isNotEmpty()) {
-            historyKeeper?.paidInAppPurchase()
-        } else {
-            view?.findViewById<TextView>(R.id.persuasion_message_2)?.apply {
-                text = requireContext().getString(R.string.donate_page_persuasion_message_2, totalPurchases)
-                show(true)
+        view?.findViewById<TextView>(R.id.persuasion_message2)?.apply {
+            text = if (purchases.isNotEmpty()) {
+                getString(R.string.donate_page_has_purchased)
+            } else {
+                getString(R.string.donate_page_content_no_purchase, totalPurchases)
             }
+            show(true)
         }
 
-        cardAdapter?.update(skus.sortedBy { it.priceAmountMicros }, purchases)
+        val regex = Regex("(\\(.+\\))")
 
-        if (skus.size > 1) {
-            viewPager?.setCurrentItem(1, true)
+        val content = skus.map { details ->
+            PurchaseCardContent(
+                sku = details.sku,
+                title = details.title.replace(regex, ""),
+                description = details.description,
+                price = details.price,
+                purchased = purchases.count { it == details.sku }
+            )
         }
+
+        view?.findViewById<View>(R.id.warning_message)?.show(true)
+        cardsContainer.update(
+            content,
+            onPurchase = { onPurchaseRequested(it) },
+            onBrag = {
+                IntentUtils.openShareIntent(requireContext(), getString(R.string.donate_brag_content, Constants.APP_SHARE_URL))
+            }
+        )
     }
 
-    private fun onPurchaseRequested(sku: SkuDetails) {
-        GaEvents.TAP_PURCHASE.withLabelArg(sku.sku).track()
+    private fun onPurchaseRequested(sku: String) {
+        GaEvents.TAP_PURCHASE.withLabelArg(sku).track()
 
         val flowParams = BillingFlowParams.newBuilder()
-                .setSku(sku.sku)
+                .setSku(sku)
                 .setType(BillingClient.SkuType.INAPP)
                 .build()
 

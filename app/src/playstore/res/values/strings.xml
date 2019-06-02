@@ -2,9 +2,13 @@
 <resources>
 	<string name="donate_page_title">Support Flutter</string>
 	<string name="donate_page_persuasion_message">Did you know that Flutter has shown you ratings of over %d titles?</string>
-	<string name="donate_page_content">Flutter is free for all and contains no ads. Please consider purchasing one of the following items to support the app. This will help us provide you uninterrupted experience and future updates.\n\nThese purchases do not unlock any new features. Every user will get all the features for free.</string>
-	<string name="donate_page_persuasion_message_2">Join %d other kind supporters, today!</string>
-	<string name="donate_already_purchased_text">You have purchased this for %1s. Thanks for your support!</string>
+	<string name="donate_page_content_no_purchase">Flutter is free and contains no ads. If you liked the app, please join %d other kind people in supporting the app by buying any of the following items.</string>
+	<string name="donate_page_has_purchased">Flutter is free and contains no ads. You are helping us sustain the app.</string>
+	<string name="donate_page_purchase_warning">These purchases do not unlock any features.</string>
+	<string name="donate_already_purchased_text">You have bought this and supported us. 🏆</string>
+	<string name="donate_card_cta">Support with %s</string>
+	<string name="donate_card_brag_cta">Brag</string>
 	<string name="donate_dialog_title">You\'re the best!</string>
 	<string name="donate_dialog_message">Thanks for buying an in-app package and supporting the developers and the app.</string>
+	<string name="donate_brag_content">I am a patron of this app which show movie ratings for Netflix. Check it out %s.</string>
 </resources>

@@ -17,7 +17,7 @@ class Constants {
         const val PACKAGE_JIO_CINEMA = "com.jio.media.ondemand"
         const val PACKAGE_REDBOX = "com.redbox.android.activity"
 
-        const val APP_SHARE_URL = "https://goo.gl/y3HXVi"
+        const val APP_SHARE_URL = "http://bit.ly/movieRatings"
 
         const val EXPORT_MOVIES = "movies"
         const val EXPORT_COLLECTIONS = "collections"
