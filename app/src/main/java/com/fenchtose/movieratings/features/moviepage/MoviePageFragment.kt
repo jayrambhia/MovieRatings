@@ -181,33 +181,31 @@ class MoviePageFragment: BaseFragment() {
     }
 
     private fun loadImage(poster: String) {
-        posterView?.let {
-            val handler = Handler()
+        val posterView = posterView ?: return
+        val handler = Handler()
 
-            path?.getSharedTransitionElement()?.let {
-                ViewCompat.setTransitionName(posterView, it.second)
-            }
-
-            imageLoader?.loadImage(poster, it, object : ImageLoader.Callback {
-                override fun imageLoaded(image: String, view: ImageView) {
-                    isPosterLoaded = true
-                    handler.postDelayed({
-
-                        if (!isTransitionPostponeStarted) {
-                            startPostponedEnterTransition()
-                            isTransitionPostponeStarted = true
-                        }
-
-                        val params = posterView?.layoutParams as CoordinatorLayout.LayoutParams
-                        params.behavior = PosterBehavior()
-                        posterView?.layoutParams = params
-
-                    } , 60)
-
-                }
-            })
+        path?.getSharedTransitionElement()?.let {
+            ViewCompat.setTransitionName(posterView, it.second)
         }
 
+        imageLoader?.loadImage(poster, posterView, object : ImageLoader.Callback {
+            override fun imageLoaded(image: String, view: ImageView) {
+                isPosterLoaded = true
+                handler.postDelayed({
+
+                    if (!isTransitionPostponeStarted) {
+                        startPostponedEnterTransition()
+                        isTransitionPostponeStarted = true
+                    }
+
+                    val params = posterView.layoutParams as CoordinatorLayout.LayoutParams
+                    params.behavior = PosterBehavior()
+                    posterView.layoutParams = params
+
+                } , 60)
+
+            }
+        })
     }
 
     private fun setRating(score: String) {

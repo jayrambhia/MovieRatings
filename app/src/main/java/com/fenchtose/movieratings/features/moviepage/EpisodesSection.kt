@@ -83,8 +83,9 @@ class EpisodesSection(private val context: Context, private val header: View, pr
             })
 
             adapter.setHasStableIds(true)
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.layoutManager.isAutoMeasureEnabled = true
+            recyclerView.layoutManager = LinearLayoutManager(context).apply {
+                isAutoMeasureEnabled = true
+            }
             recyclerView.isNestedScrollingEnabled = false
             recyclerView.adapter = adapter
             this.adapter = adapter

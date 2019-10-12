@@ -11,11 +11,11 @@ ext.versionMinor = 4
 ext.versionPatch = 1
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         applicationId "com.fenchtose.flutter"
         versionCode generateVersionCode()
         versionName generateVersionName()
