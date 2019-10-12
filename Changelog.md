@@ -1,5 +1,11 @@
 # Flutter Changelog
 
+# 0.4.2
+
+ - Upgrade target SDK to 28.
+ - Migrate to AndroidX.
+ - Migrate to Firebase Analytics and optimize events.
+
 # 0.4.1
 
  - Support page layout and persuasion message updated
