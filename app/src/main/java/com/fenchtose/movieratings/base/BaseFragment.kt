@@ -28,7 +28,7 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
 
     override fun onStart() {
         super.onStart()
-        ScreenView(screenName()).track()
+        ScreenView(requireActivity(), screenName(), javaClass.simpleName).track()
     }
 
     override fun onDestroyView() {

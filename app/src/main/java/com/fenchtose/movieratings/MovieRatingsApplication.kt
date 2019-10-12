@@ -14,7 +14,6 @@ import com.squareup.leakcanary.RefWatcher
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.internal.cache.CacheInterceptor
 
 open class MovieRatingsApplication : Application() {
 

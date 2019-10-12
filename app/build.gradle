@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-
+apply plugin: 'com.google.gms.google-services'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -39,7 +39,6 @@ android {
             applicationIdSuffix ".dev"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            ext.enableCrashlytics = false
         }
         release {
             minifyEnabled true
@@ -88,7 +87,7 @@ dependencies {
     kapt 'android.arch.persistence.room:compiler:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.0.0-RC0'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.15.0'
+    testImplementation 'org.mockito:mockito-core:2.23.0'
     testImplementation ("com.nhaarman:mockito-kotlin-kt1.1:1.5.0", {
         exclude group: "org.jetbrains.kotlin"
     })
@@ -107,7 +106,10 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     playstoreImplementation 'com.android.billingclient:billing:1.0'
-    playstoreImplementation 'com.google.android.gms:play-services-analytics:16.0.1'
+    playstoreImplementation ('com.google.firebase:firebase-analytics:16.0.6') {
+        exclude module: 'support-media-compat'
+        exclude module: 'support-v4'
+    }
 
     // Moshi
     implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'

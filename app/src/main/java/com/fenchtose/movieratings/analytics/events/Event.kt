@@ -1,5 +1,6 @@
 package com.fenchtose.movieratings.analytics.events
 
+import android.app.Activity
 import android.os.Bundle
 import com.fenchtose.movieratings.MovieRatingsApplication
 
@@ -54,4 +55,4 @@ fun Bundle.toGaEvent(): GaEvent? {
     return null
 }
 
-class ScreenView(val name: String): Event
+class ScreenView(val activity: Activity, val name: String, val classname: String): Event
