@@ -9,7 +9,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.display.RatingDisplayer
 import com.fenchtose.movieratings.features.tts.Speaker
@@ -284,7 +284,6 @@ class NetflixReaderService : AccessibilityService() {
     private fun getMovieInfo(request: RatingRequest) {
         initResources()
 
-        GaEvents.GET_RATINGS.withLabelArg(request.appName).track()
         val useFlutterApi = preferences?.isAppEnabled(UserPreferences.USE_FLUTTER_API) ?: true
         val provider = provider ?: return
 
@@ -296,7 +295,9 @@ class NetflixReaderService : AccessibilityService() {
             .doOnNext { historyPublisher.onNext(request) }
             .subscribe(::showRating) { error ->
                 if (error is HttpException && error.code() == 404) {
-                    GaEvents.RATING_NOT_FOUND.withLabelArg(if (useFlutterApi) GaLabels.FLUTTER_API else GaLabels.OMDB_API).track()
+                    AppEvents.ratingNotFound(
+                        if (useFlutterApi) GaLabels.FLUTTER_API else GaLabels.OMDB_API
+                    ).track()
                     update404(request.title, request.year)
                 }
 
@@ -362,7 +363,7 @@ class NetflixReaderService : AccessibilityService() {
             return
         }
 
-        GaEvents.NOTIFICATION_BLOCKED.withLabel(GaLabels.NOTIFICATION_SUPPORT_APP).track()
+        AppEvents.notificationBlocked(GaLabels.NOTIFICATION_SUPPORT_APP).track()
     }
 
     private fun showRateAppPrompt() {
@@ -372,13 +373,13 @@ class NetflixReaderService : AccessibilityService() {
             return
         }
 
-        GaEvents.NOTIFICATION_BLOCKED.withLabel(GaLabels.NOTIFICATION_RATE_APP).track()
+        AppEvents.notificationBlocked(GaLabels.NOTIFICATION_RATE_APP).track()
     }
 
     private fun showRating(rating: MovieRating) {
         displayer?.showRatingWindow(rating)
         if (preferences?.isSettingEnabled(UserPreferences.TTS_AVAILABLE) == true && preferences?.isSettingEnabled(UserPreferences.USE_TTS) == true) {
-            GaEvents.SPEAK_RATING.track()
+            AppEvents.SPEAK_RATING.track()
             speaker?.talk(rating)
         }
     }

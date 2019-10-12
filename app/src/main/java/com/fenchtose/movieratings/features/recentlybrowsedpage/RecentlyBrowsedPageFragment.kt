@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.features.recentlybrowsedpage
 
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
@@ -14,7 +14,7 @@ class RecentlyBrowsedPageFragment: BaseMovieListPageFragment() {
 
     override fun getScreenTitle() = R.string.recently_browsed_page_title
 
-    override fun screenName() = GaScreens.RECENTLY_BROWSED
+    override fun screenName() = AppScreens.RECENTLY_BROWSED
 
     override fun getEmptyContent() = R.string.recently_browsed_page_empty_content
 

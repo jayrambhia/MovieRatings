@@ -6,7 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Unsubscribe
 import com.fenchtose.movieratings.base.router.Navigation
@@ -101,7 +101,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var consumed = true
-        when(item?.itemId) {
+        when(item.itemId) {
             android.R.id.home -> onBackPressed()
             R.id.action_settings -> showSettingsPage()
             R.id.action_history -> showRecentlyBrowsedPage()
@@ -112,12 +112,11 @@ abstract class RouterBaseActivity: AppCompatActivity() {
     }
 
     private fun showSettingsPage() {
-        GaEvents.OPEN_SETTINGS.withCategory("menu").track()
+        AppEvents.openSettings("menu").track()
         router?.go(SettingsFragment.SettingsPath())
     }
 
     private fun showRecentlyBrowsedPage() {
-        GaEvents.OPEN_RECENTLY_BROWSED_PAGE.track()
         navigate(RecentlyBrowsedPageFragment.RecentlyBrowsedPath())
     }
 

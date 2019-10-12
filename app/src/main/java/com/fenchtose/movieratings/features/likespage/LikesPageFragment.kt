@@ -4,8 +4,8 @@ import android.view.MenuItem
 import android.view.View
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppEvents
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
@@ -32,11 +32,11 @@ class LikesPageFragment: BaseMovieListPageFragment() {
         var consumed = true
         when(item.itemId) {
             R.id.action_sort_alphabetically -> {
-                GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.ALPHABETICAL.name.toLowerCase()).track()
+                AppEvents.sort(Sort.ALPHABETICAL, path?.category()).track()
                 dispatch?.invoke(LikeSort(Sort.ALPHABETICAL))
             }
             R.id.action_sort_year -> {
-                GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.YEAR.name.toLowerCase()).track()
+                AppEvents.sort(Sort.YEAR, path?.category()).track()
                 dispatch?.invoke(LikeSort(Sort.YEAR))
             }
 
@@ -60,7 +60,6 @@ class LikesPageFragment: BaseMovieListPageFragment() {
                 getString(R.string.movie_unliked_snackbar_content, movie.title),
                 R.string.undo_action,
                 View.OnClickListener {
-                    GaEvents.UNDO_UNLIKE_MOVIE.withLabelArg(movie.title).track()
                     dispatch.invoke(LikeMovie(movie, true))
                 }
         )
@@ -74,7 +73,7 @@ class LikesPageFragment: BaseMovieListPageFragment() {
 
     override fun canGoBack() = true
 
-    override fun screenName() = GaScreens.LIKES
+    override fun screenName() = AppScreens.LIKES
 
     class LikesPath(private val preferences: UserPreferences): RouterPath<LikesPageFragment>() {
         override fun createFragmentInstance() = LikesPageFragment()

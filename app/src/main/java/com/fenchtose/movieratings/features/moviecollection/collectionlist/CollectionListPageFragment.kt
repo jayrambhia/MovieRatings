@@ -14,8 +14,8 @@ import android.widget.EditText
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppEvents
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
@@ -46,7 +46,7 @@ class CollectionListPageFragment: BaseFragment() {
         else
             R.string.movie_collection_list_page_title
     }
-    override fun screenName() = GaScreens.COLLECTION_LIST
+    override fun screenName() = AppScreens.COLLECTION_LIST
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +64,12 @@ class CollectionListPageFragment: BaseFragment() {
         )
 
         root.findViewById<View>(R.id.empty_cta)?.setOnClickListener {
-            GaEvents.TAP_CREATE_COLLECTION.track()
+            AppEvents.TAP_CREATE_COLLECTION.track()
             onCreateCollectionRequested()
         }
 
         fab?.setOnClickListener {
-            GaEvents.TAP_CREATE_COLLECTION.track()
+            AppEvents.TAP_CREATE_COLLECTION.track()
             onCreateCollectionRequested()
         }
 
@@ -82,7 +82,6 @@ class CollectionListPageFragment: BaseFragment() {
                 GlideLoader(Glide.with(this)),
                 object: CollectionListPageAdapter.AdapterCallback {
                     override fun onDeleteRequested(collection: MovieCollection) {
-                        GaEvents.TAP_DELETE_COLLECTION.track()
                         onCollectionDeleteRequested(collection)
                     }
 
@@ -109,7 +108,6 @@ class CollectionListPageFragment: BaseFragment() {
         var consumed = true
         when(item.itemId) {
             R.id.action_share -> {
-                GaEvents.TAP_SHARE_COLLECTIONS.track()
                 showShareDialog()
             }
             else -> consumed = false
@@ -171,7 +169,7 @@ class CollectionListPageFragment: BaseFragment() {
                     dialog, _ ->
                     val name = edittext?.text.toString().trim()
                     name.takeIf { it.isNotEmpty() }?.let {
-                        GaEvents.CREATE_COLLECTION.track()
+                        AppEvents.CREATE_COLLECTION.track()
                         dispatch?.invoke(CreateCollection(it))
                         dialog.dismiss()
                     }
@@ -197,7 +195,7 @@ class CollectionListPageFragment: BaseFragment() {
                 .setTitle(R.string.movie_collection_delete_dialog_title)
                 .setMessage(requireContext().getString(R.string.movie_collection_delete_dialog_content, collection.name))
                 .setNegativeButton(R.string.movie_collection_delete_dialog_negative) { _, _ ->
-                    GaEvents.DELETE_COLLECTION.track()
+                    AppEvents.DELETE_COLLECTION.track()
                     dispatch?.invoke(DeleteCollection(collection))
                 }
                 .setNeutralButton(R.string.movie_collection_delete_dialog_neutral) { dialog, _ -> dialog.dismiss() }
@@ -206,16 +204,16 @@ class CollectionListPageFragment: BaseFragment() {
 
     private fun onCollectionSelected(collection: MovieCollection) {
         if (shouldReturnSelection()) {
-            GaEvents.SELECT_COLLECTION.track()
+            AppEvents.SELECT_COLLECTION.track()
             path?.let {
-                GaEvents.ADD_TO_COLLECTION.withCategory(GaCategory.MOVIE).track()
+                AppEvents.addToCollection(GaCategory.MOVIE).track()
                 (it as CollectionListPath).movieToBeAdded?.let {
                     dispatch?.invoke(AddToCollection(collection, it))
                 }
             }
             path?.getRouter()?.onBackRequested()
         } else {
-            GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
+            AppEvents.openCollection(path?.category()).track()
             path?.getRouter()?.let {
                 dispatch?.invoke(Navigation(it, CollectionPagePath(collection)))
             }
@@ -234,7 +232,7 @@ class CollectionListPageFragment: BaseFragment() {
                 .setPositiveButton(R.string.movie_collection_list_share_dialog_positive_cta) {
                     dialog, _ ->
                     dialog.dismiss()
-                    GaEvents.SHARE_COLLECTIONS.track()
+                    AppEvents.SHARE_COLLECTIONS.track()
                     dispatch?.invoke(ExportData(COLLECTION_LIST, "flutter_collections.txt",
                             DataExporter.Config(favs = false, collections = true, recentlyBrowsed = false)))
                 }

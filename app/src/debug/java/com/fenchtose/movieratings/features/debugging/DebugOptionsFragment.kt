@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
@@ -22,7 +22,7 @@ class DebugOptionsFragment: BaseFragment() {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.debug_screen_title
-    override fun screenName() =  GaScreens.DEBUGGING
+    override fun screenName() =  AppScreens.DEBUGGING
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.debug_options_screen, container, false)

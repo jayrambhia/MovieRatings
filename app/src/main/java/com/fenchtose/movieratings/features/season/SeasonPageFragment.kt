@@ -2,7 +2,6 @@ package com.fenchtose.movieratings.features.season
 
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
-import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -11,8 +10,8 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppEvents
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.entity.Movie
@@ -33,7 +32,7 @@ class SeasonPageFragment: BaseFragment() {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.season_page_title
-    override fun screenName() = GaScreens.SEASON
+    override fun screenName() = AppScreens.SEASON
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +70,7 @@ class SeasonPageFragment: BaseFragment() {
 
             tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    GaEvents.SELECT_EPISODE.track()
+                    AppEvents.SELECT_EPISODE.track()
                 }
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
@@ -100,7 +99,7 @@ class SeasonPageFragment: BaseFragment() {
         var consumed = true
         when(item.itemId) {
             R.id.action_open_imdb -> {
-                GaEvents.OPEN_IMDB.withCategory(GaCategory.EPISODE).track()
+                AppEvents.openImdb(GaCategory.EPISODE).track()
                 IntentUtils.openImdb(requireContext(), currentEpisodeId)
             }
             else -> consumed = false

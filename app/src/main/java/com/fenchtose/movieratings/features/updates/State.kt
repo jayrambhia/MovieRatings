@@ -3,7 +3,7 @@ package com.fenchtose.movieratings.features.updates
 import android.annotation.SuppressLint
 import android.content.Context
 import com.fenchtose.movieratings.BuildConfig
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
@@ -75,12 +75,12 @@ class UpdatesBannerMiddleware(private val store: BannerStore,
         when (action) {
             is Load -> load(action.version, dispatch)
             is Dismiss -> {
-                GaEvents.UPDATE_BANNER_DISMISS.withLabelArg(action.banner.id).track()
+                AppEvents.dismissBanner(action.banner.id).track()
                 store.dismiss(action.banner)
                 return next(state, Load(BuildConfig.VERSION_CODE), dispatch)
             }
             is PositiveCta -> {
-                GaEvents.UPDATE_BANNER_CTA.withLabelArg(action.banner.id).track()
+                AppEvents.bannerTapped(action.banner.id).track()
                 onPositive(action.banner, action.router, dispatch)
                 store.dismiss(action.banner)
                 return next(state, Load(BuildConfig.VERSION_CODE), dispatch)

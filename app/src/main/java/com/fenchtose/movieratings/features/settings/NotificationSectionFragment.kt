@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
@@ -17,7 +17,7 @@ class NotificationSectionFragment : BaseFragment() {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.notification_settings_screen_title
-    override fun screenName() = GaScreens.SETTINGS_NOTIFICATION_SECTION
+    override fun screenName() = AppScreens.SETTINGS_NOTIFICATION_SECTION
 
     override fun onCreateView(
         inflater: LayoutInflater,

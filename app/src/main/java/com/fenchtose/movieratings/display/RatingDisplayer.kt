@@ -15,7 +15,7 @@ import android.view.View
 import android.view.WindowManager
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.events.Event
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.features.stickyview.BubbleSize
 import com.fenchtose.movieratings.features.stickyview.FloatingRating
@@ -68,7 +68,7 @@ class RatingDisplayer(ctx: Context,
 
             Log.e(TAG, "no drawing permission")
             ToastUtils.showMovieRating(context, rating, bubbleColor)
-            trackEvent(GaEvents.SHOW_RATINGS.withLabel(GaLabels.TOAST))
+            trackEvent(AppEvents.showRating(GaLabels.TOAST))
             return
         }
 
@@ -90,7 +90,7 @@ class RatingDisplayer(ctx: Context,
                 }
             }
 
-            trackEvent(GaEvents.SHOW_RATINGS.withLabel(label))
+            trackEvent(AppEvents.showRating(label))
             if (it.getBubbleView().parent != null) {
                 return
             }
@@ -193,7 +193,7 @@ class RatingDisplayer(ctx: Context,
         override fun onClick(bubble: RatingBubble?, x: Int, y: Int) {
             bubble?.let {
                 if (it.isClickForClose(x)) {
-                    trackEvent(GaEvents.DISMISS_RATING)
+                    trackEvent(AppEvents.DISMISS_RATING)
                     removeViewImmediate(it)
                 } else {
                     openBubble()
@@ -226,13 +226,11 @@ class RatingDisplayer(ctx: Context,
 
     private fun openTitle(rating: MovieRating): Boolean {
         val openInApp = preferences.isAppEnabled(UserPreferences.OPEN_MOVIE_IN_APP)
-        val label = when(rating.source) {
+        when(rating.source) {
             "MAL" -> "mal"
             "IMDB" -> if (openInApp) "app" else "imdb"
             else -> null
-        }
-
-        label?.let { trackEvent(GaEvents.RATING_OPEN_MOVIE.withLabel(it)) }
+        }?.let { trackEvent(AppEvents.openMovieFromRatings(it)) }
         return IntentUtils.openMovie(context, rating, openInApp)
     }
 

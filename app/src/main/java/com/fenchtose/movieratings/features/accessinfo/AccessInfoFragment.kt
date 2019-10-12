@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.util.*
@@ -83,7 +83,7 @@ class AccessInfoFragment : BaseFragment() {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.accessibility_info_page_header
-    override fun screenName() = GaScreens.ACCESS_INFO
+    override fun screenName() = AppScreens.ACCESS_INFO
 
     class AccessibilityPath : RouterPath<AccessInfoFragment>() {
         override fun createFragmentInstance() = AccessInfoFragment()

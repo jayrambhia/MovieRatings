@@ -1,6 +1,7 @@
 package com.fenchtose.movieratings.features.trending
 
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
@@ -69,6 +70,7 @@ class TrendingMoviesMiddleware(private val provider: MovieRatingsProvider,
             }
         } else if (action is SwitchTab) {
             if (state.trendingPage.currentTab != action.tab) {
+                AppEvents.selectTrendingTab(action.tab.key).track()
                 load(action.tab, dispatch)
                 dispatch(BaseMovieListPageAction.Loading(TRENDING_PAGE))
             }

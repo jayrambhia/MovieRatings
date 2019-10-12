@@ -8,8 +8,8 @@ import androidx.core.os.ConfigurationCompat
 import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import android.view.ViewGroup
-import com.fenchtose.movieratings.analytics.events.toGaEvent
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.events.toFaEvent
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.router.Router
@@ -58,7 +58,6 @@ class MainActivity : RouterBaseActivity() {
             ), 0)
 
             addListener { position, item, reselected ->
-                GaEvents.SELECT_BOTTOM_TAB.withLabelArg(item.eventLabel).track()
                 getRouter()?.switchRoot(item.root, reselected)
             }
         }
@@ -129,8 +128,8 @@ class MainActivity : RouterBaseActivity() {
                 history = Router.History(historyBundle)
             }
 
-            if (intent.hasExtra("ga_event")) {
-                intent.getBundleExtra("ga_event").toGaEvent()?.track()
+            if (intent.hasExtra("fa_event")) {
+                intent.getBundleExtra("fa_event").toFaEvent()?.track()
             }
 
             root = Router.ROOT_SEARCH

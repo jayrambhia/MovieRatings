@@ -11,7 +11,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.db.like.DbLikeStore
@@ -45,7 +45,7 @@ class ImportDataFragment : BaseFragment() {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.import_screen_title
-    override fun screenName() = GaScreens.IMPORT_DATA
+    override fun screenName() = AppScreens.IMPORT_DATA
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.import_page_layout, container, false)

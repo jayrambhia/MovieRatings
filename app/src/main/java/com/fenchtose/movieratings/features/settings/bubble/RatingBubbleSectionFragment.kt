@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.EventBus
@@ -29,7 +29,7 @@ class RatingBubbleSectionFragment: BaseFragment() {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.settings_rating_bubble_section_page_header
-    override fun screenName() = GaScreens.SETTINGS_RATING_SECTION
+    override fun screenName() = AppScreens.SETTINGS_RATING_SECTION
 
     private var adapter: BubbleColorAdapter? = null
     private var recyclerView: RecyclerView? = null

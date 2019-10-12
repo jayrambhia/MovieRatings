@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.model.preferences.SettingsPreferences
@@ -24,7 +24,7 @@ class TTSSectionFragment: BaseFragment() {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.settings_tts_section_page_header
-    override fun screenName() = GaScreens.SETTINGS_TTS_SECTION
+    override fun screenName() = AppScreens.SETTINGS_TTS_SECTION
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.settings_tts_section_page_layout, container, false)

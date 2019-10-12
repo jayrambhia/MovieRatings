@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import android.widget.SpinnerAdapter
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.base.router.Router
@@ -69,7 +69,7 @@ class EpisodesSection(private val context: Context, private val header: View, pr
         if (this.adapter == null) {
             val adapter = EpisodesAdapter(context, object : EpisodesAdapter.Callback {
                 override fun onSelected(episode: Episode) {
-                    GaEvents.OPEN_EPISODE.track()
+                    AppEvents.OPEN_EPISODE.track()
                     router?.let {
                         val router = it
                         series?.let {
@@ -106,19 +106,13 @@ class EpisodesSection(private val context: Context, private val header: View, pr
             spinner.setSelection(current - 1)
             this.spinnerAdapter = adapter
 
-            spinner.setOnTouchListener { _, event ->
-                if (event.action == MotionEvent.ACTION_UP) {
-                    GaEvents.TAP_SEASON_SELECTOR.track()
-                }
-                false
-            }
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onNothingSelected(parent: AdapterView<*>?) {
 
                 }
 
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    GaEvents.SELECT_SEASON.track()
+                    AppEvents.SELECT_SEASON.track()
                     series?.let {
                         dispatch?.invoke(LoadSeason(it, position + 1))
                     }

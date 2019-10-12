@@ -11,8 +11,8 @@ import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppEvents
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.router.Router
@@ -42,7 +42,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
 
     override fun getScreenTitle() = R.string.donate_page_title
 
-    override fun screenName() = GaScreens.SUPPORT_APP
+    override fun screenName() = AppScreens.SUPPORT_APP
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.donate_page_layout, container, false)
@@ -97,7 +97,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
     override fun onPurchasesUpdated(@BillingClient.BillingResponse responseCode: Int, purchases: MutableList<Purchase>?) {
         if (responseCode == BillingClient.BillingResponse.OK && purchases != null && !purchases.isEmpty()) {
             historyKeeper?.paidInAppPurchase()
-            GaEvents.PURCHASED.withLabelArg(purchases.first().sku).track()
+            AppEvents.completePurchase(purchases.first().sku).track()
 
             AlertDialog.Builder(context)
                     .setTitle(R.string.donate_dialog_title)
@@ -188,7 +188,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
     }
 
     private fun onPurchaseRequested(sku: String) {
-        GaEvents.TAP_PURCHASE.withLabelArg(sku).track()
+        AppEvents.startPurchase(sku).track()
 
         val flowParams = BillingFlowParams.newBuilder()
                 .setSku(sku)

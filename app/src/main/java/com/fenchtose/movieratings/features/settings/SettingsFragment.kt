@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.features.settings.bubble.RatingBubbleSectionFragment
@@ -20,7 +20,7 @@ import com.fenchtose.movieratings.util.checkBatteryOptimized
 class SettingsFragment : BaseFragment() {
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.settings_header
-    override fun screenName() = GaScreens.SETTINGS
+    override fun screenName() = AppScreens.SETTINGS
 
     override fun onCreateView(
         inflater: LayoutInflater,

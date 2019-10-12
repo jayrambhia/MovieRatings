@@ -10,7 +10,7 @@ import android.widget.LinearLayout
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.router.Router
 import com.fenchtose.movieratings.features.accessinfo.AccessInfoFragment
 import com.fenchtose.movieratings.features.debugging.DebugOptionsPath
@@ -22,7 +22,7 @@ import com.fenchtose.movieratings.util.*
 class InfoPageBottomView: LinearLayout {
 
     private var router: Router? = null
-    private var category: String? = null
+    private var category: String = "unknown"
 
     private var accessibilityButton: View? = null
 
@@ -36,7 +36,7 @@ class InfoPageBottomView: LinearLayout {
         val historyKeeper = DbHistoryKeeper.newInstance(MovieRatingsApplication.instance!!)
         accessibilityButton = findViewById(R.id.activate_button)
         accessibilityButton?.setOnClickListener {
-            GaEvents.TAP_ACTIVATE_FLUTTER.track()
+            AppEvents.ACTIVATE_FLUTTER.track()
             router?.go(AccessInfoFragment.AccessibilityPath())
         }
 
@@ -44,7 +44,7 @@ class InfoPageBottomView: LinearLayout {
         if (BuildConfig.FLAVOR == "playstore") {
             premiumView.visibility = View.VISIBLE
             premiumView.setOnClickListener {
-                GaEvents.OPEN_SUPPORT_APP.withCategory(category).track()
+                AppEvents.openSupportApp(category).track()
                 router?.go(DonatePageFragment.DonatePath())
             }
         }
@@ -54,7 +54,7 @@ class InfoPageBottomView: LinearLayout {
         }
 
         findViewById<View>(R.id.rate_view).setOnClickListener {
-            GaEvents.TAP_RATE_APP.withCategory(category).track()
+            AppEvents.rateApp(category).track()
             historyKeeper.ratedAppOnPlaystore()
             IntentUtils.openPlaystore(context)
         }
@@ -62,25 +62,25 @@ class InfoPageBottomView: LinearLayout {
         val share = findViewById<View>(R.id.share_view)
         share?.let {
             share.setOnClickListener {
-                GaEvents.TAP_SHARE_APP.withCategory(category).track()
+                AppEvents.shareApp(category).track()
                 IntentUtils.openShareIntent(context, context.getString(R.string.info_page_share_content, Constants.APP_SHARE_URL))
             }
         }
 
         val settingsView = findViewById<View?>(R.id.settings_view)
         settingsView?.setOnClickListener {
-            GaEvents.OPEN_SETTINGS.withCategory(category).track()
+            AppEvents.openSettings(category).track()
             router?.go(SettingsFragment.SettingsPath())
         }
 
         findViewById<View?>(R.id.feedback_view)?.setOnClickListener {
-            GaEvents.REPORT_BUG.withCategory(category).track()
+            AppEvents.reportBug(category).track()
             IntentUtils.openReportBugIntent(context, "\n\n\n\n\n------\nThis data will help us in figuring out the issue.\n\n" +
                     "${getDeviceInfo()}\n\n${getAppInfo(context)}")
         }
 
         findViewById<View?>(R.id.privacy_policy_view)?.setOnClickListener {
-            GaEvents.OPEN_PRIVACY_POLICY.withCategory(category).track()
+            AppEvents.openPrivacyPolicy(category).track()
             IntentUtils.openPrivacyPolicy(context)
         }
 
@@ -91,7 +91,7 @@ class InfoPageBottomView: LinearLayout {
 
     fun setRouter(router: Router?, category: String?) {
         this.router = router
-        this.category = category
+        this.category = category ?: "unknown"
     }
 
     private fun showCreditsDialog() {

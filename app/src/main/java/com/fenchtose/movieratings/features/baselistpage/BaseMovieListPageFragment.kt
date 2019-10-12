@@ -10,7 +10,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
@@ -126,12 +126,12 @@ abstract class BaseMovieListPageFragment: BaseFragment() {
     }
 
     protected open fun toggleLike(movie: Movie) {
-        GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
+        AppEvents.like(path?.category(), !movie.liked).track()
         dispatch?.invoke(LikeMovie(movie, !movie.liked))
     }
 
     protected open fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
-        GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
+        AppEvents.openMovie(path?.category() ?: "unknown").track()
         path?.getRouter()?.let {
             dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
         }

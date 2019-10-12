@@ -7,8 +7,7 @@ import android.view.View
 import android.widget.TextView
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
@@ -34,7 +33,6 @@ class TrendingFragment: BaseMovieListPageFragment() {
                     else -> TrendingTab.DAY
                 }
 
-                GaEvents.SELECT_TRENDING_TAB.withLabelArg(tab.key).track()
                 dispatch?.invoke(SwitchTab(tab))
             }
         }
@@ -49,7 +47,7 @@ class TrendingFragment: BaseMovieListPageFragment() {
     override fun getEmptyContent() = R.string.trending_page_empty_content
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.trending_screen_title
-    override fun screenName() = GaScreens.TRENDING
+    override fun screenName() = AppScreens.TRENDING
     override fun getLayout() = R.layout.trending_movies_page_layout
     override fun loadingAction() = LoadTrendingPage
 

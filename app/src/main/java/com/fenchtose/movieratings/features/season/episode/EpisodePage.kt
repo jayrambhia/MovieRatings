@@ -12,7 +12,7 @@ import android.widget.ProgressBar
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Unsubscribe
 import com.fenchtose.movieratings.model.entity.Episode
@@ -57,8 +57,8 @@ class EpisodePage(context: Context, private val episode: Episode,
         plotSection = ExpandableSection(findViewById(R.id.plot_header),
                 findViewById(R.id.plot_toggle),
                 findViewById(R.id.plot_view),
-                GaEvents.EXPAND_PLOT.withCategory(category()),
-                GaEvents.COLLAPSE_PLOT.withCategory(category()))
+                AppEvents.togglePlot("expand", category()),
+                AppEvents.togglePlot("collapse", category()))
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
     }
 

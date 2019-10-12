@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppEvents
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
@@ -40,7 +40,7 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
 
     override fun canGoBack() = true
 
-    override fun screenName() = GaScreens.COLLECTION
+    override fun screenName() = AppScreens.COLLECTION
 
     override fun getScreenTitle() = R.string.movie_collection_page_title
 
@@ -72,13 +72,13 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
         var consumed = true
         when(item.itemId) {
             R.id.action_sort_alphabetically -> {
-                GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.ALPHABETICAL.name.toLowerCase()).track()
+                AppEvents.sort(Sort.ALPHABETICAL, path?.category()).track()
                 collection?.let {
                     dispatch?.invoke(CollectionSort(it.id, Sort.ALPHABETICAL))
                 }
             }
             R.id.action_sort_year -> {
-                GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.YEAR.name.toLowerCase()).track()
+                AppEvents.sort(Sort.YEAR, path?.category()).track()
                 collection?.let {
                     dispatch?.invoke(CollectionSort(it.id, Sort.YEAR))
                 }
@@ -87,7 +87,6 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
                 openSearch()
             }
             R.id.action_share -> {
-                GaEvents.TAP_SHARE_COLLECTION.track()
                 showShareDialog()
             }
             else -> consumed = false
@@ -126,7 +125,7 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
 
         state.collectionOp?.let {
             if (it is MovieCollectionOp.Removed) {
-                GaEvents.ADD_TO_COLLECTION.withCategory(path?.category()).track()
+                AppEvents.addToCollection(path?.category()).track()
                 showSnackbarWithAction(requireContext().getString(R.string.movie_collection_remove_movie_success, it.movie.title), R.string.undo_action,
                         View.OnClickListener { dispatch.invoke(AddToCollection(state.collectionOp.collection, state.collectionOp.movie)) })
 
@@ -165,14 +164,10 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
     }
 
     private fun createExtraLayoutHelperMethod(): SearchItemViewHolder.ExtraLayoutHelper {
-        return CollectionRemoveMovieLayoutHelper({
-                GaEvents.TAP_REMOVE_MOVIE.track()
-                removeMovie(it)
-            })
+        return CollectionRemoveMovieLayoutHelper { removeMovie(it) }
     }
 
     private fun openSearch() {
-        GaEvents.TAP_SEARCH_FOR_COLLECTION.track()
         collection?.run {
             path?.getRouter()?.let {
                 dispatch?.invoke(Navigation(it, SearchPageFragment.SearchPath.AddToCollection(this)))
@@ -185,7 +180,7 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
                 .setTitle(R.string.movie_collection_remove_movie_dialog_title)
                 .setMessage(requireContext().getString(R.string.movie_collection_remove_movie_dialog_content, movie.title))
                 .setNegativeButton(R.string.movie_collection_remove_movie_negative) { _, _ ->
-                    GaEvents.REMOVE_MOVIE.track()
+                    AppEvents.REMOVE_MOVIE.track()
                     collection?.run {
                         dispatch?.invoke(RemoveFromCollection(this, movie))
                     }
@@ -207,7 +202,7 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
                     .setMessage(R.string.movie_collection_share_dialog_content)
                     .setPositiveButton(R.string.movie_collection_share_dialog_positive_cta) { dialog, _ ->
                         dialog.dismiss()
-                        GaEvents.SHARE_COLLECTION.track()
+                        AppEvents.SHARE_COLLECTION.track()
                         dispatch?.invoke(ExportCollection(COLLECTION_PAGE, "collection_${it.name}.txt", it.id))
                     }
                     .setNegativeButton(android.R.string.no) { dialog, _ -> dialog.dismiss() }

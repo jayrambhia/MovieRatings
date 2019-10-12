@@ -15,8 +15,8 @@ import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppEvents
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
@@ -80,7 +80,6 @@ class SearchPageFragment: BaseFragment() {
 
                 val router = it.getRouter()
                 findViewById<View>(R.id.trending_cta).setOnClickListener {
-                    GaEvents.TAP_TRENDING_PAGE.track()
                     router?.let {
                         dispatch?.invoke(Navigation(it, TrendingPath()))
                     }
@@ -90,12 +89,12 @@ class SearchPageFragment: BaseFragment() {
 
         val adapterConfig = SearchAdapterConfig(GlideLoader(Glide.with(this)),
                 {
-                    GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
+                    AppEvents.like(path?.category(), !it.liked).track()
                     dispatch?.invoke(LikeMovie(it, !it.liked))
                 },
                 {
                     movie, sharedElement ->
-                    GaEvents.OPEN_MOVIE.withCategory(path?.category()).track()
+                    AppEvents.openMovie(path?.category() ?: "unknown").track()
                     path?.getRouter()?.let {
                         dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
                     }
@@ -123,7 +122,7 @@ class SearchPageFragment: BaseFragment() {
         clearButton?.setOnClickListener {
             clearQuery()
             searchView?.setText("")
-            GaEvents.CLEAR_SEARCH.withCategory(path?.category()).track()
+            AppEvents.clearSearch(path?.category() ?: "unknown").track()
         }
 
         watcher = object: TextWatcher {
@@ -246,7 +245,7 @@ class SearchPageFragment: BaseFragment() {
                     .withUpdateBanner(item, router, dispatch)
                     .build()
                     .show()
-                GaEvents.UPDATE_BANNER_SHOWN.withLabelArg(item.id).track()
+                AppEvents.showBanner(item.id).track()
             }
 
         }
@@ -336,7 +335,7 @@ class SearchPageFragment: BaseFragment() {
     private fun createAddToCollectionExtraLayout(): SearchItemViewHolder.ExtraLayoutHelper {
         return AddToCollectionMovieLayoutHelper(object : AddToCollectionMovieLayoutHelper.Callback {
             override fun onAddRequested(movie: Movie) {
-                GaEvents.ADD_TO_COLLECTION.withCategory(path?.category()).track()
+                AppEvents.addToCollection(path?.category()).track()
                 path?.takeIf { it is SearchPath.AddToCollection }?.let {
                     dispatch?.invoke(AddToCollection((it as SearchPath.AddToCollection).collection, movie))
                 }
@@ -358,12 +357,12 @@ class SearchPageFragment: BaseFragment() {
     override fun screenName(): String {
         path?.takeIf { it is SearchPath }?.let {
             return when(it as SearchPath) {
-                is SearchPath.Default -> GaScreens.SEARCH
-                is SearchPath.AddToCollection -> GaScreens.COLLECTION_SEARCH
+                is SearchPath.Default -> AppScreens.SEARCH
+                is SearchPath.AddToCollection -> AppScreens.COLLECTION_SEARCH
             }
         }
 
-        return GaScreens.SEARCH
+        return AppScreens.SEARCH
     }
 
     sealed class SearchPath: RouterPath<SearchPageFragment>() {

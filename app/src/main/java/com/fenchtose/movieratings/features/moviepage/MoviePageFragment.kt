@@ -2,7 +2,6 @@ package com.fenchtose.movieratings.features.moviepage
 
 import android.os.Bundle
 import android.os.Handler
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.core.view.ViewCompat
 import android.text.Spannable
@@ -17,8 +16,8 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
-import com.fenchtose.movieratings.analytics.ga.GaEvents
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppEvents
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
@@ -62,7 +61,7 @@ class MoviePageFragment: BaseFragment() {
 
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.movie_page_title
-    override fun screenName() = GaScreens.MOVIE
+    override fun screenName() = AppScreens.MOVIE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,8 +90,8 @@ class MoviePageFragment: BaseFragment() {
         plotSection = ExpandableSection(view.findViewById(R.id.plot_header),
                 view.findViewById(R.id.plot_toggle),
                 view.findViewById(R.id.plot_view),
-                GaEvents.EXPAND_PLOT.withCategory(path?.category()),
-                GaEvents.COLLAPSE_PLOT.withCategory(path?.category()))
+                AppEvents.togglePlot("expand", path?.category()),
+                AppEvents.togglePlot("collapse", path?.category()))
 
         episodesSection = EpisodesSection(requireContext(), view.findViewById<TextView>(R.id.episodes_header),
                 view.findViewById(R.id.episodes_recyclerview), view.findViewById(R.id.seasons_spinner), path?.getRouter())
@@ -120,7 +119,7 @@ class MoviePageFragment: BaseFragment() {
         var consumed = true
         when(item.itemId) {
             R.id.action_open_imdb -> {
-                GaEvents.OPEN_IMDB.withCategory(path?.category()).track()
+                AppEvents.openImdb(path?.category()).track()
                 dispatch?.invoke(OpenImdbPage(WeakReference(requireContext())))
             }
             else -> consumed = false
@@ -155,10 +154,9 @@ class MoviePageFragment: BaseFragment() {
         plotSection?.setContent(movie.plot)
 
         collectionsFlexView?.render(movie.collections, { collection ->
-            GaEvents.OPEN_COLLECTION.withCategory(path?.category()).track()
+            AppEvents.openCollection(path?.category()).track()
             path?.getRouter()?.let { dispatch.invoke(Navigation(it, CollectionPagePath(collection))) }
         }, {
-            GaEvents.TAP_ADD_TO_COLLECTION.withCategory(path?.category()).track()
             path?.getRouter()?.let {
                 dispatch.invoke(Navigation(it, CollectionListPath(true, movie)))
             }
@@ -167,7 +165,7 @@ class MoviePageFragment: BaseFragment() {
         setLiked(movie.liked)
 
         fab?.setOnClickListener {
-            GaEvents.LIKE_MOVIE.withCategory(path?.category()).track()
+            AppEvents.like(path?.category(), !movie.liked).track()
             dispatch(LikeMovie(movie, !movie.liked))
         }
 

@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
-import com.fenchtose.movieratings.analytics.ga.GaScreens
+import com.fenchtose.movieratings.analytics.ga.AppScreens
 import com.fenchtose.movieratings.base.BaseFragment
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.util.IntentUtils
@@ -14,7 +14,7 @@ import com.fenchtose.movieratings.util.IntentUtils
 class BatteryOptimizationFragment : BaseFragment() {
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.battery_optimization_info_screen_title
-    override fun screenName() = GaScreens.BATTERY_OPTIMIZATION_INFO
+    override fun screenName() = AppScreens.BATTERY_OPTIMIZATION_INFO
 
     override fun onCreateView(
         inflater: LayoutInflater,
