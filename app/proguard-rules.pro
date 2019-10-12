@@ -117,3 +117,6 @@
 -keepnames @kotlin.Metadata class com.fenchtose.movieratings.model.entity.**
 -keep class com.fenchtose.movieratings.model.entity.** { *; }
 -keepclassmembers class com.fenchtose.movieratings.model.entity.** { *; }
+
+# Fragment names
+-keepnames class * extends com.fenchtose.movieratings.base.BaseFragment

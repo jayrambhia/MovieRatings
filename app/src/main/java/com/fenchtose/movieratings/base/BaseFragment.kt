@@ -13,7 +13,7 @@ import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-abstract class BaseFragment : androidx.fragment.app.Fragment(), FragmentNavigation {
+abstract class BaseFragment : Fragment(), FragmentNavigation {
 
     private var disposables: CompositeDisposable? = null
     var path: RouterPath<out BaseFragment>? = null
