@@ -1,13 +1,13 @@
 package com.fenchtose.movieratings.features.settings
 
 import android.os.Bundle
-import android.support.v7.widget.SwitchCompat
+import androidx.appcompat.widget.SwitchCompat
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.view.setPadding
+import androidx.core.view.setPadding
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaScreens
 import com.fenchtose.movieratings.base.BaseFragment

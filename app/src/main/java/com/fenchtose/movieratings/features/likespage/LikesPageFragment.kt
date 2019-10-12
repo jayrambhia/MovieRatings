@@ -28,9 +28,9 @@ class LikesPageFragment: BaseMovieListPageFragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var consumed = true
-        when(item?.itemId) {
+        when(item.itemId) {
             R.id.action_sort_alphabetically -> {
                 GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.ALPHABETICAL.name.toLowerCase()).track()
                 dispatch?.invoke(LikeSort(Sort.ALPHABETICAL))

@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.base
 
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import com.fenchtose.movieratings.MovieRatingsApplication
@@ -99,7 +99,7 @@ abstract class RouterBaseActivity: AppCompatActivity() {
         return super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var consumed = true
         when(item?.itemId) {
             android.R.id.home -> onBackPressed()

@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.features.season
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -24,7 +24,7 @@ import com.fenchtose.movieratings.util.IntentUtils
 class SeasonPageFragment: BaseFragment() {
 
     private var tabLayout: TabLayout? = null
-    private var viewPager: ViewPager? = null
+    private var viewPager: androidx.viewpager.widget.ViewPager? = null
     private var adapter: EpisodePagerAdapter? = null
     private var poster: ImageView? = null
     private var imageLoader: ImageLoader? = null
@@ -78,7 +78,7 @@ class SeasonPageFragment: BaseFragment() {
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
             })
 
-            viewPager?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+            viewPager?.addOnPageChangeListener(object: androidx.viewpager.widget.ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {
 
                 }
@@ -96,9 +96,9 @@ class SeasonPageFragment: BaseFragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var consumed = true
-        when(item?.itemId) {
+        when(item.itemId) {
             R.id.action_open_imdb -> {
                 GaEvents.OPEN_IMDB.withCategory(GaCategory.EPISODE).track()
                 IntentUtils.openImdb(requireContext(), currentEpisodeId)

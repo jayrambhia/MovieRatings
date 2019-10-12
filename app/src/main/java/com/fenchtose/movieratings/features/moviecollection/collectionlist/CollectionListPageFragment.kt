@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionlist
 
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -58,7 +58,10 @@ class CollectionListPageFragment: BaseFragment() {
         emptyContent = root.findViewById(R.id.empty_state_view)
         fab = root.findViewById(R.id.fab)
         recyclerView = root.findViewById(R.id.recyclerview)
-        recyclerView?.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        recyclerView?.layoutManager = StaggeredGridLayoutManager(
+            2,
+            StaggeredGridLayoutManager.VERTICAL
+        )
 
         root.findViewById<View>(R.id.empty_cta)?.setOnClickListener {
             GaEvents.TAP_CREATE_COLLECTION.track()
@@ -102,9 +105,9 @@ class CollectionListPageFragment: BaseFragment() {
         dispatch?.invoke(LoadCollections)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var consumed = true
-        when(item?.itemId) {
+        when(item.itemId) {
             R.id.action_share -> {
                 GaEvents.TAP_SHARE_COLLECTIONS.track()
                 showShareDialog()

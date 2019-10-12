@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.db.entity
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.fenchtose.movieratings.model.db.MovieTypeConverter2
 import com.google.gson.annotations.SerializedName
 import kotlin.collections.ArrayList

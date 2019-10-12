@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.stickyview
 
 import android.content.Context
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.widgets.RatingBubble

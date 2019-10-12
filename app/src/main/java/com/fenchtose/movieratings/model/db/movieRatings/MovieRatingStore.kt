@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.db.movieRatings
 
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 
 interface MovieRatingStore {
     @WorkerThread

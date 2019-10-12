@@ -30,7 +30,7 @@
 			android:paddingEnd="@dimen/gutter"
 			android:layout_marginTop="@dimen/gutter"/>
 
-		<android.support.v7.widget.SwitchCompat
+		<androidx.appcompat.widget.SwitchCompat
 			android:id="@+id/use_year_toggle"
 			android:padding="@dimen/gutter"
 			android:text="@string/settings_use_year"
@@ -54,7 +54,7 @@
 			android:paddingEnd="@dimen/gutter"
 			android:layout_marginTop="@dimen/gutter"/>
 
-		<android.support.v7.widget.SwitchCompat
+		<androidx.appcompat.widget.SwitchCompat
 			android:id="@+id/api_order_toggle"
 			android:padding="@dimen/gutter"
 			android:text="@string/settings_api_order_recent"
@@ -78,7 +78,7 @@
 			android:paddingEnd="@dimen/gutter"
 			android:layout_marginTop="@dimen/gutter"/>
 
-		<android.support.v7.widget.SwitchCompat
+		<androidx.appcompat.widget.SwitchCompat
 			android:id="@+id/api_fallback_toggle"
 			android:padding="@dimen/gutter"
 			android:text="@string/settings_api_fallback"
@@ -102,7 +102,7 @@
 			android:paddingEnd="@dimen/gutter"
 			android:layout_marginTop="@dimen/gutter"/>
 
-		<android.support.v7.widget.SwitchCompat
+		<androidx.appcompat.widget.SwitchCompat
 			android:id="@+id/anime_toggle"
 			android:padding="@dimen/gutter"
 			android:text="@string/settings_anime"

@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.util
 
 import android.content.Context
 import android.net.Uri
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import com.fenchtose.movieratings.BuildConfig
 import java.io.File
 import java.io.FileNotFoundException

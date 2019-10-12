@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.db.like
 
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import com.fenchtose.movieratings.model.db.entity.Fav
 import com.fenchtose.movieratings.model.db.dao.FavDao
 import com.fenchtose.movieratings.model.entity.Movie

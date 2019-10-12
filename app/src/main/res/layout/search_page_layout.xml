@@ -66,7 +66,7 @@
 		tools:visibility="visible"
 		layout="@layout/update_banner_layout"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_marginTop="64dp"
         android:layout_marginStart="4dp"

@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.premium
 
 import android.content.Context
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.Button
@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.util.show
 
-class InAppPurchaseCard : CardView {
+class InAppPurchaseCard : androidx.cardview.widget.CardView {
 
     private val title: TextView
     private val subtitle: TextView

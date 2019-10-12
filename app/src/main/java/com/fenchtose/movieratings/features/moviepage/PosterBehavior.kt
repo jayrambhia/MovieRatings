@@ -1,22 +1,22 @@
 package com.fenchtose.movieratings.features.moviepage
 
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
+import com.google.android.material.appbar.AppBarLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import android.view.View
 import android.widget.ImageView
 
-class PosterBehavior: CoordinatorLayout.Behavior<ImageView>() {
+class PosterBehavior: androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior<ImageView>() {
 
     private var h = 0
     private var w = 0
     private var diff = 0
     private var x = -1f
 
-    override fun layoutDependsOn(parent: CoordinatorLayout, child: ImageView, dependency: View): Boolean {
+    override fun layoutDependsOn(parent: androidx.coordinatorlayout.widget.CoordinatorLayout, child: ImageView, dependency: View): Boolean {
         return dependency is AppBarLayout
     }
 
-    override fun onDependentViewChanged(parent: CoordinatorLayout, child: ImageView, dependency: View): Boolean {
+    override fun onDependentViewChanged(parent: androidx.coordinatorlayout.widget.CoordinatorLayout, child: ImageView, dependency: View): Boolean {
 
         if (w == 0) {
             w = child.measuredWidth

@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.widgets.bottomnavigation
 
 import android.content.Context
 import android.graphics.PorterDuff
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView

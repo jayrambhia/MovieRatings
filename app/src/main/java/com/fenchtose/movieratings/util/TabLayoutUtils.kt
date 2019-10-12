@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.util
 
-import android.support.design.widget.TabLayout
+import com.google.android.material.tabs.TabLayout
 import android.view.View
 import android.view.ViewGroup
 

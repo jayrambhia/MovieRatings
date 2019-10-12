@@ -1,10 +1,10 @@
 package com.fenchtose.movieratings.widgets.viewpager
 
 import android.content.Context
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.util.AttributeSet
 
-class MaxItemHeightViewPager : ViewPager {
+class MaxItemHeightViewPager : androidx.viewpager.widget.ViewPager {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 

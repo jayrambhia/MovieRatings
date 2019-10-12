@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.settings
 
-import android.support.annotation.IdRes
-import android.support.v7.widget.SwitchCompat
+import androidx.annotation.IdRes
+import androidx.appcompat.widget.SwitchCompat
 import android.view.View
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers

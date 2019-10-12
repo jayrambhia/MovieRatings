@@ -1,11 +1,11 @@
 package com.fenchtose.movieratings.features.moviepage
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
-import androidx.text.bold
-import androidx.text.scale
+import androidx.core.text.bold
+import androidx.core.text.scale
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.entity.Episode
 
@@ -32,16 +32,16 @@ class EpisodesViewHolder(itemView: View, callback: EpisodesAdapter.Callback): Re
         title.text = episode.title
         rating.text = SpannableStringBuilder(rating.context.getText(R.string.movie_page_episodes_rated))
                 .bold {
-                    scale(1.1f, {
+                    scale(1.1f) {
                         append("  ${episode.imdbRating}")
-                    })
+                    }
                 }
 
         release.text = SpannableStringBuilder(release.context.getString(R.string.movie_page_episodes_released_on))
                 .bold {
-                    scale(1.1f, {
+                    scale(1.1f) {
                         append("  ${episode.released}")
-                    })
+                    }
                 }
     }
 }

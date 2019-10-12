@@ -1,14 +1,13 @@
 package com.fenchtose.movieratings.widgets
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import java.lang.RuntimeException
 import kotlin.reflect.KClass
 
-class SimpleAdapter(private val viewBinders: List<SimpleAdapterViewBinder<*>>) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SimpleAdapter(private val viewBinders: List<SimpleAdapterViewBinder<*>>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<Any> = listOf()
 

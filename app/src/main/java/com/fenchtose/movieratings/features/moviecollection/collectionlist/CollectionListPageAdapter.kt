@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionlist
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
@@ -11,7 +11,7 @@ import com.fenchtose.movieratings.model.image.ImageLoader
 class CollectionListPageAdapter(context: Context,
                                 private val imageLoader: ImageLoader,
                                 private val callback: AdapterCallback,
-                                private val showDeleteOption: Boolean): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                                private val showDeleteOption: Boolean): RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     var data: ArrayList<MovieCollection> = ArrayList()

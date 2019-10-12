@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.moviecollection.collectionpage
 
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -68,9 +68,9 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var consumed = true
-        when(item?.itemId) {
+        when(item.itemId) {
             R.id.action_sort_alphabetically -> {
                 GaEvents.SORT.withCategory(path?.category()).withLabelArg(Sort.ALPHABETICAL.name.toLowerCase()).track()
                 collection?.let {

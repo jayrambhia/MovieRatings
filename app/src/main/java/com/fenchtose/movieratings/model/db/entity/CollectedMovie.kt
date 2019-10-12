@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.model.db.entity
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Ignore
-import android.arch.persistence.room.Relation
+import androidx.room.ColumnInfo
+import androidx.room.Ignore
+import androidx.room.Relation
 import com.fenchtose.movieratings.model.db.entity.Movie
 
 class CollectedMovie {

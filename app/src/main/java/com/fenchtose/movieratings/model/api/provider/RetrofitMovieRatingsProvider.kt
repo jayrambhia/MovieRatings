@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.api.provider
 
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.analytics.ga.GaEvents
 import com.fenchtose.movieratings.analytics.ga.GaLabels

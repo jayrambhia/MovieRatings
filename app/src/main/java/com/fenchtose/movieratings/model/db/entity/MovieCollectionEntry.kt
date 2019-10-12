@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.db.entity
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "COLLECTION_ENTRIES")

@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.db.movie
 
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import com.fenchtose.movieratings.model.db.entity.Movie
 import com.fenchtose.movieratings.model.db.dao.MovieDao
 import io.reactivex.Single
