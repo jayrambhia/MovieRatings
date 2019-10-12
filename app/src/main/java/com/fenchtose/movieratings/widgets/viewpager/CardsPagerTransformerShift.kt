@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.widgets.viewpager
 
-import android.support.v4.view.ViewPager
+import androidx.viewpager.widget.ViewPager
 import android.view.View
 import kotlin.math.abs
 
@@ -8,7 +8,7 @@ class CardsPagerTransformerShift(
         private val baseElevation: Float,
         private val raisingElevation: Float,
         private val smallerScale: Float,
-        private val startOffset: Float): ViewPager.PageTransformer {
+        private val startOffset: Float): androidx.viewpager.widget.ViewPager.PageTransformer {
 
     override fun transformPage(page: View, position: Float) {
         val absPosition = abs(position - startOffset)

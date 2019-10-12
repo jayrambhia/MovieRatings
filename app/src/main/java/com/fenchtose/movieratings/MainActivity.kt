@@ -4,8 +4,8 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
-import android.support.v4.os.ConfigurationCompat
-import android.support.v7.app.AlertDialog
+import androidx.core.os.ConfigurationCompat
+import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import android.view.ViewGroup
 import com.fenchtose.movieratings.analytics.events.toGaEvent

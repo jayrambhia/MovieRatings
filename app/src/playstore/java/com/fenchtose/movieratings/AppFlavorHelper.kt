@@ -1,19 +1,18 @@
 package com.fenchtose.movieratings
 
+import android.annotation.SuppressLint
 import com.fenchtose.movieratings.analytics.EventDispatcher
-import com.fenchtose.movieratings.analytics.GaEventDispatcher
-import com.google.android.gms.analytics.GoogleAnalytics
-import com.google.android.gms.analytics.Tracker
+import com.fenchtose.movieratings.analytics.FirebaseEventDispatcher
+import com.google.firebase.analytics.FirebaseAnalytics
 
 class AppFlavorHelper {
 
-    private lateinit var tracker: Tracker
+    private lateinit var fa: FirebaseAnalytics
 
-    fun getGaDispatcher(): EventDispatcher = GaEventDispatcher(tracker)
+    fun getGaDispatcher(): EventDispatcher = FirebaseEventDispatcher(fa)
 
+    @SuppressLint("MissingPermission")
     fun onAppCreated(app: MovieRatingsApplication) {
-        val ga = GoogleAnalytics.getInstance(app)
-        ga.setDryRun(BuildConfig.DEBUG)
-        tracker = ga.newTracker(R.xml.global_tracker)
+        fa = FirebaseAnalytics.getInstance(app)
     }
 }

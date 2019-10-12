@@ -15,7 +15,7 @@
 		android:paddingEnd="@dimen/gutter"
 		android:layout_marginTop="@dimen/gutter"/>
 
-	<android.support.v7.widget.SwitchCompat
+	<androidx.appcompat.widget.SwitchCompat
 		android:id="@+id/tts_toggle"
 		android:padding="@dimen/gutter"
 		android:textSize="@dimen/settings_text_size"

@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.trending
 
 import android.os.Bundle
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView

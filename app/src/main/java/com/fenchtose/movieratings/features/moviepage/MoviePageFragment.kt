@@ -2,9 +2,9 @@ package com.fenchtose.movieratings.features.moviepage
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.CoordinatorLayout
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.view.ViewCompat
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.view.ViewCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
@@ -116,9 +116,9 @@ class MoviePageFragment: BaseFragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var consumed = true
-        when(item?.itemId) {
+        when(item.itemId) {
             R.id.action_open_imdb -> {
                 GaEvents.OPEN_IMDB.withCategory(path?.category()).track()
                 dispatch?.invoke(OpenImdbPage(WeakReference(requireContext())))
@@ -181,33 +181,31 @@ class MoviePageFragment: BaseFragment() {
     }
 
     private fun loadImage(poster: String) {
-        posterView?.let {
-            val handler = Handler()
+        val posterView = posterView ?: return
+        val handler = Handler()
 
-            path?.getSharedTransitionElement()?.let {
-                ViewCompat.setTransitionName(posterView, it.second)
-            }
-
-            imageLoader?.loadImage(poster, it, object : ImageLoader.Callback {
-                override fun imageLoaded(image: String, view: ImageView) {
-                    isPosterLoaded = true
-                    handler.postDelayed({
-
-                        if (!isTransitionPostponeStarted) {
-                            startPostponedEnterTransition()
-                            isTransitionPostponeStarted = true
-                        }
-
-                        val params = posterView?.layoutParams as CoordinatorLayout.LayoutParams
-                        params.behavior = PosterBehavior()
-                        posterView?.layoutParams = params
-
-                    } , 60)
-
-                }
-            })
+        path?.getSharedTransitionElement()?.let {
+            ViewCompat.setTransitionName(posterView, it.second)
         }
 
+        imageLoader?.loadImage(poster, posterView, object : ImageLoader.Callback {
+            override fun imageLoaded(image: String, view: ImageView) {
+                isPosterLoaded = true
+                handler.postDelayed({
+
+                    if (!isTransitionPostponeStarted) {
+                        startPostponedEnterTransition()
+                        isTransitionPostponeStarted = true
+                    }
+
+                    val params = posterView.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
+                    params.behavior = PosterBehavior()
+                    posterView.layoutParams = params
+
+                } , 60)
+
+            }
+        })
     }
 
     private fun setRating(score: String) {
@@ -219,7 +217,7 @@ class MoviePageFragment: BaseFragment() {
         }
         ratingView?.text = text
 
-        val params = ratingView?.layoutParams as CoordinatorLayout.LayoutParams
+        val params = ratingView?.layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
         params.behavior = RatingBehavior(requireContext())
         ratingView?.layoutParams = params
         ratingView?.visibility = View.VISIBLE

@@ -1,8 +1,8 @@
 package com.fenchtose.movieratings.features.moviepage
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.MotionEvent
 import android.view.View
 import android.widget.AdapterView
@@ -83,8 +83,9 @@ class EpisodesSection(private val context: Context, private val header: View, pr
             })
 
             adapter.setHasStableIds(true)
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.layoutManager.isAutoMeasureEnabled = true
+            recyclerView.layoutManager = LinearLayoutManager(context).apply {
+                isAutoMeasureEnabled = true
+            }
             recyclerView.isNestedScrollingEnabled = false
             recyclerView.adapter = adapter
             this.adapter = adapter

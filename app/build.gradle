@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-
+apply plugin: 'com.google.gms.google-services'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -11,15 +11,15 @@ ext.versionMinor = 4
 ext.versionPatch = 1
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         applicationId "com.fenchtose.flutter"
         versionCode generateVersionCode()
         versionName generateVersionName()
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'OMDB_API_KEY', properties['omdb_api_key']
         buildConfigField 'String', 'RATINGS_ENDPOINT', properties['ratings_endpoint']
         buildConfigField 'String', 'RATINGS_API_KEY', properties['ratings_api_key']
@@ -39,7 +39,6 @@ android {
             applicationIdSuffix ".dev"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            ext.enableCrashlytics = false
         }
         release {
             minifyEnabled true
@@ -64,15 +63,15 @@ android {
 }
 
 dependencies {
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "com.android.support:appcompat-v7:$support_lib_version"
-    implementation "com.android.support:recyclerview-v7:$support_lib_version"
-    implementation "com.android.support:cardview-v7:$support_lib_version"
-    implementation "com.android.support:design:$support_lib_version"
-    implementation ('androidx.core:core-ktx:0.2', {
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation ('androidx.core:core-ktx:1.0.0', {
         exclude group: 'com.android.support'
     })
     // Android TV
@@ -84,11 +83,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     debugImplementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
     // Room
-    implementation 'android.arch.persistence.room:runtime:1.0.0'
-    kapt 'android.arch.persistence.room:compiler:1.0.0'
-    implementation 'com.github.bumptech.glide:glide:4.0.0-RC0'
+    implementation 'androidx.room:room-runtime:2.0.0'
+    kapt 'androidx.room:room-compiler:2.0.0'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.15.0'
+    testImplementation 'org.mockito:mockito-core:2.23.0'
     testImplementation ("com.nhaarman:mockito-kotlin-kt1.1:1.5.0", {
         exclude group: "org.jetbrains.kotlin"
     })
@@ -107,7 +106,7 @@ dependencies {
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
     playstoreImplementation 'com.android.billingclient:billing:1.0'
-    playstoreImplementation 'com.google.android.gms:play-services-analytics:16.0.1'
+    playstoreImplementation 'com.google.firebase:firebase-analytics:17.2.0'
 
     // Moshi
     implementation 'com.squareup.moshi:moshi-kotlin:1.6.0'

@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="com.fenchtose.movieratings.MainActivity">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -20,7 +20,7 @@
         app:navigationIcon="@drawable/ic_arrow_back_accent_24dp"
         android:background="?attr/colorPrimary"/>
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         tools:background="@color/colorAccent"

@@ -30,7 +30,7 @@
 				android:gravity="center_vertical"
 				android:orientation="horizontal">
 
-				<android.support.v7.widget.AppCompatSeekBar
+				<androidx.appcompat.widget.AppCompatSeekBar
 					android:id="@+id/rating_duration_seekbar"
 					android:layout_width="0dp"
 					android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
 				android:text="@string/settings_rating_bubble_details_info"
 				android:padding="@dimen/gutter"/>
 
-			<android.support.v7.widget.SwitchCompat
+			<androidx.appcompat.widget.SwitchCompat
 				android:id="@+id/rating_details_toggle"
 				android:padding="@dimen/gutter"
 				android:text="@string/settings_rating_bubble_details_title"
@@ -82,7 +82,7 @@
 				android:text="@string/settings_rating_bubble_info"
 				android:padding="@dimen/gutter"/>
 
-			<android.support.v7.widget.RecyclerView
+			<androidx.recyclerview.widget.RecyclerView
 				android:id="@+id/bubble_color_recyclerview"
 				android:layout_width="match_parent"
 				android:layout_height="64dp"
@@ -101,7 +101,7 @@
 				android:text="@string/settings_rating_bubble_cta_info"
 				android:padding="@dimen/gutter"/>
 
-			<android.support.v7.widget.SwitchCompat
+			<androidx.appcompat.widget.SwitchCompat
 				android:id="@+id/open_movie_toggle"
 				android:padding="@dimen/gutter"
 				android:text="@string/settings_rating_bubble_cta_title"
@@ -121,7 +121,7 @@
 				android:text="@string/settings_rating_bubble_404_info"
 				android:padding="@dimen/gutter"/>
 
-			<android.support.v7.widget.SwitchCompat
+			<androidx.appcompat.widget.SwitchCompat
 				android:id="@+id/open_404_toggle"
 				android:padding="@dimen/gutter"
 				android:text="@string/settings_rating_bubble_404_title"

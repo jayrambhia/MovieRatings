@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.model.db.entity
 
-import android.arch.persistence.room.ColumnInfo
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.Index
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.fenchtose.movieratings.model.db.entity.MovieRating.Companion.ID
 import com.fenchtose.movieratings.util.Constants
 

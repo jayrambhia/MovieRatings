@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.features.settings.bubble
 
 import android.graphics.*
 import android.graphics.drawable.Drawable
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 
 class BubbleDrawable(@ColorInt bubbleColor: Int): Drawable() {
 

@@ -1,12 +1,12 @@
 package com.fenchtose.movieratings.model.db.entity
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.fenchtose.movieratings.model.db.MovieTypeConverter2
 import com.google.gson.annotations.SerializedName
 import kotlin.collections.ArrayList
 
-@Entity(tableName = "MOVIES", indices = arrayOf(Index("IMDBID", unique = true)))
-@TypeConverters(value = MovieTypeConverter2::class)
+@Entity(tableName = "MOVIES", indices = [Index("IMDBID", unique = true)])
+@TypeConverters(value = [MovieTypeConverter2::class])
 class Movie {
 
     @SerializedName("id")

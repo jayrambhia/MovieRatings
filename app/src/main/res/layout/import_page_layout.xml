@@ -67,7 +67,7 @@
 			android:text="@string/import_screen_info"
 			/>
 
-		<android.support.v7.widget.AppCompatCheckBox
+		<androidx.appcompat.widget.AppCompatCheckBox
 			android:id="@+id/fav_checkbox"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
 			android:layout_marginEnd="16dp"
 			android:text="@string/import_screen_favorites"/>
 
-		<android.support.v7.widget.AppCompatCheckBox
+		<androidx.appcompat.widget.AppCompatCheckBox
 			android:id="@+id/collections_checkbox"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
@@ -89,7 +89,7 @@
 			android:layout_marginEnd="16dp"
 			android:text="@string/import_screen_collections"/>
 
-		<android.support.v7.widget.AppCompatCheckBox
+		<androidx.appcompat.widget.AppCompatCheckBox
 			android:id="@+id/recently_browsed_checkbox"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"

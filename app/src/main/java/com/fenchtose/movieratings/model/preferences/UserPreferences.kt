@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.preferences
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import com.fenchtose.movieratings.model.entity.Sort
 
 interface UserPreferences {

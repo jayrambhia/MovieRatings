@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.base
 
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import androidx.annotation.StringRes
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.View
 import com.fenchtose.movieratings.analytics.events.ScreenView
 import com.fenchtose.movieratings.MovieRatingsApplication
@@ -13,7 +13,7 @@ import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
-abstract class BaseFragment : Fragment(), FragmentNavigation {
+abstract class BaseFragment : androidx.fragment.app.Fragment(), FragmentNavigation {
 
     private var disposables: CompositeDisposable? = null
     var path: RouterPath<out BaseFragment>? = null
@@ -28,7 +28,7 @@ abstract class BaseFragment : Fragment(), FragmentNavigation {
 
     override fun onStart() {
         super.onStart()
-        ScreenView(screenName()).track()
+        ScreenView(requireActivity(), screenName(), javaClass.simpleName).track()
     }
 
     override fun onDestroyView() {

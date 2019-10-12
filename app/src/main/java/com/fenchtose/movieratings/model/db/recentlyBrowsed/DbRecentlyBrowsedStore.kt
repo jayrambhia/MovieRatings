@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.db.recentlyBrowsed
 
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import com.fenchtose.movieratings.model.db.entity.RecentlyBrowsed
 import com.fenchtose.movieratings.model.db.dao.RecentlyBrowsedDao
 import io.reactivex.Observable

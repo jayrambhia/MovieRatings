@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.entity
 
-import androidx.text.isDigitsOnly
+import androidx.core.text.isDigitsOnly
 import com.fenchtose.movieratings.model.db.entity.Rating
 import com.squareup.moshi.*
 

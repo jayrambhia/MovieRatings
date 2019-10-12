@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.model.api.provider
 
 import android.content.Context
-import android.support.annotation.RawRes
+import androidx.annotation.RawRes
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.db.UserPreferenceApplier
 import com.fenchtose.movieratings.model.db.apply

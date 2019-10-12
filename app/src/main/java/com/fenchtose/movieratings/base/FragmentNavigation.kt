@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.base
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 
 interface FragmentNavigation {
     fun canGoBack() : Boolean

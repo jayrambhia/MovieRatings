@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.season
 
 import android.content.Context
-import android.support.v4.view.PagerAdapter
+import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import android.view.ViewGroup
 import com.fenchtose.movieratings.R
@@ -12,7 +12,7 @@ import com.fenchtose.movieratings.model.entity.Season
 class EpisodePagerAdapter(private val context: Context,
                           private val series: Movie,
                           episodes: Season,
-                          private val loaded: (Movie) -> Unit): PagerAdapter() {
+                          private val loaded: (Movie) -> Unit): androidx.viewpager.widget.PagerAdapter() {
 
     private val episodes = episodes.episodes
 

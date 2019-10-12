@@ -1,10 +1,10 @@
 package com.fenchtose.movieratings.model.db
 
-import android.arch.persistence.db.SupportSQLiteDatabase
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.Room
-import android.arch.persistence.room.RoomDatabase
-import android.arch.persistence.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.model.db.dao.*
 import com.fenchtose.movieratings.model.db.entity.*

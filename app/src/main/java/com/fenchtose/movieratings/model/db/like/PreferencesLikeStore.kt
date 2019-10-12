@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.model.db.like
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import com.fenchtose.movieratings.model.db.entity.Fav
 import com.fenchtose.movieratings.model.entity.Movie
 import io.reactivex.Observable

@@ -1,9 +1,9 @@
 package com.fenchtose.movieratings.base
 
 import android.content.pm.PackageManager
-import android.support.annotation.StringRes
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
+import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
 
 // Not used as of now. We may use it later.
 @Suppress("unused")

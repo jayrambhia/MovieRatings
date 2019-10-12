@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.base.router
 
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.ActionBar
+import androidx.appcompat.app.ActionBar
 import android.transition.Fade
 import android.transition.Slide
 import android.transition.TransitionSet

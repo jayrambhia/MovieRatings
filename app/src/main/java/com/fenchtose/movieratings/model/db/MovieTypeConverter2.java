@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.model.db;
 
-import android.arch.persistence.room.TypeConverter;
+import androidx.room.TypeConverter;
 
 import com.fenchtose.movieratings.model.db.entity.Rating;
 import com.google.gson.Gson;

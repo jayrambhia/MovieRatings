@@ -1,7 +1,7 @@
 package com.fenchtose.movieratings.features.moviepage
 
 import android.content.Context
-import android.support.annotation.MainThread
+import androidx.annotation.MainThread
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.*

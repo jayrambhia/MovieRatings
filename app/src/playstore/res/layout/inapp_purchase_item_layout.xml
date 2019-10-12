@@ -8,7 +8,7 @@
 	tools:contentPadding="8dp"
 	tools:layout_margin="16dp"
 	tools:elevation="4dp"
-	tools:parentTag="android.support.v7.widget.CardView">
+	tools:parentTag="androidx.cardview.widget.CardView">
 
 	<LinearLayout
 		android:layout_width="match_parent"

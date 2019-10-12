@@ -1,6 +1,6 @@
 package com.fenchtose.movieratings.widgets.pagesection
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import android.view.View
 import android.widget.TextView
 

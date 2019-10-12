@@ -12,4 +12,5 @@ private.xml
 fabric.properties
 *.apk
 *.jks
+google-services.json
 global_tracker.xml

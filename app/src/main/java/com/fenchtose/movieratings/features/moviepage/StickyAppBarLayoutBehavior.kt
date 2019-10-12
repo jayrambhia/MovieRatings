@@ -1,12 +1,12 @@
 package com.fenchtose.movieratings.features.moviepage
 
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.widget.NestedScrollView
+import com.google.android.material.appbar.AppBarLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.widget.NestedScrollView
 import android.view.View
 
 class StickyAppBarLayoutBehavior: AppBarLayout.Behavior() {
-    override fun layoutDependsOn(parent: CoordinatorLayout, child: AppBarLayout, dependency: View): Boolean {
+    override fun layoutDependsOn(parent: androidx.coordinatorlayout.widget.CoordinatorLayout, child: AppBarLayout, dependency: View): Boolean {
         return dependency is NestedScrollView
     }
 

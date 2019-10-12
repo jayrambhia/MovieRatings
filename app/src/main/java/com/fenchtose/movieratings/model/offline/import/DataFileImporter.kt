@@ -2,7 +2,7 @@ package com.fenchtose.movieratings.model.offline.import
 
 import android.content.Context
 import android.net.Uri
-import android.support.annotation.WorkerThread
+import androidx.annotation.WorkerThread
 import android.util.Log
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
