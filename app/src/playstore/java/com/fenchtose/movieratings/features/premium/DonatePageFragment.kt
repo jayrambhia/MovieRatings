@@ -36,7 +36,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
     private var historyKeeper: HistoryKeeper? = null
     private var isBillingAvailable = false
 
-    private val totalPurchases = 90
+    private val totalPurchases = 100
 
     override fun canGoBack() = true
 

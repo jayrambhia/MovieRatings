@@ -311,12 +311,10 @@ class NetflixReaderService : AccessibilityService() {
         Observable.just(Pair(imdbId, appName))
                 .subscribeOn(Schedulers.io())
                 .doOnNext {
-                    Log.d(TAG, "update history")
                     historyKeeper?.ratingDisplayed(imdbId, appName)
                 }
                 .observeOn(myScheduler)
                 .subscribe {
-                    Log.d(TAG, "update history on next")
                     checkForSupportPrompt()
                 }
     }

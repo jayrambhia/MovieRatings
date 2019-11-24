@@ -1,5 +1,9 @@
 # Flutter Changelog
 
+# 0.4.3
+
+ - Support added for Disney+ app.
+
 # 0.4.2
 
  - Upgrade target SDK to 28.
