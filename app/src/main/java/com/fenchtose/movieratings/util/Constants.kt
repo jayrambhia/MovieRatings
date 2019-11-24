@@ -16,6 +16,7 @@ class Constants {
         const val PACKAGE_JIO_TV = "com.jio.jioplay.tv"
         const val PACKAGE_JIO_CINEMA = "com.jio.media.ondemand"
         const val PACKAGE_REDBOX = "com.redbox.android.activity"
+        const val PACKAGE_DISNEY = "com.disney.disneyplus"
 
         const val APP_SHARE_URL = "http://bit.ly/movieRatings"
 
@@ -35,7 +36,8 @@ class Constants {
             Pair(PACKAGE_HOTSTAR, R.string.settings_hotstar),
             Pair(PACKAGE_JIO_TV, R.string.settings_jio_tv),
             Pair(PACKAGE_JIO_CINEMA, R.string.settings_jio_cinema),
-            Pair(PACKAGE_REDBOX, R.string.settings_redbox)
+            Pair(PACKAGE_REDBOX, R.string.settings_redbox),
+            Pair(PACKAGE_DISNEY, R.string.settings_disney)
         )
 
         const val SUPPORT_CHANNEL_ID = "support"

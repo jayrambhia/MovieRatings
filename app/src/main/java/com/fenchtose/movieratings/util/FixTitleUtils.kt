@@ -6,6 +6,7 @@ class FixTitleUtils {
 
         val PRIMEVIDEO_PATTERN = "[^a-zA-Z0-9 ]".toRegex()
         val NETFLIX_YEAR_PATTERN = "[1-9]\\d{3}".toRegex()
+        val DISNEY_YEAR_PATTERN = " [1-9]\\d{3} ".toRegex() // Space in front
         val PLAY_MOVIES_YEAR_TIME_PATTERN = "[1-9]\\d{3},\\s\\d+\\s\\w+".toRegex()
 
         fun fixPrimeVideoTitle(title: String): String {
@@ -34,6 +35,10 @@ class FixTitleUtils {
 
         fun matchesPlayMoviesYear(year: String): Boolean {
             return PLAY_MOVIES_YEAR_TIME_PATTERN.matches(year)
+        }
+
+        fun fixDisneyYear(year: String): String? {
+            return DISNEY_YEAR_PATTERN.find(year)?.value
         }
 
         fun splitYears(year: String): List<String> {
