@@ -75,6 +75,7 @@ class NetflixReaderService : AccessibilityService() {
         readersMap[Constants.PACKAGE_JIO_TV] = JioTvReader()
         readersMap[Constants.PACKAGE_YOUTUBE] = YoutubeReader()
         readersMap[Constants.PACKAGE_REDBOX] = RedboxReader()
+        readersMap[Constants.PACKAGE_DISNEY] = DisneyReader()
         readersMap[BuildConfig.APPLICATION_ID] = FlutterTestReader()
 
         preferences = SettingsPreferences(this)
@@ -199,8 +200,8 @@ class NetflixReaderService : AccessibilityService() {
 
         val reader = readersMap[info.packageName]
         if (reader != null) {
-            val titles = reader.readTitles(event, info).distinctBy { it }
-            val years = reader.readYear(info).distinctBy { it }
+            val titles = reader.readTitles(event, info).distinctBy { it }.asReversed()
+            val years = reader.readYear(info).distinctBy { it }.asReversed()
             if (BuildConfig.DEBUG) {
                 if (titles.isEmpty()) {
                     checkNodeRecursively(info, 0)
@@ -218,7 +219,6 @@ class NetflixReaderService : AccessibilityService() {
                         event.packageName.toString()
                     )
                 }
-
         } else {
             checkNodeRecursively(info, 0)
         }
