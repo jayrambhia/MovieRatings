@@ -1,5 +1,10 @@
 # Flutter Changelog
 
+# 0.4.4
+
+ - Support added for the latest Netflix app.
+ - Open imdb button added.
+
 # 0.4.3
 
  - Support added for Disney+ app.
