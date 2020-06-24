@@ -95,19 +95,6 @@ class SeasonPageFragment: BaseFragment() {
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var consumed = true
-        when(item.itemId) {
-            R.id.action_open_imdb -> {
-                AppEvents.openImdb(GaCategory.EPISODE).track()
-                IntentUtils.openImdb(requireContext(), currentEpisodeId)
-            }
-            else -> consumed = false
-        }
-
-        return if (consumed) true else super.onOptionsItemSelected(item)
-    }
-
     private fun loadImage(url: String) {
         poster?.let {
             imageView -> run {
@@ -118,7 +105,6 @@ class SeasonPageFragment: BaseFragment() {
 
     class SeasonPath(val series: Movie, val episodes: Season, val selectedEpisode: Int): RouterPath<SeasonPageFragment>() {
         override fun createFragmentInstance() = SeasonPageFragment()
-        override fun showMenuIcons() = intArrayOf(R.id.action_open_imdb)
         override fun category() = GaCategory.SEASON
         override fun toolbarElevation() = R.dimen.toolbar_no_elevation
     }

@@ -17,6 +17,8 @@ import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Unsubscribe
 import com.fenchtose.movieratings.model.entity.Episode
 import com.fenchtose.movieratings.model.entity.Movie
+import com.fenchtose.movieratings.util.IntentUtils
+import com.fenchtose.movieratings.util.show
 import com.fenchtose.movieratings.widgets.ThemedSnackbar
 import com.fenchtose.movieratings.widgets.pagesection.ExpandableSection
 import com.fenchtose.movieratings.widgets.pagesection.InlineTextSection
@@ -40,6 +42,8 @@ class EpisodePage(context: Context, private val episode: Episode,
     private val writerSection: TextSection
     private val plotSection: ExpandableSection
 
+    private val imdbCta: View
+
     var onLoaded: ((Movie) -> Unit)? = null
 
     init {
@@ -59,6 +63,9 @@ class EpisodePage(context: Context, private val episode: Episode,
                 findViewById(R.id.plot_view),
                 AppEvents.togglePlot("expand", category()),
                 AppEvents.togglePlot("collapse", category()))
+
+        imdbCta = findViewById(R.id.imdb_cta)
+
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
     }
 
@@ -125,6 +132,10 @@ class EpisodePage(context: Context, private val episode: Episode,
         actorSection.setContent(episode.actors)
         writerSection.setContent(episode.writers)
         plotSection.setContent(episode.plot)
+        imdbCta.setOnClickListener {
+            AppEvents.openImdb(GaCategory.EPISODE).track()
+            IntentUtils.openImdb(context, episode.imdbId)
+        }
 
         onLoaded?.invoke(episode)
 

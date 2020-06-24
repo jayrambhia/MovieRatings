@@ -114,6 +114,21 @@
 			    android:textAppearance="@style/Text.Light"
 			    tools:text="Released on 05 May 2017"/>
 
+			<TextView
+				android:id="@+id/imdb_cta"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:background="@drawable/movie_page_add_to_collection_background"
+				android:paddingStart="16dp"
+				android:paddingEnd="16dp"
+				android:paddingTop="8dp"
+				android:paddingBottom="8dp"
+				android:layout_marginTop="16dp"
+				android:gravity="center_vertical"
+				android:textAppearance="@style/Text.Dark.Medium"
+				android:text="@string/menu_action_open_imdb"
+				android:elevation="4dp" />
+
 		    <TextView
 			    android:id="@+id/collections_header"
 			    android:layout_width="match_parent"

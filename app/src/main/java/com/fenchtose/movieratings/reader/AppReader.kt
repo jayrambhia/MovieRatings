@@ -22,4 +22,14 @@ interface AppReader {
                 text
             }
     }
+
+    fun findAccessibilityDescription(info: AccessibilityNodeInfo, viewId: String): List<CharSequence> {
+        return info.findAccessibilityNodeInfosByViewId("${getAppId()}:id/$viewId")
+            .filter { it.contentDescription != null }
+            .map {
+                val text = it.contentDescription
+                it.recycle()
+                text
+            }
+    }
 }

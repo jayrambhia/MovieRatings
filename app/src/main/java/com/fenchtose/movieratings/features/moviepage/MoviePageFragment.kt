@@ -8,7 +8,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -98,6 +97,11 @@ class MoviePageFragment: BaseFragment() {
 
         isPosterLoaded = false
 
+        view.findViewById<View>(R.id.imdb_cta).setOnClickListener {
+            AppEvents.openImdb(path?.category()).track()
+            dispatch?.invoke(OpenImdbPage(WeakReference(requireContext())))
+        }
+
         render { appState, dispatch ->
             if (appState.moviePages.isNotEmpty()) {
                 render(appState.moviePages.last(), dispatch)
@@ -113,19 +117,6 @@ class MoviePageFragment: BaseFragment() {
                 dispatch?.invoke(LoadMovie(id))
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var consumed = true
-        when(item.itemId) {
-            R.id.action_open_imdb -> {
-                AppEvents.openImdb(path?.category()).track()
-                dispatch?.invoke(OpenImdbPage(WeakReference(requireContext())))
-            }
-            else -> consumed = false
-        }
-
-        return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
     private fun render(state: MoviePageState, dispatch: Dispatch) {
@@ -224,7 +215,6 @@ class MoviePageFragment: BaseFragment() {
 
 class MoviePath(val movie: Movie, private val sharedElement: Pair<View, String>? = null): RouterPath<MoviePageFragment>() {
     override fun createFragmentInstance() = MoviePageFragment()
-    override fun showMenuIcons() = intArrayOf(R.id.action_open_imdb)
     override fun getSharedTransitionElement() = sharedElement
     override fun category() = GaCategory.MOVIE
     override fun toolbarElevation() = R.dimen.toolbar_no_elevation
@@ -237,8 +227,8 @@ class MoviePath(val movie: Movie, private val sharedElement: Pair<View, String>?
 
         fun createExtras(imdbId: String): Bundle {
             val bundle = Bundle()
-            bundle.putString(Router.ROUTE_TO_SCREEN, MoviePath.KEY)
-            bundle.putString(MoviePath.MOVIE_ID, imdbId)
+            bundle.putString(Router.ROUTE_TO_SCREEN, KEY)
+            bundle.putString(MOVIE_ID, imdbId)
             return bundle
         }
 
