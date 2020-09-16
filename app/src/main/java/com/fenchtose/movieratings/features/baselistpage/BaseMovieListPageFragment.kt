@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.AppEvents
@@ -17,13 +18,14 @@ import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.router.Navigation
+import com.fenchtose.movieratings.features.moviepage.MoviePageFragmentArgs
 import com.fenchtose.movieratings.features.moviepage.MoviePath
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.image.GlideLoader
 
-abstract class BaseMovieListPageFragment: BaseFragment() {
+abstract class BaseMovieListPageFragment : BaseFragment() {
 
     protected var recyclerView: RecyclerView? = null
     protected var adapter: BaseMovieAdapter? = null
@@ -73,7 +75,7 @@ abstract class BaseMovieListPageFragment: BaseFragment() {
 
     private fun render(state: BaseMovieListPageState, dispatch: Dispatch) {
         progressBar?.visibility = View.GONE
-        when(state.progress) {
+        when (state.progress) {
             is Progress.Loading -> {
                 progressBar?.visibility = View.VISIBLE
                 recyclerView?.visibility = View.GONE
@@ -132,6 +134,7 @@ abstract class BaseMovieListPageFragment: BaseFragment() {
 
     protected open fun openMovie(movie: Movie, sharedElement: Pair<View, String>?) {
         AppEvents.openMovie(path?.category() ?: "unknown").track()
+        findNavController().navigate(R.id.movie_page, MoviePageFragmentArgs(movie.imdbId).toBundle())
         path?.getRouter()?.let {
             dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
         }

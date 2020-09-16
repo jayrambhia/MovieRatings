@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.IdRes
+import androidx.navigation.fragment.findNavController
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.AppScreens
@@ -55,32 +57,38 @@ class SettingsFragment : BaseFragment() {
             SettingsSection(
                 R.string.settings_app_section_title,
                 R.string.settings_app_section_subtitle,
-                AppSectionFragment.SettingsAppSectionPath()
+                AppSectionFragment.SettingsAppSectionPath(),
+                R.id.settings_app
             ),
             SettingsSection(
                 R.string.settings_data_and_privacy_section_title,
                 R.string.settings_data_and_privacy_section_subtitle,
-                DataSectionFragment.DataSettingsPath()
+                DataSectionFragment.DataSettingsPath(),
+                R.id.settings_data
             ),
             SettingsSection(
                 R.string.settings_tts_section_title,
                 R.string.settings_tts_section_subtitle,
-                TTSSectionFragment.TTSSettingsPath()
+                TTSSectionFragment.TTSSettingsPath(),
+                R.id.settings_tts
             ),
             SettingsSection(
                 R.string.settings_misc_section_title,
                 R.string.settings_misc_section_subtitle,
-                MiscSectionFragment.MiscSettingsPath()
+                MiscSectionFragment.MiscSettingsPath(),
+                R.id.settings_misc
             ),
             SettingsSection(
                 R.string.settings_rating_section_title,
                 R.string.settings_rating_section_subtitle,
-                RatingBubbleSectionFragment.RatingSectionPath()
+                RatingBubbleSectionFragment.RatingSectionPath(),
+                R.id.settings_bubble
             ),
             SettingsSection(
                 R.string.settings_notification_section_title,
                 R.string.settings_notification_section_subtitle,
-                NotificationSectionPath()
+                NotificationSectionPath(),
+                R.id.settings_notification
             )
         )
 
@@ -89,7 +97,8 @@ class SettingsFragment : BaseFragment() {
                 SettingsSection(
                     R.string.settings_battery_optimization_section_title,
                     R.string.settings_battery_optimization_section_subtitle,
-                    BatteryOptimizationPath()
+                    BatteryOptimizationPath(),
+                    R.id.settings_battery_optimization
                 )
             )
         }
@@ -102,6 +111,7 @@ class SettingsFragment : BaseFragment() {
         view.findViewById<TextView>(R.id.settings_subtitle).setText(item.subtitle)
         view.setOnClickListener {
             path?.getRouter()?.go(item.goTo)
+            findNavController().navigate(item.navId)
         }
     }
 
@@ -114,5 +124,6 @@ class SettingsFragment : BaseFragment() {
 data class SettingsSection(
     val title: Int,
     val subtitle: Int,
-    val goTo: RouterPath<out BaseFragment>
+    val goTo: RouterPath<out BaseFragment>,
+    @IdRes val navId: Int
 )

@@ -8,6 +8,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
@@ -65,7 +66,7 @@ class AppInfoFragment: BaseFragment() {
                     R.string.info_screen_content_no_accessibility)
 
         view.findViewById<InfoPageBottomView>(R.id.bottom_container).apply {
-            setRouter(path?.getRouter(), path?.category())
+            setRouter(path?.getRouter(), path?.category(), findNavController())
             findViewById<View?>(R.id.rate_view)?.show(false)
             findViewById<View?>(R.id.premium_view)?.show(false)
             findViewById<View?>(R.id.feedback_view)?.show(true)
@@ -75,7 +76,7 @@ class AppInfoFragment: BaseFragment() {
     }
 
     override fun onDestroyView() {
-        view?.findViewById<InfoPageBottomView>(R.id.bottom_container)?.setRouter(null, null)
+        view?.findViewById<InfoPageBottomView>(R.id.bottom_container)?.setRouter(null, null, null)
         super.onDestroyView()
     }
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.ActionBar"
+        tools:title="Flutter"
+        android:elevation="4dp"
+        app:titleTextColor="@color/textColorDark"
+        app:navigationIcon="@drawable/ic_arrow_back_accent_24dp"
+        android:background="?attr/colorPrimary"/>
+
+    <!-- Must define app:navGraph to set nav graph -->
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
+        android:layout_width="match_parent"
+        tools:background="@color/colorAccent"
+        android:layout_weight="1"
+        android:layout_height="0dp"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation_bar"
+        android:layout_width="match_parent"
+        app:menu="@menu/bottom_nav_menu"
+        app:backgroundTint="@color/onyx_accent"
+        android:layout_height="56dp" />
+
+</LinearLayout>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/home">
+
+    <!-- Must define app:startDestination to start the app -->
+
+    <fragment
+        android:id="@+id/home"
+        android:name="com.fenchtose.movieratings.features.searchpage.SearchPageFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/search_page_layout">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/fav"
+        android:name="com.fenchtose.movieratings.features.likespage.LikesPageFragment"
+        android:label="fragment_fav"
+        tools:layout="@layout/base_movies_list_page_layout">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/collections"
+        android:name="com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionListPageFragment"
+        android:label="fragment_collections"
+        tools:layout="@layout/movie_collection_list_page_layout">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/info"
+        android:name="com.fenchtose.movieratings.features.info.AppInfoFragment"
+        android:label="fragment_info"
+        tools:layout="@layout/info_page_layout">
+
+        <action
+            android:id="@+id/action_info_to_settings"
+            app:destination="@id/settings" />
+
+    </fragment>
+
+    <!-- Movie page -->
+    <fragment
+        android:id="@+id/movie_page"
+        android:name="com.fenchtose.movieratings.features.moviepage.MoviePageFragment"
+        android:label="fragment_movie_page"
+        tools:layout="@layout/movie_page_layout">
+
+        <argument
+            android:name="movie_id"
+            app:argType="string" />
+
+    </fragment>
+
+    <!-- Other screens -->
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.fenchtose.movieratings.features.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/settings_page_redesign_layout" />
+
+    <fragment
+        android:id="@+id/settings_bubble"
+        android:name="com.fenchtose.movieratings.features.settings.bubble.RatingBubbleSectionFragment"
+        android:label="fragment_bubbles"
+        tools:layout="@layout/settings_rating_bubble_section_page_layout" />
+
+    <fragment
+        android:id="@+id/settings_app"
+        android:name="com.fenchtose.movieratings.features.settings.AppSectionFragment"
+        android:label="fragment_settings_app"
+        tools:layout="@layout/settings_app_section_page_layout" />
+
+    <fragment
+        android:id="@+id/settings_data"
+        android:name="com.fenchtose.movieratings.features.settings.DataSectionFragment"
+        android:label="fragment_settings_data"
+        tools:layout="@layout/settings_data_section_page_layout" />
+
+    <fragment
+        android:id="@+id/settings_tts"
+        android:name="com.fenchtose.movieratings.features.settings.TTSSectionFragment"
+        android:label="fragment_settings_tts"
+        tools:layout="@layout/settings_tts_section_page_layout" />
+
+    <fragment
+        android:id="@+id/settings_misc"
+        android:name="com.fenchtose.movieratings.features.settings.MiscSectionFragment"
+        android:label="fragment_settings_misc"
+        tools:layout="@layout/settings_misc_section_page_layout" />
+
+    <fragment
+        android:id="@+id/settings_notification"
+        android:name="com.fenchtose.movieratings.features.settings.NotificationSectionFragment"
+        android:label="fragment_settings_notification"
+        tools:layout="@layout/settings_notificaiton_section_page_layout" />
+
+    <fragment
+        android:id="@+id/settings_battery_optimization"
+        android:name="com.fenchtose.movieratings.features.settings.BatteryOptimizationFragment"
+        android:label="fragment_settings_battery"
+        tools:layout="@layout/battery_optimization_info_screen" />
+
+</navigation>

@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
@@ -73,7 +74,7 @@ class SearchPageFragment: BaseFragment() {
         path?.takeIf { it is SearchPageFragment.SearchPath.Default }?.let {
             appInfoContainer = view.findViewById<ViewGroup?>(R.id.bottom_container)?.apply {
                 findViewById<InfoPageBottomView>(R.id.info_page_container).apply {
-                    setRouter(it.getRouter(), it.category())
+                    setRouter(it.getRouter(), it.category(), findNavController())
                     findViewById<View?>(R.id.settings_view)?.show(false)
                     findViewById<View?>(R.id.share_view)?.show(false)
                 }

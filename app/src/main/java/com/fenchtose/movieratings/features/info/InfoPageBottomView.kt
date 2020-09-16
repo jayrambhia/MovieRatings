@@ -7,6 +7,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
@@ -22,6 +24,8 @@ import com.fenchtose.movieratings.util.*
 class InfoPageBottomView: LinearLayout {
 
     private var router: Router? = null
+    private var navController: NavController? = null
+
     private var category: String = "unknown"
 
     private var accessibilityButton: View? = null
@@ -71,6 +75,7 @@ class InfoPageBottomView: LinearLayout {
         settingsView?.setOnClickListener {
             AppEvents.openSettings(category).track()
             router?.go(SettingsFragment.SettingsPath())
+            navController?.navigate(R.id.settings)
         }
 
         findViewById<View?>(R.id.feedback_view)?.setOnClickListener {
@@ -89,9 +94,10 @@ class InfoPageBottomView: LinearLayout {
         }
     }
 
-    fun setRouter(router: Router?, category: String?) {
+    fun setRouter(router: Router?, category: String?, navController: NavController?) {
         this.router = router
         this.category = category ?: "unknown"
+        this.navController = navController
     }
 
     private fun showCreditsDialog() {

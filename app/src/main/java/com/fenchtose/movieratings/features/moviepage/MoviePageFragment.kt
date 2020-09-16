@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.AppEvents
@@ -62,11 +63,17 @@ class MoviePageFragment: BaseFragment() {
     override fun getScreenTitle() = R.string.movie_page_title
     override fun screenName() = AppScreens.MOVIE
 
+    private fun getMovieIdFromArgs() = arguments?.let { MoviePageFragmentArgs.fromBundle(it).movieId }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        postponeEnterTransition()
+//        postponeEnterTransition() // TODO: fix this
         imageLoader = GlideLoader(Glide.with(this))
         setHasOptionsMenu(true)
+
+        // Replicate init action to keep Redux compatible.
+        getMovieIdFromArgs()?.let { id -> MovieRatingsApplication.store.dispatchEarly(InitMoviePage(id, null)) }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -111,6 +118,10 @@ class MoviePageFragment: BaseFragment() {
 
     override fun onResume() {
         super.onResume()
+        arguments?.let {
+            val id = MoviePageFragmentArgs.fromBundle(it).movieId
+            dispatch?.invoke(LoadMovie(id))
+        }
         path?.let {
             if (it is MoviePath) {
                 val id = it.movie.imdbId
