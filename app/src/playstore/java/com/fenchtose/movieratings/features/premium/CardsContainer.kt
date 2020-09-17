@@ -3,6 +3,7 @@ package com.fenchtose.movieratings.features.premium
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.LinearLayout
+import com.android.billingclient.api.SkuDetails
 
 class CardsContainer @JvmOverloads constructor(
     context: Context,
@@ -19,6 +20,7 @@ class CardsContainer @JvmOverloads constructor(
             update(
                 listOf(
                     PurchaseCardContent(
+                        skuDetails = SkuDetails(""),
                         sku = "test",
                         title = "Basic",
                         description = "This is a basic card",
@@ -32,7 +34,7 @@ class CardsContainer @JvmOverloads constructor(
         }
     }
 
-    fun update(content: List<PurchaseCardContent>, onPurchase: (String) -> Unit, onBrag: (String) -> Unit) {
+    fun update(content: List<PurchaseCardContent>, onPurchase: (SkuDetails) -> Unit, onBrag: (String) -> Unit) {
         resizeTo(content.size)
         content.forEachIndexed { index, item ->
             if (cards.size > index) {
@@ -63,5 +65,6 @@ data class PurchaseCardContent(
     val title: String,
     val description: String,
     val price: String,
-    val purchased: Int
+    val purchased: Int,
+    val skuDetails: SkuDetails
 )

@@ -27,7 +27,7 @@ import com.fenchtose.movieratings.util.show
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
+class DonatePageFragment : BaseFragment(), PurchasesUpdatedListener {
 
     private var progressContainer: View? = null
     private lateinit var cardsContainer: CardsContainer
@@ -68,22 +68,23 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
         cardsContainer = view.findViewById(R.id.cards_container)
         progressContainer = view.findViewById(R.id.progress_container)
         historyKeeper = DbHistoryKeeper(
-                PreferenceUserHistory(requireContext()),
-                ratingStore,
-                SettingsPreferences(requireContext())
-                )
+            PreferenceUserHistory(requireContext()),
+            ratingStore,
+            SettingsPreferences(requireContext())
+        )
 
-        billingClient = BillingClient.newBuilder(requireContext()).setListener(this).build()
-        billingClient?.startConnection(object: BillingClientStateListener {
+        billingClient = BillingClient.newBuilder(requireContext())
+            .enablePendingPurchases()
+            .setListener(this).build()
+        billingClient?.startConnection(object : BillingClientStateListener {
             override fun onBillingServiceDisconnected() {
 
             }
 
-            override fun onBillingSetupFinished(@BillingClient.BillingResponse responseCode: Int) {
-                isBillingAvailable = responseCode == BillingClient.BillingResponse.OK
+            override fun onBillingSetupFinished(result: BillingResult) {
+                isBillingAvailable = result.responseCode == BillingClient.BillingResponseCode.OK
                 queryAvailablePurchases()
             }
-
         })
     }
 
@@ -94,16 +95,24 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
         }
     }
 
-    override fun onPurchasesUpdated(@BillingClient.BillingResponse responseCode: Int, purchases: MutableList<Purchase>?) {
-        if (responseCode == BillingClient.BillingResponse.OK && purchases != null && !purchases.isEmpty()) {
+    override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
+        if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null && !purchases.isEmpty()) {
             historyKeeper?.paidInAppPurchase()
             AppEvents.completePurchase(purchases.first().sku).track()
 
+            purchases.forEach { purchase ->
+                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged) {
+                    val params = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
+                    billingClient?.acknowledgePurchase(params) { response ->
+                    }
+                }
+            }
+
             AlertDialog.Builder(context)
-                    .setTitle(R.string.donate_dialog_title)
-                    .setMessage(R.string.donate_dialog_message)
-                    .setPositiveButton(android.R.string.ok){ dialog, _ ->  dialog.dismiss() }
-                    .show()
+                .setTitle(R.string.donate_dialog_title)
+                .setMessage(R.string.donate_dialog_message)
+                .setPositiveButton(android.R.string.ok) { dialog, _ -> dialog.dismiss() }
+                .show()
 
             queryAvailablePurchases()
         }
@@ -119,8 +128,8 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
             return
         }
 
-        billingClient?.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP) {
-            _, purchases -> showDetails(skus, purchases?.map { it.sku } ?: listOf())
+        billingClient?.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP) { _, purchases ->
+            showDetails(skus, purchases?.map { it.sku } ?: listOf())
         }
     }
 
@@ -142,11 +151,10 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
         val params = SkuDetailsParams.newBuilder()
         params.setSkusList(arrayListOf("donate_small", "donate_medium", "donate_large"))
         params.setType(BillingClient.SkuType.INAPP)
-        billingClient?.querySkuDetailsAsync(params.build()) {
-            responseCode, skuDetails ->
-                if (responseCode == BillingClient.BillingResponse.OK && skuDetails != null && skuDetails.isNotEmpty()) {
-                    queryPurchaseHistory(skuDetails)
-                }
+        billingClient?.querySkuDetailsAsync(params.build()) { response, skuDetails ->
+            if (response.responseCode == BillingClient.BillingResponseCode.OK && skuDetails != null && skuDetails.isNotEmpty()) {
+                queryPurchaseHistory(skuDetails)
+            }
         }
     }
 
@@ -170,6 +178,7 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
         val content = skus.map { details ->
             PurchaseCardContent(
                 sku = details.sku,
+                skuDetails = details,
                 title = details.title.replace(regex, ""),
                 description = details.description,
                 price = details.price,
@@ -187,18 +196,17 @@ class DonatePageFragment: BaseFragment(), PurchasesUpdatedListener {
         )
     }
 
-    private fun onPurchaseRequested(sku: String) {
-        AppEvents.startPurchase(sku).track()
+    private fun onPurchaseRequested(skuDetails: SkuDetails) {
+        AppEvents.startPurchase(skuDetails.sku).track()
 
         val flowParams = BillingFlowParams.newBuilder()
-                .setSku(sku)
-                .setType(BillingClient.SkuType.INAPP)
-                .build()
+            .setSkuDetails(skuDetails)
+            .build()
 
-        billingClient?.launchBillingFlow(activity, flowParams)
+        billingClient?.launchBillingFlow(requireActivity(), flowParams)
     }
 
-    class DonatePath: RouterPath<DonatePageFragment>() {
+    class DonatePath : RouterPath<DonatePageFragment>() {
         override fun createFragmentInstance() = DonatePageFragment()
         override fun category() = GaCategory.SUPPORT_APP
 

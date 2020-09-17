@@ -83,15 +83,16 @@ class DataSectionFragment: BaseFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        val uri = data?.data
         when(requestCode) {
             REQUEST_OPEN_FILE -> {
-                if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-                    importData(data.data)
+                if (resultCode == Activity.RESULT_OK && data != null && uri != null) {
+                    importData(uri)
                 }
             }
             REQUEST_CREATE_FILE -> {
-                if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-                    exportData(data.data, historyCheckboxSelected == true)
+                if (resultCode == Activity.RESULT_OK && data != null && uri != null) {
+                    exportData(uri, historyCheckboxSelected == true)
                 }
                 historyCheckboxSelected = null
             }

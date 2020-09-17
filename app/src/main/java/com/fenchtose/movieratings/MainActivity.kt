@@ -9,7 +9,6 @@ import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import android.view.ViewGroup
 import com.fenchtose.movieratings.analytics.events.toFaEvent
-import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.analytics.ga.GaLabels
 import com.fenchtose.movieratings.base.RouterBaseActivity
 import com.fenchtose.movieratings.base.router.Router

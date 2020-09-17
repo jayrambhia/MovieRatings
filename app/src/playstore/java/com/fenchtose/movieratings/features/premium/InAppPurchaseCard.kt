@@ -6,10 +6,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.TextView
+import com.android.billingclient.api.SkuDetails
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.util.show
 
-class InAppPurchaseCard : androidx.cardview.widget.CardView {
+class InAppPurchaseCard : CardView {
 
     private val title: TextView
     private val subtitle: TextView
@@ -32,11 +33,11 @@ class InAppPurchaseCard : androidx.cardview.widget.CardView {
         thanksView = findViewById(R.id.bought_view)
     }
 
-    fun update(content: PurchaseCardContent, onPurchase: (String) -> Unit, onBrag: (String) -> Unit) {
+    fun update(content: PurchaseCardContent, onPurchase: (SkuDetails) -> Unit, onBrag: (String) -> Unit) {
         title.text = content.title
         subtitle.text = content.description
         cta.text = context.getString(R.string.donate_card_cta, content.price)
-        cta.setOnClickListener { onPurchase(content.sku) }
+        cta.setOnClickListener { onPurchase(content.skuDetails) }
         cta.show(content.purchased == 0)
         thanksView.show(content.purchased > 0)
         bragCta.show(content.purchased > 0)

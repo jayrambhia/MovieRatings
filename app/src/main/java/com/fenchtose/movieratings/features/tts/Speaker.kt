@@ -49,7 +49,7 @@ class Speaker(context: Context): TextToSpeech.OnInitListener {
 
     fun talk(rating: MovieRating) {
         rating.takeIf { it.imdbId.isNotEmpty() && it.rating >= 0f && rating.imdbId != currentRating?.imdbId }?.run {
-            talk(context.getString(R.string.rating_tts, title, rating))
+            talk(context.getString(R.string.rating_tts, title, this.rating.toString()))
             currentRating = this
         }
     }
