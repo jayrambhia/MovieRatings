@@ -33,7 +33,7 @@ class Constants {
             Pair(PACKAGE_PRIMEVIDEO, R.string.settings_primevideo),
             Pair(PACKAGE_PLAY_MOVIES_TV, R.string.settings_playmovies),
             Pair(PACKAGE_BBC_IPLAYER, R.string.settings_bbc_iplayer),
-            Pair(PACKAGE_HOTSTAR, R.string.settings_hotstar),
+//            Pair(PACKAGE_HOTSTAR, R.string.settings_hotstar),
             Pair(PACKAGE_JIO_TV, R.string.settings_jio_tv),
             Pair(PACKAGE_JIO_CINEMA, R.string.settings_jio_cinema),
             Pair(PACKAGE_REDBOX, R.string.settings_redbox),

@@ -11,11 +11,14 @@ class NetflixReader : AppReader {
         event: AccessibilityEvent,
         info: AccessibilityNodeInfo
     ): List<CharSequence> {
-        return findText(info, "video_details_title").emptyAsNull() ?: findAccessibilityDescription(info, "video_img")
+        return findText(info, "mini_dp_title").emptyAsNull() ?:
+            findText(info, "video_details_title").emptyAsNull() ?:
+            findAccessibilityDescription(info, "video_img")
     }
 
     override fun readYear(info: AccessibilityNodeInfo): List<CharSequence> {
-        return findText(info, "video_details_basic_info_year")
+        return findText(info, "mini_dp_year").emptyAsNull() ?:
+        findText(info, "video_details_basic_info_year")
     }
 
     override fun fixYear(text: String): String {

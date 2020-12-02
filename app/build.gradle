@@ -8,7 +8,7 @@ properties.load(project.rootProject.file('local.properties').newDataInputStream(
 
 ext.versionMajor = 0
 ext.versionMinor = 4
-ext.versionPatch = 5
+ext.versionPatch = 6
 
 android {
     compileSdkVersion 29
@@ -23,6 +23,19 @@ android {
         buildConfigField 'String', 'OMDB_API_KEY', properties['omdb_api_key']
         buildConfigField 'String', 'RATINGS_ENDPOINT', properties['ratings_endpoint']
         buildConfigField 'String', 'RATINGS_API_KEY', properties['ratings_api_key']
+    }
+    signingConfigs {
+        release {
+            def props = new Properties()
+            def fileInputStream = new FileInputStream(file('../local.properties'))
+            props.load(fileInputStream)
+            fileInputStream.close()
+
+            storeFile file('../flutter_key.jks')
+            storePassword props['RELEASE_STORE_PASSWORD']
+            keyAlias props['RELEASE_KEY_ALIAS']
+            keyPassword props['RELEASE_KEY_PASSWORD']
+        }
     }
     flavorDimensions "default"
     productFlavors {
@@ -43,6 +56,7 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
