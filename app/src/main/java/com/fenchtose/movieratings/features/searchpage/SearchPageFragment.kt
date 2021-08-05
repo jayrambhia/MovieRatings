@@ -11,6 +11,22 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.bumptech.glide.Glide
 import com.fenchtose.movieratings.BuildConfig
 import com.fenchtose.movieratings.R
@@ -35,6 +51,7 @@ import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
 import com.fenchtose.movieratings.model.image.GlideLoader
 import com.fenchtose.movieratings.util.*
+import com.google.accompanist.appcompattheme.AppCompatTheme
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
@@ -82,6 +99,14 @@ class SearchPageFragment: BaseFragment() {
                 findViewById<View>(R.id.trending_cta).setOnClickListener {
                     router?.let {
                         dispatch?.invoke(Navigation(it, TrendingPath()))
+                    }
+                }
+
+                findViewById<ComposeView>(R.id.trending_cta_compose).apply {
+                    setContent {
+                        AppCompatTheme {
+                            TrendingCta()
+                        }
                     }
                 }
             }
@@ -249,6 +274,48 @@ class SearchPageFragment: BaseFragment() {
             }
 
         }
+    }
+
+    @Composable
+    private fun TrendingCta() {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.padding(8.dp) // Adding box to render the shadow correctly.
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+                    .shadow(elevation = 4.dp, shape = RoundedCornerShape(size = 25.dp), clip = true)
+                    .background(color = colorResource(id = R.color.colorAccent), shape = RoundedCornerShape(size = 25.dp))
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .wrapContentWidth(Alignment.CenterHorizontally)
+                    .clickable {
+                        path
+                            ?.getRouter()
+                            ?.let {
+                                dispatch?.invoke(Navigation(it, TrendingPath()))
+                            }
+                    }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_trending_up_white_24dp),
+                    contentDescription = "",
+                    tint = colorResource(id = R.color.textColorLight)
+                )
+                Spacer(modifier = Modifier.size(16.dp))
+                Text(
+                    text = stringResource(id = R.string.menu_action_trending),
+                    style = MaterialTheme.typography.h6,
+                    color = colorResource(id = R.color.textColorLight),
+                    modifier = Modifier
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                )
+            }
+        }
+
+
     }
 
     private fun clearData() {
