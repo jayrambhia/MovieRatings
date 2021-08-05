@@ -44,6 +44,18 @@
 			android:textAppearance="@style/Text.Dark.Medium"
 			android:text="@string/donate_already_purchased_text"/>
 
+		<TextView
+			android:id="@+id/sub_price_view"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:visibility="gone"
+			tools:visibility="visible"
+			android:layout_marginTop="8dp"
+			android:paddingStart="8dp"
+			android:paddingEnd="8dp"
+			android:textAppearance="@style/Text.Dark.Medium.Large"
+			tools:text="$1/month"/>
+
 		<Button
 			android:id="@+id/purchase_cta"
 			style="@style/Widget.AppCompat.Button.Colored"

@@ -95,18 +95,20 @@ class DonatePageFragment : BaseFragment(), PurchasesUpdatedListener {
         }
     }
 
+    private fun acknowledgePurchase(purchase: Purchase) {
+        if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged) {
+            val params = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
+            billingClient?.acknowledgePurchase(params) { response ->
+            }
+        }
+    }
+
     override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
         if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null && !purchases.isEmpty()) {
             historyKeeper?.paidInAppPurchase()
             AppEvents.completePurchase(purchases.first().sku).track()
 
-            purchases.forEach { purchase ->
-                if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged) {
-                    val params = AcknowledgePurchaseParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
-                    billingClient?.acknowledgePurchase(params) { response ->
-                    }
-                }
-            }
+            purchases.forEach { purchase -> acknowledgePurchase(purchase) }
 
             AlertDialog.Builder(context)
                 .setTitle(R.string.donate_dialog_title)
@@ -128,9 +130,11 @@ class DonatePageFragment : BaseFragment(), PurchasesUpdatedListener {
             return
         }
 
-        billingClient?.queryPurchaseHistoryAsync(BillingClient.SkuType.INAPP) { _, purchases ->
-            showDetails(skus, purchases?.map { it.sku } ?: listOf())
-        }
+        val purchases = billingClient?.queryPurchases(BillingClient.SkuType.INAPP)?.purchasesList
+        val subsPurchases = billingClient?.queryPurchases(BillingClient.SkuType.SUBS)?.purchasesList
+        val purchasedSkus = (purchases ?: listOf()) + (subsPurchases ?: listOf())
+        purchasedSkus.forEach { purchased -> acknowledgePurchase(purchased) }
+        showDetails(skus, purchasedSkus.map { it.sku })
     }
 
     private fun queryAvailablePurchases() {
@@ -144,7 +148,7 @@ class DonatePageFragment : BaseFragment(), PurchasesUpdatedListener {
                 SkuDetails("{\"productId\":\"donate_medium\",\"type\":\"inapp\",\"price\":\"€2,99\",\"price_amount_micros\":2990000,\"price_currency_code\":\"EUR\",\"title\":\"Standard (Flutter - Movie Ratings)\",\"description\":\"Buy this in-app package to support the app and get us a coffee.\"}"),
                 SkuDetails("{\"productId\":\"donate_small\",\"type\":\"inapp\",\"price\":\"€0,99\",\"price_amount_micros\":990000,\"price_currency_code\":\"EUR\",\"title\":\"Basic (Flutter - Movie Ratings)\",\"description\":\"Show your generous support and help us run the app for 2 more weeks!\"}")
             )
-            queryPurchaseHistory(list)
+            querySubscriptions(list)
             return
         }
 
@@ -153,7 +157,18 @@ class DonatePageFragment : BaseFragment(), PurchasesUpdatedListener {
         params.setType(BillingClient.SkuType.INAPP)
         billingClient?.querySkuDetailsAsync(params.build()) { response, skuDetails ->
             if (response.responseCode == BillingClient.BillingResponseCode.OK && skuDetails != null && skuDetails.isNotEmpty()) {
-                queryPurchaseHistory(skuDetails)
+                querySubscriptions(skuDetails)
+            }
+        }
+    }
+
+    private fun querySubscriptions(inApp: List<SkuDetails>) {
+        val params = SkuDetailsParams.newBuilder()
+        params.setSkusList(arrayListOf("sub_small"))
+        params.setType(BillingClient.SkuType.SUBS)
+        billingClient?.querySkuDetailsAsync(params.build()) { response, skuDetails ->
+            if (response.responseCode == BillingClient.BillingResponseCode.OK && skuDetails != null && skuDetails.isNotEmpty()) {
+                queryPurchaseHistory(inApp + skuDetails)
             }
         }
     }
