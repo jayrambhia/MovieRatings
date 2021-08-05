@@ -11,7 +11,7 @@ import java.io.IOException
 
 interface FileUtils {
     fun export(context: Context, uri: Uri, data: String): Boolean
-    fun readUri(context: Context, uri: Uri): String
+    fun readUri(context: Context, uri: Uri): String?
     fun createCacheFile(context: Context, filename: String): Uri
 }
 

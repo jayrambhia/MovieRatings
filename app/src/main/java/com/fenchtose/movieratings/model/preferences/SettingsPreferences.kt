@@ -42,7 +42,7 @@ class SettingsPreferences(context: Context): UserPreferences {
     }
 
     override fun getLatestLikeSort(): Sort {
-        return Sort.valueOf(preferences.getString(LIKES_SORT_KEY, Sort.ALPHABETICAL.name))
+        return Sort.valueOf(preferences.getString(LIKES_SORT_KEY, Sort.ALPHABETICAL.name)!!)
     }
 
     override fun setLatestCollectionSort(collectionId: Long?, type: Sort) {
@@ -53,7 +53,7 @@ class SettingsPreferences(context: Context): UserPreferences {
 
     override fun getLatestCollectionSort(collectionId: Long?): Sort {
         collectionId?.let {
-            return Sort.valueOf(preferences.getString(COLLECTION_SORT_KEY + it.toString(), Sort.ALPHABETICAL.name))
+            return Sort.valueOf(preferences.getString(COLLECTION_SORT_KEY + it.toString(), Sort.ALPHABETICAL.name)!!)
         }
 
         return Sort.ALPHABETICAL

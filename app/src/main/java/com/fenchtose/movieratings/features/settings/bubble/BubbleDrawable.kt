@@ -68,7 +68,7 @@ class BubbleDrawable(@ColorInt bubbleColor: Int): Drawable() {
 
     override fun getOpacity() = PixelFormat.TRANSLUCENT
 
-    override fun setColorFilter(colorFilter: ColorFilter) {
+    override fun setColorFilter(colorFilter: ColorFilter?) {
         paint.colorFilter = colorFilter
     }
 

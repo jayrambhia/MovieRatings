@@ -12,7 +12,7 @@ import java.io.IOException
 class AppFileUtils: FileUtils {
     override fun export(context: Context, uri: Uri, data: String): Boolean {
         try {
-            val pfd = context.contentResolver.openFileDescriptor(uri, "w")
+            val pfd = context.contentResolver.openFileDescriptor(uri, "w") ?: return false
             val fos = FileOutputStream(pfd.fileDescriptor)
             fos.write(data.toByteArray())
             fos.close()
@@ -27,8 +27,8 @@ class AppFileUtils: FileUtils {
         return false
     }
 
-    override fun readUri(context: Context, uri: Uri): String {
-        return context.contentResolver.openInputStream(uri).reader().readText()
+    override fun readUri(context: Context, uri: Uri): String? {
+        return context.contentResolver.openInputStream(uri)?.reader()?.readText()
     }
 
     override fun createCacheFile(context: Context, filename: String): Uri {

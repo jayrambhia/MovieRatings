@@ -217,9 +217,11 @@ class Router(activity: RouterBaseActivity,
             }
 
             val pathKeys = extras.getStringArrayList(KEY_PATHS) ?: return
-            pathKeys.forEach {
-                if (extras.containsKey(it)) {
-                    history.add(Pair(it, extras.getBundle(it)))
+            pathKeys.forEach { key ->
+                if (extras.containsKey(key)) {
+                    extras.getBundle(key)?.let {
+                        history.add(Pair(key, it))
+                    }
                 }
             }
         }

@@ -128,7 +128,7 @@ class MainActivity : RouterBaseActivity() {
             }
 
             if (intent.hasExtra("fa_event")) {
-                intent.getBundleExtra("fa_event").toFaEvent()?.track()
+                intent.getBundleExtra("fa_event")?.toFaEvent()?.track()
             }
 
             root = Router.ROOT_SEARCH
