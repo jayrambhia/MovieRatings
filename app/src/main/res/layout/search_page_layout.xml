@@ -77,6 +77,16 @@
         tools:listitem="@layout/search_movie_item_layout"
         android:background="#fffafafa"/>
 
+	<androidx.compose.ui.platform.ComposeView
+		android:id="@+id/recyclerview_compose"
+		android:layout_marginTop="64dp"
+		android:layout_marginStart="4dp"
+		android:layout_marginEnd="4dp"
+		android:visibility="gone"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:background="#fffafafa"/>
+
 	<LinearLayout
 		android:id="@+id/bottom_container"
 		android:layout_width="match_parent"

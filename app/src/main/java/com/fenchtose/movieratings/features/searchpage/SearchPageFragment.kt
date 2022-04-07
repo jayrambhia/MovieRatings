@@ -109,15 +109,10 @@ class SearchPageFragment: BaseFragment() {
 
         val adapterConfig = SearchAdapterConfig(GlideLoader(Glide.with(this)),
                 {
-                    AppEvents.like(path?.category(), !it.liked).track()
-                    dispatch?.invoke(LikeMovie(it, !it.liked))
+                    likeMovie(it)
                 },
                 {
-                    movie, sharedElement ->
-                    AppEvents.openMovie(path?.category() ?: "unknown").track()
-                    path?.getRouter()?.let {
-                        dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
-                    }
+                    movie, sharedElement -> openMovie(movie, sharedElement)
                 },
                 {dispatch?.invoke(SearchAction.LoadMore(path is SearchPath.AddToCollection))},
                 createExtraLayoutHelper())
@@ -271,6 +266,18 @@ class SearchPageFragment: BaseFragment() {
         }
     }
 
+    private fun likeMovie(movie: Movie) {
+        AppEvents.like(path?.category(), !movie.liked).track()
+        dispatch?.invoke(LikeMovie(movie, !movie.liked))
+    }
+
+    private fun openMovie(movie: Movie, sharedElement: Pair<View, String>? = null) {
+        AppEvents.openMovie(path?.category() ?: "unknown").track()
+        path?.getRouter()?.let {
+            dispatch?.invoke(Navigation(it, MoviePath(movie, sharedElement)))
+        }
+    }
+
     @Composable
     private fun TrendingCta() {
         Box(
@@ -283,7 +290,10 @@ class SearchPageFragment: BaseFragment() {
                 modifier = Modifier
                     .wrapContentWidth(Alignment.CenterHorizontally)
                     .shadow(elevation = 4.dp, shape = RoundedCornerShape(size = 25.dp), clip = true)
-                    .background(color = colorResource(id = R.color.colorAccent), shape = RoundedCornerShape(size = 25.dp))
+                    .background(
+                        color = colorResource(id = R.color.colorAccent),
+                        shape = RoundedCornerShape(size = 25.dp)
+                    )
                     .padding(horizontal = 16.dp, vertical = 12.dp)
                     .wrapContentWidth(Alignment.CenterHorizontally)
                     .clickable {
@@ -320,6 +330,14 @@ class SearchPageFragment: BaseFragment() {
         recyclerView?.post {
             recyclerView?.visibility = View.GONE
         }
+
+        val root = view ?: return
+        root.findViewById<ComposeView>(R.id.recyclerview_compose).apply {
+            show(false)
+            setContent {
+
+            }
+        }
     }
 
     private fun fixScroll() {
@@ -330,11 +348,11 @@ class SearchPageFragment: BaseFragment() {
 
     private fun setData(movies: List<Movie>) {
         showLoading(false)
-        adapter?.let {
+        /*adapter?.let {
             it.data.clear()
             it.data.addAll(movies)
             it.notifyDataSetChanged()
-            /*if (it.data != movies) {
+            *//*if (it.data != movies) {
                 if (it.data.size == movies.size) {
                     // maybe some movies updated.
                     val updated = movies.mapIndexed {
@@ -351,9 +369,23 @@ class SearchPageFragment: BaseFragment() {
                     it.data.addAll(movies)
                     it.notifyDataSetChanged()
                 }
-            }*/
+            }*//*
         }
-        recyclerView?.show(true)
+        recyclerView?.show(true)*/
+
+        val root = view ?: return
+        root.findViewById<ComposeView>(R.id.recyclerview_compose).apply {
+            show(true)
+            setContent {
+                AppCompatTheme() {
+                    MovieLazyList(
+                        movies = movies,
+                        onMovieLiked = ::likeMovie,
+                        openMovie = { movie -> openMovie(movie, null) }
+                    )
+                }
+            }
+        }
 
     }
 

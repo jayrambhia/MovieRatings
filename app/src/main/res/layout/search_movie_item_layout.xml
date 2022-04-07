@@ -19,13 +19,12 @@
             android:id="@+id/imageview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
             android:adjustViewBounds="true"
-            android:minHeight="120dp"
-            app:ratioimageview__ratio="0.85"
             android:background="@color/onyx_accent"
-            tools:src="@drawable/madmax"
-            />
+            android:minHeight="120dp"
+            android:scaleType="centerCrop"
+            app:ratioimageview__ratio="0.85"
+            tools:src="@drawable/madmax" />
 
         <TextView
 	        android:textAppearance="@style/Text.Light"
