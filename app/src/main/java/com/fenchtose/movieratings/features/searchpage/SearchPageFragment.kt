@@ -96,11 +96,6 @@ class SearchPageFragment: BaseFragment() {
                 }
 
                 val router = it.getRouter()
-                findViewById<View>(R.id.trending_cta).setOnClickListener {
-                    router?.let {
-                        dispatch?.invoke(Navigation(it, TrendingPath()))
-                    }
-                }
 
                 findViewById<ComposeView>(R.id.trending_cta_compose).apply {
                     setContent {
@@ -314,8 +309,6 @@ class SearchPageFragment: BaseFragment() {
                 )
             }
         }
-
-
     }
 
     private fun clearData() {

@@ -20,7 +20,8 @@
 
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+			android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -28,11 +29,13 @@
         </activity>
         <activity
             android:name=".features.settings.SettingsActivity"
-            android:label="@string/settings_header"/>
+            android:label="@string/settings_header"
+			android:exported="true"/>
 	    <activity
 		    android:name=".features.settings.ImportActivity"
 		    android:label="@string/import_activity_label"
-		    android:screenOrientation="portrait">
+		    android:screenOrientation="portrait"
+			android:exported="true">
 		    <intent-filter>
 			    <category android:name="android.intent.category.DEFAULT"/>
 			    <action android:name="android.intent.action.SEND"/>
@@ -48,7 +51,8 @@
         <service
             android:name=".NetflixReaderService"
             android:label="@string/accessibility_label"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+			android:exported="true">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
             </intent-filter>
