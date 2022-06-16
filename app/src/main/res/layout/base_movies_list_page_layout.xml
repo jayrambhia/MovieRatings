@@ -1,46 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<androidx.compose.ui.platform.ComposeView
+	android:id="@+id/compose_root"
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	xmlns:tools="http://schemas.android.com/tools">
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        android:layout_gravity="center"/>
-
-	<androidx.compose.ui.platform.ComposeView
-		android:id="@+id/compose_recyclerview"
-		android:layout_marginStart="4dp"
-		android:layout_marginEnd="4dp"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		tools:listitem="@layout/search_movie_item_layout"
-		android:background="#fffafafa" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/search_movie_item_layout"
-        android:background="#fffafafa"/>
-
-	<TextView
-		android:visibility="gone"
-		tools:visibility="visible"
-		android:id="@+id/screen_state_content"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_margin="16dp"
-		android:layout_gravity="center"
-		android:gravity="center"
-		android:textAppearance="@style/Text.Dark.Secondary.Large"
-		tools:text="Unable to load titles :("/>
-
-</FrameLayout>
+</androidx.compose.ui.platform.ComposeView>

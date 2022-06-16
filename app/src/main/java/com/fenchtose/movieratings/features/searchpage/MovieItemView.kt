@@ -12,11 +12,12 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.model.entity.Movie
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun MovieItemView(movie: Movie, onMovieLiked: (Movie) -> Unit, openMovie: (Movie) -> Unit) {
+fun MovieItemView(movie: Movie, footer: @Composable (Movie, Dispatch?) -> Unit, dispatch: Dispatch?, onMovieLiked: (Movie) -> Unit, openMovie: (Movie) -> Unit) {
     Card(
         backgroundColor = colorResource(id = R.color.colorAccent),
         modifier = Modifier.clickable {
@@ -24,7 +25,8 @@ fun MovieItemView(movie: Movie, onMovieLiked: (Movie) -> Unit, openMovie: (Movie
         }
     ) {
         Column() {
-            Box() {
+            // TODO: Min height + expand if image is bigger.
+            Box(modifier = Modifier.requiredHeight(180.dp)) {
                 GlideImage(
                     imageModel = movie.poster,
                     contentScale = ContentScale.FillWidth,
@@ -61,6 +63,7 @@ fun MovieItemView(movie: Movie, onMovieLiked: (Movie) -> Unit, openMovie: (Movie
                     )
                 }
             }
+            footer(movie, dispatch)
         }
     }
 }
@@ -75,6 +78,6 @@ fun MovieItemPreview() {
         poster = "https://images-na.ssl-images-amazon.com/images/M/MV5BMjA5MjUxNDgwNF5BMl5BanBnXkFtZTgwMDI5NjMwNDE@._V1_SX300.jpg",
     )
     Box(Modifier.width(240.dp)) {
-        MovieItemView(movie = movie, {}) {}
+        MovieItemView(movie = movie, { _, _ -> }, {}, {}) {}
     }
 }

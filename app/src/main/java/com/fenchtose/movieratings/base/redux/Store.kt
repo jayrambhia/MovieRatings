@@ -26,6 +26,7 @@ abstract class SimpleStore<State>(initialState: State,
                                   private val reducers: List<Reducer<State>>,
                                   private val middlewares: List<Middleware<State>>): Store<State> {
 
+    private var viewMiddlewares = listOf<Middleware<State>>()
     private val subscriptions = arrayListOf<Subscription<State>>()
     private var _state: State = initialState
 
@@ -51,7 +52,8 @@ abstract class SimpleStore<State>(initialState: State,
     }
 
     private fun dispatchToMiddleWare(action: Action): Action {
-        return next(0)(_state, action, ::dispatch)
+        val mutated = next(0)(_state, action, ::dispatch)
+        return nextViewMiddleware(0)(_state, mutated, ::dispatch)
     }
 
     private fun next(index: Int): Next<State> {
@@ -59,6 +61,13 @@ abstract class SimpleStore<State>(initialState: State,
             return { _, action, _ -> action }
         }
         return { state, action, dispatch -> middlewares[index].invoke(state, action, dispatch, next(index + 1))}
+    }
+
+    private fun nextViewMiddleware(index: Int): Next<State> {
+        if (index == viewMiddlewares.size) {
+            return { _, action, _ -> action }
+        }
+        return { state, action, dispatch -> viewMiddlewares[index].invoke(state, action, dispatch, nextViewMiddleware(index + 1))}
     }
 
     private fun reduce(current: State, action: Action): State {
@@ -79,6 +88,11 @@ abstract class SimpleStore<State>(initialState: State,
         subscriptions.add(subscription)
         subscription(_state, ::dispatch)
         return { subscriptions.remove(subscription) }
+    }
+
+    fun addViewMiddleware(middleware: Middleware<State>): Unsubscribe {
+        this.viewMiddlewares += middleware
+        return { this.viewMiddlewares -= middleware }
     }
 
     fun dispatch(action: Action) {

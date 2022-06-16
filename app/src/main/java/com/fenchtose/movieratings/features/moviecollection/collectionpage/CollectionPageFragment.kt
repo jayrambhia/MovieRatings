@@ -6,7 +6,21 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bumptech.glide.Glide
+import com.fenchtose.movieratings.MovieRatingsApplication
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.AppEvents
@@ -15,6 +29,7 @@ import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.BaseMovieAdapter
 import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
+import com.fenchtose.movieratings.base.redux.Unsubscribe
 import com.fenchtose.movieratings.base.router.Navigation
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
@@ -22,6 +37,8 @@ import com.fenchtose.movieratings.features.searchpage.ClearCollectionOp
 import com.fenchtose.movieratings.features.searchpage.SearchItemViewHolder
 import com.fenchtose.movieratings.features.searchpage.SearchPageFragment
 import com.fenchtose.movieratings.model.db.movieCollection.AddToCollection
+import com.fenchtose.movieratings.model.db.movieCollection.CollectionViewMiddleware
+import com.fenchtose.movieratings.model.db.movieCollection.ConfirmRemove
 import com.fenchtose.movieratings.model.db.movieCollection.RemoveFromCollection
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.entity.MovieCollection
@@ -48,6 +65,8 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
 
     override fun getErrorContent() = R.string.movie_collection_page_error_content
 
+    private var viewMiddlewareUnsubscribe: Unsubscribe = {}
+
     override fun onCreated() {
         setHasOptionsMenu(true)
 
@@ -62,6 +81,7 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewMiddlewareUnsubscribe = MovieRatingsApplication.store.addViewMiddleware(CollectionViewMiddleware.newInstance(requireContext())::middleware)
         emptyStateCta = view.findViewById(R.id.empty_cta)
         emptyStateCta?.setOnClickListener {
             openSearch()
@@ -93,6 +113,11 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
         }
 
         return if (consumed) true else super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewMiddlewareUnsubscribe()
     }
 
     override fun reduceState(appState: AppState): BaseMovieListPageState {
@@ -146,6 +171,22 @@ class CollectionPageFragment: BaseMovieListPageFragment() {
 
             dispatch(ClearCollectionOp)
         }
+    }
+
+    @Composable
+    override fun ItemFooter(movie: Movie, dispatch: Dispatch?) {
+//        val collection = this.collection ?: return
+        Text(
+            text = stringResource(id = R.string.movie_collection_page_remove_cta),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .clickable { dispatch?.invoke(ConfirmRemove(collection!!, movie)) },
+            color = colorResource(id = R.color.colorPrimary),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center,
+        )
     }
 
     override fun loadingAction() = LoadCollection

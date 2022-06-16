@@ -1,10 +1,15 @@
 package com.fenchtose.movieratings.features.trending
 
-import android.os.Bundle
-import androidx.annotation.StringRes
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.TextView
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.AppScreens
@@ -13,42 +18,14 @@ import com.fenchtose.movieratings.base.RouterPath
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageFragment
 import com.fenchtose.movieratings.features.baselistpage.BaseMovieListPageState
-import com.fenchtose.movieratings.widgets.IndicatorTabLayout
 
 class TrendingFragment: BaseMovieListPageFragment() {
-
-    private var tabLayout: IndicatorTabLayout? = null
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        tabLayout = view.findViewById(R.id.tabs)
-        tabLayout?.let {
-            it.addTab(createTab(R.string.trending_tab_today))
-            it.addTab(createTab(R.string.trending_tab_week))
-
-            it.addListener {
-                val tab = when(it) {
-                    0 -> TrendingTab.DAY
-                    1 -> TrendingTab.WEEK
-                    else -> TrendingTab.DAY
-                }
-
-                dispatch?.invoke(SwitchTab(tab))
-            }
-        }
-    }
-
-    private fun createTab(@StringRes resId: Int): IndicatorTabLayout.Tab {
-        val view = LayoutInflater.from(context).inflate(R.layout.tab_item_layout, null).apply { (this as TextView).setText(resId) }
-        return IndicatorTabLayout.Tab(view)
-    }
 
     override fun getErrorContent() = R.string.trending_page_error_content
     override fun getEmptyContent() = R.string.trending_page_empty_content
     override fun canGoBack() = true
     override fun getScreenTitle() = R.string.trending_screen_title
     override fun screenName() = AppScreens.TRENDING
-    override fun getLayout() = R.layout.trending_movies_page_layout
     override fun loadingAction() = LoadTrendingPage
 
     override fun reduceState(appState: AppState): BaseMovieListPageState {
@@ -56,12 +33,35 @@ class TrendingFragment: BaseMovieListPageFragment() {
     }
 
     override fun render(appState: AppState, dispatch: Dispatch) {
-        tabLayout?.selectTab(when(appState.trendingPage.currentTab) {
-            TrendingTab.DAY -> 0
-            TrendingTab.WEEK -> 1
-        })
+
     }
 
+    @Composable
+    override fun Header(appState: AppState, dispatch: Dispatch) {
+        val selectedIndex = when(appState.trendingPage.currentTab) {
+            TrendingTab.DAY -> 0
+            TrendingTab.WEEK -> 1
+        }
+
+        TabRow(
+            selectedTabIndex = selectedIndex,
+            modifier = Modifier
+                .requiredHeight(48.dp)
+                .fillMaxWidth(),
+            backgroundColor = colorResource(id = R.color.colorPrimary),
+            tabs = {
+                TrendingTab(selected = selectedIndex == 0, type = TrendingTab.DAY, dispatch = dispatch)
+                TrendingTab(selected = selectedIndex == 1, type = TrendingTab.WEEK, dispatch = dispatch)
+            }
+        )
+    }
+
+    @Composable
+    fun TrendingTab(selected: Boolean, type: TrendingTab, dispatch: Dispatch) {
+        Tab(selected = selected, onClick = { dispatch(SwitchTab(type)) }) {
+            Text(text = stringResource(id = type.title))
+        }
+    }
 }
 
 class TrendingPath: RouterPath<TrendingFragment>() {

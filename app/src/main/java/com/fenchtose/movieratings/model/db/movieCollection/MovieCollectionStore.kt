@@ -1,11 +1,16 @@
 package com.fenchtose.movieratings.model.db.movieCollection
 
+import android.content.Context
 import androidx.annotation.WorkerThread
+import androidx.appcompat.app.AlertDialog
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.R
+import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
 import com.fenchtose.movieratings.base.redux.Dispatch
 import com.fenchtose.movieratings.base.redux.Next
+import com.fenchtose.movieratings.base.redux.NoAction
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.CollectionOp
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.hasCollection
 import com.fenchtose.movieratings.features.moviecollection.collectionlist.update
@@ -42,6 +47,7 @@ interface MovieCollectionStore : UserPreferenceApplier {
 
 data class AddToCollection(val collection: MovieCollection, val movie: Movie): Action
 data class RemoveFromCollection(val collection: MovieCollection, val movie: Movie): Action
+class ConfirmRemove(val collection: MovieCollection, val movie: Movie) : Action
 
 data class CreateCollection(val name: String): Action
 data class DeleteCollection(val collection: MovieCollection): Action
@@ -153,6 +159,33 @@ private fun AppState.updateSearchCollection(op: MovieCollectionOp): AppState {
             }
         }
         else -> this
+    }
+}
+
+class CollectionViewMiddleware(private val context: Context) {
+    fun middleware(state: AppState, action: Action, dispatch: Dispatch, next: Next<AppState>): Action {
+        when (action) {
+            is ConfirmRemove -> {
+                AlertDialog.Builder(context)
+                    .setTitle(R.string.movie_collection_remove_movie_dialog_title)
+                    .setMessage(context.getString(R.string.movie_collection_remove_movie_dialog_content, action.movie.title))
+                    .setNegativeButton(R.string.movie_collection_remove_movie_negative) { _, _ ->
+                        AppEvents.REMOVE_MOVIE.track()
+                        dispatch(RemoveFromCollection(action.collection, action.movie))
+                    }
+                    .setNeutralButton(R.string.movie_collection_remove_movie_neutral) { dialog, _ -> dialog.dismiss() }
+                    .show()
+                return NoAction
+            }
+        }
+
+        return next(state, action, dispatch)
+    }
+
+    companion object {
+        fun newInstance(context: Context) : CollectionViewMiddleware {
+            return CollectionViewMiddleware(context)
+        }
     }
 }
 

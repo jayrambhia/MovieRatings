@@ -12,14 +12,6 @@
         android:visibility="gone"
         android:layout_gravity="center"/>
 
-	<androidx.compose.ui.platform.ComposeView
-		android:id="@+id/compose_recyclerview"
-		android:layout_marginStart="4dp"
-		android:layout_marginEnd="4dp"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:background="#fffafafa"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_marginStart="4dp"
@@ -55,5 +47,13 @@
 			android:text="@string/movie_collection_page_empty_content_cta"/>
 
 	</LinearLayout>
+
+
+	<androidx.compose.ui.platform.ComposeView
+		android:id="@+id/compose_root"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+
+	</androidx.compose.ui.platform.ComposeView>
 
 </FrameLayout>

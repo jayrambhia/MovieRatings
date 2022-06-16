@@ -381,7 +381,8 @@ class SearchPageFragment: BaseFragment() {
                     MovieLazyList(
                         movies = movies,
                         onMovieLiked = ::likeMovie,
-                        openMovie = { movie -> openMovie(movie, null) }
+                        openMovie = { movie -> openMovie(movie, null) },
+                        dispatch = dispatch
                     )
                 }
             }

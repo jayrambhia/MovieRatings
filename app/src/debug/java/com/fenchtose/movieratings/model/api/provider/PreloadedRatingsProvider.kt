@@ -6,6 +6,8 @@ import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.model.entity.MovieRating
 import com.fenchtose.movieratings.model.entity.Trending
 import com.google.gson.Gson
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import io.reactivex.Observable
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -33,8 +35,10 @@ class PreloadedRatingsProvider(private val context: Context): MovieRatingsProvid
 
     private fun convertToTrending(@RawRes resId: Int): Trending {
         val data = readRawFile(resId)
-        val gson = Gson()
-        return gson.fromJson(data,  Trending::class.java)
+        val moshi = Moshi.Builder()
+            .build()
+        val trending = moshi.adapter(Trending::class.java).fromJson(data)!!
+        return trending
     }
 
     private fun readRawFile(@RawRes resId: Int): String {
@@ -69,6 +73,16 @@ class PreloadedRatingsProvider(private val context: Context): MovieRatingsProvid
     override fun getTrending(period: String): Observable<Trending> {
         return Observable.defer {
             Observable.just(convertToTrending(R.raw.trending))
+                .map { trending ->
+                    val movies = trending.movies.partition { it.startYear > 2012 }.let {
+                        if (period == "day") {
+                            it.first
+                        } else {
+                            it.second
+                        }
+                    }
+                    trending.copy(movies = movies)
+                }
         }
     }
 }

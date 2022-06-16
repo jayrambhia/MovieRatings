@@ -1,6 +1,8 @@
 package com.fenchtose.movieratings.features.trending
 
+import androidx.annotation.StringRes
 import com.fenchtose.movieratings.MovieRatingsApplication
+import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.AppEvents
 import com.fenchtose.movieratings.base.AppState
 import com.fenchtose.movieratings.base.redux.Action
@@ -23,8 +25,8 @@ data class TrendingPageState(
     val progress: Progress = Progress.Default,
     val currentTab: TrendingTab = TrendingTab.DAY)
 
-enum class TrendingTab(val key: String) {
-    DAY("day"), WEEK("week")
+enum class TrendingTab(val key: String, @StringRes val title: Int) {
+    DAY("day", R.string.trending_tab_today), WEEK("week", R.string.trending_tab_week)
 }
 
 fun AppState.reduceTrendingPage(action: Action): AppState {

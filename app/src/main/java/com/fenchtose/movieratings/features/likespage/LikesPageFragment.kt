@@ -1,7 +1,6 @@
 package com.fenchtose.movieratings.features.likespage
 
 import android.view.MenuItem
-import android.view.View
 import com.fenchtose.movieratings.R
 import com.fenchtose.movieratings.analytics.ga.GaCategory
 import com.fenchtose.movieratings.analytics.ga.AppEvents
@@ -16,7 +15,7 @@ import com.fenchtose.movieratings.model.db.like.LikeMovie
 import com.fenchtose.movieratings.model.entity.Movie
 import com.fenchtose.movieratings.model.preferences.UserPreferences
 
-class LikesPageFragment: BaseMovieListPageFragment() {
+class LikesPageFragment : BaseMovieListPageFragment() {
 
     override fun getScreenTitle() = R.string.likes_page_title
 
@@ -25,12 +24,15 @@ class LikesPageFragment: BaseMovieListPageFragment() {
     override fun getErrorContent() = R.string.likes_page_error_content
 
     override fun onCreated() {
+        super.onCreated()
         setHasOptionsMenu(true)
     }
 
+    override fun loadingAction() = LoadLikedMovies
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var consumed = true
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.action_sort_alphabetically -> {
                 AppEvents.sort(Sort.ALPHABETICAL, path?.category()).track()
                 dispatch?.invoke(LikeSort(Sort.ALPHABETICAL))
@@ -46,6 +48,10 @@ class LikesPageFragment: BaseMovieListPageFragment() {
         return if (consumed) true else super.onOptionsItemSelected(item)
     }
 
+    override fun reduceState(appState: AppState): BaseMovieListPageState {
+        return BaseMovieListPageState(movies = appState.likesPage.movies, progress = appState.likesPage.progress)
+    }
+
     override fun render(appState: AppState, dispatch: Dispatch) {
         appState.likesPage.unliked?.let {
             if (!it.shown) {
@@ -57,25 +63,18 @@ class LikesPageFragment: BaseMovieListPageFragment() {
 
     private fun showMovieRemoved(movie: Movie, dispatch: Dispatch) {
         showSnackbarWithAction(
-                getString(R.string.movie_unliked_snackbar_content, movie.title),
-                R.string.undo_action,
-                View.OnClickListener {
-                    dispatch.invoke(LikeMovie(movie, true))
-                }
-        )
+            getString(R.string.movie_unliked_snackbar_content, movie.title),
+            R.string.undo_action
+        ) {
+            dispatch.invoke(LikeMovie(movie, true))
+        }
     }
-
-    override fun reduceState(appState: AppState): BaseMovieListPageState {
-        return BaseMovieListPageState(appState.likesPage.movies, appState.likesPage.progress)
-    }
-
-    override fun loadingAction() = LoadLikedMovies
 
     override fun canGoBack() = true
 
     override fun screenName() = AppScreens.LIKES
 
-    class LikesPath(private val preferences: UserPreferences): RouterPath<LikesPageFragment>() {
+    class LikesPath(private val preferences: UserPreferences) : RouterPath<LikesPageFragment>() {
         override fun createFragmentInstance() = LikesPageFragment()
         override fun showMenuIcons(): IntArray {
             val icons = arrayListOf(R.id.action_sort)
@@ -85,6 +84,7 @@ class LikesPageFragment: BaseMovieListPageFragment() {
 
             return icons.toIntArray()
         }
+
         override fun category() = GaCategory.LIKES
         override fun clearAction() = ClearLikedPageState
     }
