@@ -6,7 +6,12 @@ import com.fenchtose.movieratings.model.entity.Movie
 data class BaseMovieListPageState(
     val movies: List<Movie> = listOf(),
     val progress: Progress = Progress.Default
-)
+) {
+    companion object {
+        fun success(movies: List<Movie>) = BaseMovieListPageState(movies, Progress.Success)
+        fun loading() = BaseMovieListPageState(progress = Progress.Loading)
+    }
+}
 
 sealed class Progress {
     object Default: Progress()

@@ -26,6 +26,7 @@ import com.google.accompanist.appcompattheme.AppCompatTheme
 abstract class BaseMovieListPageFragment : BaseFragment() {
 
     private lateinit var composeView: ComposeView
+    private lateinit var viewModel: MovieListViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
